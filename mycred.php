@@ -3,18 +3,18 @@
 Plugin Name: myCRED
 Plugin URI: http://mycred.merovingi.com
 Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
-Version: 1.0.1
+Version: 1.0.2
 Tags: points, tokens, credit, management, reward, charge
 Author: Gabriel S Merovingi
 Author URI: http://www.merovingi.com
 Author Email: mycred@merovingi.com
 Requires at least: WP 3.1
 Tested up to: WP 3.5.1
-Stable tag: 1.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
-define( 'myCRED_VERSION',      '1.0.1' );
+define( 'myCRED_VERSION',      '1.0.2' );
 define( 'myCRED_SLUG',         'mycred' );
 
 define( 'myCRED_THIS',          __FILE__ );
