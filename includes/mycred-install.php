@@ -178,7 +178,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		public $step;
 		public $status;
 
-		protected $core;
+		public $core;
 
 		/**
 		 * Construct
@@ -505,11 +505,12 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		 * the website.
 		 *
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		protected function setup_step2() {
 			if ( !$this->step ) return;
-
+			$mycred = mycred_get_settings();
+			
 			// Capabilities
 			$edit_plugin = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
 			$edit_creds = ( isset( $_POST['myCRED-cap-creds'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-creds'] ) : 'edit_users';
@@ -529,7 +530,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 					<h2><input type="text" name="myCRED-cap-plugin" id="myCRED-cap-plugin" value="<?php echo $edit_plugin; ?>" /></h2>
 				</li>
 				<li>
-					<label for="myCRED-cap-creds"><?php echo $this->core->template_tags_general( __( 'Edit Users %plural% Capability', 'mycred' ) ); ?></label>
+					<label for="myCRED-cap-creds"><?php echo $mycred->template_tags_general( __( 'Edit Users %plural% Capability', 'mycred' ) ); ?></label>
 					<h2><input type="text" name="myCRED-cap-creds" id="myCRED-cap-creds" value="<?php echo $edit_creds; ?>" /></h2>
 				</li>
 			</ol>
@@ -541,7 +542,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 				</li>
 				<li style="width: 100%;">
 					<input type="checkbox" name="myCRED-exclude-cred-editors" id="myCRED-exclude-caps"<?php checked( $exclude_cred_editors, 1 ); ?> value="1" class="checkbox" /> 
-					<label for="myCRED-exclude-caps"><?php echo $this->core->template_tags_general( __( 'Exclude those who can "Edit Users %plural%".', 'mycred' ) ); ?></label>
+					<label for="myCRED-exclude-caps"><?php echo $mycred->template_tags_general( __( 'Exclude those who can "Edit Users %plural%".', 'mycred' ) ); ?></label>
 				</li>
 				<li>
 					<label for="myCRED-exclude-list"><?php _e( 'Exclude the following user IDs:', 'mycred' ); ?></label>

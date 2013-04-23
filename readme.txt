@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,10 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 5. **Import Add-on** - The Import Add-on allows you to import points using a CSV file or by importing existing points from your database.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed Bug #1 - Incorrect handling of $data variable causing a PHP Notice.
+* Fixed Bug #2 - Incorrect reference to myCRED_Settings object in installer.
 
 = 1.0 =
 * Official release.
