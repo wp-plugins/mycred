@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.2
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -108,9 +108,15 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 
 == Changelog ==
 
+= 1.0.4 =
+* Fixed Bug #6 - General Template Tags not being parsed in Sell Content Form
+
+= 1.0.3 =
+* Fixed Bug #5 - Missing general template tag parser in Sell Content form.
+
 = 1.0.2 =
-* Fixed Bug #3 - Field name collision in myCRED_Module() class
-* Fixed Bug #4 - Missing text domain for core hook titles
+* Fixed Bug #3 - Field name collision in myCRED_Module() class.
+* Fixed Bug #4 - Missing text domain for core hook titles.
 
 = 1.0.1 =
 * Fixed Bug #1 - Incorrect handling of $data variable causing a PHP Notice.

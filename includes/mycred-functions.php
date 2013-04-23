@@ -262,9 +262,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * Amount Template Tags
 		 * Replaces the amount template tags in a given string.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
-		public function template_tags_amount( $content, $amount ) {
+		public function template_tags_amount( $content = '', $amount = 0 ) {
+			$content = apply_filters( 'mycred_parse_tags_amount', $content, $amount );
+			$content = $this->template_tags_general( $content );
 			$content = str_replace( '%cred_f%', $this->format_creds( $amount ), $content );
 			$content = str_replace( '%cred%',   $amount, $content );
 			return $content;
@@ -279,7 +281,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function template_tags_post( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
@@ -292,6 +294,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_post', $content, $data, $post );
+			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
 			$content = str_replace( '%post_title%',      $post->post_title, $content );
@@ -317,7 +320,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function template_tags_user( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
@@ -330,6 +333,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_user', $content, $data, $user );
+			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
 			$content = str_replace( '%user_id%',          $user->ID, $content );
@@ -363,7 +367,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function template_tags_comment( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
@@ -376,6 +380,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_comment', $content, $data, $comment );
+			$content = $this->template_tags_general( $content );
 
 			$content = str_replace( '%comment_id%',      $comment->comment_ID, $content );
 

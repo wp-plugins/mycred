@@ -542,7 +542,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 *
 		 * @returns (string) content
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function the_content( $content ) {
 			global $mycred_content_purchase;
