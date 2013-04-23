@@ -10,7 +10,6 @@ Author URI: http://www.merovingi.com
 Author Email: mycred@merovingi.com
 Requires at least: WP 3.1
 Tested up to: WP 3.5.1
-Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
