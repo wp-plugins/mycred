@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.4
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,9 +107,6 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 5. **Import Add-on** - The Import Add-on allows you to import points using a CSV file or by importing existing points from your database.
 
 == Changelog ==
-
-= 1.0.4 =
-* Fixed Bug #6 - General Template Tags not being parsed in Sell Content Form
 
 = 1.0.3 =
 * Fixed Bug #5 - Missing general template tag parser in Sell Content form.
