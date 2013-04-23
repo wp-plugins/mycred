@@ -81,22 +81,22 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		public function get( $save = false ) {
 			// Defaults
 			$installed['registration'] = array(
-				'title'        => __( '%plural% for registrations' ),
+				'title'        => __( '%plural% for registrations', 'mycred' ),
 				'description'  => __( 'Award %_plural% for users joining your website.', 'mycred' ),
 				'callback'     => array( 'myCRED_Hook_Registration' )
 			);
 			$installed['logging_in'] = array(
-				'title'       => __( '%plural% for logins' ),
+				'title'       => __( '%plural% for logins', 'mycred' ),
 				'description' => __( 'Award %_plural% for logging in to your website. You can also set an optional limit.', 'mycred' ),
 				'callback'    => array( 'myCRED_Hook_Logging_In' )
 			);
 			$installed['publishing_content'] = array(
-				'title'       => __( '%plural% for publishing content' ),
+				'title'       => __( '%plural% for publishing content', 'mycred' ),
 				'description' => __( 'Award %_plural% for publishing content on your website. If your custom post type is not shown bellow, make sure it is set to "Public".', 'mycred' ),
 				'callback'    => array( 'myCRED_Hook_Publishing_Content' )
 			);
 			$installed['comments'] = array(
-				'title'       => __( '%plural% for comments' ),
+				'title'       => __( '%plural% for comments', 'mycred' ),
 				'description' => __( 'Award %_plural% for making comments.', 'mycred' ),
 				'callback'    => array( 'myCRED_Hook_Comments' )
 			);
@@ -104,7 +104,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 			// Prep for Invite Anyone Plugin
 			if ( function_exists( 'invite_anyone_init' ) ) {
 				$installed['invite_anyone'] = array(
-					'title'       => __( 'Invite Anyone Plugin' ),
+					'title'       => __( 'Invite Anyone Plugin', 'mycred' ),
 					'description' => __( 'Awards %_plural% for sending invitations and/or %_plural% if the invite is accepted.', 'mycred' ),
 					'callback'    => array( 'myCRED_Invite_Anyone' )
 				);
@@ -113,7 +113,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 			// Prep for Contact Form 7
 			if ( function_exists( 'wpcf7' ) ) {
 				$installed['contact_form7'] = array(
-					'title'       => __( 'Contact Form 7 Form Submissions' ),
+					'title'       => __( 'Contact Form 7 Form Submissions', 'mycred' ),
 					'description' => __( 'Awards %_plural% for successful form submissions (by logged in users).', 'mycred' ),
 					'callback'    => array( 'myCRED_Contact_Form7' )
 				);

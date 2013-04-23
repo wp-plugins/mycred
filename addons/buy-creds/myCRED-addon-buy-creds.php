@@ -185,36 +185,36 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 					<label class="subheader"><?php echo $this->core->template_tags_general( __( 'Minimum %plural%', 'mycred' ) ); ?></label>
 					<ol id="mycred-buy-creds-minimum-amount">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'minimum' ); ?>" id="<?php echo $this->field_id( 'minimum' ); ?>" value="<?php echo $buy_creds['minimum']; ?>" size="5" /></div>
+							<div class="h2"><input type="text" name="mycred_pref_core[buy_creds][minimum]" id="<?php echo $this->field_id( 'minimum' ); ?>" value="<?php echo $buy_creds['minimum']; ?>" size="5" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'Minimum amount of %plural% a user must purchase. Will default to 1.', 'mycred' ) ); ?></span>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( 'login' ); ?>"><?php _e( 'Login Template', 'mycred' ); ?></label>
 					<ol id="mycred-buy-creds-default-log">
 						<li>
-							<textarea rows="10" cols="50" name="<?php echo $this->field_name( 'login' ); ?>" id="<?php echo $this->field_id( 'login' ); ?>" class="large-text code"><?php echo $buy_creds['login']; ?></textarea>
+							<textarea rows="10" cols="50" name="mycred_pref_core[buy_creds][login]" id="<?php echo $this->field_id( 'login' ); ?>" class="large-text code"><?php echo $buy_creds['login']; ?></textarea>
 							<span class="description"><?php _e( 'Content to show when a user is not logged in.', 'mycred' ); ?></span>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( 'log' ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
 					<ol id="mycred-buy-creds-default-log">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $buy_creds['log']; ?>" class="long" /></div>
+							<div class="h2"><input type="text" name="mycred_pref_core[buy_creds][log]" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $buy_creds['log']; ?>" class="long" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Thank You Page', 'mycred' ); ?></label>
 					<ol id="mycred-buy-creds-thankyou-page">
 						<li class="option">
-							<input type="radio" name="<?php echo $this->field_name( array( 'thankyou' => 'use' ) ); ?>" <?php checked( $thankyou_use, 'custom' ); ?> id="<?php echo $this->field_id( array( 'thankyou' => 'use' ) ); ?>-custom" value="custom" /> <label for="<?php echo $this->field_id( array( 'thankyou' => 'custom' ) ); ?>"><?php _e( 'Custom URL', 'mycred' ); ?></label><br />
-							<div class="h2"><?php echo get_bloginfo( 'url' ) . '/'; ?>  <input type="text" name="<?php echo $this->field_name( array( 'thankyou' => 'custom' ) ); ?>" id="<?php echo $this->field_id( array( 'thankyou' => 'custom' ) ); ?>" value="<?php echo $buy_creds['thankyou']['custom']; ?>" /></div>
+							<input type="radio" name="mycred_pref_core[buy_creds][thankyou][use]" <?php checked( $thankyou_use, 'custom' ); ?> id="<?php echo $this->field_id( array( 'thankyou' => 'use' ) ); ?>-custom" value="custom" /> <label for="<?php echo $this->field_id( array( 'thankyou' => 'custom' ) ); ?>"><?php _e( 'Custom URL', 'mycred' ); ?></label><br />
+							<div class="h2"><?php echo get_bloginfo( 'url' ) . '/'; ?>  <input type="text" name="mycred_pref_core[buy_creds][thankyou][custom]" id="<?php echo $this->field_id( array( 'thankyou' => 'custom' ) ); ?>" value="<?php echo $buy_creds['thankyou']['custom']; ?>" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li class="option">
-							<input type="radio" name="<?php echo $this->field_name( array( 'thankyou' => 'use' ) ); ?>" <?php checked( $thankyou_use, 'page' ); ?> id="<?php echo $this->field_id( array( 'thankyou' => 'use' ) ); ?>-page" value="page" /> <label for="mycred-buy-creds-thankyou-use-page"><?php _e( 'Page', 'mycred' ); ?></label><br />
+							<input type="radio" name="mycred_pref_core[buy_creds][thankyou][use]" <?php checked( $thankyou_use, 'page' ); ?> id="<?php echo $this->field_id( array( 'thankyou' => 'use' ) ); ?>-page" value="page" /> <label for="mycred-buy-creds-thankyou-use-page"><?php _e( 'Page', 'mycred' ); ?></label><br />
 <?php
 			// Thank you page dropdown
 			$thankyou_args = array(
-				'name'             => $this->field_name( array( 'thankyou' => 'page' ) ),
+				'name'             => 'mycred_pref_core[buy_creds][thankyou][page]',
 				'id'               => $this->field_id( array( 'thankyou' => 'page' ) ) . '-id',
 				'selected'         => $buy_creds['thankyou']['page'],
 				'show_option_none' => __( 'Select', 'mycred' )
@@ -226,16 +226,16 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 					<label class="subheader"><?php _e( 'Cancellation Page', 'mycred' ); ?></label>
 					<ol id="mycred-buy-creds-cancel-page">
 						<li class="option">
-							<input type="radio" name="<?php echo $this->field_name( array( 'cancelled' => 'use' ) ); ?>" <?php checked( $cancelled_use, 'custom' ); ?> id="<?php echo $this->field_id( array( 'cancelled' => 'custom' ) ); ?>" value="custom" /> <label for="<?php echo $this->field_id( array( 'cancelled' => 'custom' ) ); ?>"><?php _e( 'Custom URL', 'mycred' ); ?></label><br />
+							<input type="radio" name="mycred_pref_core[buy_creds][cancelled][use]" <?php checked( $cancelled_use, 'custom' ); ?> id="<?php echo $this->field_id( array( 'cancelled' => 'custom' ) ); ?>" value="custom" /> <label for="<?php echo $this->field_id( array( 'cancelled' => 'custom' ) ); ?>"><?php _e( 'Custom URL', 'mycred' ); ?></label><br />
 							<div class="h2"><?php echo get_bloginfo( 'url' ) . '/'; ?> <input type="text" name="mycred_pref_core[buy_creds][cancelled][custom]" id="mycred-buy-creds-cancelled-custom-url" value="<?php echo $buy_creds['cancelled']['custom']; ?>" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li class="option">
-							<input type="radio" name="<?php echo $this->field_name( array( 'cancelled' => 'use' ) ); ?>" <?php checked( $cancelled_use, 'page' ); ?> id="<?php echo $this->field_id( array( 'cancelled' => 'use' ) ); ?>-page" value="page" /> <label for="<?php echo $this->field_id( array( 'cancelled' => 'use' ) ); ?>-page"><?php _e( 'Page', 'mycred' ); ?></label><br />
+							<input type="radio" name="mycred_pref_core[buy_creds][cancelled][use]" <?php checked( $cancelled_use, 'page' ); ?> id="<?php echo $this->field_id( array( 'cancelled' => 'use' ) ); ?>-page" value="page" /> <label for="<?php echo $this->field_id( array( 'cancelled' => 'use' ) ); ?>-page"><?php _e( 'Page', 'mycred' ); ?></label><br />
 <?php
 			// Cancelled page dropdown
 			$cancelled_args = array(
-				'name'             => $this->field_name( array( 'cancelled' => 'page' ) ),
+				'name'             => 'mycred_pref_core[buy_creds][cancelled][page]',
 				'id'               => $this->field_id( array( 'cancelled' => 'page' ) ) . '-id',
 				'selected'         => $buy_creds['cancelled']['page'],
 				'show_option_none' => __( 'Select', 'mycred' )
@@ -246,12 +246,12 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 					</ol>
 					<label class="subheader"><?php _e( 'Gifting', 'mycred' ); ?></label>
 					<ol id="mycred-buy-creds-gifting">
-						<li><input type="checkbox" name="<?php echo $this->field_name( array( 'gifting' => 'members' ) ); ?>" id="<?php echo $this->field_id( array( 'gifting' => 'members' ) ); ?>"<?php checked( $buy_creds['gifting']['members'], 1 ); ?> value="1" /><label for="<?php echo $this->field_id( array( 'gifting' => 'members' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Allow users to buy %_plural% for other users.', 'mycred' ) ); ?></label></li>
-						<li><input type="checkbox" name="<?php echo $this->field_name( array( 'gifting' => 'authors' ) ); ?>" id="<?php echo $this->field_id( array( 'gifting' => 'authors' ) ); ?>"<?php checked( $buy_creds['gifting']['authors'], 1 ); ?> value="1" /><label for="<?php echo $this->field_id( array( 'gifting' => 'authors' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Allow users to buy %_plural% for content authors.', 'mycred' ) ); ?></label></li>
+						<li><input type="checkbox" name="mycred_pref_core[buy_creds][gifting][members]" id="<?php echo $this->field_id( array( 'gifting' => 'members' ) ); ?>"<?php checked( $buy_creds['gifting']['members'], 1 ); ?> value="1" /><label for="<?php echo $this->field_id( array( 'gifting' => 'members' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Allow users to buy %_plural% for other users.', 'mycred' ) ); ?></label></li>
+						<li><input type="checkbox" name="mycred_pref_core[buy_creds][gifting][authors]" id="<?php echo $this->field_id( array( 'gifting' => 'authors' ) ); ?>"<?php checked( $buy_creds['gifting']['authors'], 1 ); ?> value="1" /><label for="<?php echo $this->field_id( array( 'gifting' => 'authors' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Allow users to buy %_plural% for content authors.', 'mycred' ) ); ?></label></li>
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'gifting' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'gifting' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'gifting' => 'log' ) ); ?>" value="<?php echo $buy_creds['gifting']['log']; ?>" class="long" /></div>
+							<div class="h2"><input type="text" name="mycred_pref_core[buy_creds][gifting][log]" id="<?php echo $this->field_id( array( 'gifting' => 'log' ) ); ?>" value="<?php echo $buy_creds['gifting']['log']; ?>" class="long" /></div>
 							<div class="description"><?php _e( 'Available template tags: %singular%, %plural% and %display_name%' ); ?></div>
 						</li>
 					</ol>
