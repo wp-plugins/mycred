@@ -279,9 +279,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
-		public function template_tags_post( $content, $ref_id = NULL, $data ) {
+		public function template_tags_post( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get Post Object
@@ -317,9 +317,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
-		public function template_tags_user( $content, $ref_id = NULL, $data ) {
+		public function template_tags_user( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get User Object
@@ -363,9 +363,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
-		public function template_tags_comment( $content, $ref_id = NULL, $data ) {
+		public function template_tags_comment( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get Comment Object
