@@ -99,7 +99,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				// Charge
 				$log = $sell_content['logs']['buy'];
 				$data = array(
-					'post_type'   => 'post',
+					'ref_type'    => 'post',
 					'purchase_id' => 'TXID' . date_i18n( 'U' ),
 					'seller'      => $author
 				);
@@ -118,7 +118,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 					}
 					$log = $sell_content['logs']['sell'];
 					$data = array(
-						'post_type'   => 'post',
+						'ref_type'    => 'post',
 						'purchase_id' => 'TXID' . date_i18n( 'U' ),
 						'buyer'       => $user_id
 					);

@@ -214,8 +214,12 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = apply_filters( "mycred_parse_log_entry_{$reference}", $content, $log_entry );
 
 			// Get the reference type
-			if ( isset( $data['ref_type'] ) ) {
-				$type = $data['ref_type'];
+			if ( isset( $data['ref_type'] ) || isset( $data['post_type'] ) ) {
+				if ( isset( $data['ref_type'] ) )
+					$type = $data['ref_type'];
+				elseif ( isset( $data['post_type'] ) )
+					$type = $data['post_type'];
+
 				if ( $type == 'post' )
 					$content = $this->template_tags_post( $content, $ref_id, $data );
 				elseif ( $type == 'user' )
