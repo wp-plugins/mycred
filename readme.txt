@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,12 +34,12 @@ myCRED is an adaptive points management system for WordPress powered websites, g
 
 Add-ons are custom features that can be enabled individually.
 
-* Transfer - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
-* Import - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
-* Sell Content - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
-* Buy Creds - Let your users buy points via PayPal, Skrill or NETbilling.
-* Gateway - Allow your users to pay for items in their WooCommerce shopping cart using their point balance.
-* BuddyPress - Extend myCRED to support BuddyPress, bbPress, BuddyPress Gifts, BuddyPress Links, BP Album+ and BP Gallery.
+* *Transfer* - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
+* *Import* - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
+* *Sell Content* - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
+* *Buy Creds* - Let your users buy points via PayPal, Skrill or NETbilling.
+* *Gateway* - Allow your users to pay for items in their WooCommerce shopping cart using their point balance.
+* *BuddyPress* - Extend myCRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [bbPress](http://wordpress.org/extend/plugins/bbpress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 
 **Multisites**
 
@@ -107,6 +107,11 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 5. **Import Add-on** - The Import Add-on allows you to import points using a CSV file or by importing existing points from your database.
 
 == Changelog ==
+
+= 1.0.4 =
+* Fixed Bug #6 - Transfer add-on returns "low balance" for everyone.
+* Fixed Bug #7 - Removed stray function in Sell Content Add-on causing error notices.
+* Fixed Bug #8 - Sell Content add-on not parsing post template tags.
 
 = 1.0.3 =
 * Fixed Bug #5 - Missing general template tag parser in Sell Content form.

@@ -642,7 +642,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		$my_balance = $mycred->get_users_cred( $charge_from );
 
 		// Error. Not enough creds
-		if ( $status == 'low' ) {
+		if ( $status === 'low' ) {
 			if ( isset( $pref['errors']['low'] )  && !empty( $pref['errors']['low'] ) ) {
 				$no_cred = str_replace( '%limit%', $pref['limit']['limit'], $pref['errors']['low'] );
 				$no_cred = str_replace( '%Limit%', ucwords( $pref['limit']['limit'] ), $no_cred );
@@ -653,7 +653,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		}
 
 		// Error. Over limit
-		if ( $status == 'limit' ) {
+		if ( $status === 'limit' ) {
 			if ( isset( $pref['errors']['over'] ) && !empty( $pref['errors']['over'] ) ) {
 				$no_cred = str_replace( '%limit%', $pref['limit']['limit'], $pref['errors']['over'] );
 				$no_cred = str_replace( '%Limit%', ucwords( $pref['limit']['limit'] ), $no_cred );

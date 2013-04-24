@@ -538,16 +538,6 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 				$buy_self = true;
 			}
 
-			$user = get_userdata( (int) $user_id );
-			$username = $user->user_login;
-			$title = $this->core->template_tags_user( $title, $user );
-			unset( $user );
-
-			// Adjust title
-			if ( $buy_self === true ) {
-				$title = str_replace( '%display_name%', __( 'Yourself', 'mycred' ), $title );
-			}
-
 			// Button
 			if ( !empty( $gateway ) ) {
 				$gateway_title = $installed[$gateway]['title'];
