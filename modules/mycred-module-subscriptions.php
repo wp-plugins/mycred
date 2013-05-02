@@ -65,9 +65,6 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 		 * @version 1.0
 		 */
 		public function admin_init() {
-			// Administrator is needed
-			if ( !mycred_is_admin() ) return;
-			
 			$types = array();
 
 			if ( $this->prefs['subscribe_site']['creds'] != 0 )
