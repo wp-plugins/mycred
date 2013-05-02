@@ -1,5 +1,6 @@
 <?php
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+include_once( myCRED_MODULES_DIR . 'mycred-module-subscriptions.php' );
 /**
  * myCRED_Hooks class
  * @since 0.1
@@ -36,7 +37,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function module_init() {
+		public function module_pre_init() {
 			if ( !empty( $this->installed ) ) {
 				foreach ( $this->installed as $key => $gdata ) {
 					if ( $this->is_active( $key ) && isset( $gdata['callback'] ) ) {
@@ -76,7 +77,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Get Hooks
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.5
 		 */
 		public function get( $save = false ) {
 			// Defaults
@@ -116,6 +117,15 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 					'title'       => __( 'Contact Form 7 Form Submissions', 'mycred' ),
 					'description' => __( 'Awards %_plural% for successful form submissions (by logged in users).', 'mycred' ),
 					'callback'    => array( 'myCRED_Contact_Form7' )
+				);
+			}
+
+			// Prep for Jetpack
+			if ( class_exists( 'Jetpack' ) ) {
+				$installed['jetpack'] = array(
+					'title'       => __( 'Jetpack Subscriptions', 'mycred' ),
+					'description' => __( 'Awards %_plural% for users signing up for site or comment updates using Jetpack.', 'mycred' ),
+					'callback'    => array( 'myCRED_Hook_Jetpack' )
 				);
 			}
 

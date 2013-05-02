@@ -41,8 +41,8 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// SQL check
 			$sql_version = $wpdb->db_version();
-			if ( version_compare( $sql_version, '5.1', '<' ) )
-				$message[] = 'myCRED requires SQL 5.1 or higher. Version detected: ' . $sql_version;
+			if ( version_compare( $sql_version, '5.0', '<' ) )
+				$message[] = 'myCRED requires SQL 5.0 or higher. Version detected: ' . $sql_version;
 
 			// Not empty $message means there are issues
 			if ( !empty( $message ) ) {
