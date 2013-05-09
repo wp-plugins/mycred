@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,7 @@ The following third party plugins are supported by default:
 
 == Frequently Asked Questions ==
 
-= Does **my**CRED support Multisite Installations? =
+= Does myCRED support Multisite Installations? =
 
 Yes, **my**CRED supports Multisite installations.
 
@@ -115,6 +115,12 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 
 
 == Changelog ==
+
+= 1.0.6 =
+* Fixed Bug #10 - Incorrect call of Ranking class.
+* Added Social Media Links to Settings Page.
+* Fixed Bug #11 - Skrill Payment Gateway is missing supported currencies.
+* Request #3 - Move the points for login hook from authenticate to wp_login.
 
 = 1.0.5 =
 * Fixed Bug #9 - Hooks are "run" too late causing some filters/actions to never fire.

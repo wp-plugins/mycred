@@ -30,6 +30,42 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 				),
 				'allowed'  => array( 'pay_to_email', 'pay_from_email', 'merchant_id', 'customer_id', 'transaction_id', 'mb_transaction_id', 'mb_amount', 'mb_currency', 'status', 'failed_reason_code', 'md5sig', 'sha2sig', 'amount', 'currency', 'payment_type', 'merchant_fields', 'sales_data' )
 			), $gateway_prefs );
+			
+		}
+
+		/**
+		 * Adjust Currencies
+		 * @since 1.0.6
+		 * @version 1.0
+		 */
+		public function skrill_currencies( $currencies ) {
+			$currencies['RON'] = 'Romanian Leu';
+			$currencies['TRY'] = 'New Turkish Lira';
+			$currencies['RON'] = 'Romanian Leu';
+			$currencies['AED'] = 'Utd. Arab Emir. Dirham';
+			$currencies['MAD'] = 'Moroccan Dirham';
+			$currencies['QAR'] = 'Qatari Rial';
+			$currencies['SAR'] = 'Saudi Riyal';
+			$currencies['SKK'] = 'Slovakian Koruna';
+			$currencies['EEK'] = 'Estonian Kroon';
+			$currencies['BGN'] = 'Bulgarian Leva';
+			$currencies['ISK'] = 'Iceland Krona';
+			$currencies['INR'] = 'Indian Rupee';
+			$currencies['LVL'] = 'Latvian Lat';
+			$currencies['KRW'] = 'South-Korean Won';
+			$currencies['ZAR'] = 'South-African Rand';
+			$currencies['HRK'] = 'Croatian Kuna';
+			$currencies['LTL'] = 'Lithuanian Litas';
+			$currencies['JOD'] = 'Jordanian Dinar';
+			$currencies['OMR'] = 'Omani Rial';
+			$currencies['RSD'] = 'Serbian Dinar';
+			$currencies['TND'] = 'Tunisian Dinar';
+			
+			unset( $currencies['MXN'] );
+			unset( $currencies['BRL'] );
+			unset( $currencies['PHP'] );
+			
+			return $currencies;
 		}
 
 		/**
@@ -290,6 +326,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 * @version 1.0
 		 */
 		public function preferences( $buy_creds ) {
+			add_filter( 'mycred_dropdown_currencies', array( $this, 'skrill_currencies' ) );
 			$prefs = $this->prefs; ?>
 
 					<label class="subheader" for="<?php echo $this->field_id( 'sandbox' ); ?>"><?php _e( 'Sandbox Mode', 'mycred' ); ?></label>

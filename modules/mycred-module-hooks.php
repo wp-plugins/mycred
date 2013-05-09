@@ -324,7 +324,7 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 		/**
 		 * Run
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function run() {
 			if ( $this->prefs['creds'] != 0 )
@@ -334,15 +334,35 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 		/**
 		 * Login Hook
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function logging_in( $user_login, $user ) {
 			if ( $this->core->exclude_user( $user->ID ) === true ) return;
 
-			$user_id = $user->ID;
-			$limit = $this->prefs['limit'];
+			if ( !$this->reward_login( $user->ID ) ) return;
+
+			// Execute
+			$this->core->add_creds(
+				'logging_in',
+				$user->ID,
+				$this->prefs['creds'],
+				$this->prefs['log']
+			);
+
+			// Clean up
+			unset( $this );
+		}
+
+		/**
+		 * Reward Login Check
+		 * Checks to see if the given user id should be rewarded for logging in.
+		 * @returns true or false
+		 * @since 1.0.6
+		 * @version 1.0
+		 */
+		protected function reward_login( $user_id ) {
 			// If limit is set
-			if ( !empty( $limit ) ) {
+			if ( !empty( $this->prefs['limit'] ) ) {
 				$now = date_i18n( 'U' );
 				$today = date_i18n( 'Y-m-d' );
 
@@ -350,26 +370,26 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 				$past = get_user_meta( $user_id, 'mycred_last_login', true );
 				// If logged in before
 				if ( !empty( $past ) ) {
-					if ( $limit == 'twentyfour' ) {
+					if ( $this->prefs['limit'] == 'twentyfour' ) {
 						$mark = 86400;
 						$next = $past+$mark;
 						// Check if next time we can get points is in future; if thats the case, bail
-						if ( $next > $now ) return;
+						if ( $next > $now ) return false;
 					}
-					elseif ( $limit == 'twelve' ) {
+					elseif ( $this->prefs['limit'] == 'twelve' ) {
 						$mark = 43200;
 						$next = $past+$mark;
 						// Check if next time we can get points is in future; if thats the case, bail
-						if ( $next > $now ) return;
+						if ( $next > $now ) return false;
 					}
-					elseif ( $limit == 'sevendays' ) {
+					elseif ( $this->prefs['limit'] == 'sevendays' ) {
 						$mark = 604800;
 						$next = $past+$mark;
 						// Check if next time we can get points is in future; if thats the case, bail
-						if ( $next > $now ) return;
+						if ( $next > $now ) return false;
 					}
-					elseif ( $limit == 'daily' ) {
-						if ( $today == $past ) return;
+					elseif ( $this->prefs['limit'] == 'daily' ) {
+						if ( $today == $past ) return false;
 					}
 				}
 
@@ -379,17 +399,8 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 				else
 					update_user_meta( $user_id, 'mycred_last_login', $now );
 			}
-
-			// Execute
-			$this->core->add_creds(
-				'logging_in',
-				$user_id,
-				$this->prefs['creds'],
-				$this->prefs['log']
-			);
-
-			// Clean up
-			unset( $this );
+			
+			return true;
 		}
 
 		/**

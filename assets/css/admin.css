@@ -3,6 +3,8 @@
  * @since 0.1
  * @version 1.0
 */
+@import url("zocial/zocial.css");
+
 #myCRED-wrap table .column-username { width: 190px; }
 #myCRED-wrap table .column-creds { width: 80px; }
 #myCRED-wrap table .column-time { width: 160px; }
