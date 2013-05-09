@@ -20,6 +20,7 @@
 /* Specifics */
 #icon-myCRED { background-image: url(../images/cred-icon32.png); background-repeat: no-repeat; background-position: 0 0; }
 #myCRED-wrap p.submit { margin-top: 0; padding-top: 0; }
+#mycred-social { text-align: right; }
 
 /* General */
 #myCRED-wrap .h2 { font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif; font-size: 22px; line-height: 29px; font-weight: normal; text-shadow: #fff 0 1px 0; }

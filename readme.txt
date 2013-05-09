@@ -4,7 +4,7 @@ Donate Link: http://mycred.merovingi.com/donate/
 Tags:points, tokens, credit, management, reward, charge, community
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,10 @@ Yes. You can set a negative value for either "Creating Group" or "Joining Group"
 
 You can always disable parts of a hook by awarding zero points. Hooks that have zero points are ignored.
 
+= Can I use the mycred_sell_this shortcode multiple times in a post?
+
+Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode was created so you can show "teaser" content before someone purchases the post / page / custom post type. It was not built to sell multiple items on a single page.
+
 
 == Screenshots ==
 
@@ -116,6 +120,11 @@ You can always disable parts of a hook by awarding zero points. Hooks that have 
 
 
 == Changelog ==
+
+= 1.0.7 =
+* Adjusted Social Media CSS Styling.
+* Fixed Bug #12 - Leaderboard Widget Title is not shown.
+* Fixed Bug #13 - PayPal Payment Standard uses a reference that does not exist causing verified IPN calls to fail.
 
 = 1.0.6 =
 * Fixed Bug #10 - Incorrect call of Ranking class.

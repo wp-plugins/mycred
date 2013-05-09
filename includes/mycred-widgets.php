@@ -303,7 +303,7 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 				echo $before_widget;
 
 				// Title
-				if ( !empty( $title ) ) {
+				if ( !empty( $instance['title'] ) ) {
 					echo $before_title;
 					echo $mycred->template_tags_general( $instance['title'] );
 					echo $after_title;

@@ -157,7 +157,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 				// Handle Payment Status
 				if ( $error === false ) {
 					// Completed transaction
-					if ( $payment_status == 'Completed' ) {
+					if ( $data['payment_status'] == 'Completed' ) {
 						$entry = $this->get_entry( $_to, $_from );
 						if ( $this->prefs['sandbox'] ) $entry = 'TEST ' . $entry;
 
@@ -184,14 +184,14 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 					}
 
 					// Pending transaction
-					elseif ( $payment_status == 'Pending' ) {
+					elseif ( $data['payment_status'] == 'Pending' ) {
 						$log_entry[] = 'Transaction Pending';
 						do_action( "mycred_buy_cred_{$id}_pending", $data );
 					}
 
 					// Failed transaction
 					else {
-						$log_entry[] = 'Transaction Failed';
+						$log_entry[] = 'Transaction Failed. PayPal replied: ' . $data['payment_status'];
 						do_action( "mycred_buy_cred_{$id}_failed", $data );
 					}
 				}
