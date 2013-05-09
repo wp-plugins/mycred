@@ -8,11 +8,11 @@ Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-myCRED is an adaptive points management system for WordPress powered websites.
+myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
 
-We feel that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or to restrictive in their function.
+We feel that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
 So we built an adaptive plugin which gives it’s users full control on how points are awarded, used, traded, managed, logged and presented.
 
@@ -67,6 +67,7 @@ The following third party plugins are supported by default:
 * [myCRED F.A.Q.](http://mycred.merovingi.com/about/faq/)
 * [myCRED Add-ons](http://mycred.merovingi.com/add-ons/)
 * [myCRED Tutorials](http://mycred.merovingi.com/support/tutorials/)
+* [myCRED Known Issues](http://mycred.merovingi.com/download/known-issues/)
 * [myCRED Codex](http://mycred.merovingi.com/support/codex/)
 
 **Contact**
