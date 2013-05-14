@@ -319,8 +319,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			if ( $amount == $this->core->number( 0 ) ) die( json_encode( 'error_5' ) );
 
 			// Check funds
-			$senders_balance = $this->core->get_users_cred( $from );
-			if ( $amount > $senders_balance ) die( json_encode( 'error_7' ) );
+			if ( mycred_user_can_transfer( $from, $amount ) == 'low' ) die( json_encode( 'error_7' ) );
 
 			$today = date_i18n( 'd' );
 			$this_week = date_i18n( 'W' );
