@@ -2,7 +2,7 @@
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Module class
- * @see http://mycred.merovingi.com/classes/mycred_module/
+ * @see http://mycred.me/classes/mycred_module/
  * @since 0.1
  * @version 1.0
  */

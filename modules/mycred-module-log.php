@@ -493,7 +493,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 }
 /**
  * Query Log
- * @see http://mycred.merovingi.com/classes/mycred_query_log/ 
+ * @see http://mycred.me/classes/mycred_query_log/ 
  * @since 0.1
  * @version 1.0
  */

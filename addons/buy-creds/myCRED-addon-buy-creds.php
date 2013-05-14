@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: buyCRED
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/buycred/
  * Version: 1.0
  * Description: The <strong>buy</strong>CRED Add-on allows your users to buy points using PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can also let your users buy points for other members.
  * Author: Gabriel S Merovingi
@@ -154,7 +154,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 				$buy_creds = array(
 					'minimum'   => 1,
 					'exchange'  => 1,
-					'log'       => '%Plural% purchase',
+					'log'       => '%plural% purchase',
 					'login'     => __( 'Please login to purchase %_plural%', 'mycred' ),
 					'thankyou'  => array(
 						'use'      => 'page',
@@ -200,6 +200,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 					<ol id="mycred-buy-creds-default-log">
 						<li>
 							<div class="h2"><input type="text" name="mycred_pref_core[buy_creds][log]" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $buy_creds['log']; ?>" class="long" /></div>
+							<span class="description"><?php _e( 'Available template tags: General and %gateway% for the payment gateway used.', 'mycred' ); ?></span>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Thank You Page', 'mycred' ); ?></label>
@@ -384,9 +385,17 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		 * Render Shortcode Basic
 		 * This shortcode returns a link element to a specified payment gateway.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function render_shortcode_basic( $atts, $title = '' ) {
+			// Make sure the add-on has been setup
+			if ( !isset( $this->core->buy_creds ) ) {
+				if ( mycred_is_admin() )
+					return '<p style="color:red;"><a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'This Add-on needs to setup before you can use this shortcode.', 'mycred' ) . '</a></p>';
+				else
+					return '';
+			}
+
 			extract( shortcode_atts( array(
 				'gateway' => '',
 				'amount'  => '',
@@ -486,9 +495,17 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		 * Render Shortcode Form
 		 * Returns an advanced version allowing for further customizations.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function render_shortcode_form( $atts, $content = '' ) {
+			// Make sure the add-on has been setup
+			if ( !isset( $this->core->buy_creds ) ) {
+				if ( mycred_is_admin() )
+					return '<p style="color:red;"><a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'This Add-on needs to setup before you can use this shortcode.', 'mycred' ) . '</a></p>';
+				else
+					return '';
+			}
+
 			extract( shortcode_atts( array(
 				'gateway' => '',
 				'amount'  => '',

@@ -30,7 +30,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		/**
 		 * Process Handler
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		public function process() {
 			// Prep
@@ -65,6 +65,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			// Call PayPal
 			$curl_attempts = apply_filters( 'mycred_paypal_standard_max_attempts', 3 );
 			$attempt = 1;
+			$result = '';
 			// We will make a x number of curl attempts before finishing with a fsock.
 			// Success ends loop.
 			do {
@@ -147,8 +148,8 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 
 				// Verify Cost
 				$amount = $this->core->number( $amount );
-				$amount = abs( $amount );
 				$_cost = $amount*$this->prefs['exchange'];
+				$_cost = number_format( $cost, 2, '.', '' );
 				if ( $cost != $_cost ) {
 					$log_entry[] = 'Amount mismatch: [' . $cost . '] [' . $_cost . ']';
 					$error = true;
@@ -159,6 +160,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 					// Completed transaction
 					if ( $data['payment_status'] == 'Completed' ) {
 						$entry = $this->get_entry( $_to, $_from );
+						$entry = str_replace( '%gateway%', 'PayPal', $entry );
 						if ( $this->prefs['sandbox'] ) $entry = 'TEST ' . $entry;
 
 						$data = array(
@@ -203,13 +205,12 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 
 			}
 			else {
-				$log_entry[] = 'Transaction could not be verified by PayPal';
+				$log_entry[] = 'Transaction could not be verified by PayPal. Reply received: ' . $result;
 			}
 
 			do_action( "mycred_buy_cred_{$id}_end", $log_entry, $data );
 			unset( $data );
 
-			// Request is invalid
 			die();
 		}
 
@@ -233,13 +234,12 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchaase!', 'mycred' ) );
 
-			$amount = $_REQUEST['amount'];
 			$home = get_bloginfo( 'url' );
 			$token = $this->create_token();
 			$logo_url = 'https://www.paypalobjects.com/webstatic/mktg/logo/bdg_payments_by_pp_2line.png';
@@ -251,14 +251,16 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 				$location = 'https://www.paypal.com/cgi-bin/webscr';
 
 			// Finance
-			$currency = $this->prefs['currency'];
-			$exchange = $this->prefs['exchange'];
-
-			$amount =  $this->core->number( $amount );
+			$amount = $this->core->number( $_REQUEST['amount'] );
+			// Enforce minimum
+			if ( $amount < $this->core->buy_creds['minimum'] )
+				$amount = $this->core->buy_creds['minimum'];
+			// No negative amounts please
 			$amount = abs( $amount );
-
-			$cost = $amount*$exchange;
-			$cost = $this->core->number( $cost );
+			// Calculate cost here so we can use any exchange rate
+			$cost = $amount*$this->prefs['exchange'];
+			// Return a properly formated cost so PayPal is happy
+			$cost = number_format( $cost, 2, '.', '' );
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();
@@ -276,20 +278,20 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			$from = $this->current_user_id;
 
 			// Let others play
-			$extra = apply_filters( 'mycred_paypal_standard_extra', '', $amount, $from, $to, $this->prefs, $this->core );
+			$extra = apply_filters( 'mycred_paypal_standard_extra', '', $cost, $from, $to, $this->prefs, $this->core );
 			unset( $_REQUEST );
 
 			// Hidden form fields
 			// to|from|amount|cost|currency|token|extra
-			$sales_data = $to . '|' . $from . '|' . $amount . '|' . $cost . '|' . $currency . '|' . $token . '|' . $extra;
+			$sales_data = $to . '|' . $from . '|' . $amount . '|' . $cost . '|' . $this->prefs['currency'] . '|' . $token . '|' . $extra;
 			$item_name = str_replace( '%number%', $amount, $this->prefs['item_name'] );
 			$hidden_fields = array(
 				'cmd'           => '_xclick',
 				'business'      => $this->prefs['account'],
 				'item_name'     => $this->core->template_tags_general( $item_name ),
-				'quantity'      => $amount,
-				'amount'        => $this->core->number( $exchange ),
-				'currency_code' => $currency,
+				'quantity'      => 1,
+				'amount'        => $cost,
+				'currency_code' => $this->prefs['currency'],
 				'no_shipping'   => 1,
 				'no_note'       => 1,
 				'custom'        => $this->encode_sales_data( $sales_data ),
@@ -364,11 +366,22 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		/**
 		 * Sanatize Prefs
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitise_preferences( $data ) {
 			$data['sandbox'] = ( !isset( $data['sandbox'] ) ) ? 0 : 1;
-			$data['exchange'] = ( empty( $data['exchange'] ) ) ? 1 : $data['exchange'];
+
+			// Exchange can not be empty
+			if ( empty( $data['exchange'] ) ) {
+				$data['exchange'] = 1;
+			}
+			// If exchange is less then 1 we must start with a zero
+			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
+				$data['exchange'] = (float) '0' . $data['exchange'];
+			}
+			// Make sure decimals are marked by a dot and not a comma
+			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
+
 			return $data;
 		}
 	}

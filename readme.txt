@@ -1,10 +1,10 @@
 === myCRED ===
 Contributors: designbymerovingi
-Donate Link: http://mycred.merovingi.com/donate/
-Tags:points, tokens, credit, management, reward, charge, community
+Donate Link: http://mycred.me/donate/
+Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,24 +57,24 @@ The following third party plugins are supported by default:
 
 * [Contact Form 7](http://wordpress.org/extend/plugins/contact-form-7/) - Award users points for submitting forms.
 * [Invite Anyone Plugin](http://wordpress.org/extend/plugins/invite-anyone/) - Award users for sending invitations and for each time an invited user accepts and signs up.
-* [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribing using the email saved in their profile.
+* [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribe using the email saved in their profile.
 
 
 **Further Details**
 
-* [myCRED Features](http://mycred.merovingi.com/about/features/)
-* [myCRED Hooks](http://mycred.merovingi.com/about/hooks/)
-* [myCRED F.A.Q.](http://mycred.merovingi.com/about/faq/)
-* [myCRED Add-ons](http://mycred.merovingi.com/add-ons/)
-* [myCRED Tutorials](http://mycred.merovingi.com/support/tutorials/)
-* [myCRED Known Issues](http://mycred.merovingi.com/download/known-issues/)
-* [myCRED Codex](http://mycred.merovingi.com/support/codex/)
+* [Features](http://mycred.me/about/features/)
+* [Hooks](http://mycred.me/about/hooks/)
+* [F.A.Q.](http://mycred.me/about/faq/)
+* [Add-ons](http://mycred.me/add-ons/)
+* [Tutorials](http://mycred.me/support/tutorials/)
+* [Known Issues](http://mycred.me/download/known-issues/)
+* [Codex](http://mycred.me/support/codex/)
 
 **Contact**
 
-* [General Inquiries](http://mycred.merovingi.com/contact/)
-* [Bug Report](http://mycred.merovingi.com/contact/report-bug/)
-* [Request Feature](http://mycred.merovingi.com/contact/request-feature/)
+* [General Inquiries](http://mycred.me/contact/)
+* [Bug Report](http://mycred.me/contact/report-bug/)
+* [Request Feature](http://mycred.me/contact/request-feature/)
 
 
 == Installation ==
@@ -121,6 +121,19 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Changelog ==
 
+= 1.0.8 =
+* Added BuddyPress tag to description
+* Adjusted plugin for new website mycred.me
+
+* Fixed Bug #14 - BuddyPress Add-on causes crash if activated before BuddyPress or BuddyPress gets de-activated.
+* Fixed Bug #15 - PayPal does not work with exchange rates lower then 0.01.
+
+* Request #4 - Allow users to go minus when transferring points.
+* Request #5 - For the Login Hook, impose a default 1 min limit to prevent users from logging in and out for points.
+* Request #6 - Added DIV wrapper around content that is set for sale using the mycred_sell_this shortcode. Only visible to administrators.
+* Request #7 - Added %gateway% template tag for buyCRED add-on showing which payment gateway was used for purchase.
+* Request #8 - Added support for BadgeOS allowing users to award myCRED points for achievements.
+
 = 1.0.7 =
 * Adjusted Social Media CSS Styling.
 * Fixed Bug #12 - Leaderboard Widget Title is not shown.
@@ -155,9 +168,3 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 = 1.0 =
 * Official release.
-
-
-== Upgrade Notice ==
-
-= 1.0.5 =
-Upgrade to add support for Jetpack Site & Comment Subscriptions and to lower MySQL requirement from 5.1 to 5.0. Requires Jetpack 2.2 or higher.

@@ -2,7 +2,7 @@
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Payment_Gateway class
- * @see http://mycred.merovingi.com/add-ons/mycred_payment_gateway/
+ * @see http://mycred.me/add-ons/mycred_payment_gateway/
  * @since 0.1
  * @version 1.0
  */
@@ -343,13 +343,13 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		/**
 		 * Get Cancelled Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get_cancelled() {
 			if ( $this->core->buy_creds['cancelled']['use'] == 'page' )
 				return get_permalink( $this->core->buy_creds['cancelled']['page'] );
 			else
-				return $this->core->buy_creds['cancelled']['custom'];
+				return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['cancelled']['custom'];
 		}
 
 		/**
@@ -371,7 +371,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		/**
 		 * POST to data
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function POST_to_data() {
 			$data = array();
@@ -381,7 +381,6 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 				if ( !in_array( trim( $key ), $allowed_keys ) ) continue;
 				$data[$key] = stripslashes( $value );
 			}
-			unset( $_POST );
 			return $data;
 		}
 

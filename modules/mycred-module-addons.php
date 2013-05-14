@@ -131,7 +131,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Get Addons
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get( $save = false ) {
 			$prefix = 'myCRED-addon-';
@@ -146,9 +146,16 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 					// Get File Name
 					preg_match( '/(.{1,})\/(.{1,})/', $sub_file, $matches );
 					$sub_file_name = $matches[2];
+					// Get Addon Information
+					$addon_info = $this->get_addon_info( $filename, $matches[1], $sub_file_name );
+					// Check if addon has a requirement to prevent errors due to calls to non existing functions
+					if ( isset( $addon_info['requires'] ) && !empty( $addon_info['requires'] ) && !function_exists( $addon_info['requires'] ) ) {
+						continue;
+					}
 					// Prevent Duplicates
-					if ( !array_key_exists( $sub_file_name, $installed ) )
-						$installed[$this->make_id($sub_file_name)] = $this->get_addon_info( $filename, $matches[1], $sub_file_name );
+					if ( !array_key_exists( $sub_file_name, $installed ) ) {
+						$installed[$this->make_id($sub_file_name)] = $addon_info;
+					}
 				}
 			}
 			unset( $addon_search );
@@ -180,6 +187,8 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 
 		/**
 		 * Get Addon Info
+		 * @since 0.1
+		 * @version 1.1
 		 */
 		public function get_addon_info( $file = false, $folder = false, $sub = '' ) {
 			if ( !$file ) return;
@@ -190,7 +199,8 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 				'version'     => 'Version',
 				'description' => 'Description',
 				'author'      => 'Author',
-				'author_uri'  => 'Author URI'
+				'author_uri'  => 'Author URI',
+				'requires'    => 'Requires'
 			);
 			$addon_data = get_file_data( $file, $addon_details );
 

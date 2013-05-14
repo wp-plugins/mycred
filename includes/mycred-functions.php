@@ -2,7 +2,7 @@
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Settings class
- * @see http://mycred.merovingi.com/classes/mycred_settings/
+ * @see http://mycred.me/classes/mycred_settings/
  * @since 0.1
  * @version 1.0
  */
@@ -237,17 +237,19 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * General Template Tags
 		 * Replaces the general template tags in a given string.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function template_tags_general( $content ) {
 			$content = apply_filters( 'mycred_parse_tags_general', $content );
 
 			// Singular
 			$content = str_replace( '%singular%',        $this->singular(), $content );
+			$content = str_replace( '%Singular%',        $this->singular(), $content );
 			$content = str_replace( '%_singular%',       strtolower( $this->singular() ), $content );
 
 			// Plural
 			$content = str_replace( '%plural%',          $this->plural(), $content );
+			$content = str_replace( '%Plural%',          $this->plural(), $content );
 			$content = str_replace( '%_plural%',         strtolower( $this->plural() ), $content );
 
 			// Login URL

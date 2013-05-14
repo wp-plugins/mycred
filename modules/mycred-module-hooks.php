@@ -128,6 +128,15 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 					'callback'    => array( 'myCRED_Hook_Jetpack' )
 				);
 			}
+			
+			// Prep for BadgeOS
+			if ( class_exists( 'BadgeOS' ) ) {
+				$installed['badgeos'] = array(
+					'title'       => __( 'BadgeOS', 'mycred' ),
+					'description' => __( 'Default settings for each BadgeOS Achievement type. These settings may be overridden for individual achievement type.', 'mycred' ),
+					'callback'    => array( 'myCRED_Hook_BadgeOS' )
+				);
+			}
 
 			$installed = apply_filters( 'mycred_setup_hooks', $installed );
 
@@ -358,16 +367,19 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 		 * Checks to see if the given user id should be rewarded for logging in.
 		 * @returns true or false
 		 * @since 1.0.6
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		protected function reward_login( $user_id ) {
+			$now = date_i18n( 'U' );
+			$today = date_i18n( 'Y-m-d' );
+			$past = get_user_meta( $user_id, 'mycred_last_login', true );
+
+			// Even if there is no limit set we will always impose a 1 min limit
+			// to prevent users from just logging in and out for points.
+			if ( $past >= $now-apply_filters( 'mycred_hook_login_min_limit', 60 ) ) return false;
+
 			// If limit is set
 			if ( !empty( $this->prefs['limit'] ) ) {
-				$now = date_i18n( 'U' );
-				$today = date_i18n( 'Y-m-d' );
-
-				// Get last login
-				$past = get_user_meta( $user_id, 'mycred_last_login', true );
 				// If logged in before
 				if ( !empty( $past ) ) {
 					if ( $this->prefs['limit'] == 'twentyfour' ) {
@@ -392,14 +404,14 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 						if ( $today == $past ) return false;
 					}
 				}
-
-				// Update new login time
-				if ( $limit == 'daily' )
-					update_user_meta( $user_id, 'mycred_last_login', $today );
-				else
-					update_user_meta( $user_id, 'mycred_last_login', $now );
 			}
 			
+			// Update new login time
+			if ( $this->prefs['limit'] == 'daily' )
+				update_user_meta( $user_id, 'mycred_last_login', $today );
+			else
+				update_user_meta( $user_id, 'mycred_last_login', $now );
+
 			return true;
 		}
 
@@ -1118,6 +1130,276 @@ if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
 					</ol>
 <?php		}
 			unset( $this );
+		}
+	}
+}
+/**
+ * Hook for BadgeOS Plugin
+ * @since 1.0.8
+ * @version 1.0
+ */
+if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
+	class myCRED_Hook_BadgeOS extends myCRED_Hook {
+
+		/**
+		 * Construct
+		 */
+		function __construct( $hook_prefs ) {
+			parent::__construct( array(
+				'id'       => 'badgeos',
+				'defaults' => ''
+			), $hook_prefs );
+		}
+		
+		/**
+		 * Run
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function run() {
+			add_action( 'add_meta_boxes',             array( $this, 'add_metaboxes' )             );
+			add_action( 'save_post',                  array( $this, 'save_achivement_data' )      );
+			
+			add_action( 'badgeos_award_achievement',  array( $this, 'award_achievent' ), 10, 2    );
+			add_action( 'badgeos_revoke_achievement', array( $this, 'revoke_achievement' ), 10, 2 );
+		}
+		
+		/**
+		 * Add Metaboxes
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function add_metaboxes() {
+			// Get all Achievement Types
+			$badge_post_types = badgeos_get_achievement_types_slugs();
+			foreach ( $badge_post_types as $post_type ) {
+				// Add Meta Box
+				add_meta_box(
+					'mycred_badgeos_' . $post_type,
+					__( 'myCRED', 'mycred' ),
+					array( $this, 'render_meta_box' ),
+					$post_type,
+					'side',
+					'core'
+				);
+			}
+		}
+		
+		/**
+		 * Render Meta Box
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function render_meta_box( $post ) {
+			// Setup is needed
+			if ( !isset( $this->prefs[$post->post_type] ) ) {
+				$message = sprintf( __( 'Please setup your <a href="%s">default settings</a> before using this feature.', 'mycred' ), admin_url( 'admin.php?page=myCRED_page_hooks' ) );
+				echo '<p>' . $message . '</p>';
+			}
+			
+			// Prep Achievement Data
+			$prefs = $this->prefs;
+			$achievement_data = get_post_meta( $post->ID, '_mycred_values', true );
+			if ( empty( $achievement_data ) )
+				$achievement_data = $prefs[$post->post_type]; ?>
+
+			<p><strong><?php _e( 'Tokens to Award', 'mycred' ); ?></strong></p>
+			<p>
+				<label class="screen-reader-text" for="mycred-values-creds"><?php _e( 'Tokens to Award', 'mycred' ); ?></label>
+				<input type="text" name="mycred_values[creds]" id="mycred-values-creds" value="<?php echo $achievement_data['creds']; ?>" size="8" />
+				<span class="description"><?php _e( 'Use zero to disable', 'mycred' ); ?></span>
+			</p>
+			<p><strong><?php _e( 'Log Template', 'mycred' ); ?></strong></p>
+			<p>
+				<label class="screen-reader-text" for="mycred-values-log"><?php _e( 'Log Template', 'mycred' ); ?></label>
+				<input type="text" name="mycred_values[log]" id="mycred-values-log" value="<?php echo $achievement_data['log']; ?>" style="width:99%;" />
+			</p>
+<?php
+			// If deduction is enabled
+			if ( $this->prefs[$post->post_type]['deduct'] == 1 ) { ?>
+
+			<p><strong><?php _e( 'Deduction Log Template', 'mycred' ); ?></strong></p>
+			<p>
+				<label class="screen-reader-text" for="mycred-values-log"><?php _e( 'Log Template', 'mycred' ); ?></label>
+				<input type="text" name="mycred_values[deduct_log]" id="mycred-values-deduct-log" value="<?php echo $achievement_data['deduct_log']; ?>" style="width:99%;" />
+			</p>
+<?php
+			}
+		}
+		
+		/**
+		 * Save Achievement Data
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function save_achivement_data( $post_id ) {
+			// Post Type
+			$post_type = get_post_type( $post_id );
+
+			// Make sure this is a BadgeOS Object
+			if ( !in_array( $post_type, badgeos_get_achievement_types_slugs() ) ) return;
+
+			// Make sure preference is set
+			if ( !isset( $this->prefs[$post_type] ) || !isset( $_POST['mycred_values']['creds'] ) || !isset( $_POST['mycred_values']['log'] ) ) return;
+
+			// Only save if the settings differ, otherwise we default
+			if ( $_POST['mycred_values']['creds'] == $this->prefs[$post_type]['creds'] &&
+				 $_POST['mycred_values']['log'] == $this->prefs[$post_type]['log'] ) return;
+
+			$data = array();
+
+			// Creds
+			if ( !empty( $_POST['mycred_values']['creds'] ) && $_POST['mycred_values']['creds'] != $this->prefs[$post_type]['creds'] )
+				$data['creds'] = $this->core->format_number( $_POST['mycred_values']['creds'] );
+			else
+				$data['creds'] = $this->core->format_number( $this->prefs[$post_type]['creds'] );
+
+			// Log template
+			if ( !empty( $_POST['mycred_values']['log'] ) && $_POST['mycred_values']['log'] != $this->prefs[$post_type]['log'] )
+				$data['log'] = strip_tags( $_POST['mycred_values']['log'] );
+			else
+				$data['log'] = strip_tags( $this->prefs[$post_type]['log'] );
+
+			// If deduction is enabled save log template
+			if ( $this->prefs[$post->post_type]['deduct'] == 1 ) {
+				if ( !empty( $_POST['mycred_values']['deduct_log'] ) && $_POST['mycred_values']['deduct_log'] != $this->prefs[$post_type]['deduct_log'] )
+					$data['deduct_log'] = strip_tags( $_POST['mycred_values']['deduct_log'] );
+				else
+					$data['deduct_log'] = strip_tags( $this->prefs[$post_type]['deduct_log'] );
+			}
+
+			// Update sales values
+			update_post_meta( $post_id, '_mycred_values', $data );
+		}
+		
+		/**
+		 * Award Achievement
+		 * Run by BadgeOS when ever needed, we make sure settings are not zero otherwise
+		 * award points whenever this hook fires.
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function award_achievent( $user_id, $achievement_id ) {
+			$post_type = get_post_type( $achievement_id );
+			// Settings are not set
+			if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
+
+			// All the reasons to bail
+			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
+			if ( empty( $achievement_data ) && $this->prefs[$post_type]['creds'] == 0 ) return;
+			elseif ( !empty( $achievement_data ) && $achievement_data['creds'] == 0 ) return;
+
+			// Creds
+			if ( $this->prefs[$post_type]['creds'] == $achievement_data['creds'] )
+				$creds = $this->prefs[$post_type]['creds'];
+			else
+				$creds = $achievement_data['creds'];
+
+			// Log Template
+			if ( $this->prefs[$post_type]['log'] == $achievement_data['log'] )
+				$entry = $this->prefs[$post_type]['log'];
+			else
+				$entry = $achievement_data['log'];
+
+			// Execute
+			$post_type_object = get_post_type_object( $post_type );
+			$this->core->add_creds(
+				$post_type_object->labels->name,
+				$user_id,
+				$creds,
+				$entry,
+				$post_type,
+				array( 'ref_type' => 'post' )
+			);
+		}
+		
+		/**
+		 * Revoke Achievement
+		 * Run by BadgeOS when a users achievement is revoed.
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function revoke_achievement( $user_id, $achievement_id ) {
+			$post_type = get_post_type( $achievement_id );
+			// Make sure settings are set or that deduction is enabled
+			if ( !isset( $this->prefs[$post_type]['deduct'] ) || $this->prefs[$post_type]['deduct'] == 0 ) return;
+
+			// All the reasons to bail
+			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
+			if ( empty( $achievement_data ) && $this->prefs[$post_type]['creds'] == 0 ) return;
+			elseif ( !empty( $achievement_data ) && $achievement_data['creds'] == 0 ) return;
+
+			// Creds
+			if ( $this->prefs[$post_type]['creds'] == $achievement_data['creds'] )
+				$creds = 0-$this->prefs[$post_type]['creds'];
+			else
+				$creds = 0-$achievement_data['creds'];
+
+			// Log Template
+			if ( $this->prefs[$post_type]['deduct_log'] == $achievement_data['deduct_log'] )
+				$entry = $this->prefs[$post_type]['deduct_log'];
+			else
+				$entry = $achievement_data['deduct_log'];
+
+			// Execute
+			$post_type_object = get_post_type_object( $post_type );
+			$this->core->add_creds(
+				$post_type_object->labels->name,
+				$user_id,
+				$creds,
+				$entry,
+				$post_type,
+				array( 'ref_type' => 'post' )
+			);
+		}
+		
+		/**
+		 * Preferences for Commenting Hook
+		 * @since 1.0.8
+		 * @version 1.0
+		 */
+		public function preferences() {
+			$prefs = $this->prefs;
+			$badge_post_types = badgeos_get_achievement_types_slugs();
+			foreach ( $badge_post_types as $post_type ) {
+				if ( in_array( $post_type, apply_filters( 'mycred_badgeos_excludes', array( 'step' ) ) ) ) continue;
+				if ( !isset( $prefs[$post_type] ) )
+					$prefs[$post_type] = array(
+						'creds'      => 10,
+						'log'        => '',
+						'deduct'     => 1,
+						'deduct_log' => '%plural% deduction'
+					);
+				
+				$post_type_object = get_post_type_object( $post_type );
+				$title = sprintf( __( 'Default %s for %s', 'mycred' ), $this->core->plural(), $post_type_object->labels->singular_name ); ?>
+
+					<!-- Creds for  -->
+					<label for="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" class="subheader"><?php echo $title; ?></label>
+					<ol>
+						<li>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs[$post_type]['creds'] ); ?>" size="8" /></div>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'User zero to disable users gaining %_plural%', 'mycred' ) ); ?></span>
+						</li>
+						<li class="empty">&nbsp;</li>
+						<li>
+							<label for="<?php echo $this->field_id( array( $post_type, 'log' ) ); ?>"><?php _e( 'Default Log template', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'log' ) ); ?>" id="<?php echo $this->field_id( array( $form_id, 'log' ) ); ?>" value="<?php echo $prefs[$post_type]['log']; ?>" class="long" /></div>
+							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
+						</li>
+						<li>
+							<input type="checkbox" name="<?php echo $this->field_name( array( $post_type, 'deduct' ) ); ?>" id="<?php echo $this->field_id( array( $post_type, 'deduct' ) ); ?>" <?php checked( $prefs[$post_type]['deduct'], 1 ); ?> value="1" />
+							<label for="<?php echo $this->field_id( array( $post_type, 'deduct' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Deduct %_plural% if user looses ' . $post_type_object->labels->singular_name, 'mycred' ) ); ?></label>
+						</li>
+						<li class="empty">&nbsp;</li>
+						<li>
+							<label for="<?php echo $this->field_id( array( $post_type, 'deduct_log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'deduct_log' ) ); ?>" id="<?php echo $this->field_id( array( $form_id, 'deduct_log' ) ); ?>" value="<?php echo $prefs[$post_type]['deduct_log']; ?>" class="long" /></div>
+							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
+						</li>
+					</ol>
+<?php
+			}
 		}
 	}
 }

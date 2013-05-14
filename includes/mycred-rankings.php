@@ -2,7 +2,7 @@
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Rankings class
- * @see http://mycred.merovingi.com/features/mycred_rankings/
+ * @see http://mycred.me/features/mycred_rankings/
  * @since 0.1
  * @version 1.0
  */

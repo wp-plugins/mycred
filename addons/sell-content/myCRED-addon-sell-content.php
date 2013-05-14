@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: Sell Content
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/sell-content/
  * Version: 1.0
  * Description: This add-on allows you to sell posts, pages or any public post types on your website. You can either sell the entire content or using our shortcode, sell parts of your content allowing you to offer "teasers".
  * Author: Gabriel S Merovingi
@@ -270,7 +270,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		/**
 		 * Sanitize & Save Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_extra_settings( $new_data, $data, $general ) {
 			// Post Types
@@ -282,7 +282,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			if ( $new_data['sell_content']['pay_percent'] == 0 || $new_data['sell_content']['pay_percent'] > 100 )
 				$new_data['sell_content']['pay_percent'] = 100;
 
-			$new_data['sell_content']['defaults']['price'] = $this->core->number( $settings['defaults']['price'] );
+			$new_data['sell_content']['defaults']['price'] = $this->core->format_number( $settings['defaults']['price'] );
 			$new_data['sell_content']['defaults']['overwrite_price'] = ( isset( $settings['defaults']['overwrite_price'] ) ) ? 1 : 0;
 			$new_data['sell_content']['defaults']['button_label'] = sanitize_text_field( $settings['defaults']['button_label'] );
 			$new_data['sell_content']['defaults']['overwrite_buttonlabel'] = ( isset( $settings['defaults']['overwrite_buttonlabel'] ) ) ? 1 : 0;
@@ -609,7 +609,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 *
 		 * @returns (string) content
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function render_shortcode( $atts, $content ) {
 			$post_id = $GLOBALS['post']->ID;
@@ -670,6 +670,10 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				unset( $content );
 				return '<div class="mycred-content-forsale">' . $template . '</div>';
 			}
+
+			// Admin Wrapper for highlight of content set for sale
+			if ( mycred_is_admin() )
+				$content = '<div class="mycred-mark-title">' . __( 'The following content is set for sale:', 'mycred' ) . '</div><div class="mycred-mark-content">' . $content . '</div>';
 
 			return $content;
 		}

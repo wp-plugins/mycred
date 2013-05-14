@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: Transfer
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/transfer/
  * Version: 1.0
  * Description: Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.
  * Author: Gabriel S Merovingi
@@ -735,13 +735,15 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
  * User Can Transfer
  * @see http://mycred.merovingi.com/functions/mycred_user_can_transfer/
  * @param $user_id (int) requred user id
+ * @param $amount (int) optional amount to check against balance
  * @returns true if no limit is set, 'limit' (string) if user is over limit else the amount of creds left
  * @filter 'mycred_user_can_transfer'
+ * @filter 'mycred_transfer_acc_limit'
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_user_can_transfer' ) ) {
-	function mycred_user_can_transfer( $user_id )
+	function mycred_user_can_transfer( $user_id, $amount = 0 )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
@@ -752,7 +754,9 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		$balance = $mycred->get_users_cred( $user_id );
 
 		// To low balance
-		if ( $balance == 0 ) return 'low';
+		$account_limit = apply_filters( 'mycred_transfer_acc_limit', 0 );
+		if ( $amount > 0 && $balance-$amount < $account_limit ) return 'low';
+		elseif ( $balance <= $account_limit ) return 'low';
 
 		// No limits imposed
 		if ( $set_limit == 'none' ) return true;

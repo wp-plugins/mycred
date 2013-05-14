@@ -81,6 +81,12 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 
 			// Filter allowed POST keys
 			$data = $this->POST_to_data();
+			if ( $this->prefs['sandbox'] ) {
+				$log_entry[] = 'Incoming Test IPN Call at ' . date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
+			}
+			else {
+				$log_entry[] = 'Incoming IPN Call' . date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
+			}
 
 			// Step 1. Compare md5
 			if ( !empty( $this->prefs['word'] ) ) {
@@ -143,6 +149,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 				elseif ( $data['status']  == '2' ) {
 					// Highlight test purchases
 					$entry = $this->get_entry( $_to, $_from );
+					$entry = str_replace( '%gateway%', 'Skrill', $entry );
 					if ( $this->prefs['sandbox'] ) $entry = 'TEST ' . $entry;
 
 					$data = array(
