@@ -58,6 +58,7 @@ The following third party plugins are supported by default:
 * [Contact Form 7](http://wordpress.org/extend/plugins/contact-form-7/) - Award users points for submitting forms.
 * [Invite Anyone Plugin](http://wordpress.org/extend/plugins/invite-anyone/) - Award users for sending invitations and for each time an invited user accepts and signs up.
 * [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribe using the email saved in their profile.
+* [BadgeOS](http://wordpress.org/extend/plugins/badgeos/) - Award points for any BadgeOS achievement type.
 
 
 **Further Details**
