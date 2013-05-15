@@ -457,12 +457,13 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 				'user_id'   => NULL,
 				'number'    => NULL,
 				'time'      => NULL,
+				'ref'       => NULL,
 				'show_user' => false,
 				'login'     => ''
 			), $atts ) );
 
 			// If we are not logged in
-			if ( !is_user_logged_in() ) return '<p class="mycred-history login">' . $login . '</p>';
+			if ( !is_user_logged_in() && !empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
 
 			if ( $user_id === NULL )
 				$user_id = get_current_user_id();
@@ -485,9 +486,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			if ( $show_user !== true )
 				unset( $log->headers['column-username'] ); 
 
-			$output .= $log->get_display();
-
-			return $output;
+			return $log->get_display();
 		}
 	}
 }

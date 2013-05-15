@@ -56,18 +56,20 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		/**
 		 * Load
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function module_init() {
 			$this->make_purchase();
 
-			add_filter( 'the_content',          array( $this, 'the_content' ), 30  );
-			add_shortcode( 'mycred_sell_this',  array( $this, 'render_shortcode' ) );
+			add_filter( 'the_content',             array( $this, 'the_content' ), 30  );
+			
+			add_shortcode( 'mycred_sell_this',     array( $this, 'render_shortcode' ) );
+			add_shortcode( 'mycred_sales_history', array( $this, 'render_sales_history' ) );
 
-			add_action( 'add_meta_boxes',       array( $this, 'add_metabox' )      );
-			add_action( 'save_post',            array( $this, 'save_metabox' )     );
+			add_action( 'add_meta_boxes',          array( $this, 'add_metabox' )      );
+			add_action( 'save_post',               array( $this, 'save_metabox' )     );
 
-			add_action( 'mycred_admin_enqueue', array( $this, 'admin_enqueue' )    );
+			add_action( 'mycred_admin_enqueue',    array( $this, 'admin_enqueue' )    );
 		}
 
 		/**
@@ -651,12 +653,12 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				unset( $content );
 				return '
 <form action="" method="post">
-	<input type="hidden" name="mycred_purchase[post_id]" id="" value="' . $post_id . '" />
-	<input type="hidden" name="mycred_purchase[post_type]" id="" value="' . $GLOBALS['post']->post_type . '" />
-	<input type="hidden" name="mycred_purchase[user_id]" id="" value="' . get_current_user_id() . '" />
-	<input type="hidden" name="mycred_purchase[author]" id="" value="' . $GLOBALS['post']->post_author . '" />
-	<input type="hidden" name="mycred_purchase_token" id="" value="' . wp_create_nonce( 'buy-content' ) . '" />
-	<input type="hidden" name="mycred_purchase[action]" id="" value="buy" />
+	<input type="hidden" name="mycred_purchase[post_id]" value="' . $post_id . '" />
+	<input type="hidden" name="mycred_purchase[post_type]" value="' . $GLOBALS['post']->post_type . '" />
+	<input type="hidden" name="mycred_purchase[user_id]" value="' . get_current_user_id() . '" />
+	<input type="hidden" name="mycred_purchase[author]" value="' . $GLOBALS['post']->post_author . '" />
+	<input type="hidden" name="mycred_purchase_token" value="' . wp_create_nonce( 'buy-content' ) . '" />
+	<input type="hidden" name="mycred_purchase[action]" value="buy" />
 	<div class="mycred-content-forsale">' . $template . '</div>
 </form>';
 			}
@@ -677,6 +679,78 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 
 			return $content;
 		}
+		
+		/**
+		 * Render Sales History Shortcode
+		 * @see http://mycred.me/shortcodes/mycred_sales_history/
+		 * @since 1.0.9
+		 * @version 1.0
+		 */
+		public function render_sales_history( $atts ) {
+			extract( shortcode_atts( array(
+				'login'        => NULL,
+				'title'        => '',
+				'title_el'     => 'h1',
+				'title_class'  => '',
+				'include_date' => true,
+				'no_result'    => __( 'No purchases found', 'mycred' )
+			), $atts ) );
+			
+			// Not logged in
+			if ( !is_user_logged_in() ) {
+				if ( $login != NULL )
+					return '<div class="mycred-not-logged-in">' . $login . '</div>';
+
+				return;
+			}
+
+			// Prep
+			$output = '<div class="mycred-sales-history-wrapper">';
+			$user_id = get_current_user_id();
+	
+			global $wpdb;
+	
+			// Title
+			if ( !empty( $title ) ) {
+				if ( !empty( $title_class ) )
+					$title_class = ' class="' . $title_class . '"';
+				$output .= '<' . $title_el . $title_class . '>' . $title . '</' . $title_el . '>';
+			}
+			
+			// Query
+			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE user_id = %d AND ref = %s ORDER BY time ";
+			$results = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content' ) );
+			$rows = array();
+			
+			// Results
+			if ( $wpdb->num_rows > 0 ) {
+				foreach ( $results as $item ) {
+					// Row
+					$row = '<span class="item-link"><a href="' . get_permalink( $item->ref_id ) . '">' . get_the_title( $item->ref_id ) . '</a></span>';
+
+					// Add Date to row
+					if ( $include_date )
+						$row .= '<span class="purchased">' . __( 'Purchased', 'mycred' ) . ' ' . date_i18n( get_option( 'date_format' ), $item->time ) . '</span>';
+
+					// Construct row (and let others play)
+					$rows[] = apply_filters( 'mycred_sale_history_row', $row, $item );
+				}
+			}
+			
+			// Implode rows if there are any
+			if ( !empty( $rows ) ) {
+				$output .= '<ul class="mycred-purchase-history"><li>' . implode( '</li><li>', $rows ) . '</li></ul>';
+			}
+			// No results
+			else {
+				if ( !empty( $no_result ) )
+					$output .= '<p>' . $no_result . '</p>';
+			}
+
+			$output .= '</div>';
+
+			return $output;
+		}
 
 		/**
 		 * Contextual Help
@@ -694,7 +768,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 <p><strong>' . __( 'Defaults', 'mycred' ) . '</strong></p>
 <p>' . __( 'The default price and button label is applied to all content that is set for sale. You can select if you want to enforce these settings or let the content authors set their own.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
-<p>' . __( 'You can either sell entire posts via the Sell Content Meta Box or by using the <code>mycred_sell_this</code> shortcode.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.merovingi.com/shortcodes/mycred_sell_this/" target="_blank">myCRED Codex</a>.</p>'
+<p>' . __( 'You can either sell entire posts via the Sell Content Meta Box or by using the <code>mycred_sell_this</code> shortcode.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_sell_this/" target="_blank">myCRED Codex</a>.</p>'
 			) );
 		}
 	}

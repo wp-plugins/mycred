@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: Gateway
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/gateway/
  * Version: 1.0
  * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce.
  * Author: Gabriel S Merovingi

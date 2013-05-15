@@ -466,7 +466,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 <p><strong>' . __( 'Transfer Limit', 'mycred' ) . '</strong></p>
 <p>' . __( 'You can impose a daily-, weekly- or monthly transfer limit for each user. Note, that this transfer limit is imposed on everyone who are not excluded from using myCRED.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
-<p>' . __( 'Transfers can be made by either using the <code>mycred_transfer</code> shortcode or via the myCRED Transfer Widget.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.merovingi.com/shortcodes/mycred_transfer/" target="_blank">myCRED Codex</a>.</p>'
+<p>' . __( 'Transfers can be made by either using the <code>mycred_transfer</code> shortcode or via the myCRED Transfer Widget.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_transfer/" target="_blank">myCRED Codex</a>.</p>'
 			) );
 		}
 	}
@@ -475,7 +475,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 }
 
 /**
- * Widget: myCRED Balance
+ * Widget: myCRED Transfer
  * @since 0.1
  * @version 1.0
  */
@@ -595,7 +595,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 
 /**
  * Transfer Shortcode Render
- * @see http://mycred.merovingi.com/functions/mycred_transfer_render/
+ * @see http://mycred.me/functions/mycred_transfer_render/
  * @attribute $charge_from (int) optional user ID from whom the points to be deducted, defaults to current user
  * @attribute $pay_to (int) optional user ID to whom the transfer is made, if left empty the user will be able to search for a user
  * @attribute $show_balance (bool) set to true to show current users balance, defaults to true
@@ -732,7 +732,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 /**
  * User Can Transfer
- * @see http://mycred.merovingi.com/functions/mycred_user_can_transfer/
+ * @see http://mycred.me/functions/mycred_user_can_transfer/
  * @param $user_id (int) requred user id
  * @param $amount (int) optional amount to check against balance
  * @returns true if no limit is set, 'limit' (string) if user is over limit else the amount of creds left
@@ -742,7 +742,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
  * @version 1.1
  */
 if ( !function_exists( 'mycred_user_can_transfer' ) ) {
-	function mycred_user_can_transfer( $user_id, $amount = 0 )
+	function mycred_user_can_transfer( $user_id, $amount = NULL )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
@@ -753,9 +753,12 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		$balance = $mycred->get_users_cred( $user_id );
 
 		// To low balance
-		$account_limit = apply_filters( 'mycred_transfer_acc_limit', 0 );
-		if ( $amount > 0 && $balance-$amount < $account_limit ) return 'low';
-		elseif ( $balance <= $account_limit ) return 'low';
+		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
+		if ( $amount !== NULL ) {
+			if ( $balance-$amount < $account_limit ) return 'low';
+		} else {
+			if ( $balance <= $account_limit ) return 'low';
+		}
 
 		// No limits imposed
 		if ( $set_limit == 'none' ) return true;

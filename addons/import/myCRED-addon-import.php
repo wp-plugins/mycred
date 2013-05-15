@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: Import
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/import/
  * Version: 1.0
  * Description: With the Import add-on you can import CSV files, CubePoints or existing points under any custom user meta values.
  * Author: Gabriel S Merovingi

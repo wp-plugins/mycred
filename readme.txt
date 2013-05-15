@@ -4,7 +4,7 @@ Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,15 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.0.9 =
+* Adjusted plugin URLs in files that were missed previously.
+* Fixed Bug #16 - PHP Notice when using the `mycred_history` shortcode.
+
+* Request #9 - Remove paragraph element for not logged in users if the login message is set to blank.
+* Request #10 - Added new `mycred_my_balance` shortcode to display current users balance.
+* Request #11 - Added new `mycred_sales_history` shortcode to the Sell Content Add-on to show all content purchased by the current user.
+* Request #12 - Add reference search to the `mycred_history` shortcode.
 
 = 1.0.8 =
 * Added BuddyPress tag to description

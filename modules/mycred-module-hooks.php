@@ -1199,13 +1199,14 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 			
 			// Prep Achievement Data
 			$prefs = $this->prefs;
+			$mycred = mycred_get_settings();
 			$achievement_data = get_post_meta( $post->ID, '_mycred_values', true );
 			if ( empty( $achievement_data ) )
 				$achievement_data = $prefs[$post->post_type]; ?>
 
-			<p><strong><?php _e( 'Tokens to Award', 'mycred' ); ?></strong></p>
+			<p><strong><?php echo $mycred->template_tags_general( __( '%plural% to Award', 'mycred' ) ); ?></strong></p>
 			<p>
-				<label class="screen-reader-text" for="mycred-values-creds"><?php _e( 'Tokens to Award', 'mycred' ); ?></label>
+				<label class="screen-reader-text" for="mycred-values-creds"><?php echo $mycred->template_tags_general( __( '%plural% to Award', 'mycred' ) ); ?></label>
 				<input type="text" name="mycred_values[creds]" id="mycred-values-creds" value="<?php echo $achievement_data['creds']; ?>" size="8" />
 				<span class="description"><?php _e( 'Use zero to disable', 'mycred' ); ?></span>
 			</p>
@@ -1284,30 +1285,21 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 			// Settings are not set
 			if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
 
-			// All the reasons to bail
+			// Get achievemen data
 			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
-			if ( empty( $achievement_data ) && $this->prefs[$post_type]['creds'] == 0 ) return;
-			elseif ( !empty( $achievement_data ) && $achievement_data['creds'] == 0 ) return;
+			if ( empty( $achievement_data ) )
+				$achievement_data = $this->prefs[$post_type];
 
-			// Creds
-			if ( $this->prefs[$post_type]['creds'] == $achievement_data['creds'] )
-				$creds = $this->prefs[$post_type]['creds'];
-			else
-				$creds = $achievement_data['creds'];
-
-			// Log Template
-			if ( $this->prefs[$post_type]['log'] == $achievement_data['log'] )
-				$entry = $this->prefs[$post_type]['log'];
-			else
-				$entry = $achievement_data['log'];
+			// Make sure its not disabled
+			if ( $achievement_data['creds'] == 0 ) return;
 
 			// Execute
 			$post_type_object = get_post_type_object( $post_type );
 			$this->core->add_creds(
 				$post_type_object->labels->name,
 				$user_id,
-				$creds,
-				$entry,
+				$achievement_data['creds'],
+				$achievement_data['log'],
 				$post_type,
 				array( 'ref_type' => 'post' )
 			);
@@ -1321,33 +1313,24 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 		 */
 		public function revoke_achievement( $user_id, $achievement_id ) {
 			$post_type = get_post_type( $achievement_id );
-			// Make sure settings are set or that deduction is enabled
-			if ( !isset( $this->prefs[$post_type]['deduct'] ) || $this->prefs[$post_type]['deduct'] == 0 ) return;
+			// Settings are not set
+			if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
 
-			// All the reasons to bail
+			// Get achievemen data
 			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
-			if ( empty( $achievement_data ) && $this->prefs[$post_type]['creds'] == 0 ) return;
-			elseif ( !empty( $achievement_data ) && $achievement_data['creds'] == 0 ) return;
+			if ( empty( $achievement_data ) )
+				$achievement_data = $this->prefs[$post_type];
 
-			// Creds
-			if ( $this->prefs[$post_type]['creds'] == $achievement_data['creds'] )
-				$creds = 0-$this->prefs[$post_type]['creds'];
-			else
-				$creds = 0-$achievement_data['creds'];
-
-			// Log Template
-			if ( $this->prefs[$post_type]['deduct_log'] == $achievement_data['deduct_log'] )
-				$entry = $this->prefs[$post_type]['deduct_log'];
-			else
-				$entry = $achievement_data['deduct_log'];
+			// Make sure its not disabled
+			if ( $achievement_data['creds'] == 0 ) return;
 
 			// Execute
 			$post_type_object = get_post_type_object( $post_type );
 			$this->core->add_creds(
 				$post_type_object->labels->name,
 				$user_id,
-				$creds,
-				$entry,
+				0-$achievement_data['creds'],
+				$achievement_data['log'],
 				$post_type,
 				array( 'ref_type' => 'post' )
 			);

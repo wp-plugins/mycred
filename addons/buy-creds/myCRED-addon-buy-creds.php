@@ -745,8 +745,8 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 <p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
 <p>' . __( 'Purchases can be made using one of the following shortcodes:', 'mycred' ) . '</p>
 <ul>
-<li><code>mycred_buy</code> ' . __( 'When you want to sell a pre-set amount, sell to a specific user or use a specific gateway.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.merovingi.com/shortcodes/mycred_buy/" target="_blank">myCRED Codex</a>.</li>
-<li><code>mycred_buy_form</code> ' . __( 'When you want to give your users the option to select an amount, gateway or recipient.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.merovingi.com/shortcodes/mycred_buy_form/" target="_blank">myCRED Codex</a>.</li>
+<li><code>mycred_buy</code> ' . __( 'When you want to sell a pre-set amount, sell to a specific user or use a specific gateway.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_buy/" target="_blank">myCRED Codex</a>.</li>
+<li><code>mycred_buy_form</code> ' . __( 'When you want to give your users the option to select an amount, gateway or recipient.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_buy_form/" target="_blank">myCRED Codex</a>.</li>
 </ul>'
 				) );
 			}

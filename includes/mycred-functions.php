@@ -848,7 +848,7 @@ if ( !function_exists( 'mycred_is_admin' ) ) {
  * Exclude User
  * Checks if a given user is excluded from using myCRED.
  *
- * @see http://mycred.merovingi.com/functions/mycred_exclude_user/
+ * @see http://mycred.me/functions/mycred_exclude_user/
  * @param $user_id (int), optional user to check, defaults to current user
  * @since 0.1
  * @version 1.0
@@ -909,7 +909,7 @@ if ( !function_exists( 'mycred_get_users_fcred' ) ) {
  * Important! This function will not check if the user should be excluded from gaining points, this must
  * be done before calling this function!
  *
- * @see http://mycred.merovingi.com/functions/mycred_add/
+ * @see http://mycred.me/functions/mycred_add/
  * @param $ref (string), required reference id
  * @param $user_id (int), required id of the user who will get these points
  * @param $amount (int|float), required number of creds to give or deduct from the given user.
@@ -936,7 +936,7 @@ if ( !function_exists( 'mycred_add' ) ) {
 /**
  * Subtract Creds
  * Subtracts creds from a given user. Works just as mycred_add() but the creds are converted into a negative value.
- * @see http://mycred.merovingi.com/functions/mycred_subtract/
+ * @see http://mycred.me/functions/mycred_subtract/
  * @uses mycred_add()
  * @since 0.1
  * @version 1.0
@@ -947,6 +947,51 @@ if ( !function_exists( 'mycred_subtract' ) ) {
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 		if ( $amount > 0 ) $amount = '-' . $amount;
 		return mycred_add( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
+	}
+}
+
+/**
+ * My Balance Shortcode
+ * Returns the current users balance.
+ * @see http://mycred.me/shortcodes/mycred_my_balance/
+ * @since 1.0.9
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_my_balance' ) ) {
+	function mycred_render_my_balance( $atts )
+	{
+		extract( shortcode_atts( array(
+			'login'      => NULL,
+			'title'      => '',
+			'title_el'   => 'h1',
+			'balance_el' => 'div'
+		), $atts ) );
+
+		// Not logged in
+		if ( !is_user_logged_in() ) {
+			if ( $login != NULL )
+				return '<div class="mycred-not-logged-in">' . $login . '</div>';
+
+			return;
+		}
+
+		$user_id = get_current_user_id();
+		$mycred = mycred_get_settings();
+		if ( $mycred->exclude_user( $user_id ) ) return;
+
+		$output = '<div class="mycred-my-balance-wrapper">';
+
+		// Title
+		if ( !empty( $title ) ) {
+			$output .= '<' . $title_el . '>' . $title . '</' . $title_el . '>';
+		}
+
+		// Balance
+		$balance = $mycred->get_users_cred( $user_id );
+		$output .= '<' . $balance_el . '>' . $mycred->format_creds( $balance ) . '</' . $balance_el . '>';
+		$output .= '</div>';
+
+		return $output;
 	}
 }
 ?>

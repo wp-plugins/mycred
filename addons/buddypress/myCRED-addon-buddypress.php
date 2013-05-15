@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: BuddyPress
- * Addon URI: http://mycred.merovingi.com
+ * Addon URI: http://mycred.me/add-ons/buddypress/
  * Version: 1.0
  * Description: The BuddyPress add-on extends <strong>my</strong>CRED to work with BuddyPress allowing you to hook into most BuddyPress related actions.
  * Author: Gabriel S Merovingi
