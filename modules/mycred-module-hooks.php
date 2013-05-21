@@ -500,10 +500,8 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 			if ( empty( $this->prefs[$post_type]['creds'] ) || $this->prefs[$post_type]['creds'] == 0 ) return;
 
 			// We want to fire when content get published or when it gets privatly published
-			if ( 
-				( $old_status == 'auto-draft' && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) ||
-				( $old_status == 'draft' && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) ||
-				( $old_status == 'private' && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) ) {
+			$status = apply_filters( 'mycred_publish_hook_old', array( 'new', 'auto-draft', 'draft', 'private', 'pending' ) );
+			if ( in_array( $old_status, $status ) && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) {
 
 				// Make sure this is unique
 				if ( $this->has_entry( 'publishing_content', $post_id, $user_id ) ) return;
@@ -1231,7 +1229,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 		/**
 		 * Save Achievement Data
 		 * @since 1.0.8
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function save_achivement_data( $post_id ) {
 			// Post Type
@@ -1262,7 +1260,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 				$data['log'] = strip_tags( $this->prefs[$post_type]['log'] );
 
 			// If deduction is enabled save log template
-			if ( $this->prefs[$post->post_type]['deduct'] == 1 ) {
+			if ( $this->prefs[$post_type]['deduct'] == 1 ) {
 				if ( !empty( $_POST['mycred_values']['deduct_log'] ) && $_POST['mycred_values']['deduct_log'] != $this->prefs[$post_type]['deduct_log'] )
 					$data['deduct_log'] = strip_tags( $_POST['mycred_values']['deduct_log'] );
 				else
@@ -1309,7 +1307,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 		 * Revoke Achievement
 		 * Run by BadgeOS when a users achievement is revoed.
 		 * @since 1.0.8
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function revoke_achievement( $user_id, $achievement_id ) {
 			$post_type = get_post_type( $achievement_id );
@@ -1330,7 +1328,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 				$post_type_object->labels->name,
 				$user_id,
 				0-$achievement_data['creds'],
-				$achievement_data['log'],
+				$achievement_data['deduct_log'],
 				$post_type,
 				array( 'ref_type' => 'post' )
 			);

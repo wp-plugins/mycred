@@ -4,7 +4,7 @@ Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.9
+Stable tag: 1.0.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,13 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.0.9.1 =
+* Fixed Bug #17 - Shortcodes inside mycred_sell_this does not render.
+* Fixed Bug #18 - Pending posts that gets published by admin are not awarded points.
+* Fixed Bug #19 - mycred_subtract function not working properly.
+* Fixed Bug #20 - If user id deleted the log returns empty string.
+* Fixed Bug #21 - If user is removed the ranking is not updated leaving to missing users.
 
 = 1.0.9 =
 * Adjusted plugin URLs in files that were missed previously.

@@ -601,7 +601,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$content = $wrapper . $content;
 			}
 
-			return $content;
+			return do_shortcode( $content );
 		}
 
 		/**
@@ -677,7 +677,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			if ( mycred_is_admin() )
 				$content = '<div class="mycred-mark-title">' . __( 'The following content is set for sale:', 'mycred' ) . '</div><div class="mycred-mark-content">' . $content . '</div>';
 
-			return $content;
+			return do_shortcode( $content );
 		}
 		
 		/**

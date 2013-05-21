@@ -945,7 +945,7 @@ if ( !function_exists( 'mycred_subtract' ) ) {
 	function mycred_subtract( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = '' )
 	{
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
-		if ( $amount > 0 ) $amount = '-' . $amount;
+		if ( (int) $amount > 0 ) $amount = 0-$amount;
 		return mycred_add( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 	}
 }

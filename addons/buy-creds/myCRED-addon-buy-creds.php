@@ -737,11 +737,11 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			if ( $screen_id == 'mycred_page_myCRED_page_settings' ) {
 				$screen->add_help_tab( array(
 					'id'		=> 'mycred-buy-creds',
-					'title'		=> __( 'Buy Creds', 'mycred' ),
+					'title'		=> $this->core->template_tags_general( __( 'Buy %plural%', 'mycred' ) ),
 					'content'	=> '
 <p>' . $this->core->template_tags_general( __( 'This add-on lets your users buy %_plural% using a payment gateway.', 'mycred' ) ) . '</p>
 <p><strong>' . __( 'Supported Gateways', 'mycred' ) . '</strong></p>
-<p>' . __( 'myCRED supports purchases though: PayPal Payments Standard, Skrill (Moneybookers) and NETbilling. Let us know if you want to add other payment gateways.', 'mycred' ) . '</p>
+<p>' . __( 'myCRED supports purchases through: PayPal Payments Standard, Skrill (Moneybookers) and NETbilling. Let us know if you want to add other payment gateways.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
 <p>' . __( 'Purchases can be made using one of the following shortcodes:', 'mycred' ) . '</p>
 <ul>

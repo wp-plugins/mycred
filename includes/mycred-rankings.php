@@ -47,8 +47,8 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		protected function _transients( $reload = false ) {
-			if ( $this->core->frequency['rate'] == 'always' ) return;
+		public function _transients( $reload = false ) {
+			if ( $this->core->frequency['rate'] == 'always' && $reload === false ) return;
 
 			// Get history
 			$history = get_option( 'mycred_transients' );
@@ -282,5 +282,17 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 		if ( isset( $attr['no-results'] ) && !empty( $attr['no-results'] ) )
 			return $rankings->core->template_tags_general( $attr['no-results'] );
 	}
+}
+
+/**
+ * Force Leaderboard Update
+ * @since 1.0.9.1
+ * @version 1.0
+ */
+add_action( 'delete_user', 'mycred_adjust_ranking_delete_user' );
+function mycred_adjust_ranking_delete_user( $user_id )
+{
+	$rankings = mycred_rankings();
+	$rankings->_transients( true );
 }
 ?>

@@ -223,7 +223,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
-				wp_die( __( 'Please setup this gateway before attempting to make a purchaase!', 'mycred' ) );
+				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
 			$amount = $_REQUEST['amount'];
 			$home = get_bloginfo( 'url' );
@@ -401,7 +401,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 						<li>
 							<h3><?php _e( 'Important!', 'mycred' ); ?></h3>
 							<p><span class="description"><strong>1. </strong><?php echo $this->core->template_tags_general( __( 'By default all Skrill Merchant account accept payments via Bank Transfers. When a user selects this option, no %_plural% are awarded! You will need to manually award these once the bank transfer is completed.', 'mycred' ) ); ?></span></p>
-							<p><span class="description"><strong>2. </strong><?php _e( 'By default purchases made using Skrill will result in users having to signup for a Skrill account (if they do not have one already). You can contact <a href="mailto:">Skrill Merchant Services</a> and request to disable this feature.', 'mycred' ); ?></span></p>
+							<p><span class="description"><strong>2. </strong><?php _e( 'By default purchases made using Skrill will result in users having to signup for a Skrill account (if they do not have one already). You can contact Skrill Merchant Services and request to disable this feature.', 'mycred' ); ?></span></p>
 						</li>
 					</ol>
 <?php

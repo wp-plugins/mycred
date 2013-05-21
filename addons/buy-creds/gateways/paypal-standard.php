@@ -238,7 +238,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
-				wp_die( __( 'Please setup this gateway before attempting to make a purchaase!', 'mycred' ) );
+				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
 			$home = get_bloginfo( 'url' );
 			$token = $this->create_token();

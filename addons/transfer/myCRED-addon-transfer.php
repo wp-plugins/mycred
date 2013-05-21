@@ -489,7 +489,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			// Basic details about our widget
 			$widget_ops = array( 
 				'classname'   => 'widget-my-cred-transfer',
-				'description' => __( 'Allow cred transfers between users.', 'mycred' )
+				'description' => __( 'Allow transfers between users.', 'mycred' )
 			);
 			$this->WP_Widget( 'mycred_widget_transfer', __( 'myCRED Transfer', 'mycred' ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_transfer';

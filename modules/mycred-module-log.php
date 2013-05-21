@@ -785,7 +785,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		 * Generated a single entry row depending on the columns used / requested.
 		 *
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get_the_entry( $log_entry ) {
 			$date = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
@@ -797,7 +797,12 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 					// Username Column
 					case 'column-username':
 						$user = get_userdata( $log_entry->user_id );
-						$content = '<span>' . $user->display_name . '</span>';
+
+						if ( $user === false )
+							$content = '<span>' . __( 'User Missing', 'mycred' ) . ' (ID: ' . $log_entry->user_id . ')</span>';
+						else
+							$content = '<span>' . $user->display_name . '</span>';
+
 						unset( $user );
 					break;
 					// Date & Time Column
