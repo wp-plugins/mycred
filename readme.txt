@@ -4,7 +4,7 @@ Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.9.1
+Stable tag: 1.0.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,12 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.0.9.2 =
+* Fixed Bug #22 - BadgeOS Badge ID issue. Critical for BadgeOS users!
+* Adjusted plugin to handle custom features when adjusting a users points balance.
+* Added function to handle Post/User/Comment deletions for the log.
+* Renamed the `update_users_creds` method to a more logical choice of `update_users_balance`.
 
 = 1.0.9.1 =
 * Fixed Bug #17 - Shortcodes inside mycred_sell_this does not render.

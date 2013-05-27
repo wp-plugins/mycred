@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Settings class
  * @see http://mycred.me/classes/mycred_settings/
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Settings' ) ) {
 	class myCRED_Settings {
@@ -296,7 +296,16 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$post = get_post( $ref_id );
 
 			// Post does not exist
-			if ( $post === NULL ) return $content;
+			if ( $post === NULL ) {
+				if ( !array_key_exists( 'ID', $data ) ) return $content;
+				$post = new StdClass();
+				foreach ( $data as $key => $value ) {
+					if ( $key == 'post_title' ) $value .= ' (' . __( 'Deleted', 'mycred' ) . ')';
+					$post->$key = $value;
+				}
+				$url = get_permalink( $post->ID );
+				if ( empty( $url ) ) $url = '#item-has-been-deleted';
+			}
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_post', $content, $data, $post );
@@ -304,8 +313,8 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Replace template tags
 			$content = str_replace( '%post_title%',      $post->post_title, $content );
-			$content = str_replace( '%post_url%',        get_permalink( $post->ID ), $content );
-			$content = str_replace( '%link_with_title%', '<a href="' . get_permalink( $post->ID ) . '">' . $post->post_title . '</a>', $content );
+			$content = str_replace( '%post_url%',        $url, $content );
+			$content = str_replace( '%link_with_title%', '<a href="' . $url . '">' . $post->post_title . '</a>', $content );
 
 			$post_type = get_post_type_object( $post->post_type );
 			$content = str_replace( '%post_type%', $post_type->labels->singular_name, $content );
@@ -335,7 +344,13 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$user = get_userdata( $ref_id );
 
 			// User does not exist
-			if ( $user === false ) return $content;
+			if ( $user === false ) {
+				if ( !array_key_exists( 'ID', $data ) ) return $content;
+				$user = new StdClass();
+				foreach ( $data as $key => $value ) {
+					$user->$key = $value;
+				}
+			}
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_user', $content, $data, $user );
@@ -382,19 +397,30 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$comment = get_comment( $ref_id );
 
 			// Comment does not exist
-			if ( $comment === NULL ) return $content;
+			if ( $comment === NULL ) {
+				if ( !array_key_exists( 'comment_ID', $data ) ) return $content;
+				$comment = new StdClass();
+				foreach ( $data as $key => $value ) {
+					$comment->$key = $value;
+				}
+				$url = get_permalink( $comment->comment_post_ID );
+				if ( empty( $url ) ) $url = '#item-has-been-deleted';
+
+				$title = get_the_title( $comment->comment_post_ID );
+				if ( empty( $title ) ) $title = __( 'Deleted Item', 'mycred' );
+			}
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_comment', $content, $data, $comment );
 			$content = $this->template_tags_general( $content );
 
-			$content = str_replace( '%comment_id%',      $comment->comment_ID, $content );
+			$content = str_replace( '%comment_id%',        $comment->comment_ID, $content );
 
 			$content = str_replace( '%c_post_id%',         $comment->comment_post_ID, $content );
-			$content = str_replace( '%c_post_title%',      get_the_title( $comment->comment_post_ID ), $content );
+			$content = str_replace( '%c_post_title%',      $title, $content );
 
-			$content = str_replace( '%c_post_url%',       get_permalink( $comment->comment_post_ID ), $content );
-			$content = str_replace( '%c_link_with_title%', '<a href="' . get_permalink( $comment->comment_post_ID ) . '">' . get_the_title( $comment->comment_post_ID ) . '</a>', $content );
+			$content = str_replace( '%c_post_url%',        $url, $content );
+			$content = str_replace( '%c_link_with_title%', '<a href="' . $url . '">' . $title . '</a>', $content );
 
 			//$content = str_replace( '', $comment->, $content );
 			unset( $comment );
@@ -597,7 +623,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		}
 
 		/**
-		 * Update users creds
+		 * Update users balance
 		 * Returns the updated balance of the given user.
 		 *
 		 * @param $user_id (int), required user id
@@ -606,7 +632,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function update_users_cred( $user_id = NULL, $amount = NULL ) {
+		public function update_users_balance( $user_id = NULL, $amount = NULL ) {
 			if ( $user_id === NULL || $amount === NULL ) return $amount;
 			if ( empty( $this->cred_id ) ) $this->cred_id = $this->get_cred_id();
 
@@ -638,7 +664,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function add_creds( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
@@ -649,16 +675,26 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// Format creds
 			$amount = $this->number( $amount );
 
-			// Adjust creds
-			$new_balance = $this->update_users_cred( $user_id, $amount );
+			// Execution Override
+			// Let others play before awarding points.
+			// Your functions should return the answer to the question: "Should myCRED adjust the users point balance?"
+			$execute = apply_filters( 'mycred_add', true, compact( 'ref', 'user_id', 'amount', 'entry', 'ref_id', 'data', 'type' ), $this );
 
-			// Let others play
-			$request = compact( 'ref', 'amount', 'entry', 'ref_id', 'data', 'type', 'user_id', 'current_balance', 'new_balance' );
-			do_action( 'mycred_add', $request, $this->core );
-
-			// Add log entry
-			$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
-			return true;
+			// Acceptable answers:
+			// true (boolean)  - "Yes" let myCRED add points and log the event
+			if ( $execute === true ) {
+				$this->update_users_balance( $user_id, $amount );
+				$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
+				return true;
+			}
+			// done (string)   - "Already done"
+			elseif ( $execute === 'done' ) {
+				return true;
+			}
+			// false (boolean) - "No"
+			else {
+				return false;
+			}
 		}
 
 		/**
@@ -700,7 +736,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				array(
 					'ref'     => $ref,
 					'ref_id'  => $ref_id,
-					'user_id' => $user_id,
+					'user_id' => (int) $user_id,
 					'creds'   => $amount,
 					'ctype'   => $type,
 					'time'    => date_i18n( 'U' ),

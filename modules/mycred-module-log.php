@@ -39,6 +39,11 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			add_filter( 'set-screen-option', array( $this, 'set_entries_per_page' ), 10, 3 );
 			add_action( 'mycred_add_menu',   array( $this, 'my_history_menu' )             );
 			add_shortcode( 'mycred_history', array( $this, 'render_my_history' )           );
+			
+			// Handle deletions
+			add_action( 'before_delete_post', array( $this, 'post_deletions' )    );
+			add_action( 'delete_user',        array( $this, 'user_deletions' )    );
+			add_action( 'delete_comment',     array( $this, 'comment_deletions' ) );
 		}
 
 		/**
@@ -487,6 +492,129 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 				unset( $log->headers['column-username'] ); 
 
 			return $log->get_display();
+		}
+		
+		/**
+		 * Handle Post Deletions
+		 * @since 1.0.9.2
+		 * @version 1.0
+		 */
+		public function post_deletions( $post_id ) {
+			global $post_type, $wpdb;
+			// Check log
+			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref_id = %d ";
+			$records = $wpdb->get_results( $wpdb->prepare( $sql, $post_id ) );
+			// If we have results
+			if ( $wpdb->num_rows > 0 ) {
+				// Loop though them
+				foreach ( $records as $row ) {
+					// Check if the data column has a serialized array
+					$check = @unserialize( $row->data );
+					if ( $check !== false && $row->data !== 'b:0;' ) {
+						// Unserialize
+						$data = unserialize( $row->data );
+						// If this is a post
+						if (
+							( isset( $data['ref_type'] ) && $data['ref_type'] == 'post' ) || 
+							( isset( $data['post_type'] ) && $post_type == $data['post_type'] )
+						) {
+							// If the entry is blank continue on to the next
+							if ( trim( $row->entry ) === '' ) continue;
+							// Construct a new data array
+							$new_data = array( 'ref_type' => 'post' );
+							// Add details that will no longer be available
+							$post = get_post( $post_id );
+							$new_data['ID'] = $post->ID;
+							$new_data['post_title'] = $post->post_title;
+							$new_data['post_type'] = $post->post_type;
+							// Save
+							$wpdb->update(
+								$wpdb->prefix . 'myCRED_log',
+								array( 'data' => serialize( $new_data ) ),
+								array( 'id'   => $row->id ),
+								array( '%s' ),
+								array( '%d' )
+							);
+						}
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Handle User Deletions
+		 * @since 1.0.9.2
+		 * @version 1.0
+		 */
+		public function user_deletions( $user_id ) {
+			global $wpdb;
+			// Check log
+			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE user_id = %d ";
+			$records = $wpdb->get_results( $wpdb->prepare( $sql, $user_id ) );
+			// If we have results
+			if ( $wpdb->num_rows > 0 ) {
+				// Loop though them
+				foreach ( $records as $row ) {
+					// Construct a new data array
+					$new_data = array( 'ref_type' => 'user' );
+					// Add details that will no longer be available
+					$user = get_userdata( $user_id );
+					$new_data['ID'] = $user->ID;
+					$new_data['login'] = $user->user_login;
+					$new_data['display_name'] = $user->display_name;
+					// Save
+					$wpdb->update(
+						$wpdb->prefix . 'myCRED_log',
+						array( 'data' => serialize( $new_data ) ),
+						array( 'id'   => $row->id ),
+						array( '%s' ),
+						array( '%d' )
+					);
+				}
+			}
+		}
+		
+		/**
+		 * Handle Comment Deletions
+		 * @since 1.0.9.2
+		 * @version 1.0
+		 */
+		public function comment_deletions( $comment_id ) {
+			global $wpdb;
+			// Check log
+			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref_id = %d ";
+			$records = $wpdb->get_results( $wpdb->prepare( $sql, $comment_id ) );
+			// If we have results
+			if ( $wpdb->num_rows > 0 ) {
+				// Loop though them
+				foreach ( $records as $row ) {
+					// Check if the data column has a serialized array
+					$check = @unserialize( $row->data );
+					if ( $check !== false && $row->data !== 'b:0;' ) {
+						// Unserialize
+						$data = unserialize( $row->data );
+						// If this is a post
+						if ( isset( $data['ref_type'] ) && $data['ref_type'] == 'comment' ) {
+							// If the entry is blank continue on to the next
+							if ( trim( $row->entry ) === '' ) continue;
+							// Construct a new data array
+							$new_data = array( 'ref_type' => 'comment' );
+							// Add details that will no longer be available
+							$comment = get_comment( $comment_id );
+							$new_data['comment_ID'] = $comment->comment_ID;
+							$new_data['comment_post_ID'] = $comment->comment_post_ID;
+							// Save
+							$wpdb->update(
+								$wpdb->prefix . 'myCRED_log',
+								array( 'data' => serialize( $new_data ) ),
+								array( 'id'   => $row->id ),
+								array( '%s' ),
+								array( '%d' )
+							);
+						}
+					}
+				}
+			}
 		}
 	}
 }

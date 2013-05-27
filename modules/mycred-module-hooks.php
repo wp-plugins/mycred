@@ -1298,7 +1298,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 				$user_id,
 				$achievement_data['creds'],
 				$achievement_data['log'],
-				$post_type,
+				$achievement_id,
 				array( 'ref_type' => 'post' )
 			);
 		}
@@ -1329,7 +1329,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 				$user_id,
 				0-$achievement_data['creds'],
 				$achievement_data['deduct_log'],
-				$post_type,
+				$achievement_id,
 				array( 'ref_type' => 'post' )
 			);
 		}

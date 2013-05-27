@@ -174,7 +174,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 				}
 
 				// Adjust Balance
-				$new_balance = $this->core->update_users_cred( $user_id, $cred );
+				$new_balance = $this->core->update_users_balance( $user_id, $cred );
 
 				// Log (if requested with the import file having top priority)
 				if ( ( isset( $row['mycred_log'] ) && !empty( $row['mycred_log'] ) ) || !empty( $log_template ) ) {
