@@ -306,6 +306,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				$url = get_permalink( $post->ID );
 				if ( empty( $url ) ) $url = '#item-has-been-deleted';
 			}
+			else {
+				$url = get_permalink( $post->ID );
+			}
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_post', $content, $data, $post );
@@ -317,8 +320,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = str_replace( '%link_with_title%', '<a href="' . $url . '">' . $post->post_title . '</a>', $content );
 
 			$post_type = get_post_type_object( $post->post_type );
-			$content = str_replace( '%post_type%', $post_type->labels->singular_name, $content );
-			unset( $post_type );
+			if ( $post_type !== NULL ) {
+				$content = str_replace( '%post_type%', $post_type->labels->singular_name, $content );
+				unset( $post_type );
+			}
 
 			//$content = str_replace( '', $post->, $content );
 			unset( $post );
@@ -408,6 +413,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 				$title = get_the_title( $comment->comment_post_ID );
 				if ( empty( $title ) ) $title = __( 'Deleted Item', 'mycred' );
+			}
+			else {
+				$url = get_permalink( $comment->comment_post_ID );
+				$title = get_the_title( $comment->comment_post_ID );
 			}
 
 			// Let others play first
