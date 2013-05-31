@@ -4,7 +4,7 @@ Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.9.2
+Stable tag: 1.0.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,14 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.0.9.3 =
+* Added new template tag %num_members% to show the total number of members on blog.
+* Added support for user related template tags for myCRED Balance widget.
+* Fixed Bug #23 - Misspelled $ref in mycred_add() function.
+* Fixed Bug #24 - Exchange rate returns incorrect value.
+* Fixed Bug #25 - Misspelled the new_reply method name for bbPress Hook.
+* Fixed Bug #26 - Add-on address are incorrect on windows servers.
 
 = 1.0.9.2 =
 * Fixed Bug #22 - BadgeOS Badge ID issue. Critical for BadgeOS users!

@@ -73,7 +73,7 @@ if ( !class_exists( 'myCRED_BuddyPress_bbPress' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function new_replay( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
+		public function new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
 			// Check if user is excluded
 			if ( $this->core->exclude_user( $reply_author ) ) return;
 

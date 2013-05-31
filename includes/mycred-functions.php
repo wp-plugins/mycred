@@ -177,7 +177,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $rate (int|float) the exchange rate to devide by
 		 * @param $round (bool) option to round values, defaults to yes.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function apply_exchange_rate( $amount, $rate = 1, $round = true ) {
 			$amount = $this->number( $amount );
@@ -186,7 +186,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$exchange = $amount/(float) $rate;
 			if ( $round ) $exchange = round( $exchange );
 
-			return $this->format_number( $exchange );
+			return $this->number( $exchange );
 		}
 		
 		/**
@@ -259,6 +259,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// Logout URL
 			$content = str_replace( '%logout_url%',      wp_logout_url(), $content );
 			$content = str_replace( '%logout_url_here%', wp_logout_url( get_permalink() ), $content );
+			
+			// Blog Related
+			$content = str_replace( '%num_members%',     $this->count_members(), $content );
 
 			//$content = str_replace( '', , $content );
 			return $content;
@@ -297,7 +300,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Post does not exist
 			if ( $post === NULL ) {
-				if ( !array_key_exists( 'ID', $data ) ) return $content;
+				if ( !is_array( $data ) || !array_key_exists( 'ID', $data ) ) return $content;
 				$post = new StdClass();
 				foreach ( $data as $key => $value ) {
 					if ( $key == 'post_title' ) $value .= ' (' . __( 'Deleted', 'mycred' ) . ')';
@@ -350,7 +353,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// User does not exist
 			if ( $user === false ) {
-				if ( !array_key_exists( 'ID', $data ) ) return $content;
+				if ( !is_array( $data ) || !array_key_exists( 'ID', $data ) ) return $content;
 				$user = new StdClass();
 				foreach ( $data as $key => $value ) {
 					$user->$key = $value;
@@ -374,8 +377,8 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				$url = get_bloginfo( 'url' ) . '/' . $wp_rewrite->author_base . '/' . urlencode( $user->user_login ) . '/';
 			}
 
-			$content = str_replace( '%display_name%',     $user->display_name, $content );
-			$content = str_replace( '%user_profile_url%', $url, $content );
+			$content = str_replace( '%display_name%',       $user->display_name, $content );
+			$content = str_replace( '%user_profile_url%',   $url, $content );
 			$content = str_replace( '%user_profile_link%',  '<a href="' . $url . '">' . $user->display_name . '</a>', $content );
 
 			//$content = str_replace( '', $user->, $content );
@@ -403,7 +406,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Comment does not exist
 			if ( $comment === NULL ) {
-				if ( !array_key_exists( 'comment_ID', $data ) ) return $content;
+				if ( !is_array( $data ) || !array_key_exists( 'comment_ID', $data ) ) return $content;
 				$comment = new StdClass();
 				foreach ( $data as $key => $value ) {
 					$comment->$key = $value;
@@ -596,6 +599,16 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			if ( $this->in_exclude_list( $user_id ) ) return true;
 
 			return false;
+		}
+
+		/**
+		 * Count Blog Members
+		 * @since 1.1
+		 * @version 1.0
+		 */
+		public function count_members() {
+			global $wpdb;
+			return $wpdb->get_var( "SELECT COUNT(ID) FROM $wpdb->users" );
 		}
 
 		/**
@@ -962,7 +975,7 @@ if ( !function_exists( 'mycred_get_users_fcred' ) ) {
  * @param $data (object|array|string|int), optional extra data to save in the log. Note that arrays gets serialized!
  * @returns boolean true on success or false on fail
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_add' ) ) {
 	function mycred_add( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = '' )
@@ -974,7 +987,7 @@ if ( !function_exists( 'mycred_add' ) ) {
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
 
 		// Add creds
-		return $mycred->add_creds( $pref, $user_id, $amount, $entry, $ref_id, $data, $type );
+		return $mycred->add_creds( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 	}
 }
 

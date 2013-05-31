@@ -142,7 +142,10 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			$addon_search = glob( $addon_location . "*/$prefix*.php" );
 			if ( !empty( $addon_search ) && $addon_search !== false ) {
 				foreach ( $addon_search as $filename ) {
-					$sub_file = str_replace( ABSPATH, '', $filename );
+					// Handle windows
+					$abspath = str_replace( '/', '', ABSPATH );
+					// Remove ABSPATH to prevent long string addresses. Everything starts with wp-content
+					$sub_file = str_replace( array( $abspath, ABSPATH ), '', $filename );
 					// Get File Name
 					preg_match( '/(.{1,})\/(.{1,})/', $sub_file, $matches );
 					$sub_file_name = $matches[2];
@@ -154,7 +157,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 					}
 					// Prevent Duplicates
 					if ( !array_key_exists( $sub_file_name, $installed ) ) {
-						$installed[$this->make_id($sub_file_name)] = $addon_info;
+						$installed[$this->make_id( $sub_file_name )] = $addon_info;
 					}
 				}
 			}
@@ -216,7 +219,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Get Path of Addon
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get_path( $key ) {
 			$installed = $this->installed;

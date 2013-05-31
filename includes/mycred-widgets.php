@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Widget: myCRED Balance
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 	class myCRED_Widget_Balance extends WP_Widget {
@@ -54,6 +54,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 				if ( empty( $balance ) ) $balance = 0;
 
 				$layout = $mycred->template_tags_amount( $instance['cred_format'], $balance );
+				$layout = $mycred->template_tags_user( $layout, $balance );
 				
 				// Include Ranking
 				if ( $instance['show_rank'] ) {

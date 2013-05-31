@@ -415,10 +415,21 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		public function sanitise_preferences( $data ) {
 			$data['sandbox'] = ( !isset( $data['sandbox'] ) ) ? 0 : 1;
 			$data['email_receipt'] = ( !isset( $data['email_receipt'] ) ) ? 0 : 1;
-			$data['exchange'] = ( empty( $data['exchange'] ) ) ? 1 : $data['exchange'];
+			
+			// Exchange can not be empty
+			if ( empty( $data['exchange'] ) ) {
+				$data['exchange'] = 1;
+			}
+			// If exchange is less then 1 we must start with a zero
+			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
+				$data['exchange'] = (float) '0' . $data['exchange'];
+			}
+			// Make sure decimals are marked by a dot and not a comma
+			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
 
 			$data['account_title'] = substr( $data['account_title'], 0, 30 );
 			$data['confirmation_note'] = substr( $data['confirmation_note'], 0, 240 );
+			
 			return $data;
 		}
 	}

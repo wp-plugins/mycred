@@ -375,10 +375,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 */
 		public function POST_to_data() {
 			$data = array();
-			$id = $this->id;
-			$allowed_keys = apply_filters( "mycred_POST_to_data_{$gateway_id}", ( isset( $this->allowed ) ) ? $this->allowed : array() );
 			foreach ( $_POST as $key => $value ) {
-				if ( !in_array( trim( $key ), $allowed_keys ) ) continue;
 				$data[$key] = stripslashes( $value );
 			}
 			return $data;

@@ -685,12 +685,25 @@ if ( !class_exists( 'myCRED_NETbilling' ) ) {
 		 */
 		public function sanitise_preferences( $data ) {
 			$data['sandbox'] = ( isset( $data['sandbox'] ) ) ? 1 : 0;
+			
+			// Exchange can not be empty
+			if ( empty( $data['exchange'] ) ) {
+				$data['exchange'] = 1;
+			}
+			// If exchange is less then 1 we must start with a zero
+			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
+				$data['exchange'] = (float) '0' . $data['exchange'];
+			}
+			// Make sure decimals are marked by a dot and not a comma
+			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
+			
 			$data['disable_avs'] = ( isset( $data['disable_avs'] ) ) ? 1 : 0;
 			$data['disable_cvv2'] = ( isset( $data['disable_cvv2'] ) ) ? 1 : 0;
 			$data['disable_fraud_checks'] = ( isset( $data['disable_fraud_checks'] ) ) ? 1 : 0;
 			$data['disable_negative_db'] = ( isset( $data['disable_negative_db'] ) ) ? 1 : 0;
 			$data['disable_email_receipts'] = ( isset( $data['disable_email_receipts'] ) ) ? 1 : 0;
 			$data['disable_expiration_check'] = ( isset( $data['disable_expiration_check'] ) ) ? 1 : 0;
+			
 			return $data;
 		}
 	}

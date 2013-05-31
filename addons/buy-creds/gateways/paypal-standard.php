@@ -22,8 +22,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 					'account'   => '',
 					'item_name' => __( 'Purchase of myCRED %plural%', 'mycred' ),
 					'exchange'  => 1
-				),
-				'allowed'  => array( 'mc_gross', 'protection_eligibility', 'payer_id', 'tax', 'payment_date', 'payment_status', 'charset', 'first_name', 'mc_fee', 'notify_version', 'custom', 'payer_status', 'business', 'quantity', 'verify_sign', 'payer_email', 'txn_id', 'payment_type', 'last_name', 'receiver_email', 'payment_fee', 'receiver_id', 'txn_type', 'item_name', 'mc_currency', 'item_number', 'residence_country', 'test_ipn', 'handling_amount', 'transaction_subject', 'payment_gross', 'shipping', 'ipn_track_id' )
+				)
 			), $gateway_prefs );
 		}
 
