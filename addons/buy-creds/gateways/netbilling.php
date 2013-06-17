@@ -353,7 +353,7 @@ if ( !class_exists( 'myCRED_NETbilling' ) ) {
 			// Transaction Approved, add creds
 			if ( $this->status == 'approved' ) {
 				// Make sure this transaction is unique
-				if ( $this->transaction_id_is_unique( $trans_id ) ) {
+				if ( !$this->transaction_id_is_unique( $trans_id ) ) {
 					$this->status = 'fail';
 					$this->response = __( 'Duplicate transaction.  Please contact support', 'mycred' );
 					return;
@@ -604,7 +604,6 @@ if ( !class_exists( 'myCRED_NETbilling' ) ) {
 		public function preferences( $buy_creds ) {
 			$prefs = $this->prefs; ?>
 
-					<!--<pre><?php print_r( $this ); ?></pre>-->
 					<label class="subheader" for="<?php echo $this->field_id( 'sandbox' ); ?>"><?php _e( 'Sandbox Mode', 'mycred' ); ?></label>
 					<ol>
 						<li>
@@ -694,7 +693,7 @@ if ( !class_exists( 'myCRED_NETbilling' ) ) {
 			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
 				$data['exchange'] = (float) '0' . $data['exchange'];
 			}
-			// Make sure decimals are marked by a dot and not a comma
+			// Decimal seperator must be punctuation and not comma
 			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
 			
 			$data['disable_avs'] = ( isset( $data['disable_avs'] ) ) ? 1 : 0;

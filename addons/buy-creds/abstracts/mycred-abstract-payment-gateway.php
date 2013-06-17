@@ -273,9 +273,11 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		if ( $this->prefs['sandbox'] ) {
 			echo '<pre>request: ' . print_r( $hidden_fields, true ) . '</pre>';
 			
-			echo '<pre>sales_data: ' . print_r( $this->decode_sales_data( $hidden_fields[$sales_data] ), true ) . '</pre>';
+			if ( !empty( $sales_data ) && isset( $hidden_fields[$sales_data] ) )
+				echo '<pre>sales_data: ' . print_r( $this->decode_sales_data( $hidden_fields[$sales_data] ), true ) . '</pre>';
 			
-			echo '<pre>length: ' . print_r( strlen( $hidden_fields[$sales_data] ), true ) . '</pre>';
+			if ( isset( $hidden_fields[$sales_data] ) )
+				echo '<pre>length: ' . print_r( strlen( $hidden_fields[$sales_data] ), true ) . '</pre>';
 		}
 ?>
 
@@ -334,8 +336,12 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @version 1.0
 		 */
 		public function get_thankyou() {
-			if ( $this->core->buy_creds['thankyou']['use'] == 'page' )
-				return get_permalink( $this->core->buy_creds['thankyou']['page'] );
+			if ( $this->core->buy_creds['thankyou']['use'] == 'page' ) {
+				if ( empty( $this->core->buy_creds['thankyou']['page'] ) )
+					return get_bloginfo( 'url' );
+				else
+					return get_permalink( $this->core->buy_creds['thankyou']['page'] );
+			}
 			else
 				return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['thankyou']['custom'];
 		}
@@ -346,8 +352,12 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @version 1.1
 		 */
 		public function get_cancelled() {
-			if ( $this->core->buy_creds['cancelled']['use'] == 'page' )
-				return get_permalink( $this->core->buy_creds['cancelled']['page'] );
+			if ( $this->core->buy_creds['cancelled']['use'] == 'page' ) {
+				if ( empty( $this->core->buy_creds['cancelled']['page'] ) )
+					return get_bloginfo( 'url' );
+				else
+					return get_permalink( $this->core->buy_creds['cancelled']['page'] );
+			}
 			else
 				return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['cancelled']['custom'];
 		}

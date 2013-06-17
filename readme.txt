@@ -1,10 +1,10 @@
 === myCRED ===
 Contributors: designbymerovingi
 Donate Link: http://mycred.me/donate/
-Tags:points, tokens, credit, management, reward, charge, community, BuddyPress, Jetpack
+Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, ranks, email notice
 Requires at least: 3.1
 Tested up to: 3.5.1
-Stable tag: 1.0.9.3
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,13 +33,14 @@ So we built an adaptive plugin which gives it’s users full control on how poin
 
 **Add-ons:**
 
-Add-ons are custom features that can be enabled individually.
+Your myCRED installation comes packed with optional add-ons, adding further features and third-party plugin support.
 
+* *Email Notices* - Setup email notices for your users and/or admins when a users points balance changes or on specific events, for example when they purchase content set for sale.
 * *Transfer* - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
 * *Import* - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
 * *Sell Content* - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
 * *Buy Creds* - Let your users buy points via PayPal, Skrill or NETbilling.
-* *Gateway* - Allow your users to pay for items in their WooCommerce shopping cart using their point balance.
+* *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
 * *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [bbPress](http://wordpress.org/extend/plugins/bbpress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 
 
@@ -59,6 +60,10 @@ The following third party plugins are supported by default:
 * [Invite Anyone Plugin](http://wordpress.org/extend/plugins/invite-anyone/) - Award users for sending invitations and for each time an invited user accepts and signs up.
 * [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribe using the email saved in their profile.
 * [BadgeOS](http://wordpress.org/extend/plugins/badgeos/) - Award points for any BadgeOS achievement type.
+* [WP-Polls](http://wordpress.org/plugins/wp-polls/) - Award points for users voting in polls.
+* [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
+* [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
+
 
 
 **Further Details**
@@ -121,6 +126,40 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.1 =
+* Added new Email Notices Add-on.
+* Added new Ranks Add-on.
+
+* Added support for WP-Polls plugin.
+* Added support for WP Favorite Posts.
+* Added support for Events Manager plugin.
+
+* Added support for MarketPress (Gateway Add-on).
+* Added Zombaio as Payment Gateway for the buyCRED Add-on.
+* Added filter mycred_label to allow white-labeling of myCRED.
+
+* Added new template tags to: General and User related.
+* Added new shortcode [mycred_link] to award points for users clicking on web links.
+* Added new shortcode [mycred_give] to award x number of points to the current user.
+* Added new shortcode [mycred_send] to send a given user x number of points if the current user can afford it.
+* Added new shortcode [mycred_render_my_rank] to show either a given users rank or the current users rank. Requires Ranks Add-on.
+* Added new shortcode [mycred_users_of_rank] to show all users of a given rank. Requires Ranks Add-on.
+* Added new shortcode [mycred_users_of_all_ranks] to show all users of every published rank in order. Requires Ranks Add-on.
+
+* Added the option to let purchases made with the Sell Content add-on to expire after an x number of hours.
+* Added new shortcode [mycred_sell_this_ajax] to allow sale of content using AJAX. Note this shortcode can only be used once per content.
+* Adjusted the myCRED List Widget to offer the same features as the [mycred_leaderboard] shortcode, adding the option to offset or change order of list.
+* Adjusted the buyCRED Forms submit button location. (Suggested by dambacher)
+* Adjusted the Transfer form with new CSS styling.
+* Adjusted add_points() method to allow admins to change users points balances without making a log entry.
+
+* Renamed the default %rank% template tag to %ranking% to give space for the Ranks Add-on.
+
+* Fixed Bug #27 - Premium Content Author can not see their own content without paying.
+* Fixed Bug #28 - make_purchase() method referencing arguments that does not exist (renamed).
+* Fixed Bug #29 - ABSPATH issue with WP Stage plugin. (Fixed by clariner)
+* Fixed Bug #30 - WooCommerce division by zero error. (Thanks hamzahali)
 
 = 1.0.9.3 =
 * Added new template tag %num_members% to show the total number of members on blog.

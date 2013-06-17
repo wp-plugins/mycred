@@ -160,7 +160,36 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			if ( is_multisite() ) {
 				delete_site_option( 'mycred_network' );
 			}
+			
+			// Delete custom post types
+			$this->delete_post_types();
 			// Good bye.
+		}
+		
+		/**
+		 * Delete Custom Post Types
+		 * Removed custom post types created by myCRED.
+		 * @since 1.1
+		 * @version 1.0
+		 */
+		public function delete_post_types() {
+			$post_types = apply_filters( 'mycred_custom_post_types', array( 'mycred_rank', 'mycred_email_notice' ) );
+			if ( !is_array( $post_types ) ) return;
+
+			foreach ( $post_types as $post_type ) {
+				$args = array(
+					'post_type'      => $post_type,
+					'posts_per_page' => '-1',
+					'post_status'    => 'any',
+					'fields'         => 'ids'
+				);
+				$query = new WP_Query( $args );
+				if ( $query->have_posts() ) {
+					foreach ( $query->posts as $post_id ) {
+						wp_delete_post( $post_id, true );
+					}
+				}
+			}
 		}
 	}
 }
@@ -366,7 +395,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php
 
-			echo '<strong>my</strong>CRED ' . __( 'Setup', 'mycred' );
+			echo '<strong>my</strong>CRED' . ' ' . __( 'Setup', 'mycred' );
 			if ( $this->step !== false )
 				echo ' <span>' . __( 'Step', 'mycred' ) . ' ' . $this->step . ' / 3'; ?></span></h2>
 <?php		// Get View

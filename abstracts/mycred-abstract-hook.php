@@ -118,9 +118,9 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		/**
 		 * Impose Limits Dropdown
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		function impose_limits_dropdown( $pref_id = '' ) {
+		function impose_limits_dropdown( $pref_id = '', $use_select = true ) {
 			$limits = array(
 				''           => __( 'No limit', 'mycred' ),
 				'twentyfour' => __( 'Once every 24 hours', 'mycred' ),
@@ -131,7 +131,10 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 			$limits = apply_filters( 'mycred_hook_impose_limits', $limits );
 
 			echo '<select name="' . $this->field_name( $pref_id ) . '" id="' . $this->field_id( $pref_id ) . '">';
-			echo '<option value="">' . __( 'Select', 'mycred' ) . '</option>';
+			
+			if ( $use_select )
+				echo '<option value="">' . __( 'Select', 'mycred' ) . '</option>';
+
 			foreach ( $limits as $value => $description ) {
 				echo '<option value="' . $value . '"';
 				if ( $this->prefs[$pref_id] == $value ) echo ' selected="selected"';

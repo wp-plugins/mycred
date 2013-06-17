@@ -25,6 +25,8 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 					$this->$key = $value;
 				}
 			}
+			
+			$this->db_name = 'myCRED_log';
 		}
 
 		/**
@@ -177,11 +179,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $rate (int|float) the exchange rate to devide by
 		 * @param $round (bool) option to round values, defaults to yes.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function apply_exchange_rate( $amount, $rate = 1, $round = true ) {
 			$amount = $this->number( $amount );
-			if ( $rate == 1 ) return $amount;
+			if ( !is_numeric( $rate ) || $rate == 1 ) return $amount;
 
 			$exchange = $amount/(float) $rate;
 			if ( $round ) $exchange = round( $exchange );
@@ -243,13 +245,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = apply_filters( 'mycred_parse_tags_general', $content );
 
 			// Singular
-			$content = str_replace( '%singular%',        $this->singular(), $content );
-			$content = str_replace( '%Singular%',        $this->singular(), $content );
+			$content = str_replace( array( '%singular%', '%Singular%' ), $this->singular(), $content );
 			$content = str_replace( '%_singular%',       strtolower( $this->singular() ), $content );
 
 			// Plural
-			$content = str_replace( '%plural%',          $this->plural(), $content );
-			$content = str_replace( '%Plural%',          $this->plural(), $content );
+			$content = str_replace(  array( '%plural%', '%Plural%' ), $this->plural(), $content );
 			$content = str_replace( '%_plural%',         strtolower( $this->plural() ), $content );
 
 			// Login URL
@@ -262,6 +262,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			
 			// Blog Related
 			$content = str_replace( '%num_members%',     $this->count_members(), $content );
+			$content = str_replace( '%blog_name%',       get_bloginfo( 'name' ), $content );
+			$content = str_replace( '%blog_url%',        get_bloginfo( 'url' ), $content );
+			$content = str_replace( '%blog_info%',       get_bloginfo( 'description' ), $content );
+			$content = str_replace( '%admin_email%',     get_bloginfo( 'admin_email' ), $content );
 
 			//$content = str_replace( '', , $content );
 			return $content;
@@ -314,7 +318,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			}
 
 			// Let others play first
-			$content = apply_filters( 'mycred_parse_tags_post', $content, $data, $post );
+			$content = apply_filters( 'mycred_parse_tags_post', $content, $post, $data );
 			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
@@ -343,7 +347,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function template_tags_user( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
@@ -356,12 +360,15 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				if ( !is_array( $data ) || !array_key_exists( 'ID', $data ) ) return $content;
 				$user = new StdClass();
 				foreach ( $data as $key => $value ) {
-					$user->$key = $value;
+					if ( $key == 'login' )
+						$user->user_login = $value;
+					else
+						$user->$key = $value;
 				}
 			}
 
 			// Let others play first
-			$content = apply_filters( 'mycred_parse_tags_user', $content, $data, $user );
+			$content = apply_filters( 'mycred_parse_tags_user', $content, $user, $data );
 			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
@@ -381,6 +388,22 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = str_replace( '%user_profile_url%',   $url, $content );
 			$content = str_replace( '%user_profile_link%',  '<a href="' . $url . '">' . $user->display_name . '</a>', $content );
 
+			$content = str_replace( '%user_nicename%',      ( isset( $user->user_nicename ) ) ? $user->user_nicename : '', $content );
+			$content = str_replace( '%nickname%',           ( isset( $user->nickname ) ) ? $user->nickname : '', $content );
+			$content = str_replace( '%user_email%',         ( isset( $user->user_email ) ) ? $user->user_email : '', $content );
+			$content = str_replace( '%user_url%',           ( isset( $user->user_url ) ) ? $user->user_url : '', $content );
+
+			// Account Related
+			$balance = $this->get_users_cred( $user->ID );
+			$content = str_replace( '%balance%',            $balance, $content );
+			$content = str_replace( '%balance_f%',          $this->format_creds( $balance ), $content );
+			
+			// Ranking
+			if ( !function_exists( 'mycred_get_users_rank' ) )
+				$content = str_replace( array( '%rank%', '%ranking%' ), mycred_rankings_position( $user->ID ), $content );
+			else
+				$content = str_replace( '%ranking%', mycred_rankings_position( $user->ID ), $content );
+			
 			//$content = str_replace( '', $user->, $content );
 			unset( $user );
 
@@ -423,7 +446,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			}
 
 			// Let others play first
-			$content = apply_filters( 'mycred_parse_tags_comment', $content, $data, $comment );
+			$content = apply_filters( 'mycred_parse_tags_comment', $content, $comment, $data );
 			$content = $this->template_tags_general( $content );
 
 			$content = str_replace( '%comment_id%',        $comment->comment_ID, $content );
@@ -618,7 +641,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @version 1.0
 		 */
 		public function get_cred_id() {
-			if ( !isset( $this->cred_id ) )
+			if ( !isset( $this->cred_id ) || empty( $this->cred_id ) )
 				$this->cred_id = 'mycred_default';
 
 			return $this->cred_id;
@@ -681,7 +704,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $ref (string), required reference id
 		 * @param $user_id (int), required id of the user who will get these points
 		 * @param $cred (int|float), required number of creds to give or deduct from the given user.
-		 * @param $ref_id (array), optional array of reference IDs allowing the use of content specific keywords in the log entry
+		 * @param $ref_id (int), optional array of reference IDs allowing the use of content specific keywords in the log entry
 		 * @param $data (object|array|string|int), optional extra data to save in the log. Note that arrays gets serialized!
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
@@ -706,7 +729,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// true (boolean)  - "Yes" let myCRED add points and log the event
 			if ( $execute === true ) {
 				$this->update_users_balance( $user_id, $amount );
-				$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
+				// Only admins can have empty log entries which do not add a log entry
+				if ( ( $this->can_edit_plugin() && empty( $entry ) ) === false )
+					$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
+
 				return true;
 			}
 			// done (string)   - "Already done"
@@ -962,6 +988,19 @@ if ( !function_exists( 'mycred_get_users_fcred' ) ) {
 }
 
 /**
+ * Flush Widget Cache
+ * @since 0.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_flush_widget_cache' ) ) {
+	function mycred_flush_widget_cache( $id = NULL )
+	{
+		if ( $id === NULL ) return;
+		wp_cache_delete( $id, 'widget' );
+	}
+}
+
+/**
  * Add Creds
  * Adds creds to a given user. A refernece ID, user id and amount must be given.
  * Important! This function will not check if the user should be excluded from gaining points, this must
@@ -1009,47 +1048,31 @@ if ( !function_exists( 'mycred_subtract' ) ) {
 }
 
 /**
- * My Balance Shortcode
- * Returns the current users balance.
- * @see http://mycred.me/shortcodes/mycred_my_balance/
- * @since 1.0.9
+ * Count Reference Instances
+ * Counts the total number of occurrences of a specific reference for a user.
+ * @see http://mycred.me/functions/mycred_count_ref_instances/
+ * @param $reference (string) required reference to check
+ * @param $user_id (int) option to check references for a specific user
+ * @uses get_var()
+ * @since 1.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_my_balance' ) ) {
-	function mycred_render_my_balance( $atts )
+if ( !function_exists( 'mycred_count_ref_instances' ) ) {
+	function mycred_count_ref_instances( $reference = '', $user_id = NULL )
 	{
-		extract( shortcode_atts( array(
-			'login'      => NULL,
-			'title'      => '',
-			'title_el'   => 'h1',
-			'balance_el' => 'div'
-		), $atts ) );
+		if ( empty( $reference ) ) return 999999999;
 
-		// Not logged in
-		if ( !is_user_logged_in() ) {
-			if ( $login != NULL )
-				return '<div class="mycred-not-logged-in">' . $login . '</div>';
+		global $wpdb;
 
-			return;
+		if ( $user_id !== NULL ) {
+			return $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d",
+				$reference,
+				$user_id
+			) );
 		}
 
-		$user_id = get_current_user_id();
-		$mycred = mycred_get_settings();
-		if ( $mycred->exclude_user( $user_id ) ) return;
-
-		$output = '<div class="mycred-my-balance-wrapper">';
-
-		// Title
-		if ( !empty( $title ) ) {
-			$output .= '<' . $title_el . '>' . $title . '</' . $title_el . '>';
-		}
-
-		// Balance
-		$balance = $mycred->get_users_cred( $user_id );
-		$output .= '<' . $balance_el . '>' . $mycred->format_creds( $balance ) . '</' . $balance_el . '>';
-		$output .= '</div>';
-
-		return $output;
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s", $reference ) );
 	}
 }
 ?>

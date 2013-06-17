@@ -456,7 +456,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo '<strong>my</strong>CRED ' . __( 'Import', 'mycred' ); ?></h2>
+		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Import', 'mycred' ); ?></h2>
 <?php
 			// Errors
 			if ( !empty( $this->errors ) ) {

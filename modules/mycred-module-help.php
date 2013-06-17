@@ -148,7 +148,7 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 <p><code>%cred%</code> ' . __( 'Balance amount in plain format.', 'mycred' ) . '<br />
 <code>%cred_f%</code> ' . __( 'Balance amount formatted with prefix and/or suffix.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Rank Format:', 'mycred' ) . '</strong></p>
-<p><code>%rank%</code> ' . __( 'The users ranking.', 'mycred' ) . '</p>
+<p><code>%ranking%</code> ' . __( 'The users ranking. Was "%rank%" before version 1.1', 'mycred' ) . '</p>
 <p><strong>' . __( 'History Title:', 'mycred' ) . '</strong></p>
 <p><code>%singular%</code> ' . __( 'or', 'mycred' ) . ' <code>%_singular%</code> ' . $this->core->template_tags_general( __( 'Singular %plural% Name.', 'mycred' ) ) . '<br />
 <code>%plural%</code> ' . __( 'or', 'mycred' ) . ' <code>%_plural%</code> ' . $this->core->template_tags_general( __( 'Plural %plural% Name.', 'mycred' ) ) . '</p>
@@ -169,7 +169,7 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 				'content'	=> '
 <h3>' . __( 'Available Template Tags', 'mycred' ) . '</h3>
 <p><strong>' . __( 'Row Layout:', 'mycred' ) . '</strong></p>
-<p><code>%rank%</code> ' . __( 'The users ranking.', 'mycred' ) . '<br />
+<p><code>%ranking%</code> ' . __( 'The users ranking. Was "%rank%" before version 1.1', 'mycred' ) . '<br />
 <code>%cred%</code> ' . __( 'Balance amount in plain format.', 'mycred' ) . '<br />
 <code>%cred_f%</code> ' . __( 'Balance amount formatted with prefix and/or suffix.', 'mycred' ) . '<br />
 <code>%singular%</code> ' . __( 'or', 'mycred' ) . ' <code>%_singular%</code> ' . $this->core->template_tags_general( __( 'Singular %plural% Name.', 'mycred' ) ) . '<br />

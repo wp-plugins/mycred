@@ -43,7 +43,6 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			else
 				$host = 'www.paypal.com';
 
-			// Filter allowed POST keys
 			$data = $this->POST_to_data();
 
 			// Prep Respons
@@ -378,7 +377,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
 				$data['exchange'] = (float) '0' . $data['exchange'];
 			}
-			// Make sure decimals are marked by a dot and not a comma
+			// Decimal seperator must be punctuation and not comma
 			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
 
 			return $data;

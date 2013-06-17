@@ -162,13 +162,18 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 
 			// Balance
 			$balance = $this->core->get_users_cred( $user->ID );
-			$balance = $this->core->format_creds( $balance ); ?>
+			$balance = $this->core->format_creds( $balance );
+			
+			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() )
+				$req = '(<strong>' . __( 'required', 'mycred' ) . '</strong>)'; 
+			else
+				$req = '(optional)'; ?>
 
 <tr>
 <th scope="row"><label for="myCRED-manual-add-points"><?php echo $label; ?></label></th>
 <td id="myCRED-adjust-users-points">
 <?php echo $this->core->plural(); ?>: <input type="text" name="myCRED-manual-add-points" id="myCRED-manual-add-points" value="<?php echo $this->core->number( 0 ); ?>" size="4" /><br /><br />
-<label for="myCRED-manual-add-description"><?php _e( 'Log description for adjustment', 'mycred' ); ?>  (<strong><?php _e( 'required', 'mycred' ); ?></strong>)</label><br />
+<label for="myCRED-manual-add-description"><?php _e( 'Log description for adjustment', 'mycred' ); ?> <?php echo $req; ?></label><br />
 <input type="text" name="myCRED-manual-add-description" id="myCRED-manual-add-description" value="" class="regular-text" /> <?php submit_button( __( 'Update', 'mycred' ), 'primary medium', 'myCRED_update', '' ); ?>
 </td>
 </tr>

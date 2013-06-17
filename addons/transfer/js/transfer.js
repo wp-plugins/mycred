@@ -10,7 +10,7 @@
  */
 jQuery(function($){
 	// Transfer function
-	var transfer_creds = function( to, creds ) {
+	var transfer_creds = function( to, creds, label ) {
 		$.ajax({
 			type : "POST",
 			data : {
@@ -23,9 +23,18 @@ jQuery(function($){
 			dataType : "JSON",
 			url : myCRED.ajaxurl,
 			// Before we start
-			beforeSend : function() {},
+			beforeSend : function() {
+				// Prevent users from clicking multiple times
+				$('.mycred-click').attr( 'value', myCRED.working );
+				$('.mycred-click').attr( 'disabled', 'disabled' );
+			},
 			// On Successful Communication
 			success    : function( data ) {
+				// Debug - uncomment to use
+				//console.log( data );
+				// Remove disable
+				$('.mycred-click').attr( 'value', label );
+				$('.mycred-click').removeAttr( 'disabled' );
 				// Security token could not be verified.
 				if ( data == 'error_1' ) {
 					alert( myCRED.error_1 );
@@ -104,6 +113,10 @@ jQuery(function($){
 				response( data );
 			});
 		},
+		messages: {
+			noResults: '',
+			results: function() {}
+		},
 		appendTo : 'div.transfer-to'
 	});
 	
@@ -116,14 +129,14 @@ jQuery(function($){
 		//console.log( to );
 
 		// Amount:
-		var amount = $(this).prev().prev();
+		var amount = $(this).prev().children( 'input' );
 		var creds = $(amount).val();
 		// Debug - uncomment to use
 		//console.log( creds );
 
 		// If elements are not emepty attempt transfer
 		if ( to != '' && creds != '' ) {
-			transfer_creds( to, creds );
+			transfer_creds( to, creds, $(this).attr( 'value' ) );
 		}
 	});
 });

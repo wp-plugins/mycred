@@ -126,7 +126,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			
 			$balance = $this->core->get_users_cred( $user_id ); ?>
 
-	<tr id="wp_displayname">
+	<tr id="mycred-users-balance">
 		<td class="label"><?php
 
 			// Balance label
@@ -158,7 +158,14 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				$template = $this->buddypress['balance_template'];
 				$template = str_replace( '%number%', $balance, $template );
 				$template = str_replace( '%creds%', $this->core->format_creds( $balance ), $template );
-				$template = str_replace( '%rank%', mycred_rankings_position( $user_id ), $template );
+				if ( function_exists( 'mycred_get_users_rank' ) ) {
+					$rank_name = mycred_get_users_rank( $user_id );
+					$template = str_replace( '%rank%', $rank_name, $template );
+					$template = str_replace( '%rank_logo%', mycred_get_rank_logo( $rank_name ), $template );
+				}
+				else {
+					$template = str_replace( '%rank%', mycred_rankings_position( $user_id ), $template );
+				}
 			
 				echo '<div id="mycred-my-balance">' . $this->core->template_tags_general( $template ) . '</div>';
 			}
@@ -392,6 +399,8 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 							<label for="<?php echo $this->field_id( 'balance_template' ); ?>"><?php _e( 'Template', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'balance_template' ); ?>" id="<?php echo $this->field_id( 'balance_template' ); ?>" value="<?php echo $settings['balance_template']; ?>" class="long" /></div>
 							<span class="description"><?php _e( 'Available template tags are: %creds%, %number%, %rank%', 'mycred' ); ?></span>
+							<?php if ( function_exists( 'mycred_get_users_rank' ) ) echo '<br /><span class="description">' . __( 'Note that you can also use %rank_logo% to show the feature image of the rank.', 'mycred' ) . '</span>'; ?>
+
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( 'history_location' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% History', 'mycred' ) ); ?></label>

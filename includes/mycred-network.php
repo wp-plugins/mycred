@@ -120,18 +120,19 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 				'master' => 0,
 				'block'  => ''
 			);
-			$prefs = get_site_option( 'mycred_network', $defaults, false ); ?>
+			$prefs = get_site_option( 'mycred_network', $defaults, false );
+			$name = apply_filters( 'mycred_label', myCRED_NAME ); ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><strong>my</strong>CRED <?php _e( 'Network', 'mycred' ); ?></h2>
+		<h2> <?php echo $name . ' ' . __( 'Network', 'mycred' ); ?></h2>
 		<?php
 
 			// Settings Updated
 			if ( isset( $mycred_network['update'] ) )
 				echo '<div class="updated"><p>' . __( 'Network Settings Updated', 'mycred' ) . '</p></div>'; ?>
 
-		<p><?php _e( 'Configure network settings for <strong>my</strong>CRED.', 'mycred' ); ?></p>
+		<p><?php echo sprintf( __( 'Configure network settings for %s.', 'mycred' ), $name ); ?></p>
 		<form method="post" action="" class="">
 			<input type="hidden" name="mycred-token" value="<?php echo wp_create_nonce( 'mycred' ); ?>" />
 			<div class="list-items expandable-li" id="accordion">
@@ -148,14 +149,14 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 							<label for="myCRED-network-"><?php _e( 'No', 'mycred' ); ?></label>
 						</li>
 						<li>
-							<p class="description"><?php _e( 'If enabled, your main site\'s <strong>my</strong>CRED setup will be used for all other sites.', 'mycred' ); ?></p>
+							<p class="description"><?php echo sprintf( __( 'If enabled, your main site\'s %s setup will be used for all other sites.', 'mycred' ), $name ); ?></p>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Site Block', 'mycred' ); ?></label>
 					<ol id="myCRED-network-">
 						<li>
 							<div class="h2"><input type="text" name="mycred_network[block]" id="myCRED-network-block" value="<?php echo $prefs['block']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Comma separated list of blog ids where <strong>my</strong>CRED is to be disabled.', 'mycred' ); ?></span>
+							<span class="description"><?php echo sprintf( __( 'Comma separated list of blog ids where %s is to be disabled.', 'mycred' ), $name ); ?></span>
 						</li>
 					</ol>
 					<?php do_action( 'mycred_network_prefs', $this ); ?>

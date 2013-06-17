@@ -12,12 +12,13 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 		 * Construct
 		 */
 		function myCRED_Widget_Balance() {
+			$name = apply_filters( 'mycred_label', myCRED_NAME );
 			// Basic details about our widget
 			$widget_ops = array( 
 				'classname'   => 'widget-my-cred',
-				'description' => __( 'Show the current users myCRED balance', 'mycred' )
+				'description' => sprintf( __( 'Show the current users %s balance', 'mycred' ), strip_tags( $name ) )
 			);
-			$this->WP_Widget( 'mycred_widget_balance', __( 'myCRED Balance', 'mycred' ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_balance', sprintf( __( '%s Balance', 'mycred' ), $name ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_balance';
 		}
 
@@ -58,7 +59,15 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 				
 				// Include Ranking
 				if ( $instance['show_rank'] ) {
-					$ranking = str_replace( '%rank%', mycred_rankings_position( $user_id ), $instance['rank_format'] );
+					if ( function_exists( 'mycred_get_users_rank' ) ) {
+						$rank_name = mycred_get_users_rank( $user_id );
+						$ranking = str_replace( '%rank%', $rank_name, $instance['rank_format'] );
+						$ranking = str_replace( '%rank_logo%', mycred_get_rank_logo( $rank_name ), $ranking );
+						$ranking = str_replace( '%ranking%', mycred_rankings_position( $user_id ), $ranking );
+					}
+					else {
+						$ranking = str_replace( array( '%rank%', '%ranking%' ), mycred_rankings_position( $user_id ), $instance['rank_format'] );
+					}
 					$ranking = '<div class="myCRED-rank">' . $ranking . '</div>';
 					$layout .= $ranking;
 				}
@@ -152,7 +161,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$history_length = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
 
 			$show_rank = isset( $instance['show_rank'] ) ? $instance['show_rank'] : 0;
-			$rank_format = isset( $instance['rank_format'] ) ? $instance['rank_format'] : '#%rank%';
+			$rank_format = isset( $instance['rank_format'] ) ? $instance['rank_format'] : '#%ranking%';
 			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
 			$message = isset( $instance['message'] ) ? esc_attr( $instance['message'] ) : __( '<a href="%login_url_here%">Login</a> to view your balance.', 'mycred' );
 
@@ -187,9 +196,9 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_rank' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>" value="1"<?php checked( $show_rank, true ); ?> class="checkbox" /> 
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>"><?php _e( 'Include users ranking', 'mycred' ); ?></label><br />
 			<span class="mycred-hidden<?php echo $rank_format_class; ?>">
-				<label for="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>"><?php _e( 'Rank format', 'mycred' ); ?>:</label>
+				<label for="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>"><?php _e( 'Format', 'mycred' ); ?>:</label>
 				<input id="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'rank_format' ) ); ?>" type="text" value="<?php echo $rank_format; ?>" class="widefat" /><br />
-				<small><?php _e( 'This will be appended after their balance. See the help tab for available template tags.', 'mycred' ); ?></small>
+				<small><?php _e( 'This will be appended after the balance. See the help tab for available template tags.', 'mycred' ); ?></small>
 			</span>
 		</p>
 		<!-- History -->
@@ -247,7 +256,8 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$instance['cred_format'] = trim( $new_instance['cred_format'] );
 
 			$instance['show_rank'] = (bool) $new_instance['show_rank'];
-			$instance['rank_format'] = trim( $new_instance['rank_format'] );
+			$rank_format = trim( $new_instance['rank_format'] );
+			$instance['rank_format'] = str_replace( '%rank%', '%ranking%', $rank_format );
 
 			$instance['show_history'] = (bool) $new_instance['show_history'];
 			$instance['history_title'] = trim( $new_instance['history_title'] );
@@ -275,12 +285,13 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 		 * Construct
 		 */
 		function myCRED_Widget_List() {
+			$name = apply_filters( 'mycred_label', myCRED_NAME );
 			// Basic details about our widget
 			$widget_ops = array( 
 				'classname'   => 'widget-mycred-list',
-				'description' => __( 'Show a list of users sorted by their myCRED balance', 'mycred' )
+				'description' => sprintf( __( 'Show a list of users sorted by their %s balance', 'mycred' ), strip_tags( $name ) )
 			);
-			$this->WP_Widget( 'mycred_widget_list', __( 'myCRED List', 'mycred' ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_list', sprintf( __( '%s List', 'mycred' ), $name ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_list';
 		}
 
@@ -295,7 +306,18 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			if ( !$instance['show_visitors'] && !is_user_logged_in() ) return;
 
 			// Get Rankings
-			$rankings = mycred_rankings( array( 'number' => $instance['number'], 'template' => $instance['text'] ) );
+			$args = array(
+				'number'   => $instance['number'],
+				'template' => $instance['text']
+			);
+
+			if ( isset( $instance['order'] ) )
+				$args['order'] = $instance['order'];
+
+			if ( isset( $instance['offset'] ) )
+				$args['offset'] = $instance['offset'];
+
+			$rankings = mycred_rankings( $args );
 			if ( $rankings->have_results() ) {
 				// Settings
 				$mycred = mycred_get_settings();
@@ -326,7 +348,9 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Leaderboard', 'mycred' );
 			$number = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
 			$show_visitors = isset( $instance['show_visitors'] ) ? 1 : 0;
-			$text = isset( $instance['text'] ) ? esc_attr( $instance['text'] ) : '#%rank% %user_profile_link% %cred_f%'; ?>
+			$text = isset( $instance['text'] ) ? esc_attr( $instance['text'] ) : '#%ranking% %user_profile_link% %cred_f%';
+			$offset = isset( $instance['offset'] ) ? esc_attr( $instance['offset'] ) : 0;
+			$order = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC'; ?>
 
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title', 'mycred' ); ?>:</label>
@@ -345,6 +369,28 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			<textarea class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'text' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'text' ) ); ?>" rows="3"><?php echo esc_attr( $text ); ?></textarea>
 			<small><?php _e( 'See the help tab for available template tags.', 'mycred' ); ?></small>
 		</p>
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'offset' ) ); ?>"><?php _e( 'Offset', 'mycred' ); ?>:</label>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'offset' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'offset' ) ); ?>" type="text" value="<?php echo $offset; ?>" size="3" class="align-right" /><br />
+			<small><?php _e( 'Optional offset of order. Use zero to return the first in the list.', 'mycred' ); ?></small>
+		</p>
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'order' ) ); ?>"><?php _e( 'Order', 'mycred' ); ?>:</label> 
+			<select name="<?php echo esc_attr( $this->get_field_name( 'order' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'order' ) ); ?>">
+				<?php
+			$options = array(
+				'ASC' => __( 'Ascending', 'mycred' ),
+				'DESC' => __( 'Descending', 'mycred' )
+			);
+			foreach ( $options as $value => $label ) {
+				echo '<option value="' . $value . '"';
+				if ( $order == $value ) echo ' selected="selected"';
+				echo '>' . $label . '</option>';
+			}
+				?>
+
+			</select>
+		</p>
 <?php
 		}
 
@@ -356,21 +402,16 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			$instance['number'] = (int) $new_instance['number'];
 			$instance['title'] = trim( $new_instance['title'] );
 			$instance['show_visitors'] = $new_instance['show_visitors'];
-			$instance['text'] = $new_instance['text'];
+			
+			$rank_format = trim( $new_instance['text'] );
+			$instance['text'] = str_replace( '%rank%', '%ranking%', $rank_format );
+			
+			$instance['offset'] = $new_instance['offset'];
+			$instance['order'] = $new_instance['order'];
 
 			mycred_flush_widget_cache( 'mycred_widget_list' );
 			return $instance;
 		}
 	}
-}
-/**
- * Flush Widget Cache
- * @since 0.1
- * @version 1.0
- */
-function mycred_flush_widget_cache( $id = NULL )
-{
-	if ( $id === NULL ) return;
-	wp_cache_delete( $id, 'widget' );
 }
 ?>

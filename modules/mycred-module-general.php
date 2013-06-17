@@ -44,7 +44,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo '<strong>my</strong>CRED ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
+		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
 		<div id="mycred-social">
 			<a href="https://www.facebook.com/myCRED" class="zocial facebook" target="_blank">Facebook</a>
 			<a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="zocial googleplus" target="_blank">Google Plus</a>

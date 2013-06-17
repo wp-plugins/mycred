@@ -21,6 +21,7 @@ require_once( myCRED_PURCHASE_DIR . 'abstracts/mycred-abstract-payment-gateway.p
 require_once( myCRED_PURCHASE_DIR . 'gateways/paypal-standard.php' );
 require_once( myCRED_PURCHASE_DIR . 'gateways/netbilling.php' );
 require_once( myCRED_PURCHASE_DIR . 'gateways/skrill.php' );
+require_once( myCRED_PURCHASE_DIR . 'gateways/zombaio.php' );
 /**
  * myCRED_Buy_CREDs class
  *
@@ -82,11 +83,16 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			/**
 			 * Init Gateway
 			 */
-			if ( isset( $_REQUEST['mycred_call'] ) || ( isset( $_REQUEST['mycred_buy'] ) && is_user_logged_in() ) ) {
-				$gateway_id = ( isset( $_REQUEST['mycred_call'] ) ) ? $_REQUEST['mycred_call'] : $_REQUEST['mycred_buy'];
-				if ( array_key_exists( $gateway_id, $installed ) && $this->is_active( $gateway_id ) ) {
-					$class = $installed[$gateway_id]['callback'][0];
-					$gateway = new $class( $this->gateway_prefs );
+			if ( isset( $_REQUEST['mycred_call'] ) || ( isset( $_REQUEST['mycred_buy'] ) && is_user_logged_in() ) || ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) ) {
+				if ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) {
+					$gateway = new myCRED_Zombaio( $this->gateway_prefs );
+				}
+				else {
+					$gateway_id = ( isset( $_REQUEST['mycred_call'] ) ) ? $_REQUEST['mycred_call'] : $_REQUEST['mycred_buy'];
+					if ( array_key_exists( $gateway_id, $installed ) && $this->is_active( $gateway_id ) ) {
+						$class = $installed[$gateway_id]['callback'][0];
+						$gateway = new $class( $this->gateway_prefs );
+					}
 				}
 			}
 
@@ -95,7 +101,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			 * Next we check to see if there is a purchase request, either made locally though
 			 * a form submission or by gateways calling remotly (see PayPal).
 			 */
-			if ( isset( $_REQUEST['mycred_call'] ) ) {
+			if ( isset( $_REQUEST['mycred_call'] ) || ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) ) {
 				$gateway->process();
 			}
 
@@ -135,6 +141,10 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			$installed['skrill'] = array(
 				'title'    => __( 'Skrill (Moneybookers)' ),
 				'callback' => array( 'myCRED_Skrill' )
+			);
+			$installed['zombaio'] = array(
+				'title'    => __( 'Zombaio' ),
+				'callback' => array( 'myCRED_Zombaio' )
 			);
 			$installed = apply_filters( 'mycred_setup_gateways', $installed );
 
@@ -302,7 +312,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo '<strong>my</strong>CRED ' . __( 'Payment Gateways', 'mycred' ); ?></h2>
+		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Payment Gateways', 'mycred' ); ?></h2>
 		<p><?php echo $this->core->template_tags_general( __( 'Select the payment gateways you want to offer your users to buy %plural%.', 'mycred' ) ); ?></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-gateways' ); ?>
@@ -495,7 +505,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		 * Render Shortcode Form
 		 * Returns an advanced version allowing for further customizations.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function render_shortcode_form( $atts, $content = '' ) {
 			// Make sure the add-on has been setup
@@ -570,8 +580,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 
 			// Start constructing form with title and submit button
 			$form = '
-<form method="post" action="" class="' . implode( ' ', $classes ) . '">
-	<input type="submit" name="submit" value="' . $button . '" class="mycred-buy button large" />';
+<form method="post" action="" class="' . implode( ' ', $classes ) . '">';
 
 			// Gifting a specific user or post author
 			if ( $buy_author ) {
@@ -678,6 +687,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 
 			$form .= '
 	<input type="hidden" name="token" value="' . wp_create_nonce( 'mycred-buy-creds' ) . '" />
+	<input type="submit" name="submit" value="' . $button . '" class="mycred-buy button large" />
 </form>';
 
 			return $form;

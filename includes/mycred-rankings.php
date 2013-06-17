@@ -30,7 +30,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 				'order'        => 'DESC',
 				'allowed_tags' => '',
 				'meta_key'     => $mycred->get_cred_id(),
-				'template'     => '#%rank% %user_profile_link% %cred_f%'
+				'template'     => '#%ranking% %user_profile_link% %cred_f%'
 			) );
 			$this->frequency = 12 * HOUR_IN_SECONDS;
 
@@ -179,7 +179,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		 */
 		public function get_display() {
 			// Default template
-			if ( empty( $this->args['template'] ) ) $this->args['template'] = '#%rank% %user_profile_link% %cred_f%';
+			if ( empty( $this->args['template'] ) ) $this->args['template'] = '#%ranking% %user_profile_link% %cred_f%';
 
 			// Organized list
 			$output = '<ol class="myCRED-leaderboard">';
@@ -201,7 +201,6 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 				// Template Tags
 				$layout = str_replace( '%rank%', $position+1, $this->args['template'] );
 
-				$layout = $this->core->template_tags_general( $layout );
 				$layout = $this->core->template_tags_amount( $layout, $row['creds'] );
 				$layout = $this->core->template_tags_user( $layout, $row['user_id'], $row );
 
@@ -261,26 +260,6 @@ if ( !function_exists( 'mycred_rankings_position' ) ) {
 			}
 		}
 		return '';
-	}
-}
-
-/**
- * Render Leaderboard Shortcode
- * @since 0.1
- * @version 1.0
- */
-if ( !function_exists( 'mycred_render_leaderboard' ) ) {
-	function mycred_render_leaderboard( $attr, $content ) {
-		if ( !isset( $attr['template'] ) ) $attr['template'] = $content;
-		$rankings = mycred_rankings( $attr );
-
-		// Have results
-		if ( $rankings->have_results() )
-			return $rankings->get_display();
-
-		// No result template is set
-		if ( isset( $attr['no-results'] ) && !empty( $attr['no-results'] ) )
-			return $rankings->core->template_tags_general( $attr['no-results'] );
 	}
 }
 

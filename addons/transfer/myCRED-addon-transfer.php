@@ -51,7 +51,8 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				'add_to_core' => true
 			) );
 
-			add_action( 'mycred_help',           array( $this, 'help' ), 10, 2 );
+			add_action( 'mycred_help',              array( $this, 'help' ), 10, 2          );
+			add_filter( 'mycred_email_before_send', array( $this, 'email_notices' ), 10, 2 );
 		}
 
 		/**
@@ -125,6 +126,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$base = array(
 				'ajaxurl'   => admin_url( 'admin-ajax.php' ),
 				'user_id'   => get_current_user_id(),
+				'working'   => __( 'Processing...', 'mycred' ),
 				'token'     => wp_create_nonce( 'mycred-transfer-creds' ),
 				'atoken'    => wp_create_nonce( 'mycred-autocomplete' )
 			);
@@ -319,7 +321,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			if ( $amount == $this->core->number( 0 ) ) die( json_encode( 'error_5' ) );
 
 			// Check funds
-			if ( mycred_user_can_transfer( $from, $amount ) == 'low' ) die( json_encode( 'error_7' ) );
+			if ( mycred_user_can_transfer( $from, $amount ) === 'low' ) die( json_encode( 'error_7' ) );
 
 			$today = date_i18n( 'd' );
 			$this_week = date_i18n( 'W' );
@@ -380,7 +382,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			}
 
 			// Let others play before we execute the transfer
-			do_action( 'mycred_transfer_ready', $this->core, $ruser );
+			do_action( 'mycred_transfer_ready', $prefs, $this->core );
 
 			// Generate Transaction ID for our records
 			$transaction_id = 'TXID' . date_i18n( 'U' );
@@ -412,7 +414,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			);
 
 			// Let others play once transaction is completed
-			do_action( 'mycred_transfer_completed', $this->core );
+			do_action( 'mycred_transfer_completed', $prefs, $this->core );
 
 			// Clean up and die
 			unset( $this );
@@ -448,6 +450,19 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			}
 
 			die( json_encode( $results ) );
+		}
+
+		/**
+		 * Support for Email Notices
+		 * @since 1.1
+		 * @version 1.0
+		 */
+		public function email_notices( $data ) {
+			if ( $data['request']['ref'] == 'transfer' ) {
+				$message = $data['message'];
+				$data['message'] = $this->core->template_tags_user( $message, $data['request']['ref_id'] );
+			}
+			return $data;
 		}
 
 		/**
@@ -491,7 +506,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 				'classname'   => 'widget-my-cred-transfer',
 				'description' => __( 'Allow transfers between users.', 'mycred' )
 			);
-			$this->WP_Widget( 'mycred_widget_transfer', __( 'myCRED Transfer', 'mycred' ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_transfer', sprintf( __( '%s Transfer', 'mycred' ), apply_filters( 'mycred_label', myCRED_NAME ) ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_transfer';
 		}
 
@@ -679,7 +694,17 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 		// If content is passed on.
 		if ( $content !== NULL && !empty( $content ) )
-			$output .= '<p>' . nl2br( $content ) . '</p>';
+			$output .= $content;
+
+		if ( !empty( $mycred->before ) )
+			$before = $mycred->before . ' ';
+		else
+			$before = '';
+		
+		if ( !empty( $mycred->after ) )
+			$after = ' ' . $mycred->after;
+		else
+			$after = '';
 
 		// Main output
 		$output .= '
@@ -688,12 +713,12 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 			<label>' . __( 'To:', 'mycred' ) . '</label>
 			<div class="transfer-to">' . $to_input . '</div>
 		</li>
-		<li class="mycred-send-details">
+		<li class="mycred-send-amount">
 			<label>' . __( 'Amount:', 'mycred' ) . '</label>
-			<span class="mycred-before">' . $mycred->before . '</span> 
-			<input type="text" class="short" name="mycred-transfer-amount" value="' . $mycred->format_number( 0 ) . '" size="8" /> 
-			<span class="mycred-after">' . $mycred->after . '</span> 
-			<input type="button" class="button large button-large mycred-click" value="' . $pref['templates']['button'] . '" />';
+			<div>' . $before . '<input type="text" class="short" name="mycred-transfer-amount" value="' . $mycred->format_number( 0 ) . '" size="8" />' . $after . '</div> 
+			<input type="button" class="button large button-large mycred-click" value="' . $pref['templates']['button'] . '" />
+		</li>
+		';
 
 		$extras = array();
 
@@ -713,11 +738,10 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 		// No need to include this if extras is empty
 		if ( !empty( $extras ) ) {
-			$output .= '<br /><div class="mycred-transfer-info"><p>' . implode( '</p><p>', $extras ) . '</p></div>';
+			$output .= '<li class="mycred-transfer-info"><p>' . implode( '</p><p>', $extras ) . '</p></li>';
 		}
 
 		$output .= '
-		</li>
 	</ol>' . "\n";
 
 		// Return result
@@ -726,7 +750,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 		unset( $mycred );
 		unset( $output );
-		return $result;
+		return do_shortcode( $result );
 	}
 }
 
@@ -742,7 +766,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
  * @version 1.1
  */
 if ( !function_exists( 'mycred_user_can_transfer' ) ) {
-	function mycred_user_can_transfer( $user_id, $amount = NULL )
+	function mycred_user_can_transfer( $user_id = NULL, $amount = NULL )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
@@ -754,6 +778,9 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 
 		// To low balance
 		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
+		if ( !is_numeric( $account_limit ) )
+			$account_limit = 0;
+
 		if ( $amount !== NULL ) {
 			if ( $balance-$amount < $account_limit ) return 'low';
 		} else {

@@ -131,7 +131,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Get Addons
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function get( $save = false ) {
 			$prefix = 'myCRED-addon-';
@@ -142,10 +142,15 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			$addon_search = glob( $addon_location . "*/$prefix*.php" );
 			if ( !empty( $addon_search ) && $addon_search !== false ) {
 				foreach ( $addon_search as $filename ) {
-					// Handle windows
-					$abspath = str_replace( '/', '', ABSPATH );
-					// Remove ABSPATH to prevent long string addresses. Everything starts with wp-content
-					$sub_file = str_replace( array( $abspath, ABSPATH ), '', $filename );
+					// Handle windows and WP Stage support by clariner
+					if ( !defined( 'WP_STAGE' ) ) {
+						$abspath = str_replace( '/', '', ABSPATH );
+						// Remove ABSPATH to prevent long string addresses. Everything starts with wp-content
+						$sub_file = str_replace( array( $abspath, ABSPATH ), '', $filename );
+					}
+					else {
+						$sub_file = $filename;
+					}
 					// Get File Name
 					preg_match( '/(.{1,})\/(.{1,})/', $sub_file, $matches );
 					$sub_file_name = $matches[2];
@@ -219,13 +224,17 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Get Path of Addon
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function get_path( $key ) {
 			$installed = $this->installed;
 			if ( array_key_exists( $key, $installed ) ) {
 				$file = $installed[$key]['file'];
-				return ABSPATH . $installed[$key]['folder'] . $file;
+				// WP Stage Support by clariner
+				if ( !defined( 'WP_STAGE' ) )
+					return ABSPATH . $installed[$key]['folder'] . $file;
+				else
+					return $installed[$key]['folder'] . $file;
 			}
 			return '';
 		}
@@ -252,7 +261,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo '<strong>my</strong>CRED ' . __( 'Add-ons', 'mycred' ); ?></h2>
+		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Add-ons', 'mycred' ); ?></h2>
 		<p><?php _e( 'Add-ons can expand your current installation with further features.', 'mycred' ); ?></p>
 		<div class="list-items expandable-li" id="accordion">
 <?php

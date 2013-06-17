@@ -79,7 +79,6 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 			$error = false;
 			$log_entry = array();
 
-			// Filter allowed POST keys
 			$data = $this->POST_to_data();
 			if ( $this->prefs['sandbox'] ) {
 				$log_entry[] = 'Incoming Test IPN Call at ' . date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
@@ -424,7 +423,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
 				$data['exchange'] = (float) '0' . $data['exchange'];
 			}
-			// Make sure decimals are marked by a dot and not a comma
+			// Decimal seperator must be punctuation and not comma
 			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
 
 			$data['account_title'] = substr( $data['account_title'], 0, 30 );

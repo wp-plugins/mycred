@@ -313,7 +313,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			else
 				$search_for = '';
 
-			echo __( '<strong>my</strong>CRED ', 'mycred' ) . $title . ' ' . $link . $search_for;
+			echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . $title . ' ' . $link . $search_for;
 		}
 
 		/**
@@ -560,7 +560,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 					// Add details that will no longer be available
 					$user = get_userdata( $user_id );
 					$new_data['ID'] = $user->ID;
-					$new_data['login'] = $user->user_login;
+					$new_data['user_login'] = $user->user_login;
 					$new_data['display_name'] = $user->display_name;
 					// Save
 					$wpdb->update(

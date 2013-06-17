@@ -41,7 +41,15 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 				// Define user set variables
 				$this->title 		 = $this->get_option( 'title' );
 				$this->description   = $this->get_option( 'description' );
-				$this->exchange_rate = ( $this->use_exchange() ) ? (float) $this->get_option( 'exchange_rate' ) : 1;
+				if ( $this->use_exchange() )
+					$exchange_rate = (float) $this->get_option( 'exchange_rate' );
+				else
+					$exchange_rate = 1;
+				
+				if ( !is_numeric( $exchange_rate ) )
+					$exchange_rate = 1;
+				
+				$this->exchange_rate = $exchange_rate;
 				$this->log_template  = $this->get_option( 'log_template' );
 
 				// Actions
