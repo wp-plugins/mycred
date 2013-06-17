@@ -64,8 +64,6 @@ The following third party plugins are supported by default:
 * [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
 * [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
 
-
-
 **Further Details**
 
 * [Features](http://mycred.me/about/features/)
@@ -84,6 +82,8 @@ The following third party plugins are supported by default:
 
 
 == Installation ==
+
+For a comprehensive guide on how to install myCRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
 
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
