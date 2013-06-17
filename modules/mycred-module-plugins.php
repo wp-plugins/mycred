@@ -818,7 +818,7 @@ if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && function_exists( 'wp_favorite_
  * @version 1.0
  */
 if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_init' ) ) {
-	class myCRED_Hook_Events_Manager extends myCRED_Hooks {
+	class myCRED_Hook_Events_Manager extends myCRED_Hook {
 
 		/**
 		 * Construct
