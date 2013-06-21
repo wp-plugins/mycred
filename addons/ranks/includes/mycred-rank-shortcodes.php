@@ -53,6 +53,7 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 			'login'   => '',
 			'number'  => NULL,
 			'wrap'    => 'div',
+			'col'     => 1,
 			'nothing' => __( 'No users found with this rank', 'mycred' )
 		), $atts ) );
 		
@@ -72,7 +73,7 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 		$rank = get_post( $rank_id );
 		// Make sure rank exist
 		if ( $rank !== NULL ) {
-			if ( $row_template === NULL )
+			if ( $row_template === NULL || empty( $row_template ) )
 				$row_template = '<p class="user-row">%user_profile_link% with %balance% %_plural%</p>';
 
 			// Let others play
@@ -80,15 +81,31 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 			// Get users of this rank if there are any
 			$users = mycred_get_users_of_rank( $rank_id, $number );
 			if ( !empty( $users ) ) {
-				$output .= '<' . $wrap . ' class="mycred-users-of-rank-wrapper">';
+				// Add support for table
+				if ( $wrap != 'table' && !empty( $wrap ) )
+					$output .= '<' . $wrap . ' class="mycred-users-of-rank-wrapper">';
+				
+				// Loop
 				foreach ( $users as $user_id ) {
 					$output .= $mycred->template_tags_user( $row_template, $user_id );
 				}
-				$output .= '</' . $wrap . '>' . "\n";
+				
+				// Add support for table
+				if ( $wrap != 'table' && !empty( $wrap ) )
+					$output .= '</' . $wrap . '>' . "\n";
 			}
 			// No users found
 			else {
-				$output .= '<p>' . $nothing . '</p>' . "\n";
+				// Add support for table
+				if ( $wrap == 'table' ) {
+					$output .= '<tr><td';
+					if ( $col > 1 ) $output .= ' colspan="' . $col . '"';
+					$output .= '>' . $nothing . '</td></tr>';
+				}
+				else {
+					if ( empty( $wrap ) ) $wrap = 'p';
+					$output .= '<' . $wrap . '>' . $nothing . '</' . $wrap . '>' . "\n";
+				}
 			}
 		}
 		
@@ -122,7 +139,7 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 		if ( !empty( $login ) && !is_user_logged_in() ) return $mycred->template_tags_general( $login );
 		
 		// Default template
-		if ( $row_template === NULL )
+		if ( $row_template === NULL || empty( $row_template ) )
 			$row_template = '<p class="mycred-rank-user-row">%user_profile_link% with %balance% %_plural%</p>';
 		
 		// Let others play
@@ -161,6 +178,47 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 				$output .= '</div>' . "\n";
 			}
 			$output .= '</div>';
+		}
+		
+		return $output;
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_list_ranks
+ * Returns a list of ranks with minimum and maximum point requirements.
+ * @see http://mycred.me/shortcodes/mycred_list_ranks/
+ * @since 1.1.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_rank_list' ) ) {
+	function mycred_render_rank_list( $atts, $content = NULL )
+	{
+		extract( shortcode_atts( array(
+			'order' => 'DESC',
+			'wrap'  => 'div'
+		), $atts ) );
+		
+		if ( $content === NULL || empty( $content ) )
+			$content = '<p>%rank% <span class="min">%min%</span> - <span class="max">%max%</span></p>';
+		
+		$mycred = mycred_get_settings();
+
+		$output = '';
+		$all_ranks = mycred_get_ranks( 'publish', '-1', $order );
+		if ( !empty( $all_ranks ) ) {
+			$output .= '<' . $wrap . ' class="mycred-rank-list">';
+			$content = apply_filters( 'mycred_rank_list', $content, $atts, $mycred );
+			foreach ( $all_ranks as $rank_id => $rank ) {
+				$row = str_replace( '%rank%', $rank->post_title, $content );
+				$row = str_replace( '%rank_logo%', mycred_get_rank_logo( $rank_id ), $row );
+				$row = str_replace( '%min%', get_post_meta( $rank_id, 'mycred_rank_min', true ), $row );
+				$row = str_replace( '%max%', get_post_meta( $rank_id, 'mycred_rank_max', true ), $row );
+				$row = str_replace( '%count%', count( mycred_get_users_of_rank( $rank_id ) ), $row );
+				$row = $mycred->template_tags_general( $row );
+				$output .= $row . "\n";
+			}
+			$output .= '</' . $wrap . '>';
 		}
 		
 		return $output;

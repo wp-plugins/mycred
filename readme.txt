@@ -1,7 +1,7 @@
 === myCRED ===
 Contributors: designbymerovingi
 Donate Link: http://mycred.me/donate/
-Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, ranks, email notice
+Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack
 Requires at least: 3.1
 Tested up to: 3.5.1
 Stable tag: 1.1
@@ -39,7 +39,8 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 * *Transfer* - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
 * *Import* - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
 * *Sell Content* - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
-* *Buy Creds* - Let your users buy points via PayPal, Skrill or NETbilling.
+* *Buy Creds* - Let your users buy points via PayPal, Skrill, Zombaio or NETbilling.
+* *Ramls* - Allows you to setup ranks based on your users points balance.
 * *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
 * *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [bbPress](http://wordpress.org/extend/plugins/bbpress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 
@@ -64,6 +65,8 @@ The following third party plugins are supported by default:
 * [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
 * [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
 
+
+
 **Further Details**
 
 * [Features](http://mycred.me/about/features/)
@@ -82,8 +85,6 @@ The following third party plugins are supported by default:
 
 
 == Installation ==
-
-For a comprehensive guide on how to install myCRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
 
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
@@ -126,6 +127,18 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Changelog ==
+
+= 1.1.1 =
+* Added [mycred_list_ranks] to Ranks Add-on.
+* Added option to set if ranks should be displayed Ascending or Descending.
+* Added support for 'content', 'excerpt', 'custom-fields' and 'page-attributes' for Ranks.
+* Added Rank column in User list.
+* Adjusted Ranks add-on to update all users ranks when an already published rank gets updated.
+* Adjusted [mycred_users_of_rank] to support table outputs.
+
+* Fixed Bug #31 - Language files are not loaded.
+* Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
+* Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
 
 = 1.1 =
 * Added new Email Notices Add-on.

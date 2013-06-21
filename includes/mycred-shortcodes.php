@@ -259,8 +259,9 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
 		
 		if ( $to == 'author' ) {
 			// You can not use this outside the loop
-			if ( !is_single() ) return;
-			$to = $GLOBALS['post']->post_author;
+			$author = get_the_author_meta( 'ID' );
+			if ( empty( $author ) ) $author = $GLOBALS['post']->post_author;
+			$to = $author;
 		}
 		
 		global $mycred_sending_points;

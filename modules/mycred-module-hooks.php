@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 // Subscription Related Hooks
 include_once( myCRED_MODULES_DIR . 'mycred-module-subscriptions.php' );
 // Third-Party Plugin Hooks
-include_once( myCRED_MODULES_DIR . 'mycred-module-plugins.php' );
+require_once( myCRED_MODULES_DIR . 'mycred-module-plugins.php' );
 /**
  * myCRED_Hooks class
  * @since 0.1
@@ -40,7 +40,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function module_pre_init() {
+		public function module_init() {
 			if ( !empty( $this->installed ) ) {
 				foreach ( $this->installed as $key => $gdata ) {
 					if ( $this->is_active( $key ) && isset( $gdata['callback'] ) ) {
@@ -58,6 +58,9 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 */
 		public function call( $call, $callback, $return = NULL ) {
 			// Class
+			//if ( is_array( $callback ) && class_exists( $callback[0] ) )
+			//	include_once( get_stylesheet_directory() . '/functions.php' );
+
 			if ( is_array( $callback ) && class_exists( $callback[0] ) ) {
 				$class = $callback[0];
 				$methods = get_class_methods( $class );

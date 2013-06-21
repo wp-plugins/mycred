@@ -729,8 +729,8 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// true (boolean)  - "Yes" let myCRED add points and log the event
 			if ( $execute === true ) {
 				$this->update_users_balance( $user_id, $amount );
-				// Only admins can have empty log entries which do not add a log entry
-				if ( ( $this->can_edit_plugin() && empty( $entry ) ) === false )
+				
+				if ( !empty( $entry ) )
 					$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 
 				return true;

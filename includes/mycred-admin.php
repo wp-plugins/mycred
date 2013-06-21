@@ -149,6 +149,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 * @version 1.0
 		 */
 		public function adjust_users_balance( $user ) {
+			global $mycred_errors;
 			// Editors can not edit their own creds
 			if ( !$this->core->can_edit_creds() ) return;
 			// Make sure we do not want to exclude this user
@@ -175,6 +176,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 <?php echo $this->core->plural(); ?>: <input type="text" name="myCRED-manual-add-points" id="myCRED-manual-add-points" value="<?php echo $this->core->number( 0 ); ?>" size="4" /><br /><br />
 <label for="myCRED-manual-add-description"><?php _e( 'Log description for adjustment', 'mycred' ); ?> <?php echo $req; ?></label><br />
 <input type="text" name="myCRED-manual-add-description" id="myCRED-manual-add-description" value="" class="regular-text" /> <?php submit_button( __( 'Update', 'mycred' ), 'primary medium', 'myCRED_update', '' ); ?>
+<?php if ( $mycred_errors ) echo '<p style="color:red;">' . __( 'Description is required!', 'mycred' ) . '</p>'; ?>
 </td>
 </tr>
 <?php if ( IS_PROFILE_PAGE ) return; ?>
@@ -193,16 +195,26 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 * @version 1.0
 		 */
 		public function adjust_points_manually( $user_id ) {
-			// All the reasons we should bail
-			if ( !$this->core->can_edit_creds() ) return;
-			if ( $this->core->exclude_user( $user_id ) === true ) return;
-			if ( !isset( $_POST['myCRED-manual-add-points'] ) || !isset( $_POST['myCRED-manual-add-description'] ) ) return;
-			if ( empty( $_POST['myCRED-manual-add-description'] ) ) return;
+			global $mycred_errors;
 
+			// All the reasons we should bail
+			if ( !$this->core->can_edit_creds() || $this->core->exclude_user( $user_id ) ) return false;
+			if ( !isset( $_POST['myCRED-manual-add-points'] ) || !isset( $_POST['myCRED-manual-add-description'] ) ) return false;
+			
 			// Add new creds
 			$cred = $_POST['myCRED-manual-add-points'];
 			$entry = $_POST['myCRED-manual-add-description'];
 			$data = apply_filters( 'mycred_manual_change', array( 'type' => 'user' ), $this );
+			
+			// If person editing points can edit points but can not edit the plugin
+			// a description must be set!
+			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() ) {
+				if ( empty( $entry ) ) {
+					$mycred_errors = true;
+					return false;
+				}
+			}
+			
 			$this->core->add_creds( 'manual', $user_id, $cred, $entry, get_current_user_id(), $data );
 		}
 	}

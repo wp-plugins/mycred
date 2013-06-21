@@ -3,17 +3,17 @@
 Plugin Name: myCRED
 Plugin URI: http://mycred.me
 Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
-Version: 1.1
-Tags: points, tokens, credit, management, reward, charge, buddypress, jetpack, ranks, email notice, buy, sell
+Version: 1.1.1
+Tags: points, tokens, credit, management, reward, charge
 Author: Gabriel S Merovingi
 Author URI: http://www.merovingi.com
-Author Email: support@mycred.me
+Author Email: mycred@merovingi.com
 Requires at least: WP 3.1
 Tested up to: WP 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
-define( 'myCRED_VERSION',      '1.1' );
+define( 'myCRED_VERSION',      '1.1.1' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -61,27 +61,24 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			// Make sure we are ready
 			if ( !$this->ready() ) return;
 
-			// Load these only when ready
-			require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
-			require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
-
 			// Load
 			$this->load();
 
-			// Localization
-			add_action( 'plugins_loaded',   array( $this, 'pre_init' )            );
+			// Plugins Loaded (attempt to run last so others can load before us)
+			add_action( 'plugins_loaded',   array( $this, 'wp_ready' ), 999       );
 
-			// Inits
+			// Init
 			add_action( 'init',             array( $this, 'init_mycred' )         );
 
+			// Admin Init
 			if ( is_admin() )
 				add_action( 'admin_init',   array( $this, 'admin_init_mycred' )   );
 
+			// Widget Init
 			add_action( 'widgets_init',     array( $this, 'widgets_init_mycred' ) );
-			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
 
-			// Pre Init
-			do_action( 'mycred_pre_init' );
+			// Add key reset to cron
+			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
 
 			// Clean up
 			$this->clean_up();
@@ -222,6 +219,25 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 * @version 2.0
 		 */
 		function load() {
+			// Rankings
+			require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
+			
+			// Shortcodes
+			require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
+			
+			// Abstract Classes
+			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
+			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
+		}
+
+		/**
+		 * WordPress Ready
+		 * @since 0.1
+		 * @version 3.1
+		 */
+		function wp_ready() {
+			load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+
 			// Load Modules
 			$modules = apply_filters( 'mycred_modules', array(
 				'addons'  => array( 'class' => 'myCRED_Addons' ),
@@ -232,10 +248,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			) );
 
 			if ( !empty( $modules ) ) {
-
-				// Load Abstracts
-				require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
-				require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
 
 				// Include, init and load each module
 				foreach ( $modules as $id => $data ) {
@@ -249,24 +261,23 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 					// Load class
 					if ( isset( $data['class'] ) ) {
 						$class = $data['class'];
+						if ( !class_exists( $class ) ) continue;
 						$module = new $class();
 						$module->load(); 
+					}
+					// Load function
+					elseif ( isset( $data['function'] ) ) {
+						$function = $data['function'];
+						if ( !function_exists( $function ) ) continue;
+						$function( 'load' );
 					}
 				}
 				// Clean up
 				unset( $modules );
 			}
-		}
-
-		/**
-		 * Pre Init (Plugins Loaded)
-		 * @since 0.1
-		 * @version 3.0
-		 */
-		function pre_init() {
-			load_plugin_textdomain( 'mycred', false, myCRED_LANG_DIR );
-
-			do_action( 'mycred_plugins_loaded' );
+			
+			// First Custom Hook
+			do_action( 'mycred_pre_init' );
 		}
 
 		/**
