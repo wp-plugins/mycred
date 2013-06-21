@@ -76,9 +76,13 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			add_filter( 'pre_get_posts',          array( $this, 'adjust_wp_query' ), 20       );
 			
 			add_action( 'mycred_admin_enqueue',   array( $this, 'enqueue_scripts' )           );
+			
+			// Instances to update ranks
 			add_action( 'transition_post_status', array( $this, 'publishing_content' ), 10, 3 );
 			add_filter( 'mycred_add',             array( $this, 'check_for_rank' ), 99, 3     );
 			add_action( 'user_register',          array( $this, 'registration' ), 999         );
+			add_action( 'delete_post',            array( $this, 'before_post_delete' )        );
+			add_action( 'deleted_post',           array( $this, 'after_post_delete' )         );
 			
 			// BuddyPress
 			if ( function_exists( 'bp_displayed_user_id' ) && isset( $this->rank['bb_location'] ) && !empty( $this->rank['bb_location'] ) ) {
@@ -210,6 +214,61 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		}
 		
 		/**
+		 * Registration
+		 * Find a users rank when they register on our website
+		 * @since 1.1
+		 * @version 1.0
+		 */
+		public function registration( $user_id ) {
+			mycred_find_users_rank( $user_id, true );
+		}
+		
+		/**
+		 * Check For Rank
+		 * Each time a users balance changes we check if this effects their ranking.
+		 * @since 1.1
+		 * @version 1.1
+		 */
+		public function check_for_rank( $reply, $request, $mycred ) {
+			mycred_find_users_rank( $request['user_id'], true, $request['amount'] );
+			return $reply;
+		}
+		
+		/**
+		 * Post Deletion
+		 * Before the post is deleted from the database we check to see if
+		 * it is a rank. If it is, it's saved as a transiet long enough to
+		 * let WordPress delete the post form the database. Once this is done
+		 * we will no longer be able to check if this post id is for our custom
+		 * post type. So instead we check if the id is in our transient. If it is,
+		 * we remove it and re-assing ranks.
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function before_post_delete( $post_id ) {
+			$post_type = get_post_type( $post_id );
+			if ( $post_type != 'mycred_rank' ) return;
+			
+			// If this is a rank we save the id with a lifetime of 5 min.
+			set_transient( 'mycred_rank_going', $post_id, 300 );
+		}
+		
+		/**
+		 * Post Deletion
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function after_post_delete( $post_id ) {
+			$transient = get_transient( 'mycred_rank_going' );
+			if ( $transients === false || $post_id != $transient ) return;
+			
+			// Assign ranks
+			$this->assign_ranks();
+			// Delete transient
+			delete_transient( 'mycred_rank_going' );
+		}
+		
+		/**
 		 * Find Users Ranks
 		 * When a rank is published we run though all users to allowcate them to
 		 * the appropriate rank.
@@ -254,27 +313,6 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 					mycred_find_users_rank( $user->ID, true );
 				}
 			}
-		}
-		
-		/**
-		 * Registration
-		 * Find a users rank when they register on our website
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function registration( $user_id ) {
-			mycred_find_users_rank( $user_id, true );
-		}
-		
-		/**
-		 * Check For Rank
-		 * Each time a users balance changes we check if this effects their ranking.
-		 * @since 1.1
-		 * @version 1.1
-		 */
-		public function check_for_rank( $reply, $request, $mycred ) {
-			mycred_find_users_rank( $request['user_id'], true, $request['amount'] );
-			return $reply;
 		}
 		
 		/**
