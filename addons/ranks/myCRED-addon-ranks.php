@@ -66,7 +66,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * Hook into Init
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function module_init() {
 			$this->register_post_type();
@@ -74,15 +74,12 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 				$this->add_default_rank();
 
 			add_filter( 'pre_get_posts',          array( $this, 'adjust_wp_query' ), 20       );
-			
 			add_action( 'mycred_admin_enqueue',   array( $this, 'enqueue_scripts' )           );
 			
 			// Instances to update ranks
-			add_action( 'transition_post_status', array( $this, 'publishing_content' ), 10, 3 );
-			add_filter( 'mycred_add',             array( $this, 'check_for_rank' ), 99, 3     );
-			add_action( 'user_register',          array( $this, 'registration' ), 999         );
-			add_action( 'delete_post',            array( $this, 'before_post_delete' )        );
-			add_action( 'deleted_post',           array( $this, 'after_post_delete' )         );
+			add_action( 'transition_post_status', array( $this, 'post_status_change' ), 99, 3  );
+			add_filter( 'mycred_add',             array( $this, 'balance_adjustments' ), 99, 3 );
+			add_action( 'user_register',          array( $this, 'registration' ), 999          );
 			
 			// BuddyPress
 			if ( function_exists( 'bp_displayed_user_id' ) && isset( $this->rank['bb_location'] ) && !empty( $this->rank['bb_location'] ) ) {
@@ -192,30 +189,8 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		}
 		
 		/**
-		 * Customize Users Column Headers
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function custom_user_column( $columns ) {
-			$columns['mycred-rank'] = __( 'Rank', 'mycred' );
-			return $columns;
-		}
-
-		/**
-		 * Customize User Columns Content
-		 * @filter 'mycred_user_row_actions'
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function custom_user_column_content( $value, $column_name, $user_id ) {
-			if ( 'mycred-rank' != $column_name ) return $value;
-
-			return mycred_get_users_rank( $user_id );
-		}
-		
-		/**
 		 * Registration
-		 * Find a users rank when they register on our website
+		 * Check what rank this user should have
 		 * @since 1.1
 		 * @version 1.0
 		 */
@@ -224,64 +199,33 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		}
 		
 		/**
-		 * Check For Rank
-		 * Each time a users balance changes we check if this effects their ranking.
+		 * Balance Adjustment
+		 * Check if users rank should change.
 		 * @since 1.1
 		 * @version 1.1
 		 */
-		public function check_for_rank( $reply, $request, $mycred ) {
+		public function balance_adjustments( $reply, $request, $mycred ) {
 			mycred_find_users_rank( $request['user_id'], true, $request['amount'] );
 			return $reply;
 		}
 		
 		/**
-		 * Post Deletion
-		 * Before the post is deleted from the database we check to see if
-		 * it is a rank. If it is, it's saved as a transiet long enough to
-		 * let WordPress delete the post form the database. Once this is done
-		 * we will no longer be able to check if this post id is for our custom
-		 * post type. So instead we check if the id is in our transient. If it is,
-		 * we remove it and re-assing ranks.
-		 * @since 1.1.1
-		 * @version 1.0
-		 */
-		public function before_post_delete( $post_id ) {
-			$post_type = get_post_type( $post_id );
-			if ( $post_type != 'mycred_rank' ) return;
-			
-			// If this is a rank we save the id with a lifetime of 5 min.
-			set_transient( 'mycred_rank_going', $post_id, 300 );
-		}
-		
-		/**
-		 * Post Deletion
-		 * @since 1.1.1
-		 * @version 1.0
-		 */
-		public function after_post_delete( $post_id ) {
-			$transient = get_transient( 'mycred_rank_going' );
-			if ( $transient === false || $post_id != $transient ) return;
-			
-			// Assign ranks
-			$this->assign_ranks();
-			// Delete transient
-			delete_transient( 'mycred_rank_going' );
-		}
-		
-		/**
-		 * Find Users Ranks
-		 * When a rank is published we run though all users to allowcate them to
-		 * the appropriate rank.
+		 * Publishing Content
+		 * Check if users rank should change.
 		 * @since 1.1
 		 * @version 1.0
 		 */
-		public function publishing_content( $new_status, $old_status, $post ) {
+		public function post_status_change( $new_status, $old_status, $post ) {
 			// Only ranks please
 			if ( $post->post_type != 'mycred_rank' ) return;
 			
-			// Check for ranks that are getting published
+			// Publishing rank
 			$status = apply_filters( 'mycred_publish_hook_old', array( 'new', 'auto-draft', 'draft', 'private', 'pending', 'scheduled' ) );
 			if ( in_array( $old_status, $status ) && $new_status == 'publish' ) {
+				$this->assign_ranks();
+			}
+			// Trashing of rank
+			elseif ( $old_status == 'publish' && $new_status == 'trash' ) {
 				$this->assign_ranks();
 			}
 		}
@@ -471,7 +415,29 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		}
 		
 		/**
-		 * Adjust Column Header
+		 * Customize Users Column Headers
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function custom_user_column( $columns ) {
+			$columns['mycred-rank'] = __( 'Rank', 'mycred' );
+			return $columns;
+		}
+
+		/**
+		 * Customize User Columns Content
+		 * @filter 'mycred_user_row_actions'
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function custom_user_column_content( $value, $column_name, $user_id ) {
+			if ( 'mycred-rank' != $column_name ) return $value;
+
+			return mycred_get_users_rank( $user_id );
+		}
+		
+		/**
+		 * Adjust Rank Column Header
 		 * @since 1.1
 		 * @version 1.0
 		 */
@@ -490,7 +456,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		}
 
 		/**
-		 * Adjust Column Content
+		 * Adjust Rank Column Content
 		 * @since 1.1
 		 * @version 1.0
 		 */
