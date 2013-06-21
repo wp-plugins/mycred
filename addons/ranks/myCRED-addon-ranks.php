@@ -260,7 +260,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 */
 		public function after_post_delete( $post_id ) {
 			$transient = get_transient( 'mycred_rank_going' );
-			if ( $transients === false || $post_id != $transient ) return;
+			if ( $transient === false || $post_id != $transient ) return;
 			
 			// Assign ranks
 			$this->assign_ranks();
