@@ -153,9 +153,9 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 			// Loop though all ranks
 			foreach ( $all_ranks as $rank_id => $rank ) {
 				// Prep Slug
-				$slug = $rank['slug'];
+				$slug = $rank->post_name;
 				if ( empty( $slug ) )
-					$slug = str_replace( ' ', '-', strtolower( $rank['title'] ) );
+					$slug = str_replace( ' ', '-', strtolower( $rank->post_title ) );
 
 				// Rank wrapper
 				$output .= '<div class="mycred-rank rank-' . $slug . ' rank-' . $rank_id . '"><h2>';
@@ -165,7 +165,7 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 					$output .= mycred_get_rank_logo( $rank_id, $logo_size );
 
 				// Rank title
-				$output .= $rank['title'] . '</h2>' . "\n";
+				$output .= $rank->post_title . '</h2>' . "\n";
 				
 				$attr = array(
 					'rank_id' => $rank_id,
