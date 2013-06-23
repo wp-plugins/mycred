@@ -39,7 +39,8 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 * *Transfer* - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
 * *Import* - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
 * *Sell Content* - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
-* *Buy Creds* - Let your users buy points via PayPal, Skrill or NETbilling.
+* *Buy Creds* - Let your users buy points via PayPal, Skrill, Zombaio or NETbilling.
+* *Ranks* - Allows you to setup ranks based on your users points balance.
 * *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
 * *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [bbPress](http://wordpress.org/extend/plugins/bbpress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 
