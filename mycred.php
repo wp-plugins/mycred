@@ -80,6 +80,9 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			// Add key reset to cron
 			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
 
+			// myCRED is ready
+			do_action( 'mycred_ready' );
+
 			// Clean up
 			$this->clean_up();
 		}
@@ -652,4 +655,13 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 	}
 	new myCRED_Core();
 }
+
+/**
+ * myCRED Ready
+ * Function for third-party plugins that needs to check if
+ * myCRED is installed and ready.
+ * @since 1.1.1
+ * @version 1.0
+ */
+function mycred_ready() { return true; }
 ?>
