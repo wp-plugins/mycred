@@ -36,7 +36,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function module_pre_init() {
+		public function module_ready() {
 			$addons = $this->addons;
 			$active = $addons['active'];
 			$installed = $this->get();

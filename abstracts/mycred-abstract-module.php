@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Module class
  * @see http://mycred.me/classes/mycred_module/
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Module' ) ) {
 	abstract class myCRED_Module {
@@ -162,14 +162,22 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 				add_filter( 'mycred_save_core_prefs',  array( $this, 'sanitize_extra_settings' ), 90, 3 );
 			}
 
+			add_action( 'mycred_ready',                array( $this, 'module_ready' )                   );
 			add_action( 'mycred_pre_init',             array( $this, 'module_pre_init' )                );
 			add_action( 'mycred_init',                 array( $this, 'module_init' )                    );
 			add_action( 'mycred_admin_init',           array( $this, 'module_admin_init' )              );
 			add_action( 'mycred_widgets_init',         array( $this, 'module_widgets_init' )            );
 		}
+		
+		/**
+		 * myCRED Ready
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		function module_ready() { }
 
 		/**
-		 * Pre Init
+		 * Plugins Loaded (pre init)
 		 * @since 0.1
 		 * @version 1.0
 		 */

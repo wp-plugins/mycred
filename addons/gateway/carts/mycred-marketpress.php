@@ -5,18 +5,24 @@ if ( !defined( 'WP_PLUGIN_DIR' ) ) exit;
  * @since 1.1
  * @version 1.0
  */
-if ( !class_exists( 'MP_Gateway_myCRED' ) && function_exists( 'mp_register_gateway_plugin' ) ) {
+if ( !class_exists( 'MP_Gateway_myCRED' ) ) {
 	/**
 	 * Locate the MarketPress base gateway file
 	 * @from MarketPress::init_vars()
 	 */
 	$file = '/marketpress-includes/marketpress-gateways.php';
+	// Light
 	if ( file_exists( WP_PLUGIN_DIR . '/wordpress-ecommerce' . $file ) )
 		include_once( WP_PLUGIN_DIR . '/wordpress-ecommerce' . $file );
+	// Pro
+	elseif ( file_exists( WP_PLUGIN_DIR . '/marketpress' . $file ) )
+		include_once( WP_PLUGIN_DIR . '/marketpress' . $file );
 	elseif ( file_exists( WP_PLUGIN_DIR . $file ) )
 		include_once( WP_PLUGIN_DIR . $file );
 	elseif ( is_multisite() && file_exists( WPMU_PLUGIN_DIR . $file ) )
 		include_once( WPMU_PLUGIN_DIR . $file );
+	else
+		return;
 
 	/**
 	 * myCRED Custom Gateway
@@ -378,6 +384,9 @@ if ( !class_exists( 'MP_Gateway_myCRED' ) && function_exists( 'mp_register_gatew
 			return $settings;
 		}
 	}
+}
+
+if ( function_exists( 'mp_register_gateway_plugin' ) ) {
 	// Register Gateway
 	mp_register_gateway_plugin( 'MP_Gateway_myCRED', 'mycred', 'myCRED' );
 }
