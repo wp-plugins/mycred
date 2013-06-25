@@ -381,13 +381,16 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		/**
 		 * POST to data
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
-		public function POST_to_data() {
+		public function POST_to_data( $unset = false ) {
 			$data = array();
 			foreach ( $_POST as $key => $value ) {
 				$data[$key] = stripslashes( $value );
 			}
+			if ( $unset )
+				unset( $_POST );
+
 			return $data;
 		}
 

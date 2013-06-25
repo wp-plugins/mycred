@@ -902,10 +902,10 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		/**
 		 * The Entry
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function the_entry( $log_entry ) {
-			echo $this->get_the_entry( $log_entry );
+		public function the_entry( $log_entry, $wrap = 'td' ) {
+			echo $this->get_the_entry( $log_entry, $wrap );
 		}
 
 		/**
@@ -913,10 +913,10 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		 * Generated a single entry row depending on the columns used / requested.
 		 *
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
-		public function get_the_entry( $log_entry ) {
-			$date = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+		public function get_the_entry( $log_entry, $wrap = 'td' ) {
+			$date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 			$entry_data = '';
 
 			// Run though columns
@@ -935,7 +935,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 					break;
 					// Date & Time Column
 					case 'column-time' :
-						$content = date_i18n( $date, $log_entry->time );
+						$content = date_i18n( $date_format, $log_entry->time );
 					break;
 					// Amount Column
 					case 'column-creds' :
@@ -946,7 +946,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 						$content = $this->core->parse_template_tags( $log_entry->entry, $log_entry );
 					break;
 				}
-				$entry_data .= '<td class="' . $column_id . '">' . $content . '</td>';
+				$entry_data .= '<' . $wrap . ' class="' . $column_id . '">' . $content . '</' . $wrap . '>';
 			}
 			return $entry_data;
 		}
