@@ -192,7 +192,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Save Manual Adjustments
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function adjust_points_manually( $user_id ) {
 			global $mycred_errors;
@@ -204,7 +204,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			// Add new creds
 			$cred = $_POST['myCRED-manual-add-points'];
 			$entry = $_POST['myCRED-manual-add-description'];
-			$data = apply_filters( 'mycred_manual_change', array( 'type' => 'user' ), $this );
+			$data = apply_filters( 'mycred_manual_change', array( 'ref_type' => 'user' ), $this );
 			
 			// If person editing points can edit points but can not edit the plugin
 			// a description must be set!

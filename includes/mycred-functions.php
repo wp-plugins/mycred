@@ -757,7 +757,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @returns boolean true on success or false on fail
 		 * @version 1.0
 		 */
-		public function add_to_log( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = '' ) {
+		public function add_to_log( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
 			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 			if ( !preg_match( '/mycred_/', $type ) ) return false;

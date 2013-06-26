@@ -2,7 +2,7 @@
 /**
  * Addon: Import
  * Addon URI: http://mycred.me/add-ons/import/
- * Version: 1.0
+ * Version: 1.0.1
  * Description: With the Import add-on you can import CSV files, CubePoints or existing points under any custom user meta values.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -102,7 +102,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		 * Update Users
 		 * @param $data (array), required associative array of users and amounts to be added to their account.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function update_users( $data = array(), $verify = true ) {
 			// Prep
@@ -122,19 +122,20 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 			if ( isset( $_POST['precision'] ) && $_POST['precision'] != 0 )
 				$precision = $_POST['precision'];
 
-			$log_template = '';
-			if ( isset( $_POST['log_template'] ) )
-				$log_template = $_POST['log_template'];
-
 			// Loop
 			$imports = $skipped = 0;
 			foreach ( $data as $row ) {
 				// mycred_user and mycred_amount are two mandatory columns!
-				if ( !isset( $row['mycred_user'] ) || empty( $row['mycred_user'] ) || !isset( $row['mycred_amount'] ) || empty( $row['mycred_amount'] ) ) {
+				if ( !isset( $row['mycred_user'] ) || empty( $row['mycred_user'] ) ) {
+					$skipped = $skipped+1;
+					continue;
+				}
+				if ( !isset( $row['mycred_amount'] ) || empty( $row['mycred_amount'] ) ) {
 					$skipped = $skipped+1;
 					continue;
 				}
 
+				// Verify User exist
 				if ( $verify === true ) {
 					// Get User (and with that confirm user exists)
 					$user = get_user_by( $id_user_by, $row['mycred_user'] );
@@ -160,31 +161,29 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 				}
 
 				// Amount (can not be zero)
-				$cred = $this->core->format_number( $row['mycred_amount'] );
+				$cred = $this->core->number( $row['mycred_amount'] );
 				if ( $cred == 0 ) {
 					$skipped = $skipped+1;
 					continue;
 				}
 
 				// If exchange rate is not 1 for 1
-				if ( $this->core->format_number( $xrate ) != $this->core->format_number( 1 ) ) {
+				if ( $xrate != 1 ) {
 					// Cred = rate*amount
-					$amount = $this->core->format_number( $xrate ) * $this->core->format_number( $row['mycred_amount'] );
+					$amount = $xrate * $row['mycred_amount'];
 					$cred = $this->core->round_value( $amount, $round, $precision );
 				}
 
 				// Adjust Balance
 				$new_balance = $this->core->update_users_balance( $user_id, $cred );
 
-				// Log (if requested with the import file having top priority)
-				if ( ( isset( $row['mycred_log'] ) && !empty( $row['mycred_log'] ) ) || !empty( $log_template ) ) {
-					if ( isset( $row['mycred_log'] ) )
-						$template = sanitize_text_field( $row['mycred_log'] );
-					else
-						$template = sanitize_text_field( $log_template );
-
-					if ( !empty( $template ) )
-						$this->core->add_to_log( 'import', $user_id, $cred, $template );
+				// First we check if the mycred_log column is used
+				if ( isset( $row['mycred_log'] ) && !empty( $row['mycred_log'] ) ) {
+					$this->core->add_to_log( 'import', $user_id, $cred, $row['mycred_log'] );
+				}
+				// Second we check if the log template is set
+				elseif ( isset( $_POST['log_template'] ) && !empty( $_POST['log_template'] ) ) {
+					$this->core->add_to_log( 'import', $user_id, $cred, sanitize_text_field( $_POST['log_template'] ) );
 				}
 
 				$imports = $imports+1;
@@ -276,7 +275,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		/**
 		 * Import CubePoints
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function import_cubepoints() {
 			$delete = false;
@@ -305,7 +304,8 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 				foreach ( $search as $result ) {
 					$data[] = array(
 						'mycred_user'   => $result->user_id,
-						'mycred_amount' => $result->meta_value
+						'mycred_amount' => $result->meta_value,
+						'mycred_log'    => ( isset( $_POST['log_template'] ) ) ? sanitize_text_field( $_POST['log_template'] ) : ''
 					);
 				}
 
