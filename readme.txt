@@ -135,10 +135,12 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 * Added Rank column in User list.
 * Adjusted Ranks add-on to update all users ranks when an already published rank gets updated.
 * Adjusted [mycred_users_of_rank] to support table outputs.
+* Added new function mycred_get_total_by_time.
 
 * Fixed Bug #31 - Language files are not loaded.
 * Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
 * Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
+* Fixed Bug #34 - Import Add-on does not log import.
 
 = 1.1 =
 * Added new Email Notices Add-on.

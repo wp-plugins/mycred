@@ -1075,4 +1075,100 @@ if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s", $reference ) );
 	}
 }
+
+/**
+ * Get Total Points by Time
+ * Counts the total amount of points that has been entered into the log between
+ * two given UNIX timestamps. Optionally you can restrict counting to a specific user
+ * or specific reference (or both).
+ *
+ * Will return false if the time stamps are incorrectly formated same for user id (must be int).
+ * If you do not want to filter by reference pass NULL and not an empty string or this function will
+ * return false. Same goes for the user id!
+ *
+ * @param $from (int|string) UNIX timestamp from when to start counting. The string 'today' can also
+ * be used to start counting from the start of today.
+ * @param $to (int|string) UNIX timestamp for when to stop counting. The string 'now' can also be used
+ * to count up until now.
+ * @param $ref (string) reference to filter by.
+ * @param $user_id (int|NULL) user id to filter by.
+ * @param $type (string) point type to filer by.
+ * @returns total points (int|float) or error message (string)
+ * @since 1.1.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_get_total_by_time' ) ) {
+	function mycred_get_total_by_time( $from = 'today', $to = 'now', $ref = NULL, $user_id = NULL, $type = '' )
+	{
+		// Get myCRED
+		$mycred = mycred_get_settings();
+
+		// Prep
+		$wheres = array();
+		$prep = array();
+
+		// Reference
+		if ( $ref !== NULL ) {
+			if ( empty( $ref ) ) return 'ref empty';
+
+			$wheres[] = 'ref = %s';
+			$prep[] = $ref;
+		}
+
+		// User
+		if ( $user_id !== NULL ) {
+			if ( !is_int( $user_id ) ) return 'incorrect user id format';
+
+			$wheres[] = 'user_id = %d';
+			$prep[] = $user_id;
+		}
+
+		// Default from start of today
+		if ( $from == 'today' ) {
+			$today = date_i18n( 'Y/m/d 00:00:00' );
+			$from = strtotime( $today );
+		}
+
+		// From
+		if ( !is_numeric( $from ) ) return 'incorrect unix timestamp (from): ' . $from;
+		$wheres[] = 'time >= %d';
+		$prep[] = $from;
+
+		// Default to is now
+		if ( $to == 'now' )
+			$to = date_i18n( 'U' );
+
+		// To
+		if ( !is_numeric( $to ) ) return 'incorrect unix timestamp (to): ' . $to;
+		$wheres[] = 'time <= %d';
+		$prep[] = $to;
+
+		// Type
+		if ( empty( $type ) )
+			$type = $mycred->get_cred_id();
+
+		$wheres[] = 'ctype = %s';
+		$prep[] = $type;
+
+		global $wpdb;
+
+		// Construct
+		$db = $wpdb->prefix . $mycred->db_name;
+		$where = implode( ' AND ', $wheres );
+		$sql = "SELECT creds FROM {$db} WHERE {$where} ORDER BY time;";
+
+		// Query
+		$query = $wpdb->get_results( $wpdb->prepare( $sql, $prep ) );
+
+		$count = 0;
+		// if we have results we add creds up
+		if ( !empty( $query ) ) {
+			foreach ( $query as $entry ) {
+				$count = $count+$entry->creds;
+			}
+		}
+
+		return $mycred->format_number( $count );
+	}
+}
 ?>
