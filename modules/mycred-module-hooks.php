@@ -262,7 +262,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Sanititze Settings
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.0
 		 */
 		public function sanitize_settings( $post ) {
 			// Loop though all installed hooks
@@ -701,6 +701,11 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			parent::__construct( array(
 				'id'       => 'comments',
 				'defaults' => array(
+					'limits'   => array(
+						'self_reply' => 0,
+						'per_post'   => 10,
+						'per_day'    => 0
+					),
 					'approved' => array(
 						'creds'   => 1,
 						'log'     => '%plural% for Approved Comment'
@@ -784,6 +789,15 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			// Make sure this is unique event
 			if ( $this->has_entry( 'approved_comment', $comment->comment_ID, $comment->user_id ) ) return;
 
+			// Check if we are allowed to comment our own comment
+			if ( $this->prefs['limits']['self_reply'] != 0 && $comment->comment_parent != 0 ) {
+				$parent = get_comment( $comment->comment_parent );
+				if ( $parent->user_id == $comment->user_id ) return;
+			}
+
+			// Enforce limits
+			if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) ) return;
+
 			// Execute
 			$this->core->add_creds(
 				'approved_comment',
@@ -793,9 +807,6 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				$comment->comment_ID,
 				array( 'ref_type' => 'comment' )
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -828,9 +839,6 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				$comment->comment_ID,
 				array( 'ref_type' => 'comment' )
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -863,9 +871,68 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				$comment->comment_ID,
 				array( 'ref_type' => 'comment' )
 			);
+		}
+		
+		/**
+		 * Check if user exceeds limit
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function user_exceeds_limit( $user_id = NULL, $post_id = NULL ) {
+			if ( !isset( $this->prefs['limits'] ) ) return false;
 
-			// Clean up
-			unset( $this );
+			// Prep
+			$today = date_i18n( 'Y-m-d' );
+
+			// First we check post limit
+			if ( $this->prefs['limits']['per_post'] > 0 ) {
+				$post_limit = 0;
+				// Grab limit
+				$limit = get_user_meta( $user_id, 'mycred_comment_limit_post', true );
+				// Apply default if none exist
+				if ( empty( $limit ) ) $limit = array( $post_id => $post_limit );
+
+				// Check if post_id is in limit array
+				if ( array_key_exists( $post_id, $limit ) ) {
+					$post_limit = $limit[$post_id];
+
+					// Limit is reached
+					if ( $post_limit >= $this->prefs['limits']['per_post'] ) return true;
+				}
+
+				// Add / Replace post_id counter with an incremented value
+				$limit[$post_id] = $post_limit+1;
+				// Save
+				update_user_meta( $user_id, 'mycred_comment_limit_post', $limit );
+			}
+
+			// Second we check daily limit
+			if ( $this->prefs['limits']['per_day'] > 0 ) {
+				$daily_limit = 0;
+				// Grab limit
+				$limit = get_user_meta( $user_id, 'mycred_comment_limit_day', true );
+				// Apply default if none exist
+				if ( empty( $limit ) ) $limit = array();
+
+				// Check if todays date is in limit
+				if ( array_key_exists( $today, $limit ) ) {
+					$daily_limit = $limit[$today];
+
+					// Limit is reached
+					if ( $daily_limit >= $this->prefs['limits']['per_day'] ) return true;
+				}
+				// Today is not in limit array so we reset to remove other dates
+				else {
+					$limit = array();
+				}
+
+				// Add / Replace todays counter with an imcremented value
+				$limit[$today] = $daily_limit+1;
+				// Save
+				update_user_meta( $user_id, 'mycred_comment_limit_day', $limit );
+			}
+
+			return false;
 		}
 
 		/**
@@ -874,7 +941,14 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		 * @version 1.0
 		 */
 		public function preferences() {
-			$prefs = $this->prefs; ?>
+			$prefs = $this->prefs;
+
+			if ( !isset( $prefs['limits'] ) )
+				$prefs['limits'] = array(
+					'self_reply' => 0,
+					'per_post'   => 10,
+					'per_day'    => 0
+				); ?>
 
 					<label class="subheader" for="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>"><?php _e( 'Approved Comment', 'mycred' ); ?></label>
 					<ol>
@@ -912,7 +986,41 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General, Comment', 'mycred' ); ?></span>
 						</li>
 					</ol>
+					<label class="subheader"><?php _e( 'Limits', 'mycred' ); ?></label>
+					<ol>
+						<li>
+							<label for="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>"><?php _e( 'Limit per post', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'limits' => 'per_post' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>" value="<?php echo $prefs['limits']['per_post']; ?>" size="8" /></div>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'The number of comments per post that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+						</li>
+						<li class="empty">&nbsp;</li>
+						<li>
+							<label for="<?php echo $this->field_id( array( 'limits' => 'per_day' ) ); ?>"><?php _e( 'Limit per day', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'limits' => 'per_day' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'per_day' ) ); ?>" value="<?php echo $prefs['limits']['per_day']; ?>" size="8" /></div>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'Number of comments per day that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+						</li>
+						<li class="empty">&nbsp;</li>
+						<li>
+							<input type="checkbox" name="<?php echo $this->field_name( array( 'limits' => 'self_reply' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'self_reply' ) ); ?>" <?php checked( $prefs['limits']['self_reply'], 1 ); ?> value="1" />
+							<label for="<?php echo $this->field_id( array( 'limits' => 'self_reply' ) ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% is to be awarded even when comment authors reply to their own comment.', 'mycred' ) ); ?></label>
+						</li>
+					</ol>
 <?php		unset( $this );
+		}
+		
+		/**
+		 * Sanitise Preference
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		function sanitise_preferences( $data ) {
+			$new_data = $data;
+
+			$new_data['limits']['per_post'] = ( !empty( $data['limits']['per_post'] ) ) ? abs( $data['limits']['per_post'] ) : 0;
+			$new_data['limits']['per_day'] = ( !empty( $data['limits']['per_day'] ) ) ? abs( $data['limits']['per_day'] ) : 0;
+			$new_data['limits']['self_reply'] = ( isset( $data['limits']['self_reply'] ) ) ? $data['limits']['self_reply'] : 0;
+
+			return $new_data;
 		}
 	}
 }

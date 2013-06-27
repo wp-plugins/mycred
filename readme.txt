@@ -145,6 +145,9 @@ Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu
 * Adjusted [mycred_users_of_rank] to support table outputs.
 * Added new function mycred_get_total_by_time.
 
+* Added Daily and / or Per post limits for comments. By default these are disabled.
+* Added option to allow points to be awarded for comment authors reply to their own comment. By default disabled.
+
 * Fixed Bug #31 - Language files are not loaded.
 * Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
 * Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
