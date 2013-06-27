@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
 Requires at least: 3.1
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -143,7 +143,6 @@ Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.
 * Added points for users adding an authors topic to favourites. By [Fee](http://wordpress.org/support/profile/wdfee).
 * Added option to include authors point balance under author details and profile.
-
 * Added [mycred_list_ranks] to Ranks Add-on.
 * Added option to set if ranks should be displayed Ascending or Descending.
 * Added support for 'content', 'excerpt', 'custom-fields' and 'page-attributes' for Ranks.
@@ -151,10 +150,8 @@ Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu
 * Adjusted Ranks add-on to update all users ranks when an already published rank gets updated.
 * Adjusted [mycred_users_of_rank] to support table outputs.
 * Added new function mycred_get_total_by_time.
-
 * Added Daily and / or Per post limits for comments. By default these are disabled.
 * Added option to allow points to be awarded for comment authors reply to their own comment. By default disabled.
-
 * Fixed Bug #31 - Language files are not loaded.
 * Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
 * Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
