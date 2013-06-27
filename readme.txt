@@ -1,7 +1,7 @@
 === myCRED ===
 Contributors: designbymerovingi
 Donate Link: http://mycred.me/donate/
-Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack
+Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
 Requires at least: 3.1
 Tested up to: 3.5.1
 Stable tag: 1.1
@@ -42,8 +42,7 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 * *Buy Creds* - Let your users buy points via PayPal, Skrill, Zombaio or NETbilling.
 * *Ranks* - Allows you to setup ranks based on your users points balance.
 * *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
-* *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [bbPress](http://wordpress.org/extend/plugins/bbpress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
-
+* *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 
 **Multisites**
 
@@ -51,7 +50,6 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 
 * *Master Template* - Force your main sites **my**CRED installation upon all other sites. Each site will have it's own log but have no access to any settings, hooks or add-ons.
 * *Block List* - Allows you to block specific sites from using **my**CRED.
-
 
 **Supported Third-party Plugins:**
 
@@ -64,7 +62,7 @@ The following third party plugins are supported by default:
 * [WP-Polls](http://wordpress.org/plugins/wp-polls/) - Award points for users voting in polls.
 * [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
 * [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
-
+* [bbPress](http://wordpress.org/extend/plugins/bbpress/) - Award points for new forums, topics, replies and for topics getting added to "Favorites".
 
 
 **Further Details**
@@ -124,6 +122,15 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 3. **The Log** - with the option to search or filter results. Each user will also get their own Log page under the "Users" menu.
 4. **Editing Users Balance** - You can edit each users point balance directly under "Edit User".
 5. **Import Add-on** - The Import Add-on allows you to import points using a CSV file or by importing existing points from your database.
+
+
+== Upgrade Notice ==
+
+= 1.1.1 =
+This version resolves bugs with the MarketPress add-on and third-party plugins support. You will also have access to the bbPress hooks without the need to use Buddypress.
+
+* bbPress users should visit the "Hooks" sub-menu and re-enter their hook settings as these will be reset.
+* Ranks Add-on users should visit the "Settings" sub-menu and confirm their Rank settings as new settings will be available.
 
 
 == Changelog ==
