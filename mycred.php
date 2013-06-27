@@ -33,7 +33,7 @@ define( 'myCRED_MODULES_DIR',   myCRED_ROOT_DIR . 'modules/' );
  * @version 1.0
  */
 if ( !class_exists( 'myCRED_Core' ) ) {
-	class myCRED_Core {
+	final class myCRED_Core {
 
 		public $plug;
 
@@ -86,6 +86,20 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			// Clean up
 			$this->clean_up();
 		}
+		
+		/**
+		 * Prevent myCRED from being cloned
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), '1.1.1' ); }
+
+		/**
+		 * Prevent myCRED from being unserialized
+		 * @since 1.1.1
+		 * @version 1.0
+		 */
+		public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), '1.1.1' ); }
 
 		/**
 		 * Plugin Links
@@ -655,13 +669,4 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 	}
 	new myCRED_Core();
 }
-
-/**
- * myCRED Ready
- * Function for third-party plugins that needs to check if
- * myCRED is installed and ready.
- * @since 1.1.1
- * @version 1.0
- */
-function mycred_ready() { return true; }
 ?>
