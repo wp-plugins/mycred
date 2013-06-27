@@ -18,7 +18,6 @@ define( 'myCRED_BP_HOOKS_DIR', myCRED_BP_DIR . 'hooks/' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-groups.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-profile.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-links.php' );
-require_once( myCRED_BP_HOOKS_DIR . 'bp-press.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-galleries.php' );
 /**
  * myCRED_BuddyPress class
@@ -67,28 +66,12 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		public function module_init() {
 			add_filter( 'mycred_setup_hooks',               array( $this, 'register_hooks' ) );
 			add_action( 'admin_bar_menu',                   array( $this, 'adjust_admin_bar' ), 110 );
-			add_filter( 'mycred_post_type_excludes',        array( $this, 'exclude_bb_post_types' ) );
 			
 			if ( $this->buddypress['balance_location'] == 'top' || $this->buddypress['balance_location'] == 'both' )
 				add_action( 'bp_before_member_header_meta', array( $this, 'show_balance' ) );
  
  			if ( $this->buddypress['balance_location'] == 'profile_tab' || $this->buddypress['balance_location'] == 'both' )
 				add_action( 'bp_profile_field_item',        array( $this, 'show_balance_profile' ) );
-		}
-
-		/**
-		 * Exclude Post Types
-		 * Used to exclude custom post types from being included under "Points for Publishing Content".
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function exclude_bb_post_types( $excludes ) {
-			if ( class_exists( 'bbPress' ) ) {
-				$excludes[] = 'topic';
-				$excludes[] = 'reply';
-				$excludes[] = 'forum';
-			}
-			return $excludes;
 		}
 		
 		/**
@@ -328,14 +311,6 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					'title'       => __( 'BuddyPress: Gallery Actions' ),
 					'description' => __( 'Awards %_plural% for creating a new gallery either using BP Album+ or BP Gallery.', 'mycred' ),
 					'callback'    => array( 'myCRED_BuddyPress_Gallery' )
-				);
-			}
-			
-			if ( class_exists( 'bbPress' ) ) {
-				$installed['hook_bp_bbpress'] = array(
-					'title'       => __( 'bbPress 2.0' ),
-					'description' => __( 'Awards %_plural% for bbPress actions.', 'mycred' ),
-					'callback'    => array( 'myCRED_BuddyPress_bbPress' )
 				);
 			}
 

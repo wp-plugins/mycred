@@ -59,7 +59,7 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		}
 
 		/**
-		 * Sanitise Preference for Registration Hook
+		 * Sanitise Preference
 		 * @since 0.1
 		 * @version 1.0
 		 */
@@ -149,10 +149,11 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		 * @param $action (string) required reference
 		 * @param $ref_id (int) optional reference id
 		 * @param $user_id (int) optional user id
+		 * @param $data (array|string) option data to search
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		function has_entry( $action = '', $ref_id = '', $user_id = '' ) {
+		function has_entry( $action = '', $ref_id = '', $user_id = '', $data = '' ) {
 			global $wpdb;
 
 			$where = $prep = array();
@@ -169,6 +170,11 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 			if ( !empty( $user_id ) ) {
 				$where[] = 'user_id = %d';
 				$prep[] = abs( $user_id );
+			}
+
+			if ( !empty( $data ) ) {
+				$where[] = 'data = %s';
+				$prep[] = maybe_serialize( $data );
 			}
 
 			$where = implode( ' AND ', $where );

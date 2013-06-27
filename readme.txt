@@ -128,7 +128,15 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Changelog ==
 
+**Updating to 1.1.1** Note that in this version the bbPress hook has been moved from the BuddyPress add-on to the core plugin support. This means that you you no longer require BuddyPress to access the bbPress Hook!
+
+Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu and update your bbPress settings!
+
 = 1.1.1 =
+* Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.
+* Added points for users adding an authors topic to favourites. By [Fee](http://wordpress.org/support/profile/wdfee).
+* Added option to include authors point balance under author details and profile.
+
 * Added [mycred_list_ranks] to Ranks Add-on.
 * Added option to set if ranks should be displayed Ascending or Descending.
 * Added support for 'content', 'excerpt', 'custom-fields' and 'page-attributes' for Ranks.
@@ -140,7 +148,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 * Fixed Bug #31 - Language files are not loaded.
 * Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
 * Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
-* Fixed Bug #34 - Import Add-on does not log import.
+* Fixed Bug #34 - Import Add-on' CubePoints import does not log import.
 
 = 1.1 =
 * Added new Email Notices Add-on.

@@ -79,9 +79,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 				$link_id,
 				'bp_links'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -107,9 +104,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 				$link_id,
 				'bp_links'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -133,9 +127,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 				$activity_id,
 				'bp_links'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -161,9 +152,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 				$link_id,
 				'bp_links'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**

@@ -125,9 +125,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$group_id,
 				'bp_group'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -205,9 +202,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$group_id,
 				'bp_group'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -233,9 +227,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$topic_id,
 				'bp_ftopic'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -258,9 +249,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$topic_id,
 				'bp_ftopic'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -286,9 +274,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$post_id,
 				'bp_fpost'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -311,9 +296,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$post_id,
 				'bp_fpost'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -352,9 +334,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$group_id,
 				'bp_group'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -378,9 +357,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$group_id,
 				'bp_group'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -406,9 +382,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$group_id,
 				'bp_group'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -432,9 +405,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$activity_id,
 				'bp_activity'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**

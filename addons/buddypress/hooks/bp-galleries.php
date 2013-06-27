@@ -58,9 +58,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Gallery' ) ) {
 				$gallery->id,
 				'bp_gallery'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**

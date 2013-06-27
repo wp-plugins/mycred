@@ -105,9 +105,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$activity_id,
 				'bp_activity'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -131,9 +128,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$this->prefs['avatar']['creds'],
 				$this->prefs['avatar']['log']
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -160,9 +154,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$friend_user_id,
 				array( 'ref_type' => 'user' )
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -189,9 +180,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$friend_user_id,
 				array( 'ref_type' => 'user' )
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -217,9 +205,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$comment_id,
 				'bp_comment'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -243,9 +228,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$activity_id,
 				'bp_comment'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -269,9 +251,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$message->thread_id,
 				'bp_message'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**
@@ -298,9 +277,6 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$to_user_id,
 				'bp_gifts'
 			);
-
-			// Clean up
-			unset( $this );
 		}
 
 		/**

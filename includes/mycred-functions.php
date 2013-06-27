@@ -1017,7 +1017,7 @@ if ( !function_exists( 'mycred_flush_widget_cache' ) ) {
  * @version 1.1
  */
 if ( !function_exists( 'mycred_add' ) ) {
-	function mycred_add( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = '' )
+	function mycred_add( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' )
 	{
 		// $ref, $user_id and $cred is required
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
@@ -1039,7 +1039,7 @@ if ( !function_exists( 'mycred_add' ) ) {
  * @version 1.0
  */
 if ( !function_exists( 'mycred_subtract' ) ) {
-	function mycred_subtract( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = '' )
+	function mycred_subtract( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' )
 	{
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 		if ( (int) $amount > 0 ) $amount = 0-$amount;
