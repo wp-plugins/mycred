@@ -148,7 +148,7 @@ Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu
 * Fixed Bug #31 - Language files are not loaded.
 * Fixed Bug #32 - Incorrect spelling of the myCRED_Hook class for Events Manager causes white screen of death.
 * Fixed Bug #33 - Hooks run() method fires to early causing custom hooks to fail to run.
-* Fixed Bug #34 - Import Add-on' CubePoints import does not log import.
+* Fixed Bug #34 - Import Add-on's CubePoints import does not log import.
 
 = 1.1 =
 * Added new Email Notices Add-on.

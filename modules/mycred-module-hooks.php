@@ -262,7 +262,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Sanititze Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_settings( $post ) {
 			// Loop though all installed hooks
