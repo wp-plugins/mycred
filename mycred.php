@@ -245,6 +245,11 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			// Abstract Classes
 			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
 			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
+
+			// Start with Add-ons so they can hook in as early as possible
+			require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
+			$addons = new myCRED_Addons();
+			$addons->load();
 		}
 
 		/**
@@ -257,7 +262,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 
 			// Load Modules
 			$modules = apply_filters( 'mycred_modules', array(
-				'addons'  => array( 'class' => 'myCRED_Addons' ),
 				'general' => array( 'class' => 'myCRED_General' ),
 				'hooks'   => array( 'class' => 'myCRED_Hooks' ),
 				'log'     => array( 'class' => 'myCRED_Log' ),
