@@ -1,5 +1,137 @@
 <?php
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
+if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
+	class myCRED_Query_Rankings {
+		
+		public $args;
+		public $count = 0;
+		public $result;
+		
+		public function __construct( $args = '' ) {
+			$this->args = shortcode_atts( array(
+				'number'      => '-1',
+				'order'       => 'DESC',
+				'user_fields' => 'user_login,display_name',
+				'offset'      => 0,
+				'type'        => 'mycred_default'
+			), $args );
+		}
+		
+		public function have_results() {
+			if ( !empty( $this->result ) ) return true;
+			
+			return false;
+		}
+		
+		public function save( $reset = false ) {
+			// Will not save no results
+			if ( !$this->have_results() ) return;
+
+			// Prep
+			$mycred = mycred_get_settings();
+			$save = $reset;
+			$lifespan = 1 * DAY_IN_SECONDS;
+
+			$history = get_option( 'mycred_transients' );
+			// If history has never been set
+			if ( $history === false )
+				$history = array( $this->args['type'] => '' );
+
+			// If transiet is missing for this type
+			if ( !isset( $history[ $this->args['type'] ] ) )
+				$history[ $this->args['type'] ] = '';
+
+			// Always updated
+			if ( $mycred->frequency['rate'] == 'always' ) {
+				$save = true;
+			}
+			// Daily updates
+			elseif ( $mycred->frequency['rate'] == 'daily' ) {
+				$today = date_i18n( 'd' );
+				if ( $today != $history[ $this->args['type'] ] ) $save = true;
+			}
+			// Weekly update
+			elseif ( $mycred->frequency['rate'] == 'weekly' ) {
+				$today = date_i18n( 'W' );
+				if ( $today != $history[ $this->args['type'] ] ) $save = true;
+				$lifespan = 1 * WEEK_IN_SECONDS;
+			}
+			// Update on specific date
+			elseif ( $mycred->frequency['rate'] == 'date' ) {
+				$date = $mycred->frequency['date'];
+				$today = date_i18n( 'Y-m-d' );
+				if ( $today == $date ) $save = true;
+				$lifespan = 12 * HOUR_IN_SECONDS;
+			}
+
+			// Save new transient
+			if ( $save === true ) {
+				delete_transient( $this->args['type'] . '_ranking' );
+				set_transient( $this->args['type'] . '_ranking', $this->result, $lifespan );
+				
+				if ( $mycred->frequency['rate'] != 'always' ) {
+					$history[ $this->args['type'] ] = $today;
+					update_option( 'mycred_transients', $history );
+				}
+			}
+		}
+		
+		public function get_rankings() {
+			global $wpdb;
+
+			// Type can not be empty
+			if ( !empty( $this->args['type'] ) )
+				$key = $this->args['type'];
+			else
+				$key = 'mycred_default';
+			
+			// Order
+			if ( !empty( $this->args['order'] ) )
+				$order = $this->args['order'];
+			else
+				$order = 'DESC';
+
+			// Number
+			if ( $this->args['number'] != '-1' )
+				$limit = 'LIMIT ' . abs( $this->args['offset'] ) . ',' . abs( $this->args['number'] );
+			else
+				$limit = '';
+
+			// User fields
+			if ( empty( $this->args['user_fields'] ) )
+				$this->args['user_fields'] = 'display_name,user_login';
+			
+			$user_fields = trim( $this->args['user_fields'] );
+			$user_fields = str_replace( ' ', '', $user_fields );
+			$user_fields = explode( ',', $user_fields );
+			
+			// Start constructing query
+			
+			$prep = array();
+			
+			$wp = $wpdb->prefix;
+			
+			// SELECT
+			$selects = array( $wp . 'users.ID' );
+			foreach ( $user_fields as $field ) {
+				if ( $field == 'ID' ) continue;
+				$selects[] = $wp . 'users.' . $field;
+			}
+			$selects[] = $wp . 'usermeta.meta_value AS cred';
+			
+			$select = implode( ', ', $selects );
+			$SQL = "SELECT {$select} 
+					FROM {$wp}users 
+					LEFT JOIN {$wp}usermeta 
+					ON {$wp}users.ID = {$wp}usermeta.user_id AND {$wp}usermeta.meta_key = %s 
+					ORDER BY {$wp}usermeta.meta_value+1 {$order} " . $limit;
+			
+			$this->result = $wpdb->get_results( $wpdb->prepare( $SQL, $key ), 'ARRAY_A' );
+			$this->count = $wpdb->num_rows;
+		}
+	}
+}
 /**
  * myCRED_Rankings class
  * @see http://mycred.me/features/mycred_rankings/
@@ -11,110 +143,17 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 
 		public $core;
 		public $args;
-		public $results;
-
-		private $frequency;
+		public $result;
 
 		/**
 		 * Constructor
 		 */
-		public function __construct( $args = array(), $reload = false ) {
+		public function __construct( $args = array(), $results = array() ) {
 			// Get settings
 			$mycred = mycred_get_settings();
 			$this->core = $mycred;
-
-			// Parse arguments
-			$this->args = wp_parse_args( $args, array(
-				'number'       => '-1',
-				'offset'       => 0,
-				'order'        => 'DESC',
-				'allowed_tags' => '',
-				'meta_key'     => $mycred->get_cred_id(),
-				'template'     => '#%ranking% %user_profile_link% %cred_f%'
-			) );
-			$this->frequency = 12 * HOUR_IN_SECONDS;
-
-			// Delete transient forcing a new query.
-			$this->_transients( $reload );
-
-			// Get rankings
-			$this->get_rankings();
-		}
-
-		/**
-		 * Transients
-		 * Removes the transient if needed.
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function _transients( $reload = false ) {
-			if ( $this->core->frequency['rate'] == 'always' && $reload === false ) return;
-
-			// Get history
-			$history = get_option( 'mycred_transients' );
-
-			// Rate
-			if ( $this->core->frequency['rate'] == 'daily' )
-				$today = date_i18n( 'd' );
-			elseif ( $this->core->frequency['rate'] == 'weekly' )
-				$today = date_i18n( 'W' );
-			else
-				$today = date_i18n( 'Y-m-d' );
-
-			// If history is missing create it now
-			if ( $history === false ) $history = array( $this->args['meta_key'] => '' );
-
-			// Reset on a specific date
-			if ( $this->core->frequency['rate'] == 'date' && $today == $this->core->frequency['date'] && empty( $history[$this->args['meta_key']] ) ) {
-				$reload = true;
-			}
-			// Reset on a regular basis
-			elseif ( $this->core->frequency['rate'] != 'date' && $today != $history[$this->args['meta_key']] ) {
-				$reload = true;
-			}
-
-			// "Reset" by deleting the transient forcing a new database query
-			if ( $reload === true ) {
-				delete_transient( $this->args['meta_key'] . '_ranking' );
-				$history[$this->args['meta_key']] = $today;
-				update_option( 'mycred_transients', $history );
-			}
-		}
-
-		/**
-		 * Get Rankings
-		 * Returns either the transient copy of the current results or queries a new one.
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		protected function get_rankings() {
-			// Get any existing copies of our transient data
-			if ( false === ( $this->results = get_transient( $this->args['meta_key'] . '_ranking' ) ) ) {
-				global $wpdb;
-
-				// Transient missing, run new query
-				$wp = $wpdb->prefix;
-				$this->results = $wpdb->get_results( $wpdb->prepare( "SELECT {$wp}users.ID AS user_id, {$wp}users.display_name, {$wp}users.user_login, {$wp}usermeta.meta_value AS creds FROM {$wp}users LEFT JOIN {$wp}usermeta ON {$wp}users.ID = {$wp}usermeta.user_id AND {$wp}usermeta.meta_key= %s ORDER BY {$wp}usermeta.meta_value+1 DESC", ( empty( $this->args['meta_key'] ) ) ? 'mycred_default' : $this->args['meta_key'] ), 'ARRAY_A' );
-
-				// Excludes
-				foreach ( $this->results as $row_id => $row_data ) {
-					if ( $this->core->exclude_user( $row_data['user_id'] ) )
-						unset( $this->results[$row_id] );
-				}
-
-				// Save new transient
-				set_transient( $this->args['meta_key'] . '_ranking', $this->results, $this->frequency );
-			}
-
-			// Reverse order if requested
-			if ( $this->args['order'] == 'ASC' ) {
-				$this->results = array_reverse( $this->results, true );
-			}
-
-			// Limit result if requested
-			if ( $this->args['number'] != '-1' ) {
-				$this->results = array_slice( $this->results, (int) $this->args['offset'], (int) $this->args['number'] );
-			}
+			$this->args = $args;
+			$this->result = $results;
 		}
 
 		/**
@@ -124,7 +163,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		 * @version 1.0
 		 */
 		public function have_results() {
-			if ( !empty( $this->results ) ) return true;
+			if ( !empty( $this->result ) ) return true;
 			return false;
 		}
 
@@ -135,13 +174,16 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function users_position( $user_id = '' ) {
-			if ( $this->have_results() ) {
-				foreach ( $this->results as $row_id => $row_data ) {
-					if ( $row_data['user_id'] == $user_id ) return $row_id+1;
+		public function users_position( $user_id = NULL ) {
+			if ( $user_id !== NULL ) {
+				if ( $this->have_results() ) {
+					foreach ( $this->result as $row_id => $row_data ) {
+						if ( $row_data['ID'] == (int) $user_id ) return $row_id+1;
+					}
 				}
 			}
-			else return 1;
+
+			return 0;
 		}
 
 		/**
@@ -152,32 +194,32 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		 * @version 1.0
 		 */
 		public function users_creds( $user_id = NULL ) {
-			if ( $user_id === NULL ) $user_id = get_current_user_id();
-			if ( $this->have_results() ) {
-				foreach ( $this->results as $row_id => $row_data ) {
-					if ( $row_data['user_id'] == $user_id ) return $row_data['creds'];
+			if ( $user_id !== NULL ) {
+				if ( $this->have_results() ) {
+					foreach ( $this->result as $row_id => $row_data ) {
+						if ( $row_data['ID'] == (int) $user_id ) return $row_data['creds'];
+					}
 				}
 			}
-			else return '';
+
+			return 0;
 		}
 
 		/**
-		 * Display
+		 * Leaderboard
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function display() {
-			echo $this->get_display();
+		public function leaderboard() {
+			echo $this->get_leaderboard();
 		}
 
 		/**
-		 * Get Display
-		 * Generates an organized list for our results.
-		 *
+		 * Get Leaderboard
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function get_display() {
+		public function get_leaderboard() {
 			// Default template
 			if ( empty( $this->args['template'] ) ) $this->args['template'] = '#%ranking% %user_profile_link% %cred_f%';
 
@@ -185,10 +227,9 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 			$output = '<ol class="myCRED-leaderboard">';
 
 			// Loop
-			foreach ( $this->results as $position => $row ) {
+			foreach ( $this->result as $position => $row ) {
 				// Prep
 				$class = array();
-				$url = get_author_posts_url( $row['user_id'] );
 
 				// Classes
 				$class[] = 'item-' . $position;
@@ -199,12 +240,15 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 					$class[] = 'alt';
 
 				// Template Tags
-				$layout = str_replace( '%rank%', $position+1, $this->args['template'] );
+				if ( !function_exists( 'mycred_get_users_rank' ) )
+					$layout = str_replace( array( '%rank%', '%ranking%' ), $position+1, $this->args['template'] );
+				else
+					$layout = str_replace( '%ranking%', $position+1, $this->args['template'] );
 
-				$layout = $this->core->template_tags_amount( $layout, $row['creds'] );
-				$layout = $this->core->template_tags_user( $layout, $row['user_id'], $row );
+				$layout = $this->core->template_tags_amount( $layout, $row['cred'] );
+				$layout = $this->core->template_tags_user( $layout, $row['ID'], $row );
 
-				$layout = apply_filters( 'mycred_ranking_row', $layout, $this->args['template'], $row, $position );
+				$layout = apply_filters( 'mycred_ranking_row', $layout, $this->args['template'], $row, $position+1 );
 				$output .= '<li class="' . implode( ' ', $class ) . '">' . $layout . '</li>';
 			}
 
@@ -230,12 +274,39 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
  * @version 1.0
  */
 if ( !function_exists( 'mycred_rankings' ) ) {
-	function mycred_rankings( $args = array() )
+	function mycred_rankings( $args = array(), $reset = false )
 	{
+		$default = array(
+			'number'      => '-1',
+			'order'       => 'DESC',
+			'user_fields' => 'user_login,display_name',
+			'offset'      => 0,
+			'type'        => 'mycred_default',
+			'template'    => '#%ranking% %user_profile_link% %cred_f%'
+		);
+		$args = shortcode_atts( $default, $args );
+		$diff = array_diff( $args, $default );
+
 		global $mycred_rankings;
-		if ( !isset( $mycred_rankings ) || !empty( $args ) ) {
-			$mycred_rankings = new myCRED_Rankings( $args );
+
+		$_rankings = get_transient( $args['type'] . '_ranking' );
+		// Transient is missing or request for reset
+		if ( false === $_rankings || true === $reset ) {
+			$ranking = new myCRED_Query_Rankings( array( 'type' => $args['type'] ) );
+			$ranking->get_rankings();
+			$ranking->save( $reset );
+		
+			$_rankings = $ranking->result;
 		}
+		// Else if arguments are not the default and a new query is required
+		elseif ( !empty( $diff ) ) {
+			$ranking = new myCRED_Query_Rankings( $args );
+			$ranking->get_rankings();
+		
+			$_rankings = $ranking->result;
+		}
+		$mycred_rankings = new myCRED_Rankings( $args, $_rankings );
+
 		return $mycred_rankings;
 	}
 }
@@ -251,15 +322,10 @@ if ( !function_exists( 'mycred_rankings' ) ) {
  * @version 1.0
  */
 if ( !function_exists( 'mycred_rankings_position' ) ) {
-	function mycred_rankings_position( $user_id = '' )
+	function mycred_rankings_position( $user_id = '', $type = 'mycred_default' )
 	{
-		$rankings = mycred_rankings();
-		if ( $rankings->have_results() ) {
-			foreach ( $rankings->results as $row_id => $row_data ) {
-				if ( $row_data['user_id'] == $user_id ) return $row_id+1;
-			}
-		}
-		return '';
+		$rankings = mycred_rankings( array( 'type' => $type ) );
+		return $rankings->users_position( $user_id );
 	}
 }
 
@@ -271,7 +337,8 @@ if ( !function_exists( 'mycred_rankings_position' ) ) {
 add_action( 'delete_user', 'mycred_adjust_ranking_delete_user' );
 function mycred_adjust_ranking_delete_user( $user_id )
 {
-	$rankings = mycred_rankings();
-	$rankings->_transients( true );
+	$ranking = new myCRED_Query_Rankings();
+	$ranking->get_rankings();
+	$ranking->save();
 }
 ?>

@@ -135,9 +135,8 @@ This version resolves bugs with the MarketPress add-on and third-party plugins s
 
 == Changelog ==
 
-**Updating to 1.1.1** Note that in this version the bbPress hook has been moved from the BuddyPress add-on to the core plugin support. This means that you you no longer require BuddyPress to access the bbPress Hook!
-
-Once you have updated to 1.1.1, visit the Hooks sub-menu page in the myCRED menu and update your bbPress settings!
+= 1.1.2 =
+* Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
 
 = 1.1.1 =
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.

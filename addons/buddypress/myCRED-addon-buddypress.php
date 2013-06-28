@@ -129,7 +129,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Show Balance in Header
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function show_balance( $table_row = false ) {
 			if ( bp_is_my_profile() || ( !bp_is_my_profile() && $this->buddypress['visibility']['balance'] ) || mycred_is_admin() ) {
@@ -145,6 +145,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					$rank_name = mycred_get_users_rank( $user_id );
 					$template = str_replace( '%rank%', $rank_name, $template );
 					$template = str_replace( '%rank_logo%', mycred_get_rank_logo( $rank_name ), $template );
+					$template = str_replace( '%ranking%', mycred_rankings_position( $user_id ), $template );
 				}
 				else {
 					$template = str_replace( '%rank%', mycred_rankings_position( $user_id ), $template );

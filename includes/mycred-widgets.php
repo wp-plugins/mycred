@@ -257,7 +257,11 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 
 			$instance['show_rank'] = (bool) $new_instance['show_rank'];
 			$rank_format = trim( $new_instance['rank_format'] );
-			$instance['rank_format'] = str_replace( '%rank%', '%ranking%', $rank_format );
+
+			if ( !function_exists( 'mycred_get_users_rank' ) ) 
+				$instance['rank_format'] = str_replace( '%rank%', '%ranking%', $rank_format );
+			else
+				$instance['rank_format'] = $rank_format;
 
 			$instance['show_history'] = (bool) $new_instance['show_history'];
 			$instance['history_title'] = trim( $new_instance['history_title'] );
@@ -333,7 +337,7 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 				}
 
 				// Result
-				$rankings->display();
+				$rankings->leaderboard();
 
 				// Footer
 				echo $after_widget;

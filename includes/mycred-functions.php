@@ -709,7 +709,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function add_creds( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
@@ -733,16 +733,40 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				if ( !empty( $entry ) )
 					$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 
+				// Update rankings
+				if ( $this->frequency['rate'] == 'always' )
+					$this->update_rankings();
+
 				return true;
 			}
 			// done (string)   - "Already done"
 			elseif ( $execute === 'done' ) {
+				// Update rankings
+				if ( $this->frequency['rate'] == 'always' )
+					$this->update_rankings();
+
 				return true;
 			}
 			// false (boolean) - "No"
 			else {
 				return false;
 			}
+		}
+		
+		/**
+		 * Update Rankings
+		 * Updates the rankings for a given points type.
+		 *
+		 * @param $force (bool), if rankings are updated on a set interval, this option can override
+		 * and force a new setting to be saved.
+		 * @param $type (string), optional points type
+		 * @since 1.1.2
+		 * @version 1.0
+		 */
+		public function update_rankings( $force = false, $type = 'mycred_default' ) {
+			$ranking = new myCRED_Query_Rankings( array( 'type' => $type ) );
+			$ranking->get_rankings();
+			$ranking->save( $force );
 		}
 
 		/**

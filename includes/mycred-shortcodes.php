@@ -52,7 +52,7 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 /**
  * myCRED Shortcode: mycred_leaderboard
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
@@ -80,7 +80,7 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 
 		// Have results
 		if ( $rankings->have_results() )
-			return $rankings->get_display();
+			return $rankings->get_leaderboard();
 
 		// No result template is set
 		if ( !empty( $attr['nothing'] ) )
