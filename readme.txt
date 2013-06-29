@@ -137,6 +137,7 @@ This version resolves bugs with the MarketPress add-on and third-party plugins s
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
+* Fixed Bug #36 - Use of incorrect reference when calling hooks.
 
 = 1.1.1 =
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.
