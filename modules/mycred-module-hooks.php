@@ -62,7 +62,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				$class = $callback[0];
 				$methods = get_class_methods( $class );
 				if ( in_array( $call, $methods ) ) {
-					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : $this );
+					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : array() );
 					return $new->$call( $return );
 				}
 			}
