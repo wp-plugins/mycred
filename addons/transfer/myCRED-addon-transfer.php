@@ -300,7 +300,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			// Prep
 			$to = $_POST['recipient'];
 			$from = $_POST['sender'];
-			$amount = $_POST['amount'];
+			$amount = abs( $_POST['amount'] );
 
 			// Add-on has not been installed
 			if ( !isset( $this->transfers ) )
