@@ -84,6 +84,8 @@ The following third party plugins are supported by default:
 
 == Installation ==
 
+For a comprehensive guide on how to install myCRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
+
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Run the myCRED Setup which will allow you to configure your **my**CRED installation
