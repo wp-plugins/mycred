@@ -64,14 +64,14 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 * @version 1.0
 		 */
 		public function module_init() {
-			add_filter( 'mycred_setup_hooks',               array( $this, 'register_hooks' ) );
-			add_action( 'admin_bar_menu',                   array( $this, 'adjust_admin_bar' ), 110 );
+			add_filter( 'mycred_setup_hooks',                array( $this, 'register_hooks' ) );
+			add_action( 'admin_bar_menu',                    array( $this, 'adjust_admin_bar' ), 110 );
 			
 			if ( $this->buddypress['balance_location'] == 'top' || $this->buddypress['balance_location'] == 'both' )
-				add_action( 'bp_before_member_header_meta', array( $this, 'show_balance' ) );
+				add_action( 'bp_before_member_header_meta',  array( $this, 'show_balance' ) );
  
  			if ( $this->buddypress['balance_location'] == 'profile_tab' || $this->buddypress['balance_location'] == 'both' )
-				add_action( 'bp_profile_field_item',        array( $this, 'show_balance_profile' ) );
+				add_action( 'bp_after_profile_loop_content', array( $this, 'show_balance_profile' ) );
 		}
 		
 		/**
@@ -109,8 +109,10 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			
 			$balance = $this->core->get_users_cred( $user_id ); ?>
 
-	<tr id="mycred-users-balance">
-		<td class="label"><?php
+<div class="bp-widget mycred-field">
+	<table class="profile-fields">
+		<tr id="mycred-users-balance">
+			<td class="label"><?php
 
 			// Balance label
 			$template = $this->buddypress['balance_template'];
@@ -118,11 +120,13 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			$template = str_replace( '%creds%', '', $template );
 			$template = str_replace( '%rank%', '', $template );
 			echo $this->core->template_tags_general( trim( $template ) ); ?></td>
-		<td class="data">
+			<td class="data">
 			<?php echo $this->core->format_creds( $balance ); ?>
 
-		</td>
-	</tr>
+			</td>
+		</tr>
+	</table>
+</div>
 <?php
 		}
 		
