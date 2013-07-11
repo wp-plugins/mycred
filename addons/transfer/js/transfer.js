@@ -91,7 +91,7 @@ jQuery(function($){
 	// @api http://api.jqueryui.com/autocomplete/
 	var cache = {};
 	$('input.mycred-autofill').autocomplete({
-		minLength: 1,
+		minLength: 2,
 		source: function( request, response ) {
 			var term = request.term;
 			if ( term in cache ) {

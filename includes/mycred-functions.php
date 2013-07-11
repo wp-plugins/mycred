@@ -347,13 +347,16 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
 		public function template_tags_user( $content, $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get User Object
-			$user = get_userdata( $ref_id );
+			if ( $ref_id !== false )
+				$user = get_userdata( $ref_id );
+			else
+				$user = $ref_id;
 
 			// User does not exist
 			if ( $user === false ) {
@@ -389,7 +392,6 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = str_replace( '%user_profile_link%',  '<a href="' . $url . '">' . $user->display_name . '</a>', $content );
 
 			$content = str_replace( '%user_nicename%',      ( isset( $user->user_nicename ) ) ? $user->user_nicename : '', $content );
-			$content = str_replace( '%nickname%',           ( isset( $user->nickname ) ) ? $user->nickname : '', $content );
 			$content = str_replace( '%user_email%',         ( isset( $user->user_email ) ) ? $user->user_email : '', $content );
 			$content = str_replace( '%user_url%',           ( isset( $user->user_url ) ) ? $user->user_url : '', $content );
 

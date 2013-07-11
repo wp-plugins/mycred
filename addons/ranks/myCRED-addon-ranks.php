@@ -100,7 +100,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * Hook into Admin Init
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function module_admin_init() {
 			add_filter( 'manage_mycred_rank_posts_columns',       array( $this, 'adjust_column_headers' )        );
@@ -109,13 +109,13 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			add_filter( 'manage_users_columns',       array( $this, 'custom_user_column' )                );
 			add_action( 'manage_users_custom_column', array( $this, 'custom_user_column_content' ), 10, 3 );
 
-			add_filter( 'post_row_actions',      array( $this, 'adjust_row_actions' ), 10, 2 );
+			add_filter( 'post_row_actions',           array( $this, 'adjust_row_actions' ), 10, 2 );
 
-			add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
-			add_filter( 'enter_title_here',      array( $this, 'enter_title_here' )      );
+			add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ) );
+			add_filter( 'enter_title_here',           array( $this, 'enter_title_here' )      );
 
-			add_action( 'add_meta_boxes',        array( $this, 'add_meta_boxes' )        );
-			add_action( 'save_post',             array( $this, 'save_rank_settings' )    );
+			add_action( 'add_meta_boxes_mycred_rank', array( $this, 'add_meta_boxes' )        );
+			add_action( 'save_post',                  array( $this, 'save_rank_settings' )    );
 		}
 		
 		/**
@@ -281,9 +281,12 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 * Parse Rank
 		 * Parses the %rank% and %rank_logo% template tags.
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function parse_rank( $content, $user = '', $data = '' ) {
+			// No rank no need to run
+			if ( !preg_match( '/(%rank[%|_])/', $content ) ) return $content;
+
 			if ( !isset( $user->ID ) ) {
 				if ( is_array( $data ) && isset( $data['ID'] ) )
 					$user_id = $data['ID'];

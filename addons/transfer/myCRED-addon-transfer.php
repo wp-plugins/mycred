@@ -520,6 +520,9 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			// Prep
 			$title = $instance['title'];
 			$mycred = mycred_get_settings();
+			if ( !isset( $mycred->transfers ) )
+				return '<p>' . __( 'The myCRED Transfer add-on has not yet been setup!', 'mycred' ) . '</p>';
+
 			$pref = $mycred->transfers;
 
 			global $mycred_load;

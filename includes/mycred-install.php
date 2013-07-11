@@ -113,9 +113,18 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		/**
 		 * Re-activation
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function reactivate() {
+			// Update rankings on re-activation
+			if ( !class_exists( 'myCRED_Query_Rankings' ) )
+				include_once( myCRED_INCLUDES_DIR . '/mycred-rankings.php' );
+
+			$ranking = new myCRED_Query_Rankings();
+			$ranking->get_rankings();
+			$ranking->save( true );
+			unset( $ranking );
+
 			do_action( 'mycred_reactivation' );
 		}
 

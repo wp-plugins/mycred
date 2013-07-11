@@ -52,17 +52,17 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 /**
  * myCRED Shortcode: mycred_leaderboard
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
 	{
 		$attr = shortcode_atts( array(
 			'number'   => '-1',
-			'offset'   => 0,
 			'order'    => 'DESC',
-			'template' => '',
-			'type'     => '',
+			'offset'   => 0,
+			'type'     => 'mycred_default',
+			'template' => '#%ranking% %user_profile_link% %cred_f%',
 			'nothing'  => __( 'Leaderboard is empty.', 'mycred' )
 		), $atts );
 		
@@ -75,8 +75,11 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 			$attr['meta_key'] = $attr['type'];
 			unset( $attr['type'] );
 		}
-		
-		$rankings = mycred_rankings( $attr );
+
+		$_attr = $attr;
+		$_attr['user_fields'] = 'user_login,display_name,user_email,user_nicename,user_url';
+		unset( $_attr['nothing'] );
+		$rankings = mycred_rankings( $_attr );
 
 		// Have results
 		if ( $rankings->have_results() )

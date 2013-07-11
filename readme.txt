@@ -141,6 +141,13 @@ This version resolves bugs with the MarketPress add-on and third-party plugins s
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
 * Fixed Bug #36 - Use of incorrect reference when calling hooks.
 * Fixed Bug #37 - Transferring negative amounts deducts points from recipient.
+* Fixed Bug #38 - Error message if the Transfer widget is used before the Add-on is setup.
+* Adjusted Transfer Autofill to require minimum 2 characters instead of just 1.
+* Improved Rankings with the new myCRED_Query_Rankings class.
+* Removed support for %nickname% in user related template tags.
+* Added Support Forum link to Settings page.
+* Added Donate Link to Plugin Links.
+* Added Ranking update when plugin is re-activated.
 
 = 1.1.1 =
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.

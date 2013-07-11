@@ -21,7 +21,7 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 			$this->args = shortcode_atts( array(
 				'number'      => '-1',
 				'order'       => 'DESC',
-				'user_fields' => 'user_login,display_name',
+				'user_fields' => 'user_login,display_name,user_email,user_nicename,user_url',
 				'offset'      => 0,
 				'type'        => 'mycred_default'
 			), $args );
@@ -253,7 +253,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		/**
 		 * Get Leaderboard
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function get_leaderboard() {
 			// Default template
@@ -282,7 +282,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 					$layout = str_replace( '%ranking%', $position+1, $this->args['template'] );
 
 				$layout = $this->core->template_tags_amount( $layout, $row['cred'] );
-				$layout = $this->core->template_tags_user( $layout, $row['ID'], $row );
+				$layout = $this->core->template_tags_user( $layout, false, $row );
 
 				$layout = apply_filters( 'mycred_ranking_row', $layout, $this->args['template'], $row, $position+1 );
 				$output .= '<li class="' . implode( ' ', $class ) . '">' . $layout . '</li>';
@@ -319,7 +319,7 @@ if ( !function_exists( 'mycred_rankings' ) ) {
 		$default = array(
 			'number'      => '-1',
 			'order'       => 'DESC',
-			'user_fields' => 'user_login,display_name',
+			'user_fields' => 'user_login,display_name,user_email,user_nicename,user_url',
 			'offset'      => 0,
 			'type'        => 'mycred_default',
 			'template'    => '#%ranking% %user_profile_link% %cred_f%'
