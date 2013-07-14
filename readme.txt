@@ -127,11 +127,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Upgrade Notice ==
-
-= 1.1.2 =
-This version contains bug fixes for BuddyPress, Transfer Add-on and Ranks Add-on.
-It also improves how Rankings are queried and updated.
-This update also contains a critical update for the Transfer Add-on!
+This version contains bug fixes for BuddyPress, Transfer Add-on and Ranks Add-on with improvement of how Rankings are queried and updated.
 
 
 == Changelog ==
@@ -147,6 +143,7 @@ This update also contains a critical update for the Transfer Add-on!
 * Added Support Forum link to Settings page.
 * Added Donate Link to Plugin Links.
 * Added Ranking update when plugin is re-activated.
+* Added support for custom templates for the mycred_leaderboard shortcode.
 * Improved how the abstract class myCRED_Hook and myCRED_Module handles settings.
 * Added new mycred_apply_defaults function.
 * Improved points for comments allowing points to be awarded when comments get marked as SPAM or Trashed by mistake.
