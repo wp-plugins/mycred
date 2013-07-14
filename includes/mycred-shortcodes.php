@@ -52,7 +52,7 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 /**
  * myCRED Shortcode: mycred_leaderboard
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
