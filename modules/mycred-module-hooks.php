@@ -54,7 +54,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 * Call
 		 * Either runs a given class method or function.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function call( $call, $callback, $return = NULL ) {
 			// Class
@@ -62,7 +62,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				$class = $callback[0];
 				$methods = get_class_methods( $class );
 				if ( in_array( $call, $methods ) ) {
-					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : $this );
+					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : array() );
 					return $new->$call( $return );
 				}
 			}
