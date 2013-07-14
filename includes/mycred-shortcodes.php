@@ -52,7 +52,7 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 /**
  * myCRED Shortcode: mycred_leaderboard
  * @since 0.1
- * @version 1.2
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
@@ -62,28 +62,30 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 			'order'    => 'DESC',
 			'offset'   => 0,
 			'type'     => 'mycred_default',
+			'wrap'     => 'li',
 			'template' => '#%ranking% %user_profile_link% %cred_f%',
 			'nothing'  => __( 'Leaderboard is empty.', 'mycred' )
 		), $atts );
 		
 		// Template can also be passed though the content
-		if ( empty( $attr['template'] ) && $content !== NULL )
+		if ( empty( $attr['template'] ) || $content !== NULL )
 			$attr['template'] = do_shortcode( $content );
 		
-		// Points type
-		if ( !empty( $attr['type'] ) ) {
-			$attr['meta_key'] = $attr['type'];
-			unset( $attr['type'] );
-		}
-
 		$_attr = $attr;
 		$_attr['user_fields'] = 'user_login,display_name,user_email,user_nicename,user_url';
+		unset( $_attr['wrap'] );
 		unset( $_attr['nothing'] );
 		$rankings = mycred_rankings( $_attr );
 
 		// Have results
-		if ( $rankings->have_results() )
-			return $rankings->get_leaderboard();
+		if ( $rankings->have_results() ) {
+			// Default organized list
+			if ( $attr['wrap'] == 'li' )
+				return $rankings->get_leaderboard();
+			// Just the loop for custom header and footer
+			else
+				return $rankings->loop( $attr['wrap'] );
+		}
 
 		// No result template is set
 		if ( !empty( $attr['nothing'] ) )
