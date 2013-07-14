@@ -391,7 +391,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$this->core->add_creds(
 				'transfer',
 				$from,
-				'-' . $amount,
+				0-$amount,
 				$prefs['logs']['sending'],
 				$recipient_id,
 				array( 'ref_type' => 'user', 'tid' => $transaction_id )

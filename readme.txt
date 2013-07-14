@@ -128,11 +128,10 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.1.1 =
-This version resolves bugs with the MarketPress add-on and third-party plugins support. You will also have access to the bbPress hooks without the need to use Buddypress.
-
-* bbPress users should visit the "Hooks" sub-menu and re-enter their hook settings as these will be reset.
-* Ranks Add-on users should visit the "Settings" sub-menu and confirm their Rank settings as new settings will be available.
+= 1.1.2 =
+This version contains bug fixes for BuddyPress, Transfer Add-on and Ranks Add-on.
+It also improves how Rankings are queried and updated.
+This update also contains a critical update for the Transfer Add-on!
 
 
 == Changelog ==

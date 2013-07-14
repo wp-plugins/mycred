@@ -112,7 +112,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 					'purchase_id' => 'TXID' . date_i18n( 'U' ),
 					'seller'      => $author
 				);
-				$this->core->add_creds( 'buy_content', $user_id, '-' . $prefs['price'], $log, $post_id, $data );
+				$this->core->add_creds( 'buy_content', $user_id, 0-$prefs['price'], $log, $post_id, $data );
 
 				do_action( 'mycred_sell_content_purchase_ready', $request );
 

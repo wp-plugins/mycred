@@ -190,7 +190,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 				}
 
 				// Charge
-				$this->mycred->add_creds( 'woocommerce_payment', $cui, '-' . $cost, $this->log_template, $order_id, array( 'ref_type' => 'post' ) );
+				$this->mycred->add_creds( 'woocommerce_payment', $cui, 0-$cost, $this->log_template, $order_id, array( 'ref_type' => 'post' ) );
 				$order->payment_complete();
 
 				// Return the good news
