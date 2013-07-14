@@ -147,6 +147,8 @@ This update also contains a critical update for the Transfer Add-on!
 * Added Support Forum link to Settings page.
 * Added Donate Link to Plugin Links.
 * Added Ranking update when plugin is re-activated.
+* Improved how the abstract class myCRED_Hook and myCRED_Module handles settings.
+* Added new mycred_apply_defaults function.
 
 = 1.1.1 =
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.

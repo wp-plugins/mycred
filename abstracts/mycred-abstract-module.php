@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Module class
  * @see http://mycred.me/classes/mycred_module/
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !class_exists( 'myCRED_Module' ) ) {
 	abstract class myCRED_Module {
@@ -80,9 +80,9 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		/**
 		 * Set Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		function set_settings( $defaults ) {
+		function set_settings( $defaults = array() ) {
 			$module = $this->module_name;
 
 			// Reqest not to register any settings
@@ -93,6 +93,10 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 				// Else append settings
 				else
 					$this->$module = $this->core->$module;
+
+				// Apply defaults in case new settings have been applied
+				if ( !empty( $defaults ) )
+					$this->$module = mycred_apply_defaults( $defaults, $this->$module );
 			}
 			// Request to register settings
 			else {
@@ -115,6 +119,10 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 								$this->$module[$option_name] = $defaults[$option_id];
 							else
 								$this->$module[$option_name] = $settings;
+
+							// Apply defaults in case new settings have been applied
+							if ( array_key_exists( $option_id, $defaults ) )
+								$this->$module[$option_name] = mycred_apply_defaults( $defaults[$option_id], $this->$module[$option_name] );
 						}
 					}
 					// String = one
@@ -132,6 +140,10 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 
 							if ( $this->$module === false && !empty( $defaults ) )
 								$this->$module = $defaults;
+
+							// Apply defaults in case new settings have been applied
+							if ( !empty( $defaults ) )
+								$this->$module = mycred_apply_defaults( $defaults, $this->$module );
 						}
 					}
 

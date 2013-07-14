@@ -1197,4 +1197,28 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 		return $mycred->format_number( $count );
 	}
 }
+
+/**
+ * Apply Defaults
+ * Based on the shortcode_atts() function with support for
+ * multidimentional arrays.
+ * @since 1.1.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_apply_defaults' ) ) {
+	function mycred_apply_defaults( &$pref, $set ) {
+		$set = (array) $set;
+		$return = array();
+		foreach ( $pref as $key => $value ) {
+			if ( array_key_exists( $key, $set ) ) {
+				if ( is_array( $value ) && !empty( $value ) )
+					$return[$key] = mycred_apply_defaults( $value, $set[$key] );
+				else
+					$return[$key] = $set[$key];
+			}
+			else $return[$key] = $value;
+		}
+		return $return;
+	}
+}
 ?>

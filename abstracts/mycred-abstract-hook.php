@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Hook class
  * @see http://mycred.me/classes/mycred_hook/
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Hook' ) ) {
 	abstract class myCRED_Hook {
@@ -27,16 +27,24 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 					$this->$key = $value;
 				}
 			}
+			
+			// Grab myCRED Settings
+			$this->core = mycred_get_settings();
+
+			// Grab settings
 			if ( $hook_prefs !== NULL ) {
 				// Assign prefs if set
 				if ( isset( $hook_prefs[$this->id] ) )
 					$this->prefs = $hook_prefs[$this->id];
 
-				// Apply defaults (if needed)
-				if ( empty( $this->prefs ) || $this->prefs === false )
-					$this->prefs = $this->defaults;
+				// Defaults must be set
+				if ( !isset( $this->defaults ) || empty( $this->defaults ) )
+					$this->defaults = array();
 			}
-			$this->core = mycred_get_settings();
+
+			// Apply default settings if needed
+			if ( !empty( $this->defaults ) )
+				$this->prefs = mycred_apply_defaults( $this->defaults, $this->prefs );
 		}
 
 		/**
