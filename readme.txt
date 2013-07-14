@@ -149,6 +149,7 @@ This update also contains a critical update for the Transfer Add-on!
 * Added Ranking update when plugin is re-activated.
 * Improved how the abstract class myCRED_Hook and myCRED_Module handles settings.
 * Added new mycred_apply_defaults function.
+* Improved points for comments allowing points to be awarded when comments get marked as SPAM or Trashed by mistake.
 
 = 1.1.1 =
 * Moved the bbPress Hook from BuddyPress add-on to default plugin hooks.

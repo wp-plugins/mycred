@@ -7,7 +7,7 @@ require_once( myCRED_MODULES_DIR . 'mycred-module-plugins.php' );
 /**
  * myCRED_Hooks class
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Hooks' ) ) {
 	class myCRED_Hooks extends myCRED_Module {
@@ -54,7 +54,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 * Call
 		 * Either runs a given class method or function.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.0
 		 */
 		public function call( $call, $callback, $return = NULL ) {
 			// Class
@@ -62,7 +62,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				$class = $callback[0];
 				$methods = get_class_methods( $class );
 				if ( in_array( $call, $methods ) ) {
-					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : array() );
+					$new = new $class( ( isset( $this->hook_prefs ) ) ? $this->hook_prefs : $this );
 					return $new->$call( $return );
 				}
 			}
@@ -725,69 +725,48 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Run
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function run() {
-			add_action( 'comment_post',                       array( $this, 'new_comment' ), 10, 2 );
-
-			if ( $this->prefs['approved'] != 0 ) {
-				add_action( 'comment_unapproved_to_approved', array( $this, 'approved_comments' ) );
-				add_action( 'comment_trash_to_approved',      array( $this, 'approved_comments' ) );
-				add_action( 'comment_spam_to_approved',       array( $this, 'approved_comments' ) );
-			}
-
-			if ( $this->prefs['spam'] != 0 ) {
-				add_action( 'comment_approved_to_spam',       array( $this, 'spam_comments' ) );
-				add_action( 'comment_unapproved_to_spam',     array( $this, 'spam_comments' ) );
-			}
-
-			if ( $this->prefs['trash'] != 0 ) {
-				add_action( 'comment_approved_to_unapproved', array( $this, 'trash_comments' ) );
-				add_action( 'comment_approved_to_trash',      array( $this, 'trash_comments' ) );
-				add_action( 'comment_unapproved_to_trash',    array( $this, 'trash_comments' ) );
-			}
+			add_action( 'comment_post',              array( $this, 'new_comment' ), 10, 2         );
+			add_action( 'transition_comment_status', array( $this, 'comment_transitions' ), 10, 3 );
 		}
-
+		
 		/**
 		 * New Comment
 		 * If comments are approved without moderation, we apply the corresponding method
 		 * or else we will wait till the appropriate instance.
 		 *
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function new_comment( $comment_id, $comment_status ) {
 			// Marked SPAM
 			if ( $comment_status === 'spam' && $this->prefs['spam'] != 0 )
-				$this->spam_comments( $comment_id );
+				$this->comment_transitions( 'spam', 'unapproved', $comment_id );
 			// Approved comment
 			elseif ( $comment_status == '1' && $this->prefs['approved'] != 0 )
-				$this->approved_comments( $comment_id );
-
-			// All else comments are moderated and we will award / deduct points in a different instance
-			return;
+				$this->comment_transitions( 'approved', 'unapproved', $comment_id );
 		}
-
+		
 		/**
-		 * Approved Comments
-		 * Validate and execute our settings for approved comments.
-		 *
-		 * @since 0.1
+		 * Comment Transitions
+		 * @since 1.1.2
 		 * @version 1.0
 		 */
-		public function approved_comments( $comment ) {
+		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
 			if ( !is_object( $comment ) )
 				$comment = get_comment( $comment );
+
+			// Ignore Pingbacks or Trackbacks
+			if ( !empty( $comment->comment_type ) ) return;
 
 			// Logged out users miss out
 			if ( $comment->user_id == 0 ) return;
 
 			// Check if user should be excluded
 			if ( $this->core->exclude_user( $comment->user_id ) === true ) return;
-
-			// Make sure this is unique event
-			if ( $this->has_entry( 'approved_comment', $comment->comment_ID, $comment->user_id ) ) return;
 
 			// Check if we are allowed to comment our own comment
 			if ( $this->prefs['limits']['self_reply'] != 0 && $comment->comment_parent != 0 ) {
@@ -795,84 +774,85 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				if ( $parent->user_id == $comment->user_id ) return;
 			}
 
-			// Enforce limits
-			if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) ) return;
+			$reference = '';
+
+			// Approved comments
+			if ( $this->prefs['approved'] != 0 && $new_status == 'approved' ) {
+				// New approved comment
+				if ( $old_status == 'unapproved' || $old_status == 'hold' ) {
+					// Enforce limits
+					if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) ) return;
+
+					$reference = 'approved_comment';
+					$points = $this->prefs['approved']['creds'];
+					$log = $this->prefs['approved']['log'];
+				}
+
+				// Marked as "Not Spam"
+				elseif ( $this->prefs['spam'] != 0 && $old_status == 'spam' ) {
+					$reference = 'approved_comment';
+
+					// Reverse points
+					if ( $this->prefs['spam']['creds'] < 0 )
+						$points = abs( $this->prefs['spam']['creds'] );
+					else
+						$points = $this->prefs['spam']['creds'];
+
+					$log = $this->prefs['approved']['log'];
+				}
+
+				// Returned comment from trash
+				elseif ( $this->prefs['trash'] != 0 && $old_status == 'trash' ) {
+					$reference = 'approved_comment';
+					// Reverse points
+					if ( $this->prefs['trash']['creds'] < 0 )
+						$points = abs( $this->prefs['trash']['creds'] );
+					else
+						$points = $this->prefs['trash']['creds'];
+					
+					$log = $this->prefs['approved']['log'];
+				}
+			}
+
+			// Spam comments
+			elseif ( $this->prefs['spam'] != 0 && $new_status == 'spam' ) {
+				$reference = 'spam_comment';
+				$points = $this->prefs['spam']['creds'];
+				$log = $this->prefs['spam']['log'];
+			}
+
+			// Trashed comments
+			elseif ( $this->prefs['trash'] != 0 && $new_status == 'trash' ) {
+				$reference = 'deleted_comment';
+				$points = $this->prefs['trash']['creds'];
+				$log = $this->prefs['trash']['log'];
+			}
+
+			// Unapproved comments
+			elseif ( $new_status == 'unapproved' && $old_status == 'approved' ) {
+				$reference = 'deleted_comment';
+				// Reverse points
+				if ( $this->prefs['approved']['creds'] < 0 )
+					$points = abs( $this->prefs['approved']['creds'] );
+				else
+					$points = $this->prefs['approved']['creds'];
+
+				$log = $this->prefs['trash']['log'];
+			}
+
+			if ( empty( $reference ) ) return;
 
 			// Execute
 			$this->core->add_creds(
-				'approved_comment',
+				$reference,
 				$comment->user_id,
-				$this->prefs['approved']['creds'],
-				$this->prefs['approved']['log'],
+				$points,
+				$log,
 				$comment->comment_ID,
 				array( 'ref_type' => 'comment' )
 			);
 		}
 
-		/**
-		 * SPAM Comments
-		 * Validate and execute our settings for comments marked as SPAM.
-		 *
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function spam_comments( $comment ) {
-			// Passing an integer instead of an object means we need to grab the comment object ourselves
-			if ( !is_object( $comment ) )
-				$comment = get_comment( $comment );
-
-			// Logged out users miss out
-			if ( $comment->user_id == 0 ) return;
-
-			// Check if user should be excluded
-			if ( $this->core->exclude_user( $comment->user_id ) === true ) return;
-
-			// Make sure this is unique event
-			if ( $this->has_entry( 'spam_comment', $comment->comment_ID, $comment->user_id ) ) return;
-
-			// Execute
-			$this->core->add_creds(
-				'spam_comment',
-				$comment->user_id,
-				$this->prefs['spam']['creds'],
-				$this->prefs['spam']['log'],
-				$comment->comment_ID,
-				array( 'ref_type' => 'comment' )
-			);
-		}
-
-		/**
-		 * Trashed Comments
-		 * Validate and execute our settings for trashed or unapproved comments.
-		 *
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function trash_comments( $comment ) {
-			// Passing an integer instead of an object means we need to grab the comment object ourselves
-			if ( !is_object( $comment ) )
-				$comment = get_comment( $comment );
-
-			// Logged out users miss out
-			if ( $comment->user_id == 0 ) return;
-
-			// Check if user should be excluded
-			if ( $this->core->exclude_user( $comment->user_id ) === true ) return;
-
-			// Make sure this is unique event
-			if ( $this->has_entry( 'deleted_comment', $comment->comment_ID, $comment->user_id ) ) return;
-
-			// Execute
-			$this->core->add_creds(
-				'deleted_comment',
-				$comment->user_id,
-				$this->prefs['trash']['creds'],
-				$this->prefs['trash']['log'],
-				$comment->comment_ID,
-				array( 'ref_type' => 'comment' )
-			);
-		}
-		
 		/**
 		 * Check if user exceeds limit
 		 * @since 1.1.1
