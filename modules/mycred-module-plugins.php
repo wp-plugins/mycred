@@ -509,7 +509,7 @@ if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
 		 * Queries all Contact Form 7 forms.
 		 * @uses WP_Query()
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get_forms() {
 			$forms = new WP_Query( array(
@@ -527,6 +527,8 @@ if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
 				endwhile;
 			}
 			wp_reset_postdata();
+			
+			return $result;
 		}
 
 		/**
