@@ -127,8 +127,18 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 
 == Upgrade Notice ==
-This version contains bug fixes for BuddyPress, Transfer Add-on and Ranks Add-on with improvement of how Rankings are queried and updated.
 
+= 1.1.2 =
+See: http://mycred.me/download/changelog/
+
+= 1.1.1 =
+See: http://mycred.me/download/changelog/
+
+= 1.1 =
+See: http://mycred.me/download/changelog/
+
+= 1.0.9.3 =
+See: http://mycred.me/download/changelog/2/
 
 == Changelog ==
 
