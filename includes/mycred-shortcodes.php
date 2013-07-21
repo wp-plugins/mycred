@@ -158,7 +158,7 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 
 		$amount = $mycred->number( $amount );
 		$mycred->add_creds(
-			$reference,
+			$ref,
 			$user_id,
 			$amount,
 			$log,
