@@ -834,7 +834,7 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		// Weekly limit
 		elseif ( $pref['limit']['limit'] == 'weekly' ) {
 			// New week, new limits
-			if ( $this_week != $transfers['frame'] ) {
+			if ( $this_week != $history['frame'] ) {
 				$new_data = array(
 					'frame' => $this_week,
 					'amount' => $mycred->number( 0 )
@@ -856,7 +856,7 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 
 		// others limits
 		else {
-			return apply_filters( 'mycred_user_can_transfer', $mycred->number( $pref['limit']['amount'] ), $user_id, $balance, $transfers, $mycred );
+			return apply_filters( 'mycred_user_can_transfer', $mycred->number( $pref['limit']['amount'] ), $user_id, $balance, $history, $mycred );
 		}
 	}
 }
