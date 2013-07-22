@@ -154,46 +154,16 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		/**
 		 * Has Entry
 		 * Checks to see if a given action with reference ID and user ID exists in the log database.
+		 * Was moved to myCRED_Settings Class in 1.2
 		 * @param $action (string) required reference
 		 * @param $ref_id (int) optional reference id
 		 * @param $user_id (int) optional user id
 		 * @param $data (array|string) option data to search
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function has_entry( $action = '', $ref_id = '', $user_id = '', $data = '' ) {
-			global $wpdb;
-
-			$where = $prep = array();
-			if ( !empty( $action ) ) {
-				$where[] = 'ref = %s';
-				$prep[] = $action;
-			}
-
-			if ( !empty( $ref_id ) ) {
-				$where[] = 'ref_id = %d';
-				$prep[] = $ref_id;
-			}
-
-			if ( !empty( $user_id ) ) {
-				$where[] = 'user_id = %d';
-				$prep[] = abs( $user_id );
-			}
-
-			if ( !empty( $data ) ) {
-				$where[] = 'data = %s';
-				$prep[] = maybe_serialize( $data );
-			}
-
-			$where = implode( ' AND ', $where );
-
-			if ( !empty( $where ) ) {
-				$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE $where";
-				$wpdb->get_results( $wpdb->prepare( $sql, $prep ) );
-				if ( $wpdb->num_rows > 0 ) return true;
-			}
-
-			return false;
+			$this->core->has_entry( $action, $ref_id, $user_id, $data );
 		}
 	}
 }

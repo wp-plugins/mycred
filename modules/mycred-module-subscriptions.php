@@ -101,7 +101,7 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 					if ( $this->core->exclude_user( $user->ID ) === true ) continue;
 				
 					// Make sure this is a unique event
-					if ( $this->has_entry( 'site_subscription', '', $user->ID ) ) continue;
+					if ( $this->core->has_entry( 'site_subscription', '', $user->ID ) ) continue;
 					
 					// Site Subscriptions
 					if ( $type == 'site' ) {
@@ -143,7 +143,7 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 						if ( $this->core->exclude_user( $user->ID ) === true ) continue;
 				
 						// Start with making sure this is a unique event
-						if ( $this->has_entry( 'comment_subscription', $id, $comment->user_id ) ) continue;
+						if ( $this->core->has_entry( 'comment_subscription', $id, $comment->user_id ) ) continue;
 				
 						$post_ids = array();
 	
@@ -206,7 +206,7 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 				return $location;
 
 			// Check that this is a unique event
-			if ( $this->has_entry( 'site_subscription', '', $user->ID ) )
+			if ( $this->core->has_entry( 'site_subscription', '', $user->ID ) )
 				return $location;
 
 			$this->site_subscribe( $_REQUEST['email'], $user->ID );
@@ -247,7 +247,7 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 			if ( $this->core->exclude_user( $user->ID ) === true ) return;
 			
 			// Start with making sure this is a unique event
-			if ( $this->has_entry( 'comment_subscription', $comment_id, $user->ID ) ) return;
+			if ( $this->core->has_entry( 'comment_subscription', $comment_id, $user->ID ) ) return;
 
 			// Handle comment subscription
 			if ( isset( $_REQUEST['subscribe_comments'] ) )

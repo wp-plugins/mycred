@@ -68,7 +68,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_link', $link_id, $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'new_link', $link_id, $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -93,7 +93,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'link_voting', $link_id, $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'link_voting', $link_id, $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -116,7 +116,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'update_link', $activity_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'update_link', $activity_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -141,7 +141,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'link_deletion', $link_id, $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'link_deletion', $link_id, $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(

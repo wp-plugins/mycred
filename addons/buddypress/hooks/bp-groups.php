@@ -216,7 +216,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_group_forum_topic', $topic_id, $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'new_group_forum_topic', $topic_id, $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -263,7 +263,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_group_forum_post', $post_id, $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'new_group_forum_post', $post_id, $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -311,7 +311,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 				$creator = $group->creator_id;
 
 				// Award creator if we have reached the minimum number of members and we have not yet been awarded
-				if ( $count == $this->prefs['create']['min'] && !$this->has_entry( 'creation_of_new_group', $group_id, $creator ) ) {
+				if ( $count == $this->prefs['create']['min'] && !$this->core->has_entry( 'creation_of_new_group', $group_id, $creator ) ) {
 					$this->core->add_creds( 'creation_of_new_group', $creator, $this->prefs['create']['creds'], $this->prefs['create']['log'], $group_id, 'bp_group' );
 				}
 
@@ -323,7 +323,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'joining_group', $group_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'joining_group', $group_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -346,7 +346,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'leaving_group', $group_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'leaving_group', $group_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -371,7 +371,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'upload_group_avatar', $group_id ) ) return;
+			if ( $this->core->has_entry( 'upload_group_avatar', $group_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -394,7 +394,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_group_comment', $activity_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'new_group_comment', $activity_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(

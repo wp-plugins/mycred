@@ -105,7 +105,7 @@ if ( class_exists( 'bbPress' ) ) {
 				if ( $this->core->exclude_user( $forum_author ) ) return;
 
 				// Make sure this is unique event
-				if ( $this->has_entry( 'new_forum', $forum_id, $forum_author ) ) return;
+				if ( $this->core->has_entry( 'new_forum', $forum_id, $forum_author ) ) return;
 
 				// Execute
 				$this->core->add_creds(
@@ -133,7 +133,7 @@ if ( class_exists( 'bbPress' ) ) {
 				}
 
 				// Make sure this is unique event
-				if ( $this->has_entry( 'new_forum_topic', $topic_id, $topic_author ) ) return;
+				if ( $this->core->has_entry( 'new_forum_topic', $topic_id, $topic_author ) ) return;
 
 				// Execute
 				$this->core->add_creds(
@@ -161,7 +161,7 @@ if ( class_exists( 'bbPress' ) ) {
 				if ( $this->core->exclude_user( $topic_author ) || $topic_author == $user_id ) return;
 
 				// Make sure this is a unique event (favorite not from same user)
-				if ( $this->has_entry( 'topic_favorited', $topic_id, $topic_author, 's:8:"ref_user";i:' . $user_id . ';' ) ) return;
+				if ( $this->core->has_entry( 'topic_favorited', $topic_id, $topic_author, 's:8:"ref_user";i:' . $user_id . ';' ) ) return;
 
 				// Execute
 				$this->core->add_creds(
@@ -189,7 +189,7 @@ if ( class_exists( 'bbPress' ) ) {
 				}
 
 				// Make sure this is unique event
-				if ( $this->has_entry( 'new_forum_reply', $reply_id, $reply_author ) ) return;
+				if ( $this->core->has_entry( 'new_forum_reply', $reply_id, $reply_author ) ) return;
 
 				// Execute
 				$this->core->add_creds(
@@ -1036,7 +1036,7 @@ if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && function_exists( 'wp_favorite_
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'add_favorite_post', $post_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'add_favorite_post', $post_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -1063,7 +1063,7 @@ if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && function_exists( 'wp_favorite_
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'favorite_post_removed', $post_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'favorite_post_removed', $post_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -1168,7 +1168,7 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 			// Successfull Booking
 			if ( $result === true ) {
 				// Make sure this is unique event
-				if ( $this->has_entry( 'event_booking', $booking->event->post_id, $user_id ) ) return $result;
+				if ( $this->core->has_entry( 'event_booking', $booking->event->post_id, $user_id ) ) return $result;
 				
 				// Execute
 				$this->core->add_creds(
@@ -1202,7 +1202,7 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 				if ( $this->prefs['attend']['creds'] == 0 ) return $result;
 
 				// Make sure this is unique event
-				if ( $this->has_entry( 'event_attendance', $booking->event->post_id, $user_id ) ) return $result;
+				if ( $this->core->has_entry( 'event_attendance', $booking->event->post_id, $user_id ) ) return $result;
 				
 				// Execute
 				$this->core->add_creds(
@@ -1220,7 +1220,7 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 				if ( $this->prefs['cancel']['creds'] == 0 ) return $result;
 
 				// Make sure this is unique event
-				if ( $this->has_entry( 'cancelled_event_attendance', $booking->event->post_id, $user_id ) ) return $result;
+				if ( $this->core->has_entry( 'cancelled_event_attendance', $booking->event->post_id, $user_id ) ) return $result;
 				
 				// Execute
 				$this->core->add_creds(

@@ -94,7 +94,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_profile_update', $activity_id, $user_id ) ) return;
+			if ( $this->core->has_entry( 'new_profile_update', $activity_id, $user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -119,7 +119,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'upload_avatar', $bp->loggedin_user->id ) ) return;
+			if ( $this->core->has_entry( 'upload_avatar', $bp->loggedin_user->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -143,7 +143,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $friend_user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_friendship', $friend_user_id, $initiator_user_id ) ) return;
+			if ( $this->core->has_entry( 'new_friendship', $friend_user_id, $initiator_user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -169,7 +169,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $friend_user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'ended_friendship', $friend_user_id, $initiator_user_id ) ) return;
+			if ( $this->core->has_entry( 'ended_friendship', $friend_user_id, $initiator_user_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -194,7 +194,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $bp->loggedin_user->id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_comment', $comment_id ) ) return;
+			if ( $this->core->has_entry( 'new_comment', $comment_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -217,7 +217,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'comment_deletion', $activity_id ) ) return;
+			if ( $this->core->has_entry( 'comment_deletion', $activity_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -240,7 +240,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $message->sender_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_message', $message->thread_id ) ) return;
+			if ( $this->core->has_entry( 'new_message', $message->thread_id ) ) return;
 
 			// Execute
 			$this->core->add_creds(
@@ -266,7 +266,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			if ( $this->core->exclude_user( $to_user_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'sending_gift', $to_user_id ) ) return;
+			if ( $this->core->has_entry( 'sending_gift', $to_user_id ) ) return;
 
 			// Exclude
 			$this->core->add_creds(

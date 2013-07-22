@@ -128,6 +128,9 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
+= 1.2 =
+See http://mycred.me/download/changelog/
+
 = 1.1.2 =
 See: http://mycred.me/download/changelog/
 
@@ -141,6 +144,9 @@ See: http://mycred.me/download/changelog/
 See: http://mycred.me/download/changelog/2/
 
 == Changelog ==
+
+= 1.2 =
+* Moved the has_entry() method from myCRED_Hook to myCRED Settings to allow use by other features then just hooks.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.

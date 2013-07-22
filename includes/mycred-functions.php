@@ -204,9 +204,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$data = $log_entry->data;
 
 			// Unserialize if serialized
-			$check = @unserialize( $data );
-			if ( $check !== false && $data !== 'b:0;' )
-				$data = unserialize( $data );
+			$data = maybe_unserialize( $data );
 
 			// Run basic template tags first
 			$content = $this->template_tags_general( $content );
@@ -832,6 +830,51 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// $wpdb->insert returns false on fail
 			if ( !$new_entry ) return false;
 			return true;
+		}
+
+		/**
+		 * Has Entry
+		 * Checks to see if a given action with reference ID and user ID exists in the log database.
+		 * @param $reference (string) required reference ID
+		 * @param $ref_id (int) optional reference id
+		 * @param $user_id (int) optional user id
+		 * @param $data (array|string) option data to search
+		 * @since 0.1
+		 * @version 1.1
+		 */
+		function has_entry( $reference = '', $ref_id = '', $user_id = '', $data = '' ) {
+			global $wpdb;
+
+			$where = $prep = array();
+			if ( !empty( $reference ) ) {
+				$where[] = 'ref = %s';
+				$prep[] = $reference;
+			}
+
+			if ( !empty( $ref_id ) ) {
+				$where[] = 'ref_id = %d';
+				$prep[] = $ref_id;
+			}
+
+			if ( !empty( $user_id ) ) {
+				$where[] = 'user_id = %d';
+				$prep[] = abs( $user_id );
+			}
+
+			if ( !empty( $data ) ) {
+				$where[] = 'data = %s';
+				$prep[] = maybe_serialize( $data );
+			}
+
+			$where = implode( ' AND ', $where );
+
+			if ( !empty( $where ) ) {
+				$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE $where";
+				$wpdb->get_results( $wpdb->prepare( $sql, $prep ) );
+				if ( $wpdb->num_rows > 0 ) return true;
+			}
+
+			return false;
 		}
 	}
 }

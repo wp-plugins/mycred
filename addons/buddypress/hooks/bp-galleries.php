@@ -47,7 +47,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Gallery' ) ) {
 			if ( $this->core->exclude_user( $gallery->owner_id ) ) return;
 
 			// Make sure this is unique event
-			if ( $this->has_entry( 'new_buddypress_gallery', $gallery->id ) ) return;
+			if ( $this->core->has_entry( 'new_buddypress_gallery', $gallery->id ) ) return;
 
 			// Execute
 			$this->core->add_creds(

@@ -567,7 +567,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 			if ( in_array( $old_status, $status ) && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) {
 
 				// Make sure this is unique
-				if ( $this->has_entry( 'publishing_content', $post_id, $user_id ) ) return;
+				if ( $this->core->has_entry( 'publishing_content', $post_id, $user_id ) ) return;
 
 				// Prep
 				$entry = $this->prefs[$post_type]['log'];
