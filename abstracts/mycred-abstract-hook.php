@@ -153,17 +153,12 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 
 		/**
 		 * Has Entry
-		 * Checks to see if a given action with reference ID and user ID exists in the log database.
-		 * Was moved to myCRED_Settings Class in 1.2
-		 * @param $action (string) required reference
-		 * @param $ref_id (int) optional reference id
-		 * @param $user_id (int) optional user id
-		 * @param $data (array|string) option data to search
+		 * Moved to myCRED_Settings
 		 * @since 0.1
 		 * @version 1.2
 		 */
 		function has_entry( $action = '', $ref_id = '', $user_id = '', $data = '' ) {
-			$this->core->has_entry( $action, $ref_id, $user_id, $data );
+			return $this->core->has_entry( $action, $ref_id, $user_id, $data );
 		}
 	}
 }

@@ -1110,9 +1110,9 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Custom Has Entry Check
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function has_entry( $action = '', $reference = '' ) {
+		public function has_entry( $action = '', $reference = '', $user_id = '' ) {
 			global $wpdb;
 
 			if ( $this->prefs['limit_by'] == 'url' ) {
@@ -1123,8 +1123,8 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			}
 			else return false;
 
-			$sql = "SELECT id FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND data LIKE %s";
-			$wpdb->get_results( $wpdb->prepare( $sql, $action, $string ) );
+			$sql = "SELECT id FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d AND data LIKE %s";
+			$wpdb->get_results( $wpdb->prepare( $sql, $action, $user_id, $string ) );
 			if ( $wpdb->num_rows > 0 ) return true;
 
 			return false;
@@ -1133,7 +1133,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
@@ -1142,8 +1142,11 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			// Security
 			check_ajax_referer( 'mycred-link-points', 'token' );
 
+			// Current User
+			$user_id = get_current_user_id();
+
 			// Check if user should be excluded
-			if ( $this->core->exclude_user( get_current_user_id() ) === true ) return;
+			if ( $this->core->exclude_user( $user_id ) === true ) return;
 
 			// If amount is not set we default
 			if ( $_POST['amount'] == 0 )
@@ -1154,12 +1157,12 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			// Limits
 			if ( $this->prefs['limit_by'] == 'url' ) {
 				if ( !isset( $_POST['url'] ) || empty( $_POST['url'] ) ) die();
-				if ( $this->has_entry( 'link_click', $_POST['url'] ) ) die();
+				if ( $this->has_entry( 'link_click', $_POST['url'], $user_id ) ) die();
 				$ref = $_POST['url'];
 			}
 			elseif ( $this->prefs['limit_by'] == 'id' ) {
 				if ( !isset( $_POST['eid'] ) || empty( $_POST['eid'] ) ) die();
-				if ( $this->has_entry( 'link_click', $_POST['eid'] ) ) die();
+				if ( $this->has_entry( 'link_click', $_POST['eid'], $user_id ) ) die();
 				$ref = $_POST['eid'];
 			}
 			else {
@@ -1169,7 +1172,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			// Execute
 			$this->core->add_creds(
 				'link_click',
-				get_current_user_id(),
+				$user_id,
 				$amount,
 				$this->prefs['log'],
 				$ref,
