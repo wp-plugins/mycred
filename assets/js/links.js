@@ -20,18 +20,12 @@ jQuery(function($) {
 			beforeSend : function() {},
 			// On Successful Communication
 			success    : function( data ) {
-				console.log( data );
-				// Security token could not be verified.
-				if ( data == 'alert' ) {
-					alert( 'You gained '+points+' points for clicking on this link.' );
-				}
 				setTimeout(function(){ window.location.href = href; }, 1000 );
 			},
 			// Error (sent to console)
 			error      : function( jqXHR, textStatus, errorThrown ) {
 				// Debug - uncomment to use
 				//console.log( jqXHR );
-				return true;
 				setTimeout(function(){ window.location.href = href; }, 1000 );
 			}
 		});

@@ -148,6 +148,7 @@ See: http://mycred.me/download/changelog/2/
 = 1.2 =
 * Moved the has_entry() method from myCRED_Hook to myCRED Settings to allow use by other features then just hooks.
 * Adjusted Hooks for clicking on links to enforce limits once per user and not once per use.
+* Adjusted libks.js to take into account slow server connections.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
