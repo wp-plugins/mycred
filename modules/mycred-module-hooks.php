@@ -1146,7 +1146,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			$user_id = get_current_user_id();
 
 			// Check if user should be excluded
-			if ( $this->core->exclude_user( $user_id ) === true ) return;
+			if ( $this->core->exclude_user( $user_id ) ) return;
 
 			// If amount is not set we default
 			if ( $_POST['amount'] == 0 )

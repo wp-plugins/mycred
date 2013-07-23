@@ -1,11 +1,10 @@
 /**
  * myCRED Points for Link Clicks jQuery Scripts
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 jQuery(function($) {
 	var mycred_click = function( points, href, id ) {
-		//alert( 'You gained '+points+' for clicking on this link. Reference: '+href );
 		$.ajax({
 			type : "POST",
 			data : {
@@ -21,15 +20,19 @@ jQuery(function($) {
 			beforeSend : function() {},
 			// On Successful Communication
 			success    : function( data ) {
+				console.log( data );
 				// Security token could not be verified.
 				if ( data == 'alert' ) {
 					alert( 'You gained '+points+' points for clicking on this link.' );
 				}
+				setTimeout(function(){ window.location.href = href; }, 1000 );
 			},
 			// Error (sent to console)
 			error      : function( jqXHR, textStatus, errorThrown ) {
 				// Debug - uncomment to use
 				//console.log( jqXHR );
+				return true;
+				setTimeout(function(){ window.location.href = href; }, 1000 );
 			}
 		});
 	};
@@ -37,9 +40,11 @@ jQuery(function($) {
 	$('.mycred-points-link').click(function(){
 		if ( $(this).attr( 'id' ) && $(this).attr( 'id' ) != '' ) {
 			mycred_click( $(this).attr( 'data-amount' ), $(this).attr( 'href' ), $(this).attr( 'id' ) );
+			return false;
 		}
 		else {
 			mycred_click( $(this).attr( 'data-amount' ), $(this).attr( 'href' ), '' );
+			return false;
 		}
 	});
 });
