@@ -162,18 +162,28 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Setup Navigation
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function setup_nav() {
 			if ( !is_user_logged_in() ) return;
 			global $bp;
 			
 			$user_id = bp_displayed_user_id();
+			$current = get_current_user_id();
+			
+			// User is excluded
 			if ( $this->core->exclude_user( $user_id ) ) return;
 			
-			$current = get_current_user_id();
-			if ( !$this->buddypress['visibility']['history'] && !$this->core->can_edit_plugin() && $user_id != $current ) return;
+			// Admins alway see points history
+			if ( !$this->core->can_edit_plugin() ) {
+				// If history is not shown in profile
+				if ( $this->buddypress['history_location'] != 'top' ) return;
+				
+				// Allow users to see each others history?
+				if ( !$this->buddypress['visibility']['history'] && $user_id != $current ) return;
+			}
 			
+			// Settings for bp menu
 			if ( $this->buddypress['visibility']['history'] || $this->core->can_edit_plugin() )
 				$show_for_displayed_user = true;
 			else
@@ -183,9 +193,9 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			$top_name = bp_word_or_name( $this->buddypress['history_menu_title']['me'], $this->buddypress['history_menu_title']['others'], false, false );
 			bp_core_new_nav_item( array(
 				'name'                    => $this->core->template_tags_general( $top_name ),
-				'slug'                    => 'mycred-history',
+				'slug'                    => $this->buddypress['history_url'],
 				'parent_url'              => $bp->displayed_user->domain,
-				'default_subnav_slug'     => 'mycred-history',
+				'default_subnav_slug'     => $this->buddypress['history_url'],
 				'screen_function'         => array( $this, 'my_history' ),
 				'show_for_displayed_user' => $show_for_displayed_user,
 				'position'                => $this->buddypress['history_menu_pos']
@@ -202,9 +212,9 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			// "All" is default
 			bp_core_new_subnav_item( array(
 				'name'                    => 'All',
-				'slug'                    => 'mycred-history',
-				'parent_url'              => $bp->displayed_user->domain . 'mycred-history/',
-				'parent_slug'             => 'mycred-history',
+				'slug'                    => $this->buddypress['history_url'],
+				'parent_url'              => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
+				'parent_slug'             => $this->buddypress['history_url'],
 				'screen_function'         => array( $this, 'my_history' ),
 				'show_for_displayed_user' => $show_for_displayed_user
 			) );
@@ -216,8 +226,8 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					bp_core_new_subnav_item( array(
 						'name'                    => $sorting_name,
 						'slug'                    => $sorting_id,
-						'parent_url'              => $bp->displayed_user->domain . 'mycred-history/',
-						'parent_slug'             => 'mycred-history',
+						'parent_url'              => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
+						'parent_slug'             => $this->buddypress['history_url'],
 						'screen_function'         => array( $this, 'my_history' ),
 						'show_for_displayed_user' => $show_for_displayed_user
 					) );
@@ -325,7 +335,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * After General Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function after_general_settings() {
 			// Settings
@@ -421,6 +431,13 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 							<span class="description"><?php echo __( 'Current menu positions:', 'mycred' ) . ' ' . implode( ', ', $bp_nav_positions ); ?></span>
 						</li>
 					</ol>
+					<ol>
+						<li>
+							<label for="<?php echo $this->field_id( 'history_url' ); ?>"><?php _e( 'History URL slug', 'mycred' ); ?></label>
+							<div class="h2">/ <input type="text" name="<?php echo $this->field_name( 'history_url' ); ?>" id="<?php echo $this->field_id( 'history_url' ); ?>" value="<?php echo $settings['history_url']; ?>" class="medium" />/</div>
+							<span class="description"><?php echo __( 'Do not use empty spaces!', 'mycred' ); ?></span>
+						</li>
+					</ol>
 				</div>
 <?php
 		}
@@ -428,7 +445,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Sanitize Core Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_extra_settings( $new_data, $data, $core ) {
 			
@@ -441,6 +458,10 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			$new_data['buddypress']['history_menu_title']['me'] = sanitize_text_field( $data['buddypress']['history_menu_title']['me'] );
 			$new_data['buddypress']['history_menu_title']['others'] = sanitize_text_field( $data['buddypress']['history_menu_title']['others'] );
 			$new_data['buddypress']['history_menu_pos'] = abs( $data['buddypress']['history_menu_pos'] );
+			
+			$url = sanitize_text_field( $data['buddypress']['history_url'] );
+			$new_data['buddypress']['history_url'] = urlencode( $url );
+			
 			$new_data['buddypress']['visibility']['history'] = ( isset( $data['buddypress']['visibility']['history'] ) ) ? true : false;
 			
 			return $new_data;
