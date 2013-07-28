@@ -408,9 +408,15 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 		/**
 		 * Login Hook
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
-		public function logging_in( $user_login, $user ) {
+		public function logging_in( $user_login, $user = '' ) {
+			// In case the user object is not past along
+			if ( !is_object( $user ) ) {
+				$user = get_user_by( 'login', $user_login );
+				if ( !is_object( $user ) ) return;
+			}
+
 			// Check for exclusion
 			if ( $this->core->exclude_user( $user->ID ) === true ) return;
 

@@ -151,7 +151,7 @@ See: http://mycred.me/download/changelog/2/
 * Adjusted libks.js to take into account slow server connections.
 * Adjusted bad logic in BuddyPress navigation setup for points history.
 * Added option to re-name the points history slug from the default "mycred-history".
-
+* Fixed Bug #39 - If user object is not passed on when wp_login fires, the loggin_in() method fails.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
