@@ -290,4 +290,81 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
 		return '<input type="button" class="mycred-send-points-button" data-to="' . $to . '" data-ref="' . $ref . '" data-log="' . $log . '" data-amount="' . $amount . '" data-type="' . $type . '" value="' . $mycred->template_tags_general( $content ) . '" />';
 	}
 }
+
+/**
+ * myCRED Shortcode: mycred_video
+ * This shortcode allows points to be given to the current user
+ * for watchinga YouTube video.
+ * @see http://mycred.me/shortcodes/mycred_video/
+ * @since 1.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_video' ) ) {
+	function mycred_render_shortcode_video( $atts, $content )
+	{
+		global $mycred_video_points;
+
+		extract( shortcode_atts( array(
+			'id'     => NULL,
+			'width'  => 0,
+			'height' => 0,
+			'amount' => 'def',
+			'logic'  => 'def',
+			'interval' => 'def'
+		), $atts ) );
+
+		// ID is required
+		if ( $id === NULL ) return __( 'A video ID is required for this shortcode', 'mycred' );
+
+		// Width
+		if ( $width == 0 )
+			$width = 560;
+
+		// Height
+		if ( $height == 0 )
+			$height = 315;
+
+		// Prep Interval by converting it to Miliseconds
+		if ( $interval != 'def' )
+			$interval = $interval*1000;
+
+		// Video ID
+		$video_id = str_replace( '-', '__', $id );
+		
+		// Construct YouTube Query
+		$query = apply_filters( 'mycred_video_query', array(
+			'enablejsapi' => 1,
+			'version'     => 3,
+			'playerapiid' => $video_id,
+			'rel'         => 0,
+			'controls'    => 1,
+			'showinfo'    => 0
+		), $atts );
+		
+		// Construct Youtube Query Address
+		$url = 'http://www.youtube.com/v/' . $id;
+		$url = add_query_arg( $query, $url );
+		
+		// Construct Flash Embed
+		$embed_args = apply_filters( 'mycred_video_embed_args', array(
+			'"' . $url . '"', '"' . $video_id . '"', '"' . $width . '"', '"' . $height . '"', '"9.0.0"', 'null', 'null', '{ allowScriptAccess: "always", wmode: "transparent" }', 'null'
+		), $atts );
+
+		// Output
+		return apply_filters( 'mycred_video_output', '
+<div class="mycred-video-wrapper">
+<script type="text/javascript">
+swfobject.embedSWF(' . implode( ', ', $embed_args ) . ');
+</script>
+	<div id="' . $video_id . '_container">
+		<div id="' . $video_id . '"></div>
+	</div>
+<script type="text/javascript">
+function mycred_video_' . $video_id . '(state) {
+	mycred_youtube_state( "' . $video_id . '", state, "' . $amount . '", "' . $logic . '", "' . $interval . '" );
+}
+</script>
+</div>' . "\n", $atts, $embed_args, $video_id );
+	}
+}
 ?>

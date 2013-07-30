@@ -340,7 +340,7 @@ if ( class_exists( 'bbPress' ) ) {
 				$today = date( 'Y-m-d' );
 				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
 				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) )
-					$current = array( $today => 0 );
+					$current[$today] = 0;
 				
 				if ( $current[ $today ] < $this->prefs[$id]['limit'] ) return false;
 				
@@ -360,7 +360,7 @@ if ( class_exists( 'bbPress' ) ) {
 				$today = date( 'Y-m-d' );
 				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
 				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) )
-					$current = array( $today => 0 );
+					$current[$today] = 0;
 				
 				$current[ $today ] = $current[ $today ]+1;
 				
