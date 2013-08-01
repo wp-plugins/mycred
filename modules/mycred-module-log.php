@@ -201,6 +201,8 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 					elseif ( isset( $_GET['order'] ) && $_GET['order'] == $value ) echo ' selected="selected"';
 					echo '>' . $label . '</option>';
 				}
+				echo '</select>';
+				$show = true;
 			}
 
 			if ( $show === true )
