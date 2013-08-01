@@ -49,7 +49,9 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 						'me'      => __( "My History", 'mycred' ),
 						'others'  => __( "%s's History", 'mycred' )
 					),
-					'history_menu_pos'   => 99
+					'history_menu_pos'   => 99,
+					'history_url'        => 'mycred-history',
+					'history_num'        => 10
 				),
 				'register'    => false,
 				'add_to_core' => true
@@ -77,7 +79,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Adjust Admin Bar
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function adjust_admin_bar() {
 			// Bail if this is an ajax request
@@ -93,7 +95,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					'parent' => 'my-account-xprofile',
 					'id'     => 'user-admin-mycred',
 					'title'  => $this->buddypress['history_menu_title']['me'],
-					'href'   => bp_loggedin_user_domain() . 'mycred-history/'
+					'href'   => bp_loggedin_user_domain() . $this->buddypress['history_url'] . '/'
 				) );
 			}
 		}
@@ -270,17 +272,17 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * My History Content
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function my_history_screen() {
 			global $bp;
 			
 			$args = array(
 				'user_id' => bp_displayed_user_id(),
-				'number'  => 10
+				'number'  => apply_filters( 'mycred_bp_history_num_to_show', $this->buddypress['history_num'] )
 			);
 			
-			if ( isset( $bp->canonical_stack['action'] ) && $bp->canonical_stack['action'] != 'mycred-history' )
+			if ( isset( $bp->canonical_stack['action'] ) && $bp->canonical_stack['action'] != $this->buddypress['history_url'] )
 				$args['time'] = $bp->canonical_stack['action'];
 			
 			$log = new myCRED_Query_Log( $args );
@@ -438,6 +440,12 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 							<span class="description"><?php echo __( 'Do not use empty spaces!', 'mycred' ); ?></span>
 						</li>
 					</ol>
+					<ol>
+						<li>
+							<label for="<?php echo $this->field_id( 'history_num' ); ?>"><?php _e( 'Number of history entries to show', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'history_num' ); ?>" id="<?php echo $this->field_id( 'history_num' ); ?>" value="<?php echo $settings['history_num']; ?>" class="short" /></div>
+						</li>
+					</ol>
 				</div>
 <?php
 		}
@@ -461,6 +469,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			
 			$url = sanitize_text_field( $data['buddypress']['history_url'] );
 			$new_data['buddypress']['history_url'] = urlencode( $url );
+			$new_data['buddypress']['history_num'] = abs( $data['buddypress']['history_num'] );
 			
 			$new_data['buddypress']['visibility']['history'] = ( isset( $data['buddypress']['visibility']['history'] ) ) ? true : false;
 			
