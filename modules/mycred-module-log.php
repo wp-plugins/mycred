@@ -158,7 +158,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Filter Log options
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function filter_options( $is_profile = false ) {
 			echo '<div class="alignleft actions">';
@@ -191,62 +191,22 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 				$show = true;
 			}
 
+			// Filter Order
+			if ( $this->count_records() > 0 ) {
+				echo '<select name="order" id="myCRED-order-filter"><option value="">' . __( 'Show in order', 'mycred' ) . '</option>';
+				$options = array( 'ASC' => __( 'Ascending', 'mycred' ), 'DESC' => __( 'Descending', 'mycred' ) );
+				foreach ( $options as $value => $label ) {
+					echo '<option value="' . $value . '"';
+					if ( !isset( $_GET['order'] ) && $value == 'DESC' ) echo ' selected="selected"';
+					elseif ( isset( $_GET['order'] ) && $_GET['order'] == $value ) echo ' selected="selected"';
+					echo '>' . $label . '</option>';
+				}
+			}
+
 			if ( $show === true )
 				echo '<input type="submit" class="button medium" value="' . __( 'Filter', 'mycred' ) . '" />';
 
 			echo '</div>';
-		}
-
-		/**
-		 * Filter by Dates
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function filter_dates( $url = '' ) {
-			$date_sorting = apply_filters( 'mycred_sort_by_time', array(
-				''          => __( 'All', 'mycred' ),
-				'today'     => __( 'Today', 'mycred' ),
-				'yesterday' => __( 'Yesterday', 'mycred' ),
-				'thisweek'  => __( 'This Week', 'mycred' ),
-				'thismonth' => __( 'This Month', 'mycred' )
-			) );
-
-			if ( !empty( $date_sorting ) ) {
-				$total = count( $date_sorting );
-				$count = 0;
-				echo '<ul class="subsubsub">';
-				foreach ( $date_sorting as $sorting_id => $sorting_name ) {
-					$count = $count+1;
-					echo '<li class="' . $sorting_id . '"><a href="';
-
-					// Build Query Args
-					$url_args = array();
-					if ( isset( $_GET['user_id'] ) && !empty( $_GET['user_id'] ) )
-						$url_args['user_id'] = $_GET['user_id'];
-					if ( isset( $_GET['ref'] ) && !empty( $_GET['ref'] ) )
-						$url_args['ref'] = $_GET['ref'];
-					if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
-						$url_args['s'] = $_GET['s'];
-					if ( !empty( $sorting_id ) )
-						$url_args['show'] = $sorting_id;
-
-					// Build URL
-					if ( !empty( $url_args ) )
-						echo add_query_arg( $url_args, $url );
-					else
-						echo $url;
-
-					echo '"';
-
-					if ( isset( $_GET['show'] ) && $_GET['show'] == $sorting_id ) echo ' class="current"';
-					elseif ( !isset( $_GET['show'] ) && empty( $sorting_id ) ) echo ' class="current"';
-
-					echo '>' . $sorting_name . '</a>';
-					if ( $count != $total ) echo ' | ';
-					echo '</li>';
-				}
-				echo '</ul>';
-			}
 		}
 
 		/**
@@ -319,7 +279,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page() {
 			// Security
@@ -342,13 +302,16 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			if ( isset( $_GET['show'] ) && !empty( $_GET['show'] ) )
 				$args['time'] = $_GET['show'];
 
+			if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
+				$args['order'] = $_GET['order'];
+
 			$log = new myCRED_Query_Log( $args );
 			$this->results = $log->results; ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php $this->page_title(); ?></h2>
-		<?php $this->filter_dates( admin_url( 'admin.php?page=myCRED' ) ); ?>
+		<?php $log->filter_dates( admin_url( 'admin.php?page=myCRED' ) ); ?>
 
 		<?php do_action( 'mycred_top_log_page', $this ); ?>
 
@@ -366,6 +329,9 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 
 			if ( isset( $_GET['show'] ) && !empty( $_GET['show'] ) )
 				echo '<input type="hidden" name="show" value="' . $_GET['show'] . '" />';
+
+			if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
+				echo '<input type="hidden" name="order" value="' . $_GET['order'] . '" />';
 
 			$this->search(); ?>
 
@@ -396,7 +362,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * My History Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function my_history_page() {
 			if ( !is_user_logged_in() ) wp_die( __( 'Access Denied', 'mycred' ) );
@@ -415,6 +381,9 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			if ( isset( $_GET['show'] ) && !empty( $_GET['show'] ) )
 				$args['time'] = $_GET['show'];
 
+			if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
+				$args['order'] = $_GET['order'];
+
 			$log = new myCRED_Query_Log( $args );
 			$this->results = $log->results;
 			unset( $log->headers['column-username'] ); ?>
@@ -422,7 +391,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php $this->page_title( __( 'My History', 'mycred' ) ); ?></h2>
-		<?php $this->filter_dates( admin_url( 'users.php?page=mycred_my_history' ) ); ?>
+		<?php $log->filter_dates( admin_url( 'users.php?page=mycred_my_history' ) ); ?>
 
 		<?php do_action( 'mycred_top_my_log_page', $this ); ?>
 
@@ -455,7 +424,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * My History Shortcode render
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function render_my_history( $atts ) {
 			extract( shortcode_atts( array(
@@ -463,6 +432,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 				'number'    => NULL,
 				'time'      => NULL,
 				'ref'       => NULL,
+				'order'     => NULL,
 				'show_user' => false,
 				'login'     => ''
 			), $atts ) );
@@ -484,6 +454,9 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 
 			if ( $ref !== NULL )
 				$args['ref'] = $ref;
+
+			if ( $order !== NULL )
+				$args['order'] = $order;
 
 			$log = new myCRED_Query_Log( $args );
 			$this->results = $log->results;
@@ -967,6 +940,60 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		 */
 		public function get_no_entries() {
 			return __( 'No log entries found', 'mycred' );
+		}
+
+		/**
+		 * Filter by Dates
+		 * @since 0.1
+		 * @version 1.0
+		 */
+		public function filter_dates( $url = '' ) {
+			$date_sorting = apply_filters( 'mycred_sort_by_time', array(
+				''          => __( 'All', 'mycred' ),
+				'today'     => __( 'Today', 'mycred' ),
+				'yesterday' => __( 'Yesterday', 'mycred' ),
+				'thisweek'  => __( 'This Week', 'mycred' ),
+				'thismonth' => __( 'This Month', 'mycred' )
+			) );
+
+			if ( !empty( $date_sorting ) ) {
+				$total = count( $date_sorting );
+				$count = 0;
+				echo '<ul class="subsubsub">';
+				foreach ( $date_sorting as $sorting_id => $sorting_name ) {
+					$count = $count+1;
+					echo '<li class="' . $sorting_id . '"><a href="';
+
+					// Build Query Args
+					$url_args = array();
+					if ( isset( $_GET['user_id'] ) && !empty( $_GET['user_id'] ) )
+						$url_args['user_id'] = $_GET['user_id'];
+					if ( isset( $_GET['ref'] ) && !empty( $_GET['ref'] ) )
+						$url_args['ref'] = $_GET['ref'];
+					if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
+						$url_args['order'] = $_GET['order'];
+					if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
+						$url_args['s'] = $_GET['s'];
+					if ( !empty( $sorting_id ) )
+						$url_args['show'] = $sorting_id;
+
+					// Build URL
+					if ( !empty( $url_args ) )
+						echo add_query_arg( $url_args, $url );
+					else
+						echo $url;
+
+					echo '"';
+
+					if ( isset( $_GET['show'] ) && $_GET['show'] == $sorting_id ) echo ' class="current"';
+					elseif ( !isset( $_GET['show'] ) && empty( $sorting_id ) ) echo ' class="current"';
+
+					echo '>' . $sorting_name . '</a>';
+					if ( $count != $total ) echo ' | ';
+					echo '</li>';
+				}
+				echo '</ul>';
+			}
 		}
 	}
 }
