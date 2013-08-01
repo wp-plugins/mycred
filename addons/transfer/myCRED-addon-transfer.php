@@ -155,7 +155,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * Settings Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function after_general_settings() {
 			// Settings
@@ -173,7 +173,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			);
 			$available_limits = apply_filters( 'mycred_transfer_limits', $limits, $settings ); ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'Transfer CREDs', 'mycred' ); ?></h4>
+				<h4 style="color:#BBD865;"><?php echo $this->core->template_tags_general( __( 'Transfer %plural%', 'mycred' ) ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'Log template for sending', 'mycred' ); ?></label>
 					<ol id="myCRED-transfer-logging-send">
