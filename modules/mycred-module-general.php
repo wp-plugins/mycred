@@ -29,7 +29,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page() {
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
@@ -48,7 +48,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		<div id="mycred-social">
 			<a href="https://www.facebook.com/myCRED" class="zocial facebook" target="_blank">Facebook</a>
 			<a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="zocial googleplus" target="_blank">Google Plus</a>
-			<a href="http://wordpress.org/support/plugin/mycred" class="zocial wordpress" target="_blank">Support Forum</a>
+			<a href="http://mycred.me/support/forums/" class="zocial wordpress" target="_blank">Support Forum</a>
 		</div>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
