@@ -147,7 +147,9 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 */
 		public function sort_by_points( $query ) {
 			if ( !is_admin() ) return;
-			
+			$screen = get_current_screen();
+			if ( $screen->id != 'users' || !isset( $query->orderby ) ) return;
+
 			$orderby = $query->get( 'orderby' );
 			if ( 'mycred' == $oderby ) {
 				$query->set( 'meta_key', $this->core->get_cred_id() );

@@ -37,10 +37,11 @@ function onYouTubePlayerReady( id ) {
  * @version 1.0
  */
 function mycred_video_points( id, state, length, watched, uactions, eamount, elogic, einterval ) {
+	if ( myCREDvideo.user_id == 0 ) return false;
 	// Make sure we are not done
 	if ( done[ id ] === undefined ) {
 		// Debug
-		console.log( 'Received ID: '+id );
+		//console.log( 'Received ID: '+id );
 
 		// Ajax
 		jQuery.ajax({
@@ -200,5 +201,5 @@ function mycred_youtube_state( id, state, custom_amount, custom_logic, custom_in
 	}
 	
 	// Debug
-	console.log( 'Video ID: ' + id + ' Actions: ' + actions[ videoid ] + ' Seconds: ' + seconds[ videoid ] + ' Logic: ' + logic[ id ] );
+	//console.log( 'Video ID: ' + id + ' Actions: ' + actions[ videoid ] + ' Seconds: ' + seconds[ videoid ] + ' Logic: ' + logic[ id ] );
 }
