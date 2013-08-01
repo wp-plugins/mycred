@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Admin class
  * Manages everything concerning the WordPress admin area.
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Admin' ) ) {
 	class myCRED_Admin {
@@ -23,24 +23,90 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Load
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function load() {
+			// Admin Styling
 			add_action( 'admin_head',                 array( $this, 'admin_header' )                      );
+			
+			// Custom Columns
 			add_filter( 'manage_users_columns',       array( $this, 'custom_user_column' )                );
 			add_action( 'manage_users_custom_column', array( $this, 'custom_user_column_content' ), 10, 3 );
+			
+			// User Edit
 			add_action( 'profile_personal_options',   array( $this, 'show_my_balance' ), 1                );
 			add_action( 'personal_options',           array( $this, 'adjust_users_balance' ), 1           );
 			add_action( 'personal_options_update',    array( $this, 'adjust_points_manually' )            );
 			add_action( 'edit_user_profile_update',   array( $this, 'adjust_points_manually' )            );
+			
+			// Sortable Column
+			add_filter( 'manage_users_sortable_columns', array( $this, 'sortable_points_column' ) );
+			add_action( 'pre_get_posts',                 array( $this, 'sort_by_points' )         );
+			
+			// Inline Editing
+			add_action( 'wp_ajax_mycred-inline-edit-users-balance', array( $this, 'inline_edit_user_balance' ) );
+			add_action( 'in_admin_footer',                          array( $this, 'admin_footer' )             );
+		}
+
+		/**
+		 * Ajax: Inline Edit Users Balance
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function inline_edit_user_balance() {
+			// Security
+			check_ajax_referer( 'mycred-update-users-balance', 'token' );
+
+			// Check current user
+			$current_user = get_current_user_id();
+			if ( !mycred_is_admin( $current_user ) )
+				die( json_encode( array( 'status' => 'ERROR_1' ) ) );
+
+			// User
+			$user_id = abs( $_POST['user'] );
+			if ( $this->core->exclude_user( $user_id ) )
+				die( json_encode( array( 'status' => 'ERROR_2', 'current' => __( 'User is excluded', 'mycred' ) ) ) );
+
+			// Log entry
+			$entry = trim( $_POST['entry'] );
+			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() && empty( $entry ) )
+				die( json_encode( array( 'status' => 'ERROR_3', 'current' => __( 'Log Entry can not be empty', 'mycred' ) ) ) );
+
+			// Amount
+			if ( $_POST['amount'] == 0 || empty( $_POST['amount'] ) )
+				die( json_encode( array( 'status' => 'ERROR_4', 'current' => __( 'Amount can not be zero', 'mycred' ) ) ) );
+			else
+				$amount = $this->core->number( $_POST['amount'] );
+
+			// Data
+			$data = apply_filters( 'mycred_manual_change', array( 'ref_type' => 'user' ), $this );
+
+			// Execute
+			$this->core->add_creds(
+				'manual',
+				$user_id,
+				$amount,
+				$entry,
+				$current_user,
+				$data
+			);
+			
+			
+			die( json_encode( array( 'status' => 'OK', 'current' => $this->core->get_users_cred( $user_id ) ) ) );
 		}
 
 		/**
 		 * Admin Header
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_header() {
+			$screen = get_current_screen();
+			if ( $screen->id == 'users' && mycred_is_admin() ) {
+				wp_enqueue_script( 'mycred-inline-edit' );
+				wp_enqueue_style( 'mycred-inline-edit' );
+			}
+
 			$image = plugins_url( 'assets/images/logo-menu.png', myCRED_THIS );
 			echo '
 <style type="text/css">
@@ -65,10 +131,35 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		}
 
 		/**
+		 * Sortable User Column
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function sortable_points_column( $columns ) {
+			$columns['mycred-balance'] = 'mycred';
+			return $columns;
+		}
+
+		/**
+		 * Sort by Points
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function sort_by_points( $query ) {
+			if ( !is_admin() ) return;
+			
+			$orderby = $query->get( 'orderby' );
+			if ( 'mycred' == $oderby ) {
+				$query->set( 'meta_key', $this->core->get_cred_id() );
+				$query->set( 'orderby', 'meta_value_num' );
+			}
+		}
+
+		/**
 		 * Customize User Columns Content
 		 * @filter 'mycred_user_row_actions'
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function custom_user_column_content( $value, $column_name, $user_id ) {
 			if ( 'mycred-balance' != $column_name ) return $value;
@@ -76,17 +167,17 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			// User is excluded
 			if ( $this->core->exclude_user( $user_id ) === true ) return __( 'Excluded', 'mycred' );
 
-			$balance = $this->core->get_users_cred( $user_id );
-			$balance = $this->core->format_creds( $balance );
+			$ubalance = $this->core->get_users_cred( $user_id );
+			$balance = '<div id="mycred-user-' . $user_id . '-balance">' . $this->core->before . ' <span>' . $this->core->format_number( $ubalance ) . '</span> ' . $this->core->after . '</div>';
 
 			// Row actions
 			$row = array();
 			$row['history'] = '<a href="' . admin_url( 'admin.php?page=myCRED&user_id=' . $user_id ) . '">' . __( 'History', 'mycred' ) . '</a>';
 			if ( $this->core->can_edit_creds( get_current_user_id() ) )
-				$row['adjust'] = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user_id ) . '">' . __( 'Adjust', 'mycred' ) . '</a>';
+				$row['adjust'] = '<a href="javascript:void(0)" class="mycred-open-points-editor" data-userid="' . $user_id . '" data-current="' . $ubalance . '">' . __( 'Adjust', 'mycred' ) . '</a>';
 
 			$rows = apply_filters( 'mycred_user_row_actions', $row, $user_id, $this->core );
-			$balance .= '<br /><div class="row-actions">' . $this->row_actions( $rows ) . '</div>';
+			$balance .= $this->row_actions( $rows );
 			return $balance;
 		}
 
@@ -146,7 +237,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Adjust Users Balance
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function adjust_users_balance( $user ) {
 			global $mycred_errors;
@@ -168,7 +259,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() )
 				$req = '(<strong>' . __( 'required', 'mycred' ) . '</strong>)'; 
 			else
-				$req = '(optional)'; ?>
+				$req = '(' . __( 'optional', 'mycred' ) . ')'; ?>
 
 <tr>
 <th scope="row"><label for="myCRED-manual-add-points"><?php echo $label; ?></label></th>
@@ -216,6 +307,35 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			}
 			
 			$this->core->add_creds( 'manual', $user_id, $cred, $entry, get_current_user_id(), $data );
+		}
+
+		/**
+		 * Admin Footer
+		 * Inserts the Inline Edit Form modal.
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function admin_footer() {
+			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() )
+				$req = '(<strong>' . __( 'required', 'mycred' ) . '</strong>)'; 
+			else
+				$req = '(' . __( 'optional', 'mycred' ) . ')'; ?>
+
+<div id="edit-mycred-balance" style="display: none;">
+	<div class="mycred-adjustment-form">
+		<p class="row inline" style="width: 20%"><label><?php _e( 'ID', 'mycred' ); ?>:</label><span id="mycred-userid"></span></p>
+		<p class="row inline" style="width: 40%"><label><?php _e( 'User', 'mycred' ); ?>:</label><span id="mycred-username"></span></p>
+		<p class="row inline" style="width: 40%"><label><?php _e( 'Current Balance', 'mycred' ); ?>:</label> <span id="mycred-current"></span></p>
+		<div class="clear"></div>
+		<input type="hidden" name="mycred_update_users_balance[token]" id="mycred-update-users-balance-token" value="<?php echo wp_create_nonce( 'mycred-update-users-balance' ); ?>" />
+		<p class="row"><label for="mycred-update-users-balance-amount"><?php _e( 'Amount', 'mycred' ); ?>:</label><input type="text" name="mycred_update_users_balance[amount]" id="mycred-update-users-balance-amount" value="" /><br /><span class="description"><?php _e( 'A positive or negative value', 'mycred' ); ?>.</span></p>
+		<p class="row"><label for="mycred-update-users-balance-entry"><?php _e( 'Log Entry', 'mycred' ); ?>:</label><input type="text" name="mycred_update_users_balance[entry]" id="mycred-update-users-balance-entry" value="" /><br /><span class="description"><?php echo $req; ?></span></p>
+		<p class="row"><input type="button" name="mycred-update-users-balance-submit" id="mycred-update-users-balance-submit" value="Update Balance" class="button button-primary button-large" /></p>
+		<div class="clear"></div>
+	</div>
+	<div class="clear"></div>
+</div>
+<?php
 		}
 	}
 }

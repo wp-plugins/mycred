@@ -475,10 +475,11 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Enqueue Admin
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function admin_enqueue() {
-			// Admin Scripts
+			$mycred = mycred_get_settings();
+			// General Admin Script
 			wp_register_script(
 				'mycred-admin',
 				plugins_url( 'assets/js/accordion.js', myCRED_THIS ),
@@ -487,10 +488,35 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			);
 			wp_localize_script( 'mycred-admin', 'myCRED', apply_filters( 'mycred_localize_admin', array( 'active' => '-1' ) ) );
 
+			// Inline Editing Script
+			wp_register_script(
+				'mycred-inline-edit',
+				plugins_url( 'assets/js/inline-edit.js', myCRED_THIS ),
+				array( 'jquery', 'jquery-ui-core', 'jquery-ui-dialog', 'jquery-effects-core', 'jquery-effects-slide' ),
+				myCRED_VERSION . '.1'
+			);
+			wp_localize_script(
+				'mycred-inline-edit',
+				'myCREDedit',
+				array(
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'title'   => sprintf( __( 'Edit Users %s balance', 'mycred' ),$mycred->plural() ),
+					'close'   => __( 'Close', 'mycred' ),
+					'working' => __( 'Processing...', 'mycred' )
+				)
+			);
+
 			// Admin Style
 			wp_register_style(
 				'mycred-admin',
 				plugins_url( 'assets/css/admin.css', myCRED_THIS ),
+				false,
+				myCRED_VERSION . '.1',
+				'all'
+			);
+			wp_register_style(
+				'mycred-inline-edit',
+				plugins_url( 'assets/css/inline-edit.css', myCRED_THIS ),
 				false,
 				myCRED_VERSION . '.1',
 				'all'
