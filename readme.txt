@@ -155,6 +155,7 @@ See: http://mycred.me/download/changelog/2/
 * Updated bbPress Support by adding the option to enforce a daily limit for topic replies and fav replies. Also added option to deduct points for forums, topics and replies getting deleted.
 * Added new shortcode mycred_video for awarding / deducting points for viewing YouTube videos.
 * Added Inline Editing of users myCRED points.
+* Added option to sort users in the admin area according to their point balance.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
