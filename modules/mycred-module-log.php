@@ -212,25 +212,6 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		}
 
 		/**
-		 * Log Search
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function search() {
-			if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
-				$serarch_string = $_GET['s'];
-			else
-				$serarch_string = ''; ?>
-
-			<p class="search-box">
-				<label class="screen-reader-text" for=""><?php _e( 'Search Log', 'mycred' ); ?>:</label>
-				<input type="search" name="s" value="<?php echo $serarch_string; ?>" />
-				<input type="submit" name="mycred-search-log" id="search-submit" class="button" value="<?php _e( 'Search Log', 'mycred' ); ?>" />
-			</p>
-<?php
-		}
-
-		/**
 		 * Table Nav
 		 * @since 0.1
 		 * @version 1.0
@@ -335,7 +316,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
 				echo '<input type="hidden" name="order" value="' . $_GET['order'] . '" />';
 
-			$this->search(); ?>
+			$log->search(); ?>
 
 			<input type="hidden" name="page" value="myCRED" />
 			<?php do_action( 'mycred_above_log_table', $this ); ?>
@@ -398,7 +379,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		<?php do_action( 'mycred_top_my_log_page', $this ); ?>
 
 		<form method="get" action="">
-			<?php $this->search(); ?>
+			<?php $log->search(); ?>
 
 			<input type="hidden" name="page" value="mycred_my_history" />
 			<?php do_action( 'mycred_above_my_log_table', $this ); ?>
@@ -942,6 +923,25 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		 */
 		public function get_no_entries() {
 			return __( 'No log entries found', 'mycred' );
+		}
+
+		/**
+		 * Log Search
+		 * @since 0.1
+		 * @version 1.0
+		 */
+		public function search() {
+			if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
+				$serarch_string = $_GET['s'];
+			else
+				$serarch_string = ''; ?>
+
+			<p class="search-box">
+				<label class="screen-reader-text" for=""><?php _e( 'Search Log', 'mycred' ); ?>:</label>
+				<input type="search" name="s" value="<?php echo $serarch_string; ?>" />
+				<input type="submit" name="mycred-search-log" id="search-submit" class="button" value="<?php _e( 'Search Log', 'mycred' ); ?>" />
+			</p>
+<?php
 		}
 
 		/**
