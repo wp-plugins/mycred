@@ -133,7 +133,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Show Balance in Header
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function show_balance( $table_row = false ) {
 			if ( bp_is_my_profile() || ( !bp_is_my_profile() && $this->buddypress['visibility']['balance'] ) || mycred_is_admin() ) {
@@ -152,7 +152,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					$template = str_replace( '%ranking%', mycred_rankings_position( $user_id ), $template );
 				}
 				else {
-					$template = str_replace( '%rank%', mycred_rankings_position( $user_id ), $template );
+					$template = str_replace( array( '%ranking%', '%rank%' ), mycred_rankings_position( $user_id ), $template );
 				}
 			
 				echo '<div id="mycred-my-balance">' . $this->core->template_tags_general( $template ) . '</div>';
