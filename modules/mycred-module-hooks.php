@@ -1125,7 +1125,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		 * @since 1.1
 		 * @version 1.1
 		 */
-		public function has_entry( $action = '', $reference = '', $user_id = '' ) {
+		public function has_entry( $action = '', $reference = '', $user_id = '', $data = '' ) {
 			global $wpdb;
 
 			if ( $this->prefs['limit_by'] == 'url' ) {
