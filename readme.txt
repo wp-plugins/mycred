@@ -159,6 +159,7 @@ See: http://mycred.me/download/changelog/2/
 * Added option to sort users in the admin area according to their point balance.
 * Added option to sort the myCRED Log Ascending or Descending.
 * Renamed Transfer CREDs to Transfer %plural% on the myCRED > Settings page.
+* Added Support for Event Espresso 3 though the Gateway Add-on.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
