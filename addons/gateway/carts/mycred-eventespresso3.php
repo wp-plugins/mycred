@@ -1,5 +1,5 @@
 <?php
-if ( !defined( 'WP_PLUGIN_DIR' ) ) exit;
+if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Event Espresso Payment Gateway
  * @since 1.2
@@ -79,8 +79,8 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 				$this->update_settings();
 			}
 			
-			add_filter( 'action_hook_espresso_gateway_formal_name',      array( $this, 'gateway_name' ), 10, 1       );
-			add_filter( 'action_hook_espresso_gateway_payment_type',     array( $this, 'gateway_name' ), 10, 1       );
+			add_filter( 'action_hook_espresso_gateway_formal_name',      array( $this, 'formal_name' )               );
+			add_filter( 'action_hook_espresso_gateway_payment_type',     array( $this, 'paymenttype_name' )          );
 			add_action( 'action_hook_espresso_display_gateway_settings', array( $this, 'gateway_settings_page' ), 11 );
 			
 			// Make sure gateway is enabled
@@ -113,13 +113,23 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		}
 
 		/**
-		 * Gateway Title
+		 * Formal Name
 		 * @since 1.2
 		 * @version 1.0
 		 */
-		public function gateway_name( $gateways ) {
-			$gateways['mycred'] = 'myCRED';
-			return $gateways;
+		public function formal_name( $gateway_formal_names ) {
+			$gateway_formal_names['mycred'] = $this->prefs['labels']['gateway'];
+			return $gateway_formal_names;
+		}
+
+		/**
+		 * Payment Type
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function paymenttype_name( $gateway_payment_types ) {
+			$gateway_payment_types['mycred'] = $this->prefs['labels']['payment'];
+			return $gateway_payment_types;
 		}
 
 		/**
@@ -385,7 +395,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 						<span class="description"><?php _e( 'Title to show on Payment page', 'mycred' ); ?>.</span>
 					</li>
 					<li>
-						<label for="mycred-prefs-payment-labels"><?php _e( 'Payment Title', 'mycred' ); ?></label>
+						<label for="mycred-prefs-payment-labels"><?php _e( 'Payment Type', 'mycred' ); ?></label>
 						<input type="text" name="mycred_prefs[labels][payment]" id="mycred-prefs-payment-labels" size="30" value="<?php echo $this->prefs['labels']['payment']; ?>" /><br />
 						<span class="description"><?php _e( 'Title to show on receipts and logs', 'mycred' ); ?>.</span>
 					</li>
