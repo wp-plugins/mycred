@@ -132,7 +132,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		 * Uninstall
 		 * @filter 'mycred_uninstall_this'
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function uninstall() {
 			// Everyone should use this filter to delete everything else they have created before returning the option ids.
@@ -156,6 +156,10 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			delete_option( 'widget_mycred_widget_transfer' );
 
 			delete_option( 'mycred_transients' );
+
+			// Remove Add-on settings
+			delete_option( 'mycred_espresso_gateway_prefs' );
+			delete_option( 'mycred_eventsmanager_gateway_prefs' );
 
 			// Clear Cron
 			wp_clear_scheduled_hook( 'mycred_reset_key' );
