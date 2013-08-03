@@ -1353,18 +1353,15 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 		 * New Booking
 		 * When users can make their own bookings.
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function new_booking( $result, $booking ) {
-			$user_id = $booking->person_id;
+			$user_id = $booking->person->id;
 			// Check for exclusion
 			if ( $this->core->exclude_user( $user_id ) ) return $result;
 			
 			// Successfull Booking
 			if ( $result === true ) {
-				// Make sure this is unique event
-				if ( $this->core->has_entry( 'event_booking', $booking->event->post_id, $user_id ) ) return $result;
-				
 				// Execute
 				$this->core->add_creds(
 					'event_booking',
@@ -1384,10 +1381,10 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 		 * Incase an administrator needs to approve bookings first or if booking gets
 		 * cancelled.
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function adjust_booking( $result, $booking ) {
-			$user_id = $booking->person_id;
+			$user_id = $booking->person->id;
 			// Check for exclusion
 			if ( $this->core->exclude_user( $user_id ) ) return $result;
 			
@@ -1395,9 +1392,6 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 			if ( $booking->booking_status == 1 && $booking->previous_status != 1 ) {
 				// If we do not award points for attending an event bail now
 				if ( $this->prefs['attend']['creds'] == 0 ) return $result;
-
-				// Make sure this is unique event
-				if ( $this->core->has_entry( 'event_attendance', $booking->event->post_id, $user_id ) ) return $result;
 				
 				// Execute
 				$this->core->add_creds(
@@ -1413,9 +1407,6 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 			elseif ( $booking->booking_status != 1 && $booking->previous_status == 1 ) {
 				// If we do not deduct points for cancellation bail now
 				if ( $this->prefs['cancel']['creds'] == 0 ) return $result;
-
-				// Make sure this is unique event
-				if ( $this->core->has_entry( 'cancelled_event_attendance', $booking->event->post_id, $user_id ) ) return $result;
 				
 				// Execute
 				$this->core->add_creds(
