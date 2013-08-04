@@ -675,7 +675,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $amount (int|float), amount to add/deduct from users balance. This value must be pre-formated.
 		 * @returns the new balance.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function update_users_balance( $user_id = NULL, $amount = NULL ) {
 			if ( $user_id === NULL || $amount === NULL ) return $amount;
@@ -690,6 +690,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Rankings
 			if ( $this->frequency['rate'] == 'always' ) delete_transient( $this->cred_id . '_ranking' );
+
+			// Let others play
+			do_action( 'mycred_update_user_balance', $user_id, $current_balance, $amount, $this->cred_id );
 
 			// Return the new balance
 			return $new_balance;
@@ -1238,6 +1241,62 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 		}
 
 		return $mycred->format_number( $count );
+	}
+}
+
+/**
+ * Get users total creds
+ * Returns the users total creds unformated. If no total is fuond,
+ * the users current balance is returned instead.
+ *
+ * @param $user_id (int), required user id
+ * @param $type (string), optional cred type to check for
+ * @returns zero if user id is not set or if no total were found, else returns creds
+ * @since 1.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_get_users_total' ) ) {
+	function mycred_get_users_total( $user_id = '', $type = '' ) {
+		if ( empty( $user_id ) ) return 0;
+
+		$mycred = mycred_get_settings();
+		if ( empty( $type ) ) $type = $mycred->get_cred_id();
+		$total = get_user_meta( $user_id, $type . '_total', true );
+		if ( empty( $total ) ) $total = $mycred->get_users_cred( $user_id, $type );
+
+		return $mycred->number( $total );
+	}
+}
+
+/**
+ * Update users total creds
+ * Updates a given users total creds balance.
+ *
+ * @param $user_id (int), required user id
+ * @param $request (array), required request array with information on users id (user_id) and amount
+ * @param $mycred (myCRED_Settings object), required myCRED settings object
+ * @returns zero if user id is not set or if no total were found, else returns total
+ * @since 1.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_update_users_total' ) ) {
+	function mycred_update_users_total( $type = '', $request = NULL, $mycred ) {
+		if ( $request === NULL || !is_object( $mycred ) || !isset( $request['user_id'] ) || !isset( $request['amount'] ) ) return false;
+		if ( $request['amount'])
+		if ( empty( $type ) ) $type = $mycred->get_cred_id();
+		
+		do_action( 'mycred_update_users_total', $request, $type, $mycred );
+		
+		$amount = $mycred->number( $request['amount'] );
+		if ( $amount < 0 || $amount == 0 ) return;
+		
+		$user_id = $request['user_id'];
+		$users_total = mycred_get_users_total( $user_id, $type );
+		
+		$new_total = $mycred->number( $users_total+$amount );
+		update_user_meta( $user_id, $type . '_total', $new_total );
+		
+		return $new_total;
 	}
 }
 

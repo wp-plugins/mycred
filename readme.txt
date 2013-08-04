@@ -161,6 +161,7 @@ See: http://mycred.me/download/changelog/2/
 * Renamed Transfer CREDs to Transfer %plural% on the myCRED > Settings page.
 * Added Support for Event Espresso 3 though the Gateway Add-on.
 * Added Support for Events Manager though the Gateway Add-on.
+* Added "Rank Basis" option for the Rank add-on. Ranks can not be assigned based on current points balance or a users total accumulated points. 
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.

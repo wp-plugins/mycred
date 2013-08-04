@@ -68,15 +68,17 @@ if ( !function_exists( 'mycred_get_users_rank' ) ) {
  * where the user fits in.
  * @param $user_id (int) required user id
  * @param $save (bool) option to save the rank to the given users meta data
+ * @param $amount (int|float) optional amount to add to current balance
+ * @param $type (string) optional cred type to check
  * @uses WP_Query()
  * @uses mycred_have_ranks()
  * @uses update_user_meta()
  * @returns empty (string) on failure or the users rank
  * @since 1.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_find_users_rank' ) ) {
-	function mycred_find_users_rank( $user_id = NULL, $save = false, $amount = 0 ) {
+	function mycred_find_users_rank( $user_id = NULL, $save = false, $amount = 0, $type = '' ) {
 		$mycred = mycred_get_settings();
 		
 		// Check for exclusion
@@ -84,9 +86,9 @@ if ( !function_exists( 'mycred_find_users_rank' ) ) {
 
 		// Get users balance
 		if ( $user_id === NULL )
-			$balance = $mycred->get_users_cred( get_current_user_id() );
+			$balance = $mycred->get_users_cred( get_current_user_id(), $type );
 		else
-			$balance = $mycred->get_users_cred( $user_id );
+			$balance = $mycred->get_users_cred( $user_id, $type );
 
 		// The new balance before it is saved
 		$balance = $balance+$amount;
@@ -173,7 +175,6 @@ if ( !function_exists( 'mycred_get_rank_id_from_title' ) ) {
 		return $rank->ID;
 	}
 }
-
 /**
  * Get My Rank
  * Returns the current users rank
