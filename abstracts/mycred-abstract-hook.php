@@ -126,7 +126,7 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		/**
 		 * Impose Limits Dropdown
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function impose_limits_dropdown( $pref_id = '', $use_select = true ) {
 			$limits = array(
@@ -143,9 +143,19 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 			if ( $use_select )
 				echo '<option value="">' . __( 'Select', 'mycred' ) . '</option>';
 
+			$settings = '';
+			if ( is_array( $pref_id ) ) {
+				reset( $pref_id );
+				$key = key( $pref_id );
+				$settings = $this->prefs[ $key ][ $pref_id[ $key ] ];
+			}
+			elseif ( isset( $this->prefs[ $pref_id ] ) ) {
+				$settings = $this->prefs[ $pref_id ];
+			}
+
 			foreach ( $limits as $value => $description ) {
 				echo '<option value="' . $value . '"';
-				if ( $this->prefs[$pref_id] == $value ) echo ' selected="selected"';
+				if ( $settings == $value ) echo ' selected="selected"';
 				echo '>' . $description . '</option>';
 			}
 			echo '</select>';
