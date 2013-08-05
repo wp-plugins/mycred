@@ -269,7 +269,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Sanititze Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_settings( $post ) {
 			// Loop though all installed hooks
@@ -277,6 +277,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 
 			// Construct new settings
 			$new_post['installed'] = $installed;
+			if ( empty( $post['active'] ) || !isset( $post['active'] ) ) $post['active'] = array();
 			$new_post['active'] = $post['active'];
 
 			if ( !empty( $installed ) ) {
