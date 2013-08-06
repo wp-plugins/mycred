@@ -144,41 +144,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			else
 				$last_run = date_i18n( get_option( 'date_format' ) . ' : ' . get_option( 'time_format' ), $last_run ); ?>
 
-					<label class="subheader"><?php _e( 'Last Run', 'mycred' ); ?></label>
-					<ol class="inline">
-						<li>
-							<label>Cycles</label>
-							<div class="h2"><?php echo $prefs['default']['cycles']; ?></div>
-						</li>
-						<li>
-							<label>Last run: Hours</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'hourly' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Days</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'daily' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Week</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'weekly' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Month</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'monthly' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Quarterly</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'quarterly' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Semiannually</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'semiannually' ); ?></div>
-						</li>
-						<li>
-							<label>Last run: Annual</label>
-							<div class="h2"><?php echo $this->get_last_run( $prefs['default']['last_run'], 'annually' ); ?></div>
-						</li>
-					</ol>
 					<label class="subheader"><?php _e( 'Pay Users', 'mycred' ); ?></label>
 					<ol class="inline">
 						<li>
