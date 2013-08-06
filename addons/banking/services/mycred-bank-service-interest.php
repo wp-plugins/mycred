@@ -165,7 +165,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 						'',
 						$past_interest
 					);
-					
+
+					// Let others play
+					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs );
 				}
 			}
 			wp_clear_scheduled_hook( 'mycred_bank_payout_interest' );
@@ -240,7 +242,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General, %timeframe%, %rate%, %base%', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+					<?php do_action( 'mycred_banking_compound_interest', $this->prefs ); ?>
+<?php
 		}
 
 		/**
@@ -265,7 +268,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 			$new_settings['log'] = trim( $post['log'] );
 
-			return $new_settings;
+			return apply_filters( 'mycred_banking_save_interest', $new_settings, $this->prefs );
 		}
 	}
 }

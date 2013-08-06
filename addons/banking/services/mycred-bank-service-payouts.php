@@ -19,7 +19,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					'default' => array(
 						'amount'     => 10,
 						'rate'       => 'daily',
-						'log'        => 'Daily %_plural%',
+						'log'        => __( 'Daily %_plural%', 'mycred' ),
 						'excludes'   => '',
 						'cycles'     => 0,
 						'last_run'   => ''
@@ -63,7 +63,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					}
 
 					// Run payouts
-					$this->payout( $instance['amount'], $instance['log'], $instance['excludes'] );
+					$this->do_payout( $instance['amount'], $instance['log'], $instance['excludes'] );
 
 					// Save
 					$this->save( $id, $unow, $cycles );
@@ -77,7 +77,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * @since 1.2
 		 * @version 1.0
 		 */
-		public function payout( $amount, $log, $excludes = '' ) {
+		public function do_payout( $amount, $log, $excludes = '' ) {
 			// Query
 			$users = $this->get_user_ids( $excludes );
 			if ( !empty( $users ) ) {
@@ -89,11 +89,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 						$amount,
 						$log
 					);
+
+					// Let others play
+					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs );
 				}
 			}
-
-			// Let others play
-			do_action( 'mycred_bank_do_payout', $users, $this );
 		}
 
 		/**
@@ -183,7 +183,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
 						</li>
 					</ol>
-					<?php do_action( 'mycred_bank_recurring_payouts', $this ); ?>
+					<?php do_action( 'mycred_banking_recurring_payouts', $this->prefs ); ?>
 <?php
 		}
 
@@ -217,7 +217,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			// Log
 			$new_settings['default']['log'] = trim( $post['default']['log'] );
 
-			return apply_filters( 'mycred_bank_save_recurring', $new_settings );
+			return apply_filters( 'mycred_banking_save_recurring', $new_settings, $this->prefs );
 		}
 	}
 }

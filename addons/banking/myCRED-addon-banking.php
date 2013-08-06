@@ -99,7 +99,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 		 */
 		public function get( $save = false ) {
 			// Savings
-			$services['savings'] = array(
+			$services['interest'] = array(
 				'title'        => __( 'Compound Interest', 'mycred' ),
 				'description'  => __( 'Apply an interest rate on your users %_plural% balances. Interest rate is annual and is compounded daily as long as this service is enabled. Positive interest rate leads to users gaining %_plural% while a negative interest rate will to users loosing %_plural%.', 'mycred' ),
 				'callback'     => array( 'myCRED_Banking_Service_Interest' )
