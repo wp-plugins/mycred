@@ -13,7 +13,7 @@ Tested up to: WP 3.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
-define( 'myCRED_VERSION',      '1.2beta3' );
+define( 'myCRED_VERSION',      '1.2beta4' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
