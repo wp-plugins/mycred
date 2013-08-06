@@ -269,7 +269,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
-			<h4 class="<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"><label><?php echo $this->core->template_tags_general( $data['name'] ); ?></label></h4>
+			<h4 class="<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"><label><?php _e( $this->core->template_tags_general( $data['name'] ), 'mycred' ); ?></label></h4>
 			<div class="body" style="display:none;">
 				<div class="wrapper">
 						<?php $this->present_addon( $key ); ?>
@@ -347,7 +347,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		public function present_addon( $key ) {
 			$addon_data = $this->installed[$key]; ?>
 
-					<div class="description h2"><?php echo $this->core->template_tags_general( $addon_data['description'] ); ?></div>
+					<div class="description h2"><?php _e( $this->core->template_tags_general( $addon_data['description'] ), 'mycred' ); ?></div>
 					<p class="links"><?php echo $this->addon_links( $key ); ?></p>
 					<p><?php echo $this->activate_deactivate( $key ); ?></p>
 					<div class="clear">&nbsp;</div>
