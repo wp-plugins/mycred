@@ -36,6 +36,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		public function run() {
 			// Loop though instances
 			foreach ( $this->prefs as $id => $instance ) {
+				// Get cycles
+				$cycles = (int) $instance['cycles'];
+				// Zero cycles left, bail
+				if ( $cycles == 0 ) continue;
+				
 				// No amount = no payout
 				if ( !isset( $instance['amount'] ) || $instance['amount'] == 0 ) continue;
 
@@ -43,7 +48,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 				$now = $this->get_now( $instance['rate'] );
 				if ( empty( $instance['last_run'] ) || $instance['last_run'] === NULL ) {
 					$last_run = $this->get_last_run( $unow, $instance['rate'] );
-					$this->save( $id, $unow, 0 );
+					$this->save( $id, $unow, $cycles );
 				}
 				else {
 					$last_run = $this->get_last_run( $instance['last_run'], $instance['rate'] );
@@ -52,12 +57,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 
 				// Mismatch means new run
 				if ( $last_run < $now ) {
-					// Get cycles
-					$cycles = (int) $instance['cycles'];
-
-					// Zero cycles left, bail
-					if ( $cycles == 0 ) continue;
-
 					// Cycles (-1 means no limit)
 					if ( $cycles > 0-1 ) {
 						$cycles = $cycles-1;

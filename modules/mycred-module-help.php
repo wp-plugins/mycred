@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Help class
  * Adds contextual help for myCRED pages and features.
  * @since 0.1
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !class_exists( 'myCRED_Help' ) ) {
 	class myCRED_Help {
@@ -18,8 +18,8 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 		function __construct() {
 			if ( is_admin() )
 				$this->is_admin = true;
-			
-			$this->is_admin = false;
+			else
+				$this->is_admin = false;
 		}
 
 		/**
@@ -29,7 +29,6 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 		 */
 		public function load() {
 			if ( $this->is_admin ) return;
-			
 			add_filter( 'contextual_help', array( $this, 'run' ), 10, 3 );
 		}
 
