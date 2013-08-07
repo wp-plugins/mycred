@@ -284,16 +284,16 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 				unset( $columns['type'] );
 				unset( $columns['spaces'] );
 
-				$columns['type'] = __( 'Ticket Type', 'dbem' );
+				$columns['type'] = __( 'Ticket Type', 'mycred' );
 
 				if ( $this->single_currency() ) {
-					$columns['mycred'] = __( 'Price', 'dbem' );
+					$columns['mycred'] = __( 'Price', 'mycred' );
 				}
 				else {
-					$columns['price'] = __( 'Price', 'dbem' );
+					$columns['price'] = __( 'Price', 'mycred' );
 					$columns['mycred'] = $this->core->plural();
 				}
-				$columns['spaces'] = __( 'Spaces', 'dbem' );
+				$columns['spaces'] = __( 'Spaces', 'mycred' );
 			}
 
 			$this->booking_cols = count( $columns );
@@ -468,8 +468,8 @@ jQuery(function($) {
 				em_get_currency_symbol()
 			); ?>
 
-<div  class="postbox " id="em-opt-mycred" >
-				<div class="handlediv" title="<?php __('Click to toggle', 'dbem'); ?>"><br /></div><h3><span><?php echo sprintf( __( '%s Payments', 'mycred' ), $this->label ); ?> </span></h3>
+<div class="postbox" id="em-opt-mycred">
+				<div class="handlediv" title="<?php _e( 'Click to toggle', 'mycred' ); ?>"><br /></div><h3><span><?php echo sprintf( __( '%s Payments', 'mycred' ), $this->label ); ?></span></h3>
 				<div class="inside">
 					<?php do_action( 'mycred_em_before_settings', $this ); ?>
 
