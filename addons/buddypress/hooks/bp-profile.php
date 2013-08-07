@@ -191,7 +191,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				array( 'ref_type' => 'user' )
 			);
 			
-			// Points to friend
+			// Deduction to friend
 			$this->core->add_creds(
 				'ended_friendship',
 				$friend_user_id,
