@@ -133,7 +133,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 		/**
 		 * New Friendship
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function friendship_join( $friendship_id, $initiator_user_id, $friend_user_id ) {
 			// Check if user is excluded
@@ -145,7 +145,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			// Make sure this is unique event
 			if ( $this->core->has_entry( 'new_friendship', $friend_user_id, $initiator_user_id ) ) return;
 
-			// Execute
+			// Points to initiator
 			$this->core->add_creds(
 				'new_friendship',
 				$initiator_user_id,
@@ -154,12 +154,22 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				$friend_user_id,
 				array( 'ref_type' => 'user' )
 			);
+
+			// Points to friend
+			$this->core->add_creds(
+				'new_friendship',
+				$friend_user_id,
+				$this->prefs['new_friend']['creds'],
+				$this->prefs['new_friend']['log'],
+				$initiator_user_id,
+				array( 'ref_type' => 'user' )
+			);
 		}
 
 		/**
 		 * Ending Friendship
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function friendship_leave( $friendship_id, $initiator_user_id, $friend_user_id ) {
 			// Check if user is excluded
@@ -171,13 +181,23 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 			// Make sure this is unique event
 			if ( $this->core->has_entry( 'ended_friendship', $friend_user_id, $initiator_user_id ) ) return;
 
-			// Execute
+			// Deduction to initiator
 			$this->core->add_creds(
 				'ended_friendship',
 				$initiator_user_id,
 				$this->prefs['leave_friend']['creds'],
 				$this->prefs['leave_friend']['log'],
 				$friend_user_id,
+				array( 'ref_type' => 'user' )
+			);
+			
+			// Points to friend
+			$this->core->add_creds(
+				'ended_friendship',
+				$friend_user_id,
+				$this->prefs['leave_friend']['creds'],
+				$this->prefs['leave_friend']['log'],
+				$initiator_user_id,
 				array( 'ref_type' => 'user' )
 			);
 		}
