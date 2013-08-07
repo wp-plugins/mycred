@@ -175,6 +175,7 @@ See: http://mycred.me/download/changelog/2/
 * Added Support for Events Manager though the Gateway Add-on.
 * Added "Rank Basis" option for the Rank add-on. Ranks can not be assigned based on current points balance or a users total accumulated points.
 * Added Banking Add-on.
+* Added support for GA Star Rating.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.

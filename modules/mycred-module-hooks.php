@@ -198,6 +198,15 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				);
 			}
 
+			// GD Star
+			if ( defined( 'STARRATING_DEBUG' ) ) {
+				$installed['gdstars'] = array(
+					'title'       => __( 'GD Star Rating', 'mycred' ),
+					'description' => __( 'Awards %_plural% for users rate items using the GD Star Rating plugin.', 'mycred' ),
+					'callback'    => array( 'myCRED_Hook_GD_Star_Rating' )
+				);
+			}
+
 			$installed = apply_filters( 'mycred_setup_hooks', $installed );
 
 			if ( $save === true && $this->core->can_edit_plugin() ) {

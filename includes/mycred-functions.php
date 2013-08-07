@@ -1283,7 +1283,7 @@ if ( !function_exists( 'mycred_get_users_total' ) ) {
  * @version 1.0
  */
 if ( !function_exists( 'mycred_update_users_total' ) ) {
-	function mycred_update_users_total( $type = '', $request = NULL, $mycred ) {
+	function mycred_update_users_total( $type = '', $request = NULL, $mycred = NULL ) {
 		if ( $request === NULL || !is_object( $mycred ) || !isset( $request['user_id'] ) || !isset( $request['amount'] ) ) return false;
 		if ( $request['amount'])
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
