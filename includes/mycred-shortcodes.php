@@ -339,7 +339,7 @@ if ( !function_exists( 'mycred_render_shortcode_video' ) ) {
 			'rel'         => 0,
 			'controls'    => 1,
 			'showinfo'    => 0
-		), $atts );
+		), $atts, $video_id );
 		
 		// Construct Youtube Query Address
 		$url = 'http://www.youtube.com/v/' . $id;

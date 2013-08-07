@@ -181,7 +181,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.2
 		 */
-		public function apply_exchange_rate( $amount, $rate = 1, $round = true ) {
+		public function apply_exchange_rate( $amount = 0, $rate = 1, $round = true ) {
 			$amount = $this->number( $amount );
 			if ( !is_numeric( $rate ) || $rate == 1 ) return $amount;
 
@@ -197,7 +197,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function parse_template_tags( $content, $log_entry ) {
+		public function parse_template_tags( $content = '', $log_entry ) {
 			// Prep
 			$reference = $log_entry->ref;
 			$ref_id = $log_entry->ref_id;
@@ -239,7 +239,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.1
 		 */
-		public function template_tags_general( $content ) {
+		public function template_tags_general( $content = '' ) {
 			$content = apply_filters( 'mycred_parse_tags_general', $content );
 
 			// Singular
@@ -294,7 +294,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0.2
 		 */
-		public function template_tags_post( $content, $ref_id = NULL, $data = '' ) {
+		public function template_tags_post( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get Post Object
@@ -347,7 +347,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0.4
 		 */
-		public function template_tags_user( $content, $ref_id = NULL, $data = '' ) {
+		public function template_tags_user( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get User Object
@@ -421,7 +421,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0.2
 		 */
-		public function template_tags_comment( $content, $ref_id = NULL, $data = '' ) {
+		public function template_tags_comment( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
 
 			// Get Comment Object
@@ -473,7 +473,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function allowed_tags( $data, $allow = '' ) {
+		public function allowed_tags( $data = '', $allow = '' ) {
 			if ( $allow === false )
 				return strip_tags( $data );
 			elseif ( !empty( $allow ) )
@@ -616,7 +616,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function exclude_user( $user_id ) {
+		public function exclude_user( $user_id = 0 ) {
 			if ( $this->exclude_plugin_editors() == true && $this->can_edit_plugin( $user_id ) == true ) return true;
 			if ( $this->exclude_creds_editors() == true && $this->can_edit_creds( $user_id ) == true ) return true;
 			if ( $this->in_exclude_list( $user_id ) ) return true;
@@ -974,7 +974,7 @@ if ( !function_exists( 'mycred_name' ) ) {
  * @version 1.0
  */
 if ( !function_exists( 'mycred_strip_tags' ) ) {
-	function mycred_strip_tags( $string, $overwride = '' )
+	function mycred_strip_tags( $string = '', $overwride = '' )
 	{
 		$mycred = mycred_get_settings();
 		return $mycred->allowed_tags( $string, $overwrite );
