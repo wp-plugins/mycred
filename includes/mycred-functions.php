@@ -665,7 +665,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			if ( empty( $balance ) ) $balance = 0;
 
 			// Let others play
-			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this, $type );
+			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this, $user_id, $type );
 
 			return $this->number( $balance );
 		}
