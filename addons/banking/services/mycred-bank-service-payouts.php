@@ -34,6 +34,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * @version 1.0
 		 */
 		public function run() {
+			add_action( 'mycred_bank_payout_recurring',   array( $this, 'do_payout' ) );
+
 			// Loop though instances
 			foreach ( $this->prefs as $id => $instance ) {
 				// Get cycles
@@ -63,7 +65,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					}
 
 					// Run payouts
-					$this->do_payout( $instance['amount'], $instance['log'], $instance['excludes'] );
+					$this->payout( $instance['amount'], $instance['log'], $instance['excludes'] );
 
 					// Save
 					$this->save( $id, $unow, $cycles );
@@ -71,6 +73,18 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			}
 		}
 		
+		/**
+		 * Payout Recurring
+		 * Schedules the WP Cron to run the payout on the next page load.
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function payout() {
+			if ( ! wp_next_scheduled( 'mycred_bank_payout_recurring' ) ) {
+				wp_schedule_event( time(), 'hourly', 'mycred_bank_payout_recurring' );
+			}
+		}
+
 		/**
 		 * Payout
 		 * Gathers all eligeble users and award / deducts the amount given.
@@ -89,11 +103,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 						$amount,
 						$log
 					);
-
+					
 					// Let others play
 					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs );
 				}
 			}
+			wp_clear_scheduled_hook( 'mycred_bank_payout_recurring' );
 		}
 
 		/**
@@ -143,6 +158,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			else
 				$last_run = date_i18n( get_option( 'date_format' ) . ' : ' . get_option( 'time_format' ), $last_run ); ?>
 
+					
 					<label class="subheader"><?php _e( 'Pay Users', 'mycred' ); ?></label>
 					<ol class="inline">
 						<li>
@@ -162,7 +178,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 							<span class="description"><?php _e( 'Set to -1 for unlimited', 'mycred' ); ?></span>
 						</li>
 						<li>
-							<label><?php _e( 'Last Run', 'mycred' ); ?></label><br />
+							<label><?php _e( 'Last Run / Activated', 'mycred' ); ?></label><br />
 							<div class="h2"><?php echo $last_run; ?></div>
 						</li>
 						<li class="block"><strong><?php _e( 'Interval', 'mycred' ); ?></strong><br /><?php echo $this->core->template_tags_general( __( 'Select how often you want to award %_plural%. Note that when this service is enabled, the first payout will be in the beginning of the next period. So with a "Daily" interval, the first payout will occur first thing in the morning.', 'mycred' ) ); ?></li>

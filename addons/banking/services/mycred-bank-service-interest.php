@@ -123,6 +123,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					
 					// Save interest
 					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', $interest );
+
+					// Let others play
+					do_action( 'mycred_banking_do_compound', $user_id, $this->prefs );
 				}
 			}
 			wp_clear_scheduled_hook( 'mycred_bank_compound_interest' );
@@ -210,15 +213,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 							<label>&nbsp;</label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'rate' => 'amount' ) ); ?>" id="<?php echo $this->field_id( array( 'rate' => 'amount' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['rate']['amount'] ); ?>" size="4" /> %</div>
 						</li>
-						<!--<li>
-							<label for="<?php echo $this->field_id( array( 'rate' => 'period' ) ); ?>"><?php _e( 'Period', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'rate' => 'period' ) ); ?>" id="<?php echo $this->field_id( array( 'rate' => 'period' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['rate']['period'] ); ?>" size="8" /></div>
-						</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'rate' => 'compound' ) ); ?>"><?php _e( 'Compound', 'mycred' ); ?></label><br />
-							<?php $this->timeframe_dropdown( array( 'rate' => 'compound' ), false ); ?>
-
-						</li>-->
 						<li>
 							<label for="<?php echo $this->field_id( array( 'rate' => 'pay_out' ) ); ?>"><?php _e( 'Payed / Charged', 'mycred' ); ?></label><br />
 							<?php $this->timeframe_dropdown( array( 'rate' => 'pay_out' ), false ); ?>

@@ -148,7 +148,7 @@ See: http://mycred.me/download/changelog/2/
 = 1.2 =
 * Moved the has_entry() method from myCRED_Hook to myCRED Settings to allow use by other features then just hooks.
 * Adjusted Hooks for clicking on links to enforce limits once per user and not once per use.
-* Adjusted libks.js to take into account slow server connections.
+* Adjusted links.js to take into account slow server connections.
 * Adjusted bad logic in BuddyPress navigation setup for points history.
 * Added option to re-name the points history slug from the default "mycred-history".
 * Added option to set the number of log entries to retrieve on users points history page.
@@ -161,7 +161,8 @@ See: http://mycred.me/download/changelog/2/
 * Renamed Transfer CREDs to Transfer %plural% on the myCRED > Settings page.
 * Added Support for Event Espresso 3 though the Gateway Add-on.
 * Added Support for Events Manager though the Gateway Add-on.
-* Added "Rank Basis" option for the Rank add-on. Ranks can not be assigned based on current points balance or a users total accumulated points. 
+* Added "Rank Basis" option for the Rank add-on. Ranks can not be assigned based on current points balance or a users total accumulated points.
+* Added Banking Add-on.
 
 = 1.1.2 =
 * Fixed Bug #35 - Rankings is not displaying in BuddyPress profile header.
