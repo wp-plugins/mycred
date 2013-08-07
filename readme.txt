@@ -1,6 +1,5 @@
 === myCRED ===
 Contributors: designbymerovingi
-Donate Link: http://mycred.me/donate/
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
 Requires at least: 3.1
 Tested up to: 3.5.2
@@ -142,6 +141,17 @@ See: http://mycred.me/download/changelog/
 
 = 1.0.9.3 =
 See: http://mycred.me/download/changelog/2/
+
+
+== Other Notes ==
+
+= Requirements =
+* PHP version 5.2.4 or greater
+* MySQL version 5.0 or greater
+
+= Language Contributors =
+* French - [Dan - BuddyPress France](http://bp-fr.net/)
+
 
 == Changelog ==
 
