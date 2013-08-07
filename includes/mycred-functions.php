@@ -653,17 +653,20 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 *
 		 * @param $user_id (int), required user id
 		 * @param $type (string), optional cred type to check for
-		 * @returns empty if user id is not set or if no creds were found, else returns creds
+		 * @returns zero if user id is not set or if no creds were found, else returns amount
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		public function get_users_cred( $user_id = '', $type = '' ) {
-			if ( empty( $user_id ) ) return $user_id;
+			if ( empty( $user_id ) ) return 0;
 
 			if ( empty( $type ) ) $type = $this->get_cred_id();
 			$balance = get_user_meta( $user_id, $type, true );
 			if ( empty( $balance ) ) $balance = 0;
-			
+
+			// Let others play
+			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this );
+
 			return $this->number( $balance );
 		}
 
