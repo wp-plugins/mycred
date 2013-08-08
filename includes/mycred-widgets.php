@@ -55,7 +55,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 				if ( empty( $balance ) ) $balance = 0;
 
 				$layout = $mycred->template_tags_amount( $instance['cred_format'], $balance );
-				$layout = $mycred->template_tags_user( $layout, $user_id );
+				$layout = $mycred->template_tags_user( $layout, false, wp_get_current_user() );
 				
 				// Include Ranking
 				if ( $instance['show_rank'] ) {

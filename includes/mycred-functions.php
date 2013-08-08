@@ -345,7 +345,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.4
+		 * @version 1.1
 		 */
 		public function template_tags_user( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
@@ -353,12 +353,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			// Get User Object
 			if ( $ref_id !== false )
 				$user = get_userdata( $ref_id );
-			else
-				$user = $ref_id;
-
-			// User does not exist
-			if ( $user === false ) {
-				if ( !is_array( $data ) || !array_key_exists( 'ID', $data ) ) return $content;
+			// User object is passed on though $data
+			elseif ( $ref_id === false && is_object( $data ) && isset( $data->ID ) )
+				$user = $data;
+			// User array is passed on though $data
+			elseif ( $ref_id === false && is_array( $data ) || array_key_exists( 'ID', $data ) ) {
 				$user = new StdClass();
 				foreach ( $data as $key => $value ) {
 					if ( $key == 'login' )
@@ -367,6 +366,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 						$user->$key = $value;
 				}
 			}
+			else return $content;
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_user', $content, $user, $data );

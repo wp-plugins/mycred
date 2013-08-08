@@ -457,7 +457,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * WP Mail
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function wp_mail( $to, $subject, $message, $headers, $attachments, $request, $email_id ) {
 			// Let others play before we do our thing
@@ -474,12 +474,18 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			// Parse Subject Template Tags
 			$subject = $this->core->template_tags_general( $filtered['subject'] );
 			$subject = $this->core->template_tags_amount( $subject, $filtered['request']['amount'] );
-			$subject = $this->core->template_tags_user( $subject, $filtered['request']['user_id'] );
+			if ( $filtered['request']['user_id'] == get_current_user_id() )
+				$subject = $this->core->template_tags_user( $subject, false, wp_get_current_user() );
+			else
+				$subject = $this->core->template_tags_user( $subject, $filtered['request']['user_id'] );
 
 			// Parse Message Template Tags
 			$message = $this->core->template_tags_general( $filtered['message'] );
 			$message = $this->core->template_tags_amount( $message, $filtered['request']['amount'] );
-			$message = $this->core->template_tags_user( $message, $filtered['request']['user_id'] );
+			if ( $filtered['request']['user_id'] == get_current_user_id() )
+				$message = $this->core->template_tags_user( $message, false, wp_get_current_user() );
+			else
+				$message = $this->core->template_tags_user( $message, $filtered['request']['user_id'] );
 			$message = $this->template_tags_request( $message, $filtered['request'] );
 
 			// Construct HTML Content
