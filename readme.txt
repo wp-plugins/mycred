@@ -150,7 +150,7 @@ See: http://mycred.me/download/changelog/2/
 * MySQL version 5.0 or greater
 
 = Language Contributors =
-* French - [Dan - BuddyPress France](http://bp-fr.net/)
+* French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
 
 
 == Changelog ==
