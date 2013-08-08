@@ -112,7 +112,7 @@ if ( !class_exists( 'MP_Gateway_myCRED' ) ) {
 		 * @param array $cart. Contains the cart contents for the current blog, global cart if $mp->global_cart is true
 		 * @param array $shipping_info. Contains shipping info and email in case you need it
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function process_payment( $cart, $shipping_info ) {
 			global $mp;
@@ -164,11 +164,17 @@ if ( !class_exists( 'MP_Gateway_myCRED' ) ) {
 			}
 
 			$balance = $mycred->get_users_cred( $user_id );
+			if ( $balance <= 0 ) {
+				$mp->cart_checkout_error(
+					sprintf( __( 'Insufficient Funds Please select a different payment method. <a href="%s">Go Back</a>', 'mycred' ), mp_checkout_step_url( 'checkout' ) )
+				);
+				return;
+			}
 			if ( $this->use_exchange() )
-				$balance = $mycred->apply_exchange_rate( $mycred->number( $total ), $settings['gateways']['mycred']['exchange'] );
+				$total = $mycred->apply_exchange_rate( $mycred->number( $total ), $settings['gateways']['mycred']['exchange'] );
 			
 			// Check if there is enough to fund this
-			if ( $balance >= $total ) {
+			if ( $balance-$total >= 0 ) {
 				// Create MarketPress order
 				$order_id = $mp->generate_order_id();
 				$payment_info['gateway_public_name'] = $this->public_name;
