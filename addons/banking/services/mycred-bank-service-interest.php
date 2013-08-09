@@ -117,7 +117,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					if ( empty( $past_interest ) ) $past_interest = 0;
 					
 					// Min Balance Limit
-					if ( $this->prefs['min_balance'] > $balance && $past_interest == 0 ) continue;
+					if ( $balance < $this->core->number( $this->prefs['min_balance'] ) ) continue;
 					
 					// Let others play
 					$this->prefs = apply_filters( 'mycred_banking_do_compound', $this->prefs, $user_id );
