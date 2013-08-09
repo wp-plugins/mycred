@@ -1,6 +1,6 @@
 <?php
 /**
- * myCRED Bank Service - Savings
+ * myCRED Bank Service - Interest
  * @since 1.2
  * @version 1.0
  */
@@ -19,10 +19,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					'rate'         => array(
 						'amount'       => 2,
 						'period'       => 1,
-						'compound'     => 'daily',
 						'pay_out'      => 'monthly'
 					),
-					'last_compound' => '',
 					'last_payout'   => '',
 					'log'           => __( '%plural% interest rate payment', 'mycred' ),
 					'min_balance'   => 1
@@ -36,28 +34,48 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * @version 1.0
 		 */
 		public function run() {
-			add_action( 'mycred_bank_compound_interest', array( $this, 'do_compound' ) );
-			add_action( 'mycred_bank_payout_interest',   array( $this, 'do_payout' ) );
-			
+			add_action( 'wp_loaded',                        array( $this, 'process' ) );
+			add_action( 'mycred_banking_interest_compound', array( $this, 'do_compound' ) );
+			add_action( 'mycred_banking_interest_payout',   array( $this, 'do_payouts' ) );
+		}
+
+		/**
+		 * Deactivation
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function deactivate() {
+			// Unschedule compounding
+			$timestamp = wp_next_scheduled( 'mycred_banking_interest_compound' );
+			if ( $timestamp !== false )
+				wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+
+			// Unschedule payouts
+			$timestamp = wp_next_scheduled( 'mycred_banking_interest_payout' );
+			if ( $timestamp !== false )
+				wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
+		}
+		
+		/**
+		 * Process
+		 * @since 1.2
+		 * @version 1.0
+		 */
+		public function process() {
+			// Unschedule if amount is set to zero
+			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) {
+				if ( wp_next_scheduled( 'mycred_banking_interest_compound' ) )
+					wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+			}
+
+			// Schedule if none exist
+			if ( ! wp_next_scheduled( 'mycred_banking_interest_compound' ) ) {
+				wp_schedule_event( time(), 'hourly', 'mycred_banking_interest_compound' );
+			}
+
 			$unow = date_i18n( 'U' );
 			// Cant pay interest on zero
-			if ( $this->prefs['amount'] == $this->core->format_number( 0 ) ) return;
-			
-			// Should we compound
-			$compound_now = $this->get_now( $this->prefs['rate']['compound'] );
-			if ( empty( $this->prefs['last_compound'] ) || $this->prefs['last_compound'] === NULL ) {
-				$last_compound = $this->get_last_run( $unow, $this->prefs['rate']['compound'] );
-				$this->save( 'last_compound', $unow );
-			}
-			else {
-				$last_compound = $this->get_last_run( $this->prefs['last_compound'], $this->prefs['rate']['compound'] );
-			}
-			if ( $compound_now === false || $last_compound == false ) return;
-			
-			if ( $compound_now != $last_compound ) {
-				$this->compound();
-				$this->save( 'last_compound', $unow );
-			}
+			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
 			
 			// Should we payout
 			$payout_now = $this->get_now( $this->prefs['rate']['pay_out'] );
@@ -70,21 +88,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			}
 			if ( $payout_now === false || $last_payout == false ) return;
 			
-			if ( $payout_now != $last_payout ) {
-				$this->payout();
+			if ( $last_payout != $payout_now ) {
 				$this->save( 'last_payout', $unow );
-			}
-		}
-
-		/**
-		 * Compound Interest
-		 * Schedules the WP Cron to run the compounding on the next page load.
-		 * @since 1.2
-		 * @version 1.0
-		 */
-		public function compound() {
-			if ( ! wp_next_scheduled( 'mycred_bank_compound_interest' ) ) {
-				wp_schedule_event( time(), 'hourly', 'mycred_bank_compound_interest' );
+				if ( ! wp_next_scheduled( 'mycred_banking_interest_payout' ) )
+					wp_schedule_single_event( time(), 'mycred_banking_interest_payout' );
 			}
 		}
 
@@ -96,14 +103,14 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * @version 1.0
 		 */
 		public function do_compound() {
+			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
 			// Get users
 			$users = $this->get_user_ids();
 			if ( !empty( $users ) ) {
 				foreach ( $users as $user_id ) {
 					// Current balance
-					$balance = $this->core->get_users_creds( $user_id );
+					$balance = $this->core->get_users_cred( $user_id );
 					if ( $balance == 0 ) continue;
-					$balance = $this->core->number( $balance );
 					
 					// Get past interest
 					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
@@ -111,6 +118,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					
 					// Min Balance Limit
 					if ( $this->prefs['min_balance'] > $balance && $past_interest == 0 ) continue;
+					
+					// Let others play
+					$this->prefs = apply_filters( 'mycred_banking_do_compound', $this->prefs, $user_id );
 					
 					// Convert rate
 					$rate = $this->prefs['rate']['amount']/100;
@@ -120,26 +130,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					
 					// Compound
 					$interest = ( $balance + $past_interest ) * $rate * $period;
+					$interest = round( $interest, 2 );
 					
 					// Save interest
 					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', $interest );
-
-					// Let others play
-					do_action( 'mycred_banking_do_compound', $user_id, $this->prefs );
 				}
-			}
-			wp_clear_scheduled_hook( 'mycred_bank_compound_interest' );
-		}
-
-		/**
-		 * Payout Interest
-		 * Schedules the WP Cron to run the payout on the next page load.
-		 * @since 1.2
-		 * @version 1.0
-		 */
-		public function payout() {
-			if ( ! wp_next_scheduled( 'mycred_bank_payout_interest' ) ) {
-				wp_schedule_event( time(), 'hourly', 'mycred_bank_payout_interest' );
 			}
 		}
 
@@ -150,10 +145,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * @since 1.2
 		 * @version 1.0
 		 */
-		public function do_payout() {
+		public function do_payouts() {
 			// Get users
 			$users = $this->get_user_ids();
 			if ( !empty( $users ) ) {
+				$users = array_unique( $users );
 				foreach ( $users as $user_id ) {
 					// Get past interest
 					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
@@ -163,17 +159,19 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					$this->core->add_creds(
 						'payout',
 						$user_id,
-						$amount,
-						$this->prefs['log'],
-						'',
-						$past_interest
+						$past_interest,
+						$this->prefs['log']
 					);
+					
+					// Reset past interest
+					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', 0 );
 
 					// Let others play
-					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs );
+					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs, $past_interest );
 				}
 			}
-			wp_clear_scheduled_hook( 'mycred_bank_payout_interest' );
+			// Make sure to clear any stray schedules to prevent duplicates
+			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
 		}
 		
 		/**
@@ -192,8 +190,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			
 			// Update settings
 			$bank['service_prefs'][$this->id] = $this->prefs;
-			// Deactivate this service if this is the last run
-			if ( $last ) unset( $bank['active'][$this->id] );
 
 			// Save new settings
 			update_option( 'mycred_pref_bank', $bank );
@@ -219,6 +215,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 						</li>
 						<li class="block">
+							<input type="hidden" name="<?php echo $this->field_name( 'last_payout' ); ?>" value="<?php echo $prefs['last_payout']; ?>" />
 							<span class="description"><?php _e( 'The interest rate can be either positive or negative and is compounded daily.', 'mycred' ); ?></span>
 						</li>
 					</ol>
@@ -250,15 +247,13 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 			$new_settings['rate']['amount'] = str_replace( ',', '.', trim( $post['rate']['amount'] ) );
 
-			if ( empty( $post['rate']['period'] ) )
-				$new_settings['rate']['period'] = $this->get_days_in_year();
-			else
-				$new_settings['rate']['period'] = abs( $post['rate']['period'] );
+			$new_settings['rate']['period'] = $this->get_days_in_year();
 
-			$new_settings['rate']['compound'] = sanitize_text_field( $post['rate']['compound'] );
 			$new_settings['rate']['pay_out'] = sanitize_text_field( $post['rate']['pay_out'] );
 
 			$new_settings['min_balance'] = str_replace( ',', '.', trim( $post['min_balance'] ) );
+			
+			$new_settings['last_payout'] = trim( $post['last_payout'] );
 
 			$new_settings['log'] = trim( $post['log'] );
 

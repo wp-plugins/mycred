@@ -194,7 +194,9 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 			$new_post['active'] = $post['active'];
 
 			if ( !empty( $installed ) ) {
+				// Loop though all installed
 				foreach ( $installed as $key => $data ) {
+					// Callback and settings are required
 					if ( isset( $data['callback'] ) && isset( $post['service_prefs'][$key] ) ) {
 						// Old settings
 						$old_settings = $post['service_prefs'][$key];
@@ -208,6 +210,17 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 						// Else we got ourselves new settings
 						else
 							$new_post['service_prefs'][$key] = $new_settings;
+						
+						// Handle de-activation
+						if ( isset( $this->active ) && !empty( $this->active ) ) {
+							foreach ( $this->active as $id ) {
+								// If a previously active id is no longer in the new active array call deactivate
+								if ( !in_array( $id, $new_post['active'] ) ) {
+									$this->call( 'deactivate', $data['callback'] );
+								}
+							}
+						}
+						// Next item
 					}
 				}
 			}

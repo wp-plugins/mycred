@@ -74,6 +74,10 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		function sanitise_preferences( $post ) {
 			return $post;
 		}
+		
+		function deactivate() {
+			
+		}
 
 		/**
 		 * Get Field Name
