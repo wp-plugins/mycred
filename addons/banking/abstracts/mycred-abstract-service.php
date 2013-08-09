@@ -180,8 +180,8 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 					return 'Q' . ceil( $month/3 );
 				}
 				elseif ( $rate == 'semiannually' ) {
-					$month = date_i18n( 'm' );
-					return ( $month <= 5 ) ? 'first' : 'second';
+					$month = date_i18n( 'n' );
+					return ( $month <= 6 ) ? 'first' : 'second';
 				}
 				else {
 					return date_i18n( $timeframes[ $rate ]['date_format'] );

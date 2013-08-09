@@ -169,7 +169,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					
 					<label class="subheader"><?php _e( 'Pay Users', 'mycred' ); ?></label>
 					<ol class="inline">
-						<li><pre><?php print_r( $this->get_last_run( $this->prefs['last_run'], $this->prefs['rate'] ) ); ?></pre></li>
 						<li>
 							<label><?php _e( 'Amount', 'mycred' ); ?></label>
 							<div class="h2"><?php if ( !empty( $this->core->before ) ) echo $this->core->before . ' '; ?><input type="text" name="<?php echo $this->field_name( 'amount' ); ?>" id="<?php echo $this->field_id( 'amount' ); ?>" value="<?php echo $this->core->format_number( $prefs['amount'] ); ?>" size="8" /><?php if ( !empty( $this->core->after ) ) echo ' ' . $this->core->after; ?></div>

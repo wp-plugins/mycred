@@ -70,7 +70,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 			// Schedule if none exist
 			if ( ! wp_next_scheduled( 'mycred_banking_interest_compound' ) ) {
-				wp_schedule_event( time(), 'hourly', 'mycred_banking_interest_compound' );
+				wp_schedule_event( time(), 'daily', 'mycred_banking_interest_compound' );
 			}
 
 			$unow = date_i18n( 'U' );
@@ -86,11 +86,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			else {
 				$last_payout = $this->get_last_run( $this->prefs['last_payout'], $this->prefs['rate']['pay_out'] );
 			}
-			if ( $payout_now === false || $last_payout == false ) return;
+			if ( $payout_now === false || $last_payout === false ) return;
 			
 			if ( $last_payout != $payout_now ) {
 				$this->save( 'last_payout', $unow );
-				if ( ! wp_next_scheduled( 'mycred_banking_interest_payout' ) )
+				if ( wp_next_scheduled( 'mycred_banking_interest_payout' ) === false )
 					wp_schedule_single_event( time(), 'mycred_banking_interest_payout' );
 			}
 		}
