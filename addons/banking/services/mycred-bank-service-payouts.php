@@ -108,7 +108,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 						'payout',
 						$user_id,
 						$this->prefs['amount'],
-						$this->prefs['log'] . ' $now: ' . $now . ' $last_run: ' . $last_run
+						$this->prefs['log']
 					);
 					
 					// Let others play
