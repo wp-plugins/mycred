@@ -165,6 +165,7 @@ See: http://mycred.me/download/changelog/2/
 * Fixed Bug #39 - If user object is not passed on when wp_login fires, the loggin_in() method fails.
 * Fixed Bug #40 – Adjusted Hooks for clicking on links to enforce limits once per user and not once per use.
 * Fixed Bug #41 - Only the initiator is awarded points when accepting new friendships in BuddyPress.
+* Fixed Bug #42 - Excluded users still see "My Points History" page in the Users menu.
 * Updated bbPress Support by adding the option to enforce a daily limit for topic replies and fav replies. Also added option to deduct points for forums, topics and replies getting deleted.
 * Added new shortcode mycred_video for awarding / deducting points for viewing YouTube videos.
 * Added Inline Editing of users myCRED points.
