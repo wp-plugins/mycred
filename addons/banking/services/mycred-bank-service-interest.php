@@ -211,7 +211,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'rate' => 'pay_out' ) ); ?>"><?php _e( 'Payed / Charged', 'mycred' ); ?></label><br />
-							<?php $this->timeframe_dropdown( array( 'rate' => 'pay_out' ), false ); ?>
+							<?php $this->timeframe_dropdown( array( 'rate' => 'pay_out' ), false, false ); ?>
 
 						</li>
 						<li class="block">

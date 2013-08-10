@@ -63,7 +63,7 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		 * @version 1.0
 		 */
 		function preferences() {
-			echo '<p>' . __( 'This Hook does no settings' ) . '</p>';
+			echo '<p>' . __( 'This Hook has no settings', 'mycred' ) . '</p>';
 		}
 
 		/**

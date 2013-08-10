@@ -63,7 +63,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		 * @version 1.0
 		 */
 		function preferences() {
-			echo '<p>' . __( 'This Service has no settings' ) . '</p>';
+			echo '<p>' . __( 'This Service has no settings', 'mycred' ) . '</p>';
 		}
 
 		/**
@@ -74,7 +74,12 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		function sanitise_preferences( $post ) {
 			return $post;
 		}
-		
+
+		/**
+		 * Deactivate
+		 * @since 1.2
+		 * @version 1.0
+		 */
 		function deactivate() {
 			
 		}
@@ -215,7 +220,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			else
 				return false;
 		}
-		
+
 		/**
 		 * Get User IDs
 		 * Returns all registered members user id with optional excludes.
@@ -235,7 +240,12 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			
 			return get_users( $args );
 		}
-		
+
+		/**
+		 * Get Days in Year
+		 * @since 1.2
+		 * @version 1.0
+		 */
 		public function get_days_in_year() {
 			if ( date_i18n( 'L' ) )
 				return 366;
@@ -248,9 +258,12 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		 * @since 1.2
 		 * @version 1.0
 		 */
-		function timeframe_dropdown( $pref_id = '', $use_select = true ) {
+		function timeframe_dropdown( $pref_id = '', $use_select = true, $hourly = true ) {
 			
 			$timeframes = $this->get_timeframes();
+			if ( !$hourly )
+				unset( $timeframes['hourly'] );
+			
 			echo '<select name="' . $this->field_name( $pref_id ) . '" id="' . $this->field_id( $pref_id ) . '">';
 			
 			if ( $use_select )

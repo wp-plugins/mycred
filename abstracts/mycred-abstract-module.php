@@ -39,7 +39,7 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		function __construct( $module_id = '', $args = array() ) {
 			// Module ID is required
 			if ( empty( $module_id ) )
-				wp_die( __( 'myCRED_Module() Error. A Module ID is required!', 'mycred' ) );
+				wp_die( 'myCRED_Module() Error. A Module ID is required!' );
 
 			$this->module_id = $module_id;
 			$this->core = mycred_get_settings();
