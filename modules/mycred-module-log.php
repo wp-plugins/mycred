@@ -58,9 +58,13 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Add "Creds History" to menu
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function my_history_menu() {
+			// Check if user should be excluded
+			if ( $this->core->exclude_user( get_current_user_id() ) ) return;
+
+			// Add Points History to Users menu
 			$page = add_users_page(
 				__( 'My History', 'mycred' ),
 				$this->core->template_tags_general( __( '%plural% History', 'mycred' ) ),
@@ -68,6 +72,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 				'mycred_my_history',
 				array( $this, 'my_history_page' )
 			);
+			// Load styles for this page
 			add_action( 'admin_print_styles-' . $page, array( $this, 'settings_header' ) );
 		}
 
