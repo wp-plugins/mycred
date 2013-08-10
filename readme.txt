@@ -176,7 +176,7 @@ See: http://mycred.me/download/changelog/2/
 * Added Support for Events Manager though the Gateway Add-on.
 * Added "Rank Basis" option for the Rank add-on. Ranks can not be assigned based on current points balance or a users total accumulated points.
 * Added Banking Add-on.
-* Added support for GA Star Rating.
+* Added support for GD Star Rating.
 * Added new templates for MarketPress Gateway Add-on. Now you can customise the message shown when users do not have enough points to pay or are not logged in. Also inserted a table on the payment gateway selection page to show users current balance, cost and balance after payment.
 
 = 1.1.2 =
