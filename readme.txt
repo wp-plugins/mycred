@@ -157,6 +157,7 @@ See: http://mycred.me/download/changelog/2/
 
 = 1.2.1 =
 * Fixed Bug #43 - Users are not sorted according to balance in WP admin.
+* Fixed Bug #44 - Incorrect settings are saved by Banking add-on causing Hooks to reset.
 
 = 1.2 =
 * Moved the has_entry() method from myCRED_Hook to myCRED Settings to allow use by other features then just hooks.

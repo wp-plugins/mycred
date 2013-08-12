@@ -18,7 +18,7 @@ require_once( myCRED_BANK_SERVICES_DIR . 'mycred-bank-service-interest.php' );
 require_once( myCRED_BANK_SERVICES_DIR . 'mycred-bank-service-payouts.php' );
 
 /**
- * myCRED_BuddyPress class
+ * myCRED_Banking class
  *
  * @since 0.1
  * @version 1.0
@@ -115,7 +115,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 			$services = apply_filters( 'mycred_setup_banking', $services );
 
 			if ( $save === true && $this->core->can_edit_plugin() ) {
-				update_option( 'mycred_pref_hooks', array(
+				update_option( 'mycred_pref_bank', array(
 					'active'        => $this->active,
 					'services'      => $services,
 					'service_prefs' => $this->service_prefs
