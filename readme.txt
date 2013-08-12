@@ -127,6 +127,9 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
+= 1.2.1 =
+See http://mycred.me/download/changelog/
+
 = 1.2 =
 See http://mycred.me/download/changelog/
 
