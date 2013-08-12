@@ -155,6 +155,9 @@ See: http://mycred.me/download/changelog/2/
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixed Bug #43 - Users are not sorted according to balance in WP admin.
+
 = 1.2 =
 * Moved the has_entry() method from myCRED_Hook to myCRED Settings to allow use by other features then just hooks.
 * Adjusted Hooks for clicking on links to enforce limits once per user and not once per use.

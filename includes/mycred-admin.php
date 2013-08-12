@@ -41,7 +41,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			
 			// Sortable Column
 			add_filter( 'manage_users_sortable_columns', array( $this, 'sortable_points_column' ) );
-			add_action( 'pre_get_posts',                 array( $this, 'sort_by_points' )         );
+			add_action( 'pre_user_query',                array( $this, 'sort_by_points' )         );
 			
 			// Inline Editing
 			add_action( 'wp_ajax_mycred-inline-edit-users-balance', array( $this, 'inline_edit_user_balance' ) );
@@ -143,17 +143,20 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Sort by Points
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sort_by_points( $query ) {
 			if ( !is_admin() ) return;
 			$screen = get_current_screen();
-			if ( $screen->id != 'users' || !isset( $query->orderby ) ) return;
+			if ( $screen->id != 'users' ) return;
 
 			$orderby = $query->get( 'orderby' );
-			if ( 'mycred' == $oderby ) {
-				$query->set( 'meta_key', $this->core->get_cred_id() );
-				$query->set( 'orderby', 'meta_value_num' );
+			if ( 'mycred' == $orderby ) {
+				global $wpdb;
+				$cred_id = $this->core->get_cred_id();
+				$order = $query->get( 'order' );
+				$query->query_from .= " LEFT JOIN {$wpdb->usermeta} ON ({$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->usermeta}.meta_key = '$cred_id')";
+				$query->query_orderby = "ORDER BY {$wpdb->usermeta}.meta_value+0 $order ";
 			}
 		}
 
