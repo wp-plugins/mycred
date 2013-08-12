@@ -14,7 +14,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.0.5
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
+if ( !class_exists( 'myCRED_Hook_Jetpack' ) && defined( 'JETPACK__PLUGIN_DIR' ) ) {
 	class myCRED_Hook_Jetpack extends myCRED_Hook {
 
 		/**
@@ -334,9 +334,9 @@ if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
 		protected function check_jetpack_subscription( $email = NULL, $post_ids = NULL ) {
 			if ( $email === NULL ) return 'missing';
 			
-			if ( !class_exists( 'Jetpack' ) )
+			if ( !class_exists( 'Jetpack' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
 				require_once( JETPACK__PLUGIN_DIR . 'jetpack.php' );
-			if ( !class_exists( 'Jetpack_Subscriptions' ) )
+			if ( !class_exists( 'Jetpack_Subscriptions' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
 				require_once( JETPACK__PLUGIN_DIR . 'modules/subscriptions.php' );
 			
 			if ( $post_ids === NULL )
