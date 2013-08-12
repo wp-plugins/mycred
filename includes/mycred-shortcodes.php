@@ -1,0 +1,370 @@
+<?php
+if ( !defined( 'myCRED_VERSION' ) ) exit;
+/**
+ * myCRED Shortcode: my_balance
+ * Returns the current users balance.
+ * @see http://mycred.me/shortcodes/mycred_my_balance/
+ * @since 1.0.9
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
+	function mycred_render_shortcode_my_balance( $atts, $content = NULL )
+	{
+		extract( shortcode_atts( array(
+			'login'      => NULL,
+			'title'      => '',
+			'title_el'   => 'h1',
+			'balance_el' => 'div',
+			'type'       => ''
+		), $atts ) );
+
+		// Not logged in
+		if ( !is_user_logged_in() ) {
+			if ( $login != NULL )
+				return '<div class="mycred-not-logged-in">' . $login . '</div>';
+
+			return;
+		}
+
+		$user_id = get_current_user_id();
+		$mycred = mycred_get_settings();
+		if ( $mycred->exclude_user( $user_id ) ) return;
+
+		if ( !empty( $type ) )
+			$mycred->cred_id = $type;
+	
+		$output = '<div class="mycred-my-balance-wrapper">';
+
+		// Title
+		if ( !empty( $title ) ) {
+			$output .= '<' . $title_el . '>' . $title . '</' . $title_el . '>';
+		}
+
+		// Balance
+		$balance = $mycred->get_users_cred( $user_id );
+		$output .= '<' . $balance_el . '>' . $mycred->format_creds( $balance ) . '</' . $balance_el . '>';
+		$output .= '</div>';
+
+		return $output;
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_leaderboard
+ * @since 0.1
+ * @version 1.2
+ */
+if ( !function_exists( 'mycred_render_leaderboard' ) ) {
+	function mycred_render_leaderboard( $atts, $content = NULL )
+	{
+		$attr = shortcode_atts( array(
+			'number'   => '-1',
+			'order'    => 'DESC',
+			'offset'   => 0,
+			'type'     => 'mycred_default',
+			'wrap'     => 'li',
+			'template' => '#%ranking% %user_profile_link% %cred_f%',
+			'nothing'  => __( 'Leaderboard is empty.', 'mycred' )
+		), $atts );
+		
+		// Template can also be passed though the content
+		if ( empty( $attr['template'] ) || $content !== NULL )
+			$attr['template'] = do_shortcode( $content );
+		
+		$_attr = $attr;
+		$_attr['user_fields'] = 'user_login,display_name,user_email,user_nicename,user_url';
+		unset( $_attr['wrap'] );
+		unset( $_attr['nothing'] );
+		$rankings = mycred_rankings( $_attr );
+
+		// Have results
+		if ( $rankings->have_results() ) {
+			// Default organized list
+			if ( $attr['wrap'] == 'li' )
+				return $rankings->get_leaderboard();
+			// Just the loop for custom header and footer
+			else
+				return $rankings->loop( $attr['wrap'] );
+		}
+
+		// No result template is set
+		if ( !empty( $attr['nothing'] ) )
+			return '<p class="mycred-leaderboard-none">' . $attr['nothing'] . '</p>';
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_my_ranking
+ * @since 0.1
+ * @version 1.1
+ */
+if ( !function_exists( 'mycred_render_my_ranking' ) ) {
+	function mycred_render_my_ranking( $atts, $content )
+	{
+		extract( shortcode_atts( array(
+			'user_id'  => NULL
+		), $atts ) );
+		
+		// If no id is given
+		if ( $user_id === NULL ) {
+			// Current user must be logged in for this shortcode to work
+			if ( !is_user_logged_in() ) return;
+			// Get current user id
+			$user_id = get_current_user_id();
+		}
+		
+		return mycred_rankings_position( $user_id );
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_give
+ * This shortcode allows you to award or deduct points from the current user
+ * when this shortcode is executed. You can insert this in page/post content
+ * or in a template file. Note that users are awarded/deducted points each time
+ * this shortcode exectutes!
+ * @see 
+ * @since 1.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
+	function mycred_render_shortcode_give( $atts, $content )
+	{
+		if ( !is_user_logged_in() ) return;
+
+		extract( shortcode_atts( array(
+			'amount' => NULL,
+			'log'    => '',
+			'ref'    => 'gift',
+			'limit'  => 0,
+			'type'   => 'mycred_default'
+		), $atts ) );
+		
+		if ( $amount === NULL )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
+
+		if ( empty( $log ) )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
+		
+		$mycred = mycred_get_settings();
+		$user_id = get_current_user_id();
+		
+		// Check for exclusion
+		if ( $mycred->exclude_user( $user_id ) ) return;
+
+		// Limit
+		$limit = abs( $limit );
+		if ( $limit != 0 && mycred_count_ref_instances( $ref, $user_id ) >= $limit ) return;
+
+		$amount = $mycred->number( $amount );
+		$mycred->add_creds(
+			$ref,
+			$user_id,
+			$amount,
+			$log,
+			'',
+			'',
+			$type
+		);
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_link
+ * This shortcode allows you to award or deduct points from the current user
+ * when their click on a link. The shortcode will generate an anchor element
+ * and call the mycred-click-link jQuery script which will award the points.
+ *
+ * Note! Only HTML5 anchor attributes are supported and this shortcode is only
+ * available if the hook is enabled!
+ *
+ * @see http://mycred.me/shortcodes/mycred_link/
+ * @since 1.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
+	function mycred_render_shortcode_link( $atts, $content )
+	{
+		global $mycred_link_points;
+		
+		$atts = shortcode_atts( array(
+			'id'       => '',
+			'rel'      => '',
+			'class'    => '',
+			'href'     => '',
+			'title'    => '',
+			'target'   => '',
+			'style'    => '',
+			'amount'   => 0,
+			'hreflang' => '',   // for advanced users
+			'media'    => '',   // for advanced users
+			'type'     => ''    // for advanced users
+		), $atts );
+
+		// HREF is required
+		if ( empty( $atts['href'] ) )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Anchor missing URL!', 'mycred' );
+
+		// All links must contain the 'mycred-points-link' class
+		if ( empty( $atts['class'] ) )
+			$atts['class'] = 'mycred-points-link';
+		else
+			$atts['class'] = 'mycred-points-link ' . $atts['class'];
+
+		// Construct anchor attributes
+		$attr = array();
+		foreach ( $atts as $attribute => $value ) {
+			if ( !empty( $value ) && $attribute != 'amount' ) {
+				$attr[] = $attribute . '="' . $value . '"';
+			}
+		}
+		// Add amount
+		$attr[] = 'data-amount="' . $atts['amount'] . '"';
+
+		// Make sure jQuery script is called
+		$mycred_link_points = true;
+
+		// Return result
+		return '<a ' . implode( ' ', $attr ) . '>' . $content . '</a>';
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_send
+ * This shortcode allows the current user to send a pre-set amount of points
+ * to a pre-set user. A simpler version of the mycred_transfer shortcode.
+ * @see 
+ * @since 1.1
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
+	function mycred_render_shortcode_send( $atts, $content )
+	{
+		if ( !is_user_logged_in() ) return;
+
+		extract( shortcode_atts( array(
+			'amount' => NULL,
+			'to'     => NULL,
+			'log'    => '',
+			'ref'    => 'gift',
+			'type'   => 'mycred_default'
+		), $atts ) );
+		
+		// Amount is required
+		if ( $amount === NULL )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
+
+		// Recipient is required
+		if ( empty( $to ) )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'User ID missing for recipient.', 'mycred' );
+		
+		// Log template is required
+		if ( empty( $log ) )
+			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
+		
+		if ( $to == 'author' ) {
+			// You can not use this outside the loop
+			$author = get_the_author_meta( 'ID' );
+			if ( empty( $author ) ) $author = $GLOBALS['post']->post_author;
+			$to = $author;
+		}
+		
+		global $mycred_sending_points;
+		
+		$mycred = mycred_get_settings();
+		$user_id = get_current_user_id();
+		
+		// Make sure current user or recipient is not excluded!
+		if ( $mycred->exclude_user( $to ) || $mycred->exclude_user( $user_id ) ) return;
+		
+		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
+		$balance = $mycred->get_users_cred( $user_id );
+		$amount = $mycred->number( $amount );
+		
+		// Insufficient Funds	
+		if ( $balance-$amount < $account_limit ) return;
+		
+		// We are ready!
+		$mycred_sending_points = true;
+
+		return '<input type="button" class="mycred-send-points-button" data-to="' . $to . '" data-ref="' . $ref . '" data-log="' . $log . '" data-amount="' . $amount . '" data-type="' . $type . '" value="' . $mycred->template_tags_general( $content ) . '" />';
+	}
+}
+
+/**
+ * myCRED Shortcode: mycred_video
+ * This shortcode allows points to be given to the current user
+ * for watchinga YouTube video.
+ * @see http://mycred.me/shortcodes/mycred_video/
+ * @since 1.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_video' ) ) {
+	function mycred_render_shortcode_video( $atts, $content )
+	{
+		global $mycred_video_points;
+
+		extract( shortcode_atts( array(
+			'id'     => NULL,
+			'width'  => 0,
+			'height' => 0,
+			'amount' => 'def',
+			'logic'  => 'def',
+			'interval' => 'def'
+		), $atts ) );
+
+		// ID is required
+		if ( $id === NULL ) return __( 'A video ID is required for this shortcode', 'mycred' );
+
+		// Width
+		if ( $width == 0 )
+			$width = 560;
+
+		// Height
+		if ( $height == 0 )
+			$height = 315;
+
+		// Prep Interval by converting it to Miliseconds
+		if ( $interval != 'def' )
+			$interval = $interval*1000;
+
+		// Video ID
+		$video_id = str_replace( '-', '__', $id );
+		
+		// Construct YouTube Query
+		$query = apply_filters( 'mycred_video_query', array(
+			'enablejsapi' => 1,
+			'version'     => 3,
+			'playerapiid' => $video_id,
+			'rel'         => 0,
+			'controls'    => 1,
+			'showinfo'    => 0
+		), $atts, $video_id );
+		
+		// Construct Youtube Query Address
+		$url = 'http://www.youtube.com/v/' . $id;
+		$url = add_query_arg( $query, $url );
+		
+		// Construct Flash Embed
+		$embed_args = apply_filters( 'mycred_video_embed_args', array(
+			'"' . $url . '"', '"' . $video_id . '"', '"' . $width . '"', '"' . $height . '"', '"9.0.0"', 'null', 'null', '{ allowScriptAccess: "always", wmode: "transparent" }', 'null'
+		), $atts );
+
+		// Output
+		return apply_filters( 'mycred_video_output', '
+<div class="mycred-video-wrapper">
+<script type="text/javascript">
+swfobject.embedSWF(' . implode( ', ', $embed_args ) . ');
+</script>
+	<div id="' . $video_id . '_container">
+		<div id="' . $video_id . '"></div>
+	</div>
+<script type="text/javascript">
+function mycred_video_' . $video_id . '(state) {
+	mycred_youtube_state( "' . $video_id . '", state, "' . $amount . '", "' . $logic . '", "' . $interval . '" );
+}
+</script>
+</div>' . "\n", $atts, $embed_args, $video_id );
+	}
+}
+?>
