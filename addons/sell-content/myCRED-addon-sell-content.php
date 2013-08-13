@@ -278,9 +278,9 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		/**
 		 * Settings Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function after_general_settings( $all ) {
+		public function after_general_settings() {
 			$sell_content = $this->sell_content;
 			if ( !isset( $sell_content['defaults']['expire'] ) )
 				$sell_content['defaults']['expire'] = 0;
