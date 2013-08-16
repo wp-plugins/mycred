@@ -645,7 +645,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		/**
 		 * Install Database
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		protected function install_database( $decimals = 0 ) {
 			// If DB is already installed bail pretending that everything is fine
@@ -681,7 +681,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 
 			// Insert table
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " ) DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci;" );
+			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " );" );
 			add_option( 'mycred_version_db', '1.0', '', 'no' );
 			return true;
 		}
