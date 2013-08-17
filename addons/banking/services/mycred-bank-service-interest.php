@@ -105,9 +105,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		public function do_compound() {
 			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
 			// Get users
-			$users = $this->get_user_ids();
+			$users = $this->get_users();
 			if ( !empty( $users ) ) {
 				foreach ( $users as $user_id ) {
+					$user_id = intval( $user_id );
 					// Current balance
 					$balance = $this->core->get_users_cred( $user_id );
 					if ( $balance == 0 ) continue;
@@ -143,13 +144,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Runs though all user compounded interest and pays. Will un-schedule it self
 		 * once completed.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function do_payouts() {
 			// Get users
-			$users = $this->get_user_ids();
+			$users = $this->get_users();
 			if ( !empty( $users ) ) {
-				$users = array_unique( $users );
 				foreach ( $users as $user_id ) {
 					// Get past interest
 					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
@@ -158,7 +158,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					// Pay / Charge
 					$this->core->add_creds(
 						'payout',
-						$user_id,
+						intval( $user_id ),
 						$past_interest,
 						$this->prefs['log']
 					);
@@ -261,5 +261,4 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		}
 	}
 }
-
 ?>

@@ -222,23 +222,38 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		}
 
 		/**
-		 * Get User IDs
-		 * Returns all registered members user id with optional excludes.
+		 * Get Users
+		 * Returns all blog users IDs either from a daily transient or
+		 * by making a fresh SQL Query.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function get_user_ids( $exclude = '' ) {
-			$args = array();
-			$args['fields'] = 'ID';
+		public function get_users() {
+			global $wpdb;
 			
-			$excludes = $this->core->exclude['list'];
-			if ( !empty( $exclude ) )
-				$excludes .= $exclude;
-
-			if ( !empty( $excludes ) )
-				$args['exclude'] = explode( ',', $excludes );
+			// Get daily transient 
+			$data = get_transient( 'mycred_banking_payout_ids' );
 			
-			return get_users( $args );
+			// If the user count does not equal the total number of users, get a
+			// new result, else run the same.
+			if ( $data !== false ) {
+				$user_count = $this->core->count_members();
+				$cached_count = count( $data );
+				if ( $cached_count != $user_count ) {
+					unset( $data );
+					$data = false;
+					$wpdb->flush();
+				}
+			}
+			
+			// New Query
+			if ( $data === false ) {
+				$data = $wpdb->get_col( "SELECT ID FROM {$wpdb->users};" );
+				set_transient( 'mycred_banking_payout_ids', $user_ids, DAY_IN_SECONDS );
+				$wpdb->flush();
+			}
+			
+			return $data;
 		}
 
 		/**

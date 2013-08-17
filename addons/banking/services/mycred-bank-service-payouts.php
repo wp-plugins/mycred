@@ -97,16 +97,21 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 */
 		public function do_payouts() {
 			// Query
-			$users = $this->get_user_ids( $this->prefs['excludes'] );
-			$now = $this->get_now( $this->prefs['rate'] );
-			$last_run = $this->get_last_run( $this->prefs['last_run'], $this->prefs['rate'] );
+			$users = $this->get_users();
 			if ( !empty( $users ) ) {
-				$users = array_unique( $users );
 				foreach( $users as $user_id ) {
+					// Handle excludes
+					if ( !empty( $this->prefs['excludes'] ) ) {
+						if ( !is_array( $this->prefs['excludes'] ) )
+							$excludes = explode( ',', $this->prefs['excludes'] );
+
+						if ( in_array( $user_id, $excludes ) ) continue;
+					}
+										
 					// Add / Deduct points
 					$this->core->add_creds(
 						'payout',
-						$user_id,
+						intval( $user_id ),
 						$this->prefs['amount'],
 						$this->prefs['log']
 					);
