@@ -164,25 +164,29 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Setup Navigation
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function setup_nav() {
-			if ( !is_user_logged_in() ) return;
 			global $bp;
 			
 			$user_id = bp_displayed_user_id();
-			$current = get_current_user_id();
 			
 			// User is excluded
 			if ( $this->core->exclude_user( $user_id ) ) return;
 			
-			// Admins alway see points history
-			if ( !$this->core->can_edit_plugin() ) {
-				// If history is not shown in profile
-				if ( $this->buddypress['history_location'] != 'top' ) return;
+			if ( is_user_logged_in() ) {
+				$current = get_current_user_id();
+				// Admins alway see points history
+				if ( !$this->core->can_edit_plugin() ) {
+					// If history is not shown in profile
+					if ( $this->buddypress['history_location'] != 'top' ) return;
 				
-				// Allow users to see each others history?
-				if ( !$this->buddypress['visibility']['history'] && $user_id != $current ) return;
+					// Allow users to see each others history?
+					if ( !$this->buddypress['visibility']['history'] && $user_id != $current ) return;
+				}
+			}
+			else {
+				if ( !$this->buddypress['visibility']['history'] ) return;
 			}
 			
 			// Settings for bp menu
@@ -213,7 +217,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			) );
 			// "All" is default
 			bp_core_new_subnav_item( array(
-				'name'                    => 'All',
+				'name'                    => __( 'All', 'mycred' ),
 				'slug'                    => $this->buddypress['history_url'],
 				'parent_url'              => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
 				'parent_slug'             => $this->buddypress['history_url'],
