@@ -107,13 +107,12 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		 * Count Records
 		 * Returns the total number of rows from log
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function count_records() {
 			global $wpdb;
 
-			$sql = "SELECT COUNT(*) AS %s FROM " . $wpdb->prefix . 'myCRED_log' . " ";
-			return $wpdb->get_var( $wpdb->prepare( $sql, 'records' ) );
+			return $wpdb->get_var( "SELECT COUNT(*) AS %s FROM " . $wpdb->prefix . 'myCRED_log' . ";" );
 		}
 
 		/**
@@ -583,7 +582,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
  * Query Log
  * @see http://mycred.me/classes/mycred_query_log/ 
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Query_Log' ) ) {
 	class myCRED_Query_Log {
@@ -614,7 +613,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				$format = '%d';
 
 			// Prep Defaults
-			$this->args = wp_parse_args( $args, array(
+			$defaults = array(
 				'user_id'  => NULL,
 				'ctype'    => $this->core->get_cred_id(),
 				'number'   => 25,
@@ -625,142 +624,171 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				's'        => NULL,
 				'orderby'  => 'time',
 				'order'    => 'DESC',
-				'ids'      => false
-			) );
+				'ids'      => false,
+				'cache'    => NULL
+			);
+			$this->args = shortcode_atts( $defaults, $args );
 
-			// Prep return
-			if ( $this->args['ids'] === true )
-				$select = 'SELECT id';
-			else
-				$select = 'SELECT *';
-
-			$wheres[] = 'ctype = %s';
-			$prep[] = $this->args['ctype'];
-
-			// User ID
-			if ( $this->args['user_id'] !== NULL ) {
-				$wheres[] = 'user_id = %d';
-				$prep[] = abs( $this->args['user_id'] );
+			$data = false;
+			if ( $this->args['cache'] !== NULL ) {
+				$cache_id = substr( $this->args['cache'], 0, 23 );
+				if ( is_multisite() )
+					$data = get_site_transient( 'mycred_log_query_' . $cache_id );
+				else
+					$data = get_transient( 'mycred_log_query_' . $cache_id );
 			}
+			if ( $data === false ) {
+				// Prep return
+				if ( $this->args['ids'] === true )
+					$select = 'SELECT id';
+				else
+					$select = 'SELECT *';
 
-			// Reference
-			if ( $this->args['ref'] !== NULL ) {
-				$wheres[] = 'ref = %s';
-				$prep[] = sanitize_text_field( $this->args['ref'] );
-			}
+				$wheres[] = 'ctype = %s';
+				$prep[] = $this->args['ctype'];
 
-			// Reference ID
-			if ( $this->args['ref_id'] !== NULL ) {
-				$wheres[] = 'ref_id = %d';
-				$prep[] = sanitize_text_field( $this->args['ref_id'] );
-			}
+				// User ID
+				if ( $this->args['user_id'] !== NULL ) {
+					$wheres[] = 'user_id = %d';
+					$prep[] = abs( $this->args['user_id'] );
+				}
 
-			// Amount
-			if ( $this->args['amount'] !== NULL ) {
-				// Range
-				if ( is_array( $this->args['amount'] ) && array_key_exists( 'start', $this->args['amount'] ) && array_key_exists( 'end', $this->args['amount'] ) ) {
-					$wheres[] = 'creds BETWEEN ' . $format . ' AND ' . $format;
-					$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['start'] ) );
-					$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['end'] ) );
+				// Reference
+				if ( $this->args['ref'] !== NULL ) {
+					$wheres[] = 'ref = %s';
+					$prep[] = sanitize_text_field( $this->args['ref'] );
 				}
-				// Compare
-				elseif ( is_array( $this->args['amount'] ) && array_key_exists( 'num', $this->args['amount'] ) && array_key_exists( 'compare', $this->args['amount'] ) ) {
-					$wheres[] = 'creds' . sanitize_text_field( $this->args['amount']['compare'] ) . ' ' . $format;
-					$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['num'] ) );
-				}
-				// Specific amount
-				else {
-					$wheres[] = 'creds = ' . $format;
-					$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount'] ) );
-				}
-			}
 
-			// Time
-			if ( $this->args['time'] !== NULL ) {
-				$today = strtotime( date_i18n( 'Y/m/d' ) );
-				$todays_date = date_i18n( 'd' );
-				$tomorrow = strtotime( date_i18n( 'Y/m/d', date_i18n( 'U' )+86400 ) );
-				$now = date_i18n( 'U' );
+				// Reference ID
+				if ( $this->args['ref_id'] !== NULL ) {
+					$wheres[] = 'ref_id = %d';
+					$prep[] = sanitize_text_field( $this->args['ref_id'] );
+				}
 
-				// Show todays entries
-				if ( $this->args['time'] == 'today' ) {
-					$wheres[] = "time BETWEEN $today AND $now";
+				// Amount
+				if ( $this->args['amount'] !== NULL ) {
+					// Range
+					if ( is_array( $this->args['amount'] ) && array_key_exists( 'start', $this->args['amount'] ) && array_key_exists( 'end', $this->args['amount'] ) ) {
+						$wheres[] = 'creds BETWEEN ' . $format . ' AND ' . $format;
+						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['start'] ) );
+						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['end'] ) );
+					}
+					// Compare
+					elseif ( is_array( $this->args['amount'] ) && array_key_exists( 'num', $this->args['amount'] ) && array_key_exists( 'compare', $this->args['amount'] ) ) {
+						$wheres[] = 'creds' . sanitize_text_field( $this->args['amount']['compare'] ) . ' ' . $format;
+						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['num'] ) );
+					}
+					// Specific amount
+					else {
+						$wheres[] = 'creds = ' . $format;
+						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount'] ) );
+					}
 				}
-				// Show yesterdays entries
-				elseif ( $this->args['time'] == 'yesterday' ) {
-					$yesterday = strtotime( date_i18n( 'Y/m/d', date_i18n( 'U' )-86400 ) );
-					$wheres[] = "time BETWEEN $yesterday AND $today";
-				}
-				// Show this weeks entries
-				elseif ( $this->args['time'] == 'thisweek' ) {
-					$start_of_week = get_option( 'start_of_week' );
-					$weekday = date_i18n( 'w' );
-					// New week started today so show only todays
-					if ( $start_of_week == $weekday ) {
+
+				// Time
+				if ( $this->args['time'] !== NULL ) {
+					$today = strtotime( date_i18n( 'Y/m/d' ) );
+					$todays_date = date_i18n( 'd' );
+					$tomorrow = strtotime( date_i18n( 'Y/m/d', date_i18n( 'U' )+86400 ) );
+					$now = date_i18n( 'U' );
+
+					// Show todays entries
+					if ( $this->args['time'] == 'today' ) {
 						$wheres[] = "time BETWEEN $today AND $now";
 					}
-					// Show rest of this week
-					else {
-						$no_days_since_start_of_week = $weekday-$start_of_week;
-						$weekstart = $no_days_since_start_of_week*86400;
-						$weekstart = $today-$weekstart;
-						$wheres[] = "time BETWEEN $weekstart AND $now";
+					// Show yesterdays entries
+					elseif ( $this->args['time'] == 'yesterday' ) {
+						$yesterday = strtotime( date_i18n( 'Y/m/d', date_i18n( 'U' )-86400 ) );
+						$wheres[] = "time BETWEEN $yesterday AND $today";
+					}
+					// Show this weeks entries
+					elseif ( $this->args['time'] == 'thisweek' ) {
+						$start_of_week = get_option( 'start_of_week' );
+						$weekday = date_i18n( 'w' );
+						// New week started today so show only todays
+						if ( $start_of_week == $weekday ) {
+							$wheres[] = "time BETWEEN $today AND $now";
+						}
+						// Show rest of this week
+						else {
+							$no_days_since_start_of_week = $weekday-$start_of_week;
+							$weekstart = $no_days_since_start_of_week*86400;
+							$weekstart = $today-$weekstart;
+							$wheres[] = "time BETWEEN $weekstart AND $now";
+						}
+					}
+					// Show this months entries
+					elseif ( $this->args['time'] == 'thismonth' ) {
+						$start_of_month = strtotime( date_i18n( 'Y/m/01' ) );
+						$wheres[] = "time BETWEEN $start_of_month AND $now";
 					}
 				}
-				// Show this months entries
-				elseif ( $this->args['time'] == 'thismonth' ) {
-					$start_of_month = strtotime( date_i18n( 'Y/m/01' ) );
-					$wheres[] = "time BETWEEN $start_of_month AND $now";
-				}
-			}
 
-			// Search
-			if ( $this->args['s'] !== NULL ) {
-				$search_query = sanitize_text_field( $this->args['s'] );
-				if ( is_int( $search_query ) )
+				// Search
+				if ( $this->args['s'] !== NULL ) {
+					$search_query = sanitize_text_field( $this->args['s'] );
+					if ( is_int( $search_query ) )
 					$search_query = (string) $search_query;
 
-				if ( $this->args['user_id'] !== NULL ) {
-					$user_id = $this->args['user_id'];
-					$wheres[] = "entry LIKE '%$search_query%' OR user_id = $user_id AND data LIKE '%$search_query%' OR user_id = $user_id AND ref LIKE '%$search_query%'";
+					if ( $this->args['user_id'] !== NULL ) {
+						$user_id = $this->args['user_id'];
+						$wheres[] = "entry LIKE '%$search_query%' OR user_id = $user_id AND data LIKE '%$search_query%' OR user_id = $user_id AND ref LIKE '%$search_query%'";
+					}
+					else
+						$wheres[] = "entry LIKE '%$search_query%' OR data LIKE '%$search_query%' OR ref LIKE '%$search_query%'";
 				}
-				else
-					$wheres[] = "entry LIKE '%$search_query%' OR data LIKE '%$search_query%' OR ref LIKE '%$search_query%'";
+
+				// Order by
+				if ( !empty( $this->args['orderby'] ) ) {
+					// Make sure $sortby is valid
+					$sortbys = array( 'id', 'ref', 'ref_id', 'user_id', 'creds', 'ctype', 'entry', 'data', 'time' );
+					$allowed = apply_filters( 'mycred_allowed_sortby', $sortbys );
+					if ( in_array( $this->args['orderby'], $allowed ) ) {
+						$sortby = "ORDER BY " . $this->args['orderby'] . " " . $this->args['order'];
+					}
+				}
+
+				// Limits
+				if ( $this->args['number'] == '-1' )
+					$limits = '';
+				elseif ( $this->args['number'] > 1 )
+					$limits = 'LIMIT 0,' . absint( $this->args['number'] );
+
+				// Filter
+				$select = apply_filters( 'mycred_query_log_select', $select, $this->args, $this->core );
+				$sortby = apply_filters( 'mycred_query_log_sortby', $sortby, $this->args, $this->core );
+				$limits = apply_filters( 'mycred_query_log_limits', $limits, $this->args, $this->core );
+				$wheres = apply_filters( 'mycred_query_log_wheres', $wheres, $this->args, $this->core );
+
+				$prep = apply_filters( 'mycred_query_log_prep', $prep, $this->args, $this->core );
+
+				$where = 'WHERE ' . implode( ' AND ', $wheres );
+
+				// Run
+				$this->request = "$select FROM " . $wpdb->prefix . 'myCRED_log' . " $where $sortby $limits";
+				$this->results = $wpdb->get_results( $wpdb->prepare( $this->request, $prep ) );
+				$this->prep = $prep;
+
+				if ( $this->args['cache'] !== NULL ) {
+					if ( is_multisite() )
+						set_site_transient( 'mycred_log_query_' . $cache_id, $this->results, DAY_IN_SECONDS * 1 );
+					else
+						set_transient( 'mycred_log_query_' . $cache_id, $this->results, DAY_IN_SECONDS * 1 );
+				}
+
+				// Counts
+				$this->num_rows = $wpdb->num_rows;
 			}
 
-			// Order by
-			if ( !empty( $this->args['orderby'] ) ) {
-				// Make sure $sortby is valid
-				$sortbys = array( 'id', 'ref', 'ref_id', 'user_id', 'creds', 'ctype', 'entry', 'data', 'time' );
-				$allowed = apply_filters( 'mycred_allowed_sortby', $sortbys );
-				if ( in_array( $this->args['orderby'], $allowed ) ) {
-					$sortby = "ORDER BY " . $this->args['orderby'] . " " . $this->args['order'];
-				}
+			// Return the transient
+			else {
+				$this->request = 'transient';
+				$this->results = $data;
+				$this->prep = '';
+				
+				$this->num_rows = count( $data );
 			}
 
-			// Limits
-			if ( $this->args['number'] == '-1' )
-				$limits = '';
-			elseif ( $this->args['number'] > 1 )
-				$limits = 'LIMIT 0,' . absint( $this->args['number'] );
-
-			// Filter
-			$select = apply_filters( 'mycred_query_log_select', $select, $this->args, $this->core );
-			$sortby = apply_filters( 'mycred_query_log_sortby', $sortby, $this->args, $this->core );
-			$limits = apply_filters( 'mycred_query_log_limits', $limits, $this->args, $this->core );
-			$wheres = apply_filters( 'mycred_query_log_wheres', $wheres, $this->args, $this->core );
-
-			$prep = apply_filters( 'mycred_query_log_prep', $prep, $this->args, $this->core );
-
-			$where = 'WHERE ' . implode( ' AND ', $wheres );
-
-			// Run
-			$this->request = "$select FROM " . $wpdb->prefix . 'myCRED_log' . " $where $sortby $limits";
-			$this->results = $wpdb->get_results( $wpdb->prepare( $this->request, $prep ) );
-			$this->prep = $prep;
-
-			// Counts
-			$this->num_rows = $wpdb->num_rows;
 			$this->headers = $this->table_headers();
 		}
 
