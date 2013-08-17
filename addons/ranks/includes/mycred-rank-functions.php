@@ -5,15 +5,21 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Checks if there are any registered rank.
  * @returns (bool) true or false
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'have_ranks' ) ) {
 	function mycred_have_ranks() {
-		global $wpdb;
+		
 
-		$sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s";
-		$search = $wpdb->get_var( $wpdb->prepare( $sql, 'mycred_rank' ) );
-		if ( $search > 0 ) return true;
+		$data = get_transient( 'mycred_ranks' );
+		
+		if ( $data === false ) {
+			global $wpdb;
+			$data = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'mycred_rank';" );
+			set_transient( 'mycred_ranks', $data, DAY_IN_SECONDS * 7 );
+		}
+
+		if ( $data > 0 ) return true;
 		return false;
 	}
 }

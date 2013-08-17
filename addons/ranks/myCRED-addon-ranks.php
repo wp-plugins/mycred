@@ -267,7 +267,7 @@ GROUP BY
 		 * Publishing Content
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function post_status_change( $new_status, $old_status, $post ) {
 			// Only ranks please
@@ -283,6 +283,9 @@ GROUP BY
 			elseif ( $old_status == 'publish' && $new_status == 'trash' ) {
 				$this->assign_ranks();
 			}
+			
+			// Delete transient
+			delete_transient( 'mycred_ranks' );
 		}
 
 		/**
