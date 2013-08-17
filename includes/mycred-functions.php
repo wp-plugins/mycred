@@ -259,11 +259,13 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$content = str_replace( '%logout_url_here%', wp_logout_url( get_permalink() ), $content );
 			
 			// Blog Related
-			$content = str_replace( '%num_members%',     $this->count_members(), $content );
-			$content = str_replace( '%blog_name%',       get_bloginfo( 'name' ), $content );
-			$content = str_replace( '%blog_url%',        get_bloginfo( 'url' ), $content );
-			$content = str_replace( '%blog_info%',       get_bloginfo( 'description' ), $content );
-			$content = str_replace( '%admin_email%',     get_bloginfo( 'admin_email' ), $content );
+			if ( preg_match( '%(num_members|blog_name|blog_url|blog_info|admin_email)%', $content, $matches ) ) {
+				$content = str_replace( '%num_members%',     $this->count_members(), $content );
+				$content = str_replace( '%blog_name%',       get_bloginfo( 'name' ), $content );
+				$content = str_replace( '%blog_url%',        get_bloginfo( 'url' ), $content );
+				$content = str_replace( '%blog_info%',       get_bloginfo( 'description' ), $content );
+				$content = str_replace( '%admin_email%',     get_bloginfo( 'admin_email' ), $content );
+			}
 
 			//$content = str_replace( '', , $content );
 			return $content;
@@ -573,7 +575,6 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @version 1.0
 		 */
 		public function in_exclude_list( $user_id = '' ) {
-
 			// Grab current user id
 			if ( empty( $user_id ) )
 				$user_id = get_current_user_id();
@@ -631,7 +632,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 */
 		public function count_members() {
 			global $wpdb;
-			return $wpdb->get_var( "SELECT COUNT(ID) FROM $wpdb->users" );
+			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->users};" );
 		}
 
 		/**
@@ -1130,7 +1131,7 @@ if ( !function_exists( 'mycred_subtract' ) ) {
  * @param $user_id (int) option to check references for a specific user
  * @uses get_var()
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 	function mycred_count_ref_instances( $reference = '', $user_id = NULL )
@@ -1139,15 +1140,15 @@ if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 
 		global $wpdb;
 
+		$sql = "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s";
+		$prep = array( $reference );
+		
 		if ( $user_id !== NULL ) {
-			return $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d",
-				$reference,
-				$user_id
-			) );
+			$sql .= " AND user_id = %d";
+			$prep[] = $user_id;
 		}
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s", $reference ) );
+		return $wpdb->get_var( $wpdb->prepare( $sql, $prep ) );
 	}
 }
 
