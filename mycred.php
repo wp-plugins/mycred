@@ -158,9 +158,14 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Runs when the plugin is deactivated
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function deactivate_mycred() {
+			// Clear Cron
+			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
+			wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
+
 			do_action( 'mycred_deactivation' );
 		}
 
