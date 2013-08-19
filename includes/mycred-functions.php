@@ -237,7 +237,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * General Template Tags
 		 * Replaces the general template tags in a given string.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function template_tags_general( $content = '' ) {
 			$content = apply_filters( 'mycred_parse_tags_general', $content );
@@ -275,9 +275,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * Amount Template Tags
 		 * Replaces the amount template tags in a given string.
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function template_tags_amount( $content = '', $amount = 0 ) {
+			if ( !$this->has_tags( 'amount', 'cred|cred_f', $content ) ) return $content;
 			$content = apply_filters( 'mycred_parse_tags_amount', $content, $amount );
 			$content = $this->template_tags_general( $content );
 			$content = str_replace( '%cred_f%', $this->format_creds( $amount ), $content );
@@ -294,10 +295,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function template_tags_post( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			if ( !$this->has_tags( 'post', 'post_title|post_url|link_with_title|post_type', $content ) ) return $content;
 
 			// Get Post Object
 			$post = get_post( $ref_id );
@@ -347,10 +349,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function template_tags_user( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			if ( !$this->has_tags( 'user', 'user_id|user_name|user_name_en|display_name|user_profile_url|user_profile_link|user_nicename|user_email|user_url|balance|balance_f', $content ) ) return $content;
 
 			// Get User Object
 			if ( $ref_id !== false )
@@ -421,10 +424,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function template_tags_comment( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			if ( !$this->has_tags( 'comment', 'comment_id|c_post_id|c_post_title|c_post_url|c_link_with_title', $content ) ) return $content;
 
 			// Get Comment Object
 			$comment = get_comment( $ref_id );
@@ -462,6 +466,26 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			//$content = str_replace( '', $comment->, $content );
 			unset( $comment );
 			return $content;
+		}
+		
+		/**
+		 * Has Tags
+		 * Checks if a string has any of the defined template tags.
+		 *
+		 * @param $type (string) template tag type
+		 * @param $tags (string) tags to search for, list with |
+		 * @param $content (string) content to search
+		 * @filter 'mycred_has_tags'
+		 * @filter 'mycred_has_tags_{$type}'
+		 * @returns (boolean) true or false
+		 * @since 1.2.2
+		 * @version 1.0
+		 */
+		public function has_tags( $type = '', $tags = '', $content = '' ) {
+			$tags = apply_filters( 'mycred_has_tags', $tags, $content );
+			$tags = apply_filters( 'mycred_has_tags_' . $type, $tags, $content );
+			if ( !preg_match( '%(' . trim( $tags ) . ')%', $content, $matches ) ) return false;
+			return true;
 		}
 		
 		/**
@@ -632,7 +656,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 */
 		public function count_members() {
 			global $wpdb;
-			return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->users};" );
+			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->users}" );
 		}
 
 		/**
@@ -1131,7 +1155,7 @@ if ( !function_exists( 'mycred_subtract' ) ) {
  * @param $user_id (int) option to check references for a specific user
  * @uses get_var()
  * @since 1.1
- * @version 1.1
+ * @version 1.0
  */
 if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 	function mycred_count_ref_instances( $reference = '', $user_id = NULL )
@@ -1140,15 +1164,15 @@ if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 
 		global $wpdb;
 
-		$sql = "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s";
-		$prep = array( $reference );
-		
 		if ( $user_id !== NULL ) {
-			$sql .= " AND user_id = %d";
-			$prep[] = $user_id;
+			return $wpdb->get_var( $wpdb->prepare(
+				"SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d",
+				$reference,
+				$user_id
+			) );
 		}
 
-		return $wpdb->get_var( $wpdb->prepare( $sql, $prep ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s", $reference ) );
 	}
 }
 
