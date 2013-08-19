@@ -106,7 +106,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Plugin Links
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function plugin_links( $actions, $plugin_file, $plugin_data, $context ) {
 			// Link to Setup
@@ -119,7 +119,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			$mycred = mycred_get_settings();
 			if ( $mycred->can_edit_plugin() ) {
 				$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'Settings', 'mycred' ) . '</a>';
-				$actions['donate'] = '<a href="http://mycred.me/donate/" target="_blank">Donate</a>';
 			}
 
 			return $actions;
