@@ -242,7 +242,6 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 				if ( $cached_count != $user_count ) {
 					unset( $data );
 					$data = false;
-					$wpdb->flush();
 				}
 			}
 			
