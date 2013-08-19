@@ -162,7 +162,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Filter Log options
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function filter_options( $is_profile = false ) {
 			echo '<div class="alignleft actions">';
@@ -184,14 +184,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 
 			// Filter by user
 			if ( $this->core->can_edit_creds() && !$is_profile && $this->count_records() > 0 ) {
-				$users = $this->get_users();
-				echo '<select name="user_id" id="myCRED-user-filter"><option value="">' . __( 'Show all users', 'mycred' ) . '</option>';
-				foreach ( $users as $user_id => $display_name ) {
-					echo '<option value="' . $user_id . '"';
-					if ( isset( $_GET['user_id'] ) && $_GET['user_id'] == $user_id ) echo ' selected="selected"';
-					echo '>' . $display_name . '</option>';
-				}
-				echo '</select>';
+				echo '<input type="text" name="user_id" id="myCRED-user-filter" size="12" placeholder="' . __( 'Username', 'mycred' ) . '" value="' . ( ( isset( $_GET['user_id'] ) ) ? $_GET['user_id'] : '' ) . '" /> ';
 				$show = true;
 			}
 
