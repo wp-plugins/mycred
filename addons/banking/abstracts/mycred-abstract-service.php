@@ -248,7 +248,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			// New Query
 			if ( $data === false ) {
 				$data = $wpdb->get_col( "SELECT ID FROM {$wpdb->users};" );
-				set_transient( 'mycred_banking_payout_ids', $user_ids, DAY_IN_SECONDS );
+				set_transient( 'mycred_banking_payout_ids', $data, DAY_IN_SECONDS );
 				$wpdb->flush();
 			}
 			
