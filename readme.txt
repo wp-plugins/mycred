@@ -127,6 +127,9 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
+= 1.2.2 =
+Improved performance, better handling of websites with large user base and several bug fixes.
+
 = 1.2.1 =
 See http://mycred.me/download/changelog/
 
@@ -157,6 +160,14 @@ See: http://mycred.me/download/changelog/2/
 
 
 == Changelog ==
+
+= 1.2.2 =
+* Added User Batches for Banking Add-on to support websites with more then 2k users.
+* Added Cache option to myCRED_Query_Log class.
+* Adjusted template tags handling to improve performance.
+* Fixed Bug #46 - Missing text domains for translations (thanks Dan).
+* Fixed Bug #47 - Rank shown multiple times in BP Profile.
+* Fixed Bug #48 - 
 
 = 1.2.1 =
 * Fixed Bug #43 - Users are not sorted according to balance in WP admin.
