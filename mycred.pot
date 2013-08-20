@@ -1,0 +1,4774 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: myCRED 1.2.2\n"
+"POT-Creation-Date: 2013-08-20 13:48+0100\n"
+"PO-Revision-Date: 2013-08-20 13:51+0100\n"
+"Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
+"Language-Team: mycred.me <support@mycred.me>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: __;_e;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: mycred.php:97 mycred.php:104
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: mycred.php:114 addons/email-notices/myCRED-addon-email-notices.php:602
+#: addons/gateway/event-booking/mycred-eventsmanager.php:476
+#: includes/mycred-install.php:419
+msgid "Setup"
+msgstr ""
+
+#: mycred.php:121 addons/gateway/carts/mycred-marketpress.php:341
+#: includes/mycred-network.php:139 modules/mycred-module-general.php:19
+#: modules/mycred-module-general.php:20 modules/mycred-module-general.php:21
+#: modules/mycred-module-general.php:47 modules/mycred-module-log.php:246
+msgid "Settings"
+msgstr ""
+
+#: mycred.php:135
+msgid ""
+"myCRED is blocked for this site. Please contact your network administrator "
+"for further details."
+msgstr ""
+
+#: mycred.php:405
+msgid "My Balance: "
+msgstr ""
+
+#: mycred.php:509
+#, php-format
+msgid "Edit Users %s balance"
+msgstr ""
+
+#: mycred.php:510
+msgid "Close"
+msgstr ""
+
+#: mycred.php:511 mycred.php:559 addons/ranks/myCRED-addon-ranks.php:827
+#: addons/sell-content/myCRED-addon-sell-content.php:276
+#: addons/transfer/myCRED-addon-transfer.php:136
+msgid "Processing..."
+msgstr ""
+
+#: mycred.php:560
+msgid "Sent"
+msgstr ""
+
+#: mycred.php:561
+msgid "Error - Try Again"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:57
+msgid "function myCRED_Hook::run() must be over-ridden in a sub-class."
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:66
+msgid "This Hook has no settings"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:133 modules/mycred-module-hooks.php:1074
+msgid "No limit"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:134
+msgid "Once every 24 hours"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:135
+msgid "Once every 12 hours"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:136
+msgid "Once every 7 days"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:137
+msgid "Once per day (reset at midnight)"
+msgstr ""
+
+#: abstracts/mycred-abstract-hook.php:144
+#: addons/banking/abstracts/mycred-abstract-service.php:283
+#: addons/buy-creds/myCRED-addon-buy-creds.php:238
+#: addons/buy-creds/myCRED-addon-buy-creds.php:259
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:515
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:538
+#: addons/buy-creds/gateways/netbilling.php:514
+#: addons/buy-creds/gateways/zombaio.php:382
+#: addons/email-notices/myCRED-addon-email-notices.php:186
+#: addons/email-notices/myCRED-addon-email-notices.php:751
+msgid "Select"
+msgstr ""
+
+#: abstracts/mycred-abstract-module.php:303
+#: abstracts/mycred-abstract-module.php:311
+msgid "Surprise"
+msgstr ""
+
+#: abstracts/mycred-abstract-module.php:359
+msgid "click to open"
+msgstr ""
+
+#: abstracts/mycred-abstract-module.php:360
+msgid "click to close"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:12
+#: addons/banking/myCRED-addon-banking.php:49
+#: addons/banking/myCRED-addon-banking.php:50
+#: addons/banking/myCRED-addon-banking.php:51
+#: addons/banking/myCRED-addon-banking.php:155
+msgid "Banking"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:13
+msgid ""
+"This add-on allows you to offer interest on your users %_plural% balances or "
+"setup recurring payouts."
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:110
+msgid "Compound Interest"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:111
+msgid ""
+"Apply an interest rate on your users %_plural% balances. Interest rate is "
+"annual and is compounded daily as long as this service is enabled. Positive "
+"interest rate leads to users gaining %_plural% while a negative interest "
+"rate will to users loosing %_plural%."
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:117
+msgid "Recurring Payouts"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:118
+msgid ""
+"Give your users %_plural% on a regular basis with the option to set the "
+"number of times you want this payout to run (cycles)."
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:143
+#: addons/import/myCRED-addon-import.php:458 includes/mycred-network.php:115
+#: modules/mycred-module-addons.php:249 modules/mycred-module-general.php:35
+#: modules/mycred-module-hooks.php:232 modules/mycred-module-log.php:266
+#: modules/mycred-module-log.php:348
+msgid "Access Denied"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:150
+#: addons/buy-creds/myCRED-addon-buy-creds.php:317
+#: modules/mycred-module-general.php:42 modules/mycred-module-hooks.php:239
+msgid "Settings Updated"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:156
+msgid ""
+"This add-on allows you to setup transaction fees for %_plural% transfers, "
+"purchases or payments using the Gateway add-on, along with offering interest "
+"on %_plural% balances."
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:159
+msgid "WP-Cron deactivation detected!"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:160
+msgid "Warning! This add-on requires WP - Cron to work."
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:173
+#: addons/buy-creds/myCRED-addon-buy-creds.php:346
+#: modules/mycred-module-hooks.php:257
+msgid "Enable"
+msgstr ""
+
+#: addons/banking/myCRED-addon-banking.php:186
+#: modules/mycred-module-hooks.php:270
+msgid "Update Changes"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:57
+msgid "function myCRED_Service::run() must be over-ridden in a sub-class."
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:66
+msgid "This Service has no settings"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:143
+msgid "Hourly"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:147
+msgid "Daily"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:151
+msgid "Weekly"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:155
+msgid "Monthly"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:159
+msgid "Quarterly"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:163
+msgid "Semiannually"
+msgstr ""
+
+#: addons/banking/abstracts/mycred-abstract-service.php:167
+msgid "Annually"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:25
+msgid "%plural% interest rate payment"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:288
+msgid "Interest Rate"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:295
+msgid "Payed / Charged"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:301
+msgid ""
+"The interest rate can be either positive or negative and is compounded daily."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:304
+msgid "Minimum Balance"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:308
+msgid "The minimum requires balance for interest to apply."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:311
+#: addons/banking/services/mycred-bank-service-payouts.php:242
+#: addons/buy-creds/myCRED-addon-buy-creds.php:216
+#: addons/buy-creds/myCRED-addon-buy-creds.php:271
+#: addons/gateway/carts/mycred-marketpress.php:359
+#: addons/gateway/carts/mycred-woocommerce.php:87
+#: modules/mycred-module-hooks.php:519 modules/mycred-module-hooks.php:1228
+#: modules/mycred-module-hooks.php:1503 modules/mycred-module-plugins.php:878
+#: modules/mycred-module-plugins.php:880 modules/mycred-module-plugins.php:889
+#: modules/mycred-module-plugins.php:1168
+#: modules/mycred-module-plugins.php:1288
+#: modules/mycred-module-plugins.php:1301
+#: modules/mycred-module-plugins.php:1439
+#: modules/mycred-module-plugins.php:1452
+#: modules/mycred-module-plugins.php:1548
+#: modules/mycred-module-plugins.php:1561
+msgid "Log Template"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-interest.php:315
+msgid "Available template tags: General, %timeframe%, %rate%, %base%"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:21
+msgid "Daily %_plural%"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:204
+msgid "Not yet run"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:209
+msgid "Pay Users"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:212
+#: addons/buy-creds/myCRED-addon-buy-creds.php:667
+#: includes/mycred-admin.php:336
+msgid "Amount"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:214
+msgid "Can not be zero."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:218
+#: addons/banking/services/mycred-bank-service-payouts.php:231
+#: modules/mycred-module-hooks.php:1518
+msgid "Interval"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:223
+#: addons/banking/services/mycred-bank-service-payouts.php:232
+msgid "Cycles"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:225
+msgid "Set to -1 for unlimited"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:228
+msgid "Last Run / Activated"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:231
+msgid ""
+"Select how often you want to award %_plural%. Note that when this service is "
+"enabled, the first payout will be in the beginning of the next period. So "
+"with a \"Daily\" interval, the first payout will occur first thing in the "
+"morning."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:232
+msgid ""
+"Cycles let you choose how many intervals this service should run. Each time "
+"a cycle runs, the value will decrease until it hits zero, in which case this "
+"service will deactivate itself. Use -1 to run unlimited times."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:233
+msgid "Important"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:233
+msgid ""
+"You can always stop payouts by deactivating this service. Just remember that "
+"if you deactivate while there are cycles left, this service will continue on "
+"when it gets re-activated. Set cycles to zero to reset."
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:235
+#: includes/mycred-install.php:587 modules/mycred-module-general.php:107
+msgid "Excludes"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:239
+msgid ""
+"Comma separated list of user IDs to exclude from this service. No spaces "
+"allowed!"
+msgstr ""
+
+#: addons/banking/services/mycred-bank-service-payouts.php:246
+#: addons/buddypress/hooks/bp-galleries.php:81
+#: addons/buddypress/hooks/bp-groups.php:435
+#: addons/buddypress/hooks/bp-groups.php:448
+#: addons/buddypress/hooks/bp-groups.php:461
+#: addons/buddypress/hooks/bp-groups.php:474
+#: addons/buddypress/hooks/bp-groups.php:487
+#: addons/buddypress/hooks/bp-groups.php:500
+#: addons/buddypress/hooks/bp-groups.php:514
+#: addons/buddypress/hooks/bp-groups.php:527
+#: addons/buddypress/hooks/bp-groups.php:540
+#: addons/buddypress/hooks/bp-groups.php:553
+#: addons/buddypress/hooks/bp-links.php:175
+#: addons/buddypress/hooks/bp-links.php:188
+#: addons/buddypress/hooks/bp-links.php:201
+#: addons/buddypress/hooks/bp-links.php:214
+#: addons/buddypress/hooks/bp-profile.php:320
+#: addons/buddypress/hooks/bp-profile.php:333
+#: addons/buddypress/hooks/bp-profile.php:372
+#: addons/buddypress/hooks/bp-profile.php:385
+#: addons/buddypress/hooks/bp-profile.php:398
+#: addons/buddypress/hooks/bp-profile.php:411
+#: addons/gateway/event-booking/mycred-eventespresso3.php:428
+#: modules/mycred-module-hooks.php:523 modules/mycred-module-hooks.php:1507
+#: modules/mycred-module-plugins.php:639 modules/mycred-module-plugins.php:660
+#: modules/mycred-module-plugins.php:1552
+#: modules/mycred-module-plugins.php:1565
+#: modules/mycred-module-subscriptions.php:488
+#: modules/mycred-module-subscriptions.php:501
+msgid "Available template tags: General"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:13
+#: addons/buddypress/myCRED-addon-buddypress.php:379
+msgid "BuddyPress"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:14
+msgid ""
+"The BuddyPress add-on extends <strong>my</strong>CRED to work with "
+"BuddyPress allowing you to hook into most BuddyPress related actions."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:56
+#: modules/mycred-module-log.php:69 modules/mycred-module-log.php:373
+msgid "My History"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:57
+#, php-format
+msgid "%s's History"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:219
+#: addons/buddypress/myCRED-addon-buddypress.php:227
+#: modules/mycred-module-log.php:980
+msgid "All"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:220
+#: modules/mycred-module-log.php:981
+msgid "Today"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:221
+#: modules/mycred-module-log.php:982
+msgid "Yesterday"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:222
+#: modules/mycred-module-log.php:983
+msgid "This Week"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:223
+#: modules/mycred-module-log.php:984
+msgid "This Month"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:319
+msgid "BuddyPress: Groups"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:320
+msgid ""
+"Awards %_plural% for group related actions. Use minus to deduct %_plural% or "
+"zero to disable a specific hook."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:324
+msgid "BuddyPress: Members"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:325
+msgid "Awards %_plural% for profile related actions."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:331
+msgid "BuddyPress: Links"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:332
+msgid "Awards %_plural% for link related actions."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:339
+msgid "BuddyPress: Gallery Actions"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:340
+msgid ""
+"Awards %_plural% for creating a new gallery either using BP Album+ or BP "
+"Gallery."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:360
+#: addons/buddypress/myCRED-addon-buddypress.php:367
+#: addons/ranks/myCRED-addon-ranks.php:766
+msgid "Do not show."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:361
+#: addons/ranks/myCRED-addon-ranks.php:767
+msgid "Include in Profile Header."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:362
+#: addons/ranks/myCRED-addon-ranks.php:768
+msgid "Include under the \"Profile\" tab"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:363
+#: addons/ranks/myCRED-addon-ranks.php:769
+msgid "Include under the \"Profile\" tab and Profile Header."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:368
+msgid "Show in Profile"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:381
+msgid "%singular% Balance"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:397
+msgid "Members can view each others %_singular% balance."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:402
+msgid "Template"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:404
+msgid "Available template tags are: %creds%, %number%, %rank%"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:405
+msgid ""
+"Note that you can also use %rank_logo% to show the feature image of the rank."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:409
+#: includes/mycred-widgets.php:159 modules/mycred-module-log.php:70
+msgid "%plural% History"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:425
+msgid "Members can view each others %_plural% history."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:430
+msgid "Menu Title"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:432
+msgid "Title shown to me"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:437
+#, php-format
+msgid "Title shown to others. Use %s to show the first name."
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:442
+msgid "Menu Position"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:444
+msgid "Current menu positions:"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:449
+msgid "History URL slug"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:451
+msgid "Do not use empty spaces!"
+msgstr ""
+
+#: addons/buddypress/myCRED-addon-buddypress.php:456
+msgid "Number of history entries to show"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-galleries.php:72
+msgid "%plural% for New Gallery"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-galleries.php:79
+#: addons/buddypress/hooks/bp-groups.php:433
+#: addons/buddypress/hooks/bp-groups.php:446
+#: addons/buddypress/hooks/bp-groups.php:459
+#: addons/buddypress/hooks/bp-groups.php:472
+#: addons/buddypress/hooks/bp-groups.php:485
+#: addons/buddypress/hooks/bp-groups.php:498
+#: addons/buddypress/hooks/bp-groups.php:512
+#: addons/buddypress/hooks/bp-groups.php:525
+#: addons/buddypress/hooks/bp-groups.php:538
+#: addons/buddypress/hooks/bp-groups.php:551
+#: addons/buddypress/hooks/bp-links.php:173
+#: addons/buddypress/hooks/bp-links.php:186
+#: addons/buddypress/hooks/bp-links.php:199
+#: addons/buddypress/hooks/bp-links.php:212
+#: addons/buddypress/hooks/bp-profile.php:318
+#: addons/buddypress/hooks/bp-profile.php:331
+#: addons/buddypress/hooks/bp-profile.php:344
+#: addons/buddypress/hooks/bp-profile.php:357
+#: addons/buddypress/hooks/bp-profile.php:370
+#: addons/buddypress/hooks/bp-profile.php:383
+#: addons/buddypress/hooks/bp-profile.php:396
+#: addons/buddypress/hooks/bp-profile.php:409
+#: modules/mycred-module-hooks.php:381 modules/mycred-module-hooks.php:625
+#: modules/mycred-module-hooks.php:638 modules/mycred-module-hooks.php:673
+#: modules/mycred-module-hooks.php:963 modules/mycred-module-hooks.php:975
+#: modules/mycred-module-hooks.php:987 modules/mycred-module-plugins.php:401
+#: modules/mycred-module-plugins.php:414 modules/mycred-module-plugins.php:427
+#: modules/mycred-module-plugins.php:445 modules/mycred-module-plugins.php:458
+#: modules/mycred-module-plugins.php:477 modules/mycred-module-plugins.php:637
+#: modules/mycred-module-plugins.php:658 modules/mycred-module-plugins.php:790
+#: modules/mycred-module-plugins.php:1044
+#: modules/mycred-module-subscriptions.php:486
+#: modules/mycred-module-subscriptions.php:499
+msgid "Log template"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:419
+msgid "%plural% for Creating Groups"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:423
+msgid ""
+"If you use a negative value and the user does not have enough %_plural% the "
+"\"Create Group\" button will be disabled."
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:427
+msgid "Number of members before awarding %_plural%"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:429
+msgid "Use zero to award %_plural% when group is created."
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:439
+msgid "%plural% for Deleting Groups"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:452
+msgid "%plural% for New Forum Topic"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:465
+msgid "%plural% for Editing Forum Topic"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:478
+msgid "%plural% for New Forum Post"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:491
+msgid "%plural% for Editing Forum Post"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:504
+msgid "%plural% for Joining Groups"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:508
+msgid ""
+"If you use a negative value and the user does not have enough %_plural% the "
+"\"Join Group\" button will be disabled."
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:518
+msgid "%plural% for Leaving Groups"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:531
+msgid "%plural% for New Group Avatar"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-groups.php:544
+msgid "%plural% for New Group Comment"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-links.php:166
+msgid "%plural% for New Links"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-links.php:179
+msgid "%plural% for Vote on Link"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-links.php:192
+msgid "%plural% for Updating Links"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-links.php:205
+msgid "%plural% for Deleting Links"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:311
+msgid "%plural% for Profile Updates"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:324
+msgid "%plural% for New Avatar"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:337
+msgid "%plural% for New Friendships"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:346
+#: addons/buddypress/hooks/bp-profile.php:359
+#: addons/transfer/myCRED-addon-transfer.php:189
+#: addons/transfer/myCRED-addon-transfer.php:196
+#: modules/mycred-module-hooks.php:385
+msgid "Available template tags: General, User"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:350
+msgid "%plural% for Leaving Friendship"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:363
+msgid "%plural% for New Comment"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:376
+msgid "%plural% for Deleting Comment"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:389
+msgid "%plural% for New Messages"
+msgstr ""
+
+#: addons/buddypress/hooks/bp-profile.php:402
+msgid "%plural% for Sending Gift"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:12
+#: addons/buy-creds/myCRED-addon-buy-creds.php:200
+msgid "buyCRED"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:13
+msgid ""
+"The <strong>buy</strong>CRED Add-on allows your users to buy points using "
+"PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can "
+"also let your users buy points for other members."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:55
+#: addons/buy-creds/myCRED-addon-buy-creds.php:56
+#: addons/buy-creds/myCRED-addon-buy-creds.php:57
+#: addons/buy-creds/myCRED-addon-buy-creds.php:322
+msgid "Payment Gateways"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:141
+#: addons/buy-creds/myCRED-addon-buy-creds.php:773
+msgid "PayPal Payments Standard"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:145
+#: addons/buy-creds/gateways/netbilling.php:423
+msgid "NETbilling"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:149
+msgid "Skrill (Moneybookers)"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:153
+msgid "Zombaio"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:175
+msgid "Please login to purchase %_plural%"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:189
+msgid "Gift purchase from %display_name%."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:202
+#: addons/ranks/myCRED-addon-ranks.php:555
+msgid "Minimum %plural%"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:206
+msgid "Minimum amount of %plural% a user must purchase. Will default to 1."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:209
+msgid "Login Template"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:213
+msgid "Content to show when a user is not logged in."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:220
+msgid ""
+"Available template tags: General and %gateway% for the payment gateway used."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:223
+msgid "Thank You Page"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:226
+#: addons/buy-creds/myCRED-addon-buy-creds.php:247
+msgid "Custom URL"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:231
+#: addons/buy-creds/myCRED-addon-buy-creds.php:252
+msgid "Page"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:244
+msgid "Cancellation Page"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:265
+msgid "Gifting"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:267
+msgid "Allow users to buy %_plural% for other users."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:268
+msgid "Allow users to buy %_plural% for content authors."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:273
+msgid "Available template tags: %singular%, %plural% and %display_name%"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:323
+msgid ""
+"Select the payment gateways you want to offer your users to buy %plural%."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:364
+msgid "Update Gateway Settings"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:411
+#: addons/buy-creds/myCRED-addon-buy-creds.php:521
+msgid "This Add-on needs to setup before you can use this shortcode."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:428
+#: addons/buy-creds/myCRED-addon-buy-creds.php:538
+msgid "No gateways installed."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:429
+#: addons/buy-creds/myCRED-addon-buy-creds.php:539
+msgid "Gateway does not exist."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:465
+msgid "Yourself"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:540
+msgid "No active gateways found."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:541
+msgid "The selected gateway is not active."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:581
+msgid "Buy with"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:585
+#: addons/sell-content/myCRED-addon-sell-content.php:49
+msgid "Buy Now"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:618
+msgid "No users found"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:628
+msgid "To"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:645
+msgid "Select Amount"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:669
+msgid "min."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:677
+msgid "Select Gateway"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:757
+msgid "Buy %plural%"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:759
+msgid "This add-on lets your users buy %_plural% using a payment gateway."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:760
+msgid "Supported Gateways"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:761
+msgid ""
+"myCRED supports purchases through: PayPal Payments Standard, Skrill "
+"(Moneybookers) and NETbilling. Let us know if you want to add other payment "
+"gateways."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:762
+#: addons/sell-content/myCRED-addon-sell-content.php:1057
+#: addons/transfer/myCRED-addon-transfer.php:493
+msgid "Usage"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:763
+msgid "Purchases can be made using one of the following shortcodes:"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:765
+msgid ""
+"When you want to sell a pre-set amount, sell to a specific user or use a "
+"specific gateway.<br />For more information on how to use the shortcode, "
+"please visit the"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:766
+msgid ""
+"When you want to give your users the option to select an amount, gateway or "
+"recipient.<br />For more information on how to use the shortcode, please "
+"visit the"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:775
+#: addons/buy-creds/gateways/paypal-standard.php:327
+#: addons/buy-creds/gateways/skrill.php:344
+msgid "Currency"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:776
+msgid ""
+"Make sure you select a currency that your PayPal account supports. Otherwise "
+"transactions will not be approved until you login to your PayPal account and "
+"Accept each transaction! Purchases made in a currency that is not supported "
+"will not be applied to the buyer until you have resolved the issue."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:777
+msgid "Instant Payment Notifications"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:778
+#: addons/buy-creds/gateways/paypal-standard.php:358
+msgid ""
+"For this gateway to work, you must login to your PayPal account and under "
+"\"Profile\" > \"Selling Tools\" enable \"Instant Payment Notifications\". "
+"Make sure the \"Notification URL\" is set to the above address and that you "
+"have selected \"Receive IPN messages (Enabled)\"."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:782
+msgid "Skrill"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:784
+#: addons/buy-creds/gateways/netbilling.php:607
+#: addons/buy-creds/gateways/paypal-standard.php:321
+#: addons/buy-creds/gateways/skrill.php:338
+#: addons/buy-creds/gateways/zombaio.php:290
+msgid "Sandbox Mode"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:785
+msgid ""
+"Transactions made while Sandbox mode is active are real transactions! "
+"Remember to use your \"Test Merchant Account\" when Sandbox mode is active!"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:786
+#: addons/buy-creds/gateways/skrill.php:383
+msgid "Checkout Page"
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:787
+msgid ""
+"By default all Skrill Merchant account accept payments via Bank Transfers. "
+"When a user selects this option, no points are awarded! You will need to "
+"manually award these once the bank transfer is completed."
+msgstr ""
+
+#: addons/buy-creds/myCRED-addon-buy-creds.php:788
+#: addons/buy-creds/gateways/skrill.php:403
+msgid ""
+"By default purchases made using Skrill will result in users having to signup "
+"for a Skrill account (if they do not have one already). You can contact "
+"Skrill Merchant Services and request to disable this feature."
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:61
+msgid ""
+"function myCRED_Payment_Gateway::process() must be over-ridden in a sub-"
+"class."
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:70
+msgid ""
+"function myCRED_Payment_Gateway::buy() must be over-ridden in a sub-class."
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:86
+msgid "This Payment Gateway has no settings"
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:235
+msgid "Go to "
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:256
+msgid "Payment Gateway Logo"
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:269
+msgid "Click here if you are not automatically redirected"
+msgstr ""
+
+#: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:866
+msgid "Outside US"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:26
+#: addons/buy-creds/gateways/paypal-standard.php:23
+#: addons/buy-creds/gateways/skrill.php:28
+msgid "Purchase of myCRED %plural%"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:55
+#: addons/buy-creds/gateways/netbilling.php:318
+msgid "You have tried too many times.  Please contact support."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:62
+msgid "This payment gateway has not yet been setup! Exiting."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:81
+msgid "First name can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:87
+msgid "Last name can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:93
+msgid "Street can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:99
+msgid "City can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:105
+msgid "Country can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:113
+msgid "State can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:121
+msgid "Zip / Post Code can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:127
+msgid "Email can not be empty"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:143
+msgid "Please enter your credit card number"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:149
+msgid "Card Expiration Month must be selected"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:155
+msgid "Card Expiration Year must be set"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:161
+msgid "Please enter the CVV2 code from the back of your card"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:170
+msgid "Account Routing number missing"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:176
+msgid "Account Number missing"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:184
+msgid "Incorrect Credit Card number"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:190
+msgid "The credit card entered is past its expiration date."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:196
+msgid "The CVV2 number entered is not valid."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:202
+msgid "The bank routing number entered is not valid."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:205
+msgid "The bank account number entered is not valid."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:312
+#: addons/buy-creds/gateways/netbilling.php:333
+msgid "Invalid Address"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:315
+msgid "Invalid CVV2"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:321
+#: addons/buy-creds/gateways/netbilling.php:324
+msgid "Please contact support."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:327
+msgid "Your email address is invalid."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:330
+msgid "Your information is invalid.  Please correct"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:336
+msgid "Your card was declined.  Please try again."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:340
+#: addons/buy-creds/gateways/netbilling.php:358
+msgid "Duplicate transaction.  Please contact support"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:343
+msgid "Your transaction was approved"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:350
+msgid " error: "
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:430
+msgid "Debug"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:439
+msgid "Error"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:440
+msgid "The following error/s were found: "
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:448
+msgid "Please update and try again."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:454
+msgid "Transaction Approved"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:455
+msgid "Your have successfully purchased "
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:456
+#: addons/buy-creds/gateways/netbilling.php:466
+msgid "Click here to continue"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:464
+msgid "Transaction Declined"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:465
+msgid ""
+"I am sorry but your transaction could not be completed due to the following "
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:474
+msgid "Transaction Error"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:475
+msgid "NETbilling returned the following error: "
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:476
+msgid "Please try again."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:480
+msgid "Purchase of"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:480
+msgid "for"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:481
+msgid "Fields marked * are required!"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:491
+msgid "Billing Details"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:560
+msgid "Month"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:566
+msgid "Year"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:613
+msgid "Account ID"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:619
+msgid "Site Tag"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:625
+msgid "Dynamic IP Security Code"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:631
+#: addons/buy-creds/gateways/paypal-standard.php:341
+#: addons/buy-creds/gateways/skrill.php:364
+msgid "Item Name"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:637
+#: addons/buy-creds/gateways/paypal-standard.php:348
+#: addons/buy-creds/gateways/skrill.php:371
+msgid "%plural% Exchange Rate"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:643
+msgid "Allowed Attempts"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:647
+msgid "Maximum number of attempts allowed for purchases."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:650
+msgid "Advanced"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:654
+msgid "Disable AVS (Address Verification System) for credit card transactions."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:658
+msgid "Disable CVV2 (Card Verification Value 2) for credit card transactions."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:662
+msgid ""
+"Disable all fraud protection other than AVS/CVV2. (This implies "
+"disable_negative_db)"
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:666
+msgid ""
+"Disable only the negative database component of the fraud protection system."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:670
+msgid "Disable automatic sending of both merchant and customer email receipts."
+msgstr ""
+
+#: addons/buy-creds/gateways/netbilling.php:674
+msgid "Disable immediate rejection of expired cards."
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:225
+#: addons/buy-creds/gateways/skrill.php:211
+msgid "Success"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:226
+#: addons/buy-creds/gateways/skrill.php:212
+msgid "Thank you for your purchase"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:239
+#: addons/buy-creds/gateways/skrill.php:225
+#: addons/buy-creds/gateways/zombaio.php:232
+msgid "Please setup this gateway before attempting to make a purchase!"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:299
+#: addons/buy-creds/gateways/skrill.php:266
+msgid "Return to "
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:304
+#: addons/buy-creds/gateways/skrill.php:320
+#: addons/buy-creds/gateways/zombaio.php:271
+msgid "Processing payment &hellip;"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:332
+#: addons/buy-creds/gateways/skrill.php:401
+#: addons/gateway/event-booking/mycred-eventespresso3.php:416
+msgid "Important!"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:332
+msgid ""
+"Make sure you select a currency that your PayPal account supports. Otherwise "
+"transactions will not be approved until you login to your PayPal account and "
+"Accept each transaction!"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:335
+msgid "Account Email"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:345
+#: addons/buy-creds/gateways/skrill.php:368
+msgid "Description of the item being purchased by the user."
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:351
+#: addons/buy-creds/gateways/skrill.php:374
+msgid "Your selected currency"
+msgstr ""
+
+#: addons/buy-creds/gateways/paypal-standard.php:354
+msgid "IPN Address"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:303
+msgid "Product:"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:312
+msgid "Gift to:"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:313
+msgid "(author)"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:341
+msgid "Remember to use your Test Merchant Account when Sandbox mode is active!"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:351
+msgid "Merchant Account Email"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:357
+msgid "Secret Word"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:361
+msgid ""
+"You can set your secret word under \"Merchant Tools\" in your Skrill Account."
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:377
+msgid "Confirmation Email"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:380
+msgid ""
+"Ask Skrill to send me a confirmation email for each successful purchase."
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:386
+#: addons/gateway/carts/mycred-woocommerce.php:75
+#: addons/ranks/myCRED-addon-ranks.php:696
+#: addons/transfer/myCRED-addon-transfer.php:594
+#: includes/mycred-widgets.php:185 includes/mycred-widgets.php:360
+msgid "Title"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:388
+msgid ""
+"If left empty, your account email is used as title on the Skill Payment Page."
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:391
+#: addons/buy-creds/gateways/zombaio.php:314
+msgid "Logo URL"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:393
+msgid ""
+"The URL to the image you want to use on the top of the gateway. For best "
+"integration results we recommend you use logos with dimensions up to 200px "
+"in width and 50px in height."
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:396
+msgid "Confirmation Note"
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:398
+msgid ""
+"Optional text to show user once a transaction has been successfully "
+"completed. This text is shown by Skrill."
+msgstr ""
+
+#: addons/buy-creds/gateways/skrill.php:402
+msgid ""
+"By default all Skrill Merchant account accept payments via Bank Transfers. "
+"When a user selects this option, no %_plural% are awarded! You will need to "
+"manually award these once the bank transfer is completed."
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:296
+msgid "Site ID"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:302
+msgid "GW Password"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:308
+msgid "Pricing ID"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:320
+msgid "IP Verification"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:323
+msgid "Do not verify that callbacks are coming from Zombaio."
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:326
+msgid "Language"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:333
+msgid "Postback URL (ZScript)"
+msgstr ""
+
+#: addons/buy-creds/gateways/zombaio.php:337
+msgid ""
+"For this gateway to work, login to ZOA and set the Postback URL to the above "
+"address and click validate."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:12
+#: addons/email-notices/myCRED-addon-email-notices.php:155
+#: addons/email-notices/myCRED-addon-email-notices.php:161
+#: addons/email-notices/myCRED-addon-email-notices.php:167
+#: addons/email-notices/myCRED-addon-email-notices.php:256
+msgid "Email Notices"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:13
+msgid "Create email notices for any type of myCRED instance."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:156
+msgid "Email Notice"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:157
+#: addons/ranks/myCRED-addon-ranks.php:158
+msgid "Add New"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:158
+msgid "Add New Notice"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:159
+msgid "Edit Notice"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:160
+msgid "New Notice"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:162
+msgid "View Notice"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:163
+msgid "Search Email Notices"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:164
+msgid "No email notices found"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:165
+msgid "No email notices found in Trash"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:188
+#: addons/email-notices/myCRED-addon-email-notices.php:826
+msgid "General"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:189
+msgid "users balance changes"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:190
+msgid "user gains %_plural%"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:191
+msgid "user lose %_plural%"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:192
+msgid "users balance reaches zero"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:193
+msgid "users balance goes minus"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:199
+msgid "Sell Content Add-on"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:200
+msgid "user buys content"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:201
+msgid "authors content gets sold"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:208
+msgid "buyCREDs Add-on"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:209
+msgid "user buys %_plural%"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:216
+msgid "Transfer Add-on"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:217
+msgid "user sends %_plural%"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:218
+msgid "user receives %_plural%"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:258
+msgid ""
+"Settings that apply to all email notices and can not be overridden for "
+"individual emails."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:259
+msgid "Email Format"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:263
+msgid "Plain text emails only."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:267
+msgid "HTML or Plain text emails."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:270
+msgid "Filters"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:274
+msgid ""
+"Allow WordPress and Third Party Plugins to filter the email subject before "
+"an email is sent."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:278
+msgid ""
+"Allow WordPress and Third Party Plugins to filter the email content before "
+"an email is sent."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:281
+msgid ""
+"Default email settings. These settings can be individually overridden when "
+"editing emails."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:282
+#: addons/email-notices/myCRED-addon-email-notices.php:665
+msgid "Email Settings"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:285
+#: addons/email-notices/myCRED-addon-email-notices.php:782
+msgid "Senders Name:"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:289
+#: addons/email-notices/myCRED-addon-email-notices.php:784
+msgid "Senders Email:"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:293
+msgid "Reply-To:"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:297
+msgid "Default Email Content"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:301
+msgid "Default email content."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:304
+msgid "Default Email Styling"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:308
+msgid "Ignored if HTML is not allowed in emails."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:600
+#: addons/email-notices/myCRED-addon-email-notices.php:714
+msgid "Email Subject"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:601
+msgid "Status"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:621
+msgid "Not Active"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:623
+#, php-format
+msgid "Scheduled:<br /><strong>%1$s</strong>"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:627
+msgid "Active"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:629
+#, php-format
+msgid "Active - Last run:<br /><strong>%1$s</strong>"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:638
+msgid "Email is sent when"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:640
+msgid "Missing instance for this notice!"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:649
+#: addons/email-notices/myCRED-addon-email-notices.php:651
+#: addons/email-notices/myCRED-addon-email-notices.php:653
+msgid "Sent To"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:649
+#: addons/email-notices/myCRED-addon-email-notices.php:776
+#: includes/mycred-admin.php:332 modules/mycred-module-log.php:809
+msgid "User"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:651
+#: addons/email-notices/myCRED-addon-email-notices.php:777
+msgid "Administrator"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:653
+msgid "Both Administrator and User"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:674
+#: modules/mycred-module-help.php:145 modules/mycred-module-help.php:169
+msgid "Available Template Tags"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:685
+msgid "Email Header"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:745
+msgid "Send this email notice when..."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:774
+msgid "Recipient:"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:778
+msgid "Both"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:786
+msgid "Reply-To Email:"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:792
+msgid "Save"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:804
+msgid "CSS Styling"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:819
+msgid "Site Related"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:820
+msgid "Your websites title"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:821
+msgid "Your websites address"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:822
+msgid "Your websites tagline (description)"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:823
+msgid "Your websites admin email"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:824
+msgid "Total number of blog members"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:827
+msgid "Points name in singular format"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:828
+msgid "Points name in plural"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:829
+msgid "Login URL"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:832
+msgid "User Related"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:833
+msgid "The users ID"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:834
+msgid "The users login name (username)"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:835
+msgid "The users display name"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:836
+msgid "The users profile address"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:837
+msgid "Link to the users profile address with their display name as title"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:838
+msgid "The users current balance unformated"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:839
+msgid "The users current balance formated"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:841
+msgid "Post Related"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:842
+msgid "Post Title"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:843
+msgid "Post URL address"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:844
+msgid "Link to post Post title"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:845
+msgid "The post type"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:921
+#: addons/email-notices/myCRED-addon-email-notices.php:924
+#, php-format
+msgid "Email Notice Updated. View <a href=\"%1$s\">All Notices</a>."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:922
+#: addons/ranks/myCRED-addon-ranks.php:460
+msgid "Custom field updated"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:923
+#: addons/ranks/myCRED-addon-ranks.php:461
+msgid "Custom filed updated"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:926
+msgid "Email Notice Activated"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:927
+msgid "Email Notice Saved"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:928
+#, php-format
+msgid ""
+"Email Notice Submitted for approval. View <a href=\"%1$s\">All Notices</a>."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:930
+#, php-format
+msgid "Email Notice scheduled for: <strong>%1$s</strong>."
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:949
+msgid ""
+"Once a notice is \"published\" it becomes active! Select \"Save Draft\" if "
+"you are not yet ready to use this email notice!"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:951
+#, php-format
+msgid "This notice will become active on:<br /><strong>%1$s</strong>"
+msgstr ""
+
+#: addons/email-notices/myCRED-addon-email-notices.php:953
+msgid "This email notice is active."
+msgstr ""
+
+#: addons/gateway/myCRED-addon-gateway.php:12
+msgid "Gateway"
+msgstr ""
+
+#: addons/gateway/myCRED-addon-gateway.php:13
+msgid ""
+"Let your users pay using their <strong>my</strong>CRED points balance. "
+"Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event "
+"Espresso, Events Manager."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:148
+#: addons/gateway/event-booking/mycred-eventespresso3.php:254
+#: addons/gateway/event-booking/mycred-eventespresso3.php:278
+#: addons/gateway/event-booking/mycred-eventsmanager.php:357
+#: includes/mycred-admin.php:333
+msgid "Current Balance"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:152
+#: addons/gateway/event-booking/mycred-eventespresso3.php:258
+#: addons/gateway/event-booking/mycred-eventespresso3.php:282
+#: addons/gateway/event-booking/mycred-eventsmanager.php:361
+msgid "Total Cost"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:156
+#: addons/gateway/event-booking/mycred-eventespresso3.php:262
+#: addons/gateway/event-booking/mycred-eventespresso3.php:286
+msgid "Balance After Purchase"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:180
+msgid "Payment"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:183
+#: addons/gateway/carts/mycred-marketpress.php:232
+#, php-format
+msgid "<a href=\"%s\">Go Back</a>"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:186
+msgid "will be deducted from your account."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:222
+#, php-format
+msgid ""
+"Sorry, but you can not use this gateway as your account is excluded. Please "
+"<a href=\"%s\">select a different payment method</a>."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:241
+msgid "Paid"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:244
+#: addons/gateway/carts/mycred-woocommerce.php:34
+#: includes/mycred-network.php:53 includes/mycred-network.php:54
+#: modules/mycred-module-plugins.php:844
+msgid "myCRED"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:314
+msgid "%_singular% Balance"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:343
+#, php-format
+msgid ""
+"Let your users pay for items in their shopping cart using their %s Account. "
+"Note! This gateway requires your users to be logged in when making a "
+"purchase!"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:346
+msgid "Method Name"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:348
+msgid ""
+"Enter a public name for this payment method that is displayed to users - No "
+"HTML"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:353
+msgid "Gateway Logo URL"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:361
+#: addons/gateway/carts/mycred-woocommerce.php:89
+msgid ""
+"Log entry template for successful payments. Available template tags: "
+"%order_id%, %order_link%"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:368
+#: addons/gateway/carts/mycred-woocommerce.php:95
+msgid "How much is 1 %_singular% worth in %currency%?"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:373
+#: addons/gateway/carts/mycred-woocommerce.php:100
+#: addons/gateway/event-booking/mycred-eventespresso3.php:411
+#: addons/gateway/event-booking/mycred-eventsmanager.php:496
+#: addons/import/myCRED-addon-import.php:525
+#: addons/import/myCRED-addon-import.php:594
+#: addons/import/myCRED-addon-import.php:658
+msgid "Exchange Rate"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:382
+#: addons/gateway/event-booking/mycred-eventsmanager.php:566
+msgid "Insufficient Funds"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:384
+msgid "Message to show when the user can not use this gateway."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:386
+#: addons/gateway/carts/mycred-marketpress.php:394
+msgid "Available template tags are: General."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:390
+#: addons/gateway/event-booking/mycred-eventespresso3.php:446
+msgid "Visitors"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:392
+msgid "Message to show to buyers that are not logged in."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:398
+msgid "User Instructions"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:400
+msgid "Information to show users before payment."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:402
+msgid ""
+"Available template tags are: %balance% and %balance_f% for users current "
+"balance."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:406
+msgid "Confirmation Information"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:408
+msgid "Information to display on the order confirmation page. - HTML allowed"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:410
+msgid ""
+"Available template tags: TOTAL - total cart cost, %balance% and %balance_f% "
+"- users current balance."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:414
+msgid "Order Confirmation Email"
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:416
+#, php-format
+msgid ""
+"This is the email text to send to those who have made %s checkouts. It "
+"overrides the default order checkout email. These codes will be replaced "
+"with order details: CUSTOMERNAME, ORDERID, ORDERINFO, SHIPPINGINFO, "
+"PAYMENTINFO, TOTAL, TRACKINGURL. No HTML allowed."
+msgstr ""
+
+#: addons/gateway/carts/mycred-marketpress.php:418
+#, php-format
+msgid "Available template tags: %balance% or %balance_f% for users balance."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:35
+msgid "Let users pay using their myCRED balance."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:68
+msgid "Enable/Disable"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:70
+msgid "Enable myCRED Payment"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:72
+msgid ""
+"Users who are not logged in or excluded from using myCRED will not have "
+"access to this gateway!"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:77
+msgid "Title to show for this payment option."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:78
+msgid "Pay with myCRED"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:82
+msgid "Customer Message"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:84
+msgid "Deduct the amount from your %_plural% balance."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:90
+msgid "Payment for Order: #%order_id%"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:107
+msgid "Show Total"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:109
+msgid "Show the final price in %_plural% ."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:111
+msgid "Do not show"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:112
+msgid "Show in Cart"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:113
+msgid "Show on Checkout Page"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:114
+msgid "Show in Cart and on Checkout Page"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:119
+msgid "Label"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:121
+msgid "Order Total in %_plural%"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:148
+msgid "myCRED Payment"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:149
+msgid ""
+"Allows users to pay using their myCRED %_singular% balance. Please note that "
+"users with insufficient funds and users who are not logged in will not see "
+"this payment gateway on the checkout page."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:170
+msgid "You must be logged in to pay with %_plural%"
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:176
+msgid "You can not use this gateway. Please try a different payment option."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:188
+msgid "Insufficient funds. Please try a different payment option."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:209
+msgid "Your account has successfully been charged."
+msgstr ""
+
+#: addons/gateway/carts/mycred-woocommerce.php:399
+msgid "Your current balance"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:24
+#: addons/gateway/event-booking/mycred-eventsmanager.php:479
+#: addons/sell-content/myCRED-addon-sell-content.php:313
+msgid "Payments"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:25
+#: addons/gateway/event-booking/mycred-eventsmanager.php:31
+msgid "Pay Now"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:28
+msgid "Payment for Event Registration"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:320
+#, php-format
+msgid "Activate %s"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:328
+#, php-format
+msgid "Deactivate %s"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:344
+msgid "Gateway Settings"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:376
+#: addons/gateway/event-booking/mycred-eventsmanager.php:466
+#, php-format
+msgid "How many %s is 1 %s worth?"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:382
+msgid "Gateways Settings Successfully Updated"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:390
+#: addons/gateway/event-booking/mycred-eventsmanager.php:532
+msgid "Labels"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:393
+msgid "Gateway Title"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:395
+msgid "Title to show on Payment page"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:398
+msgid "Payment Type"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:400
+msgid "Title to show on receipts and logs"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:403
+#: addons/gateway/event-booking/mycred-eventsmanager.php:549
+#: addons/sell-content/myCRED-addon-sell-content.php:349
+#: addons/sell-content/myCRED-addon-sell-content.php:541
+msgid "Button Label"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:405
+msgid "Pay Button"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:408
+#: addons/gateway/event-booking/mycred-eventsmanager.php:290
+#: addons/gateway/event-booking/mycred-eventsmanager.php:293
+#: addons/sell-content/myCRED-addon-sell-content.php:340
+#: addons/sell-content/myCRED-addon-sell-content.php:537
+msgid "Price"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:418
+msgid ""
+"You can disable purchases using this gateway by adding a custom Event Meta: "
+"<code>mycred_no_sale</code>"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:419
+msgid "Users must be logged in to use this gateway!"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:423
+#: modules/mycred-module-log.php:21 modules/mycred-module-log.php:22
+msgid "Log"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:426
+#: addons/import/myCRED-addon-import.php:549
+#: addons/import/myCRED-addon-import.php:623
+#: addons/import/myCRED-addon-import.php:681 includes/mycred-admin.php:337
+msgid "Log Entry"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:433
+#: addons/ranks/myCRED-addon-ranks.php:888
+msgid "Templates"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:436
+msgid "Solvent users"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:438
+msgid ""
+"Message to show users on the payment page before they are charged. Leave "
+"empty to hide.<br />Available template tags: General"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:441
+msgid "Insolvent users"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:443
+msgid ""
+"Message to show users who do not have enough points to pay.<br />Available "
+"template tags: General"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:448
+msgid ""
+"Message to show visitors (users not logged in) on the payment page.<br /"
+">Available template tags: General"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventespresso3.php:458
+#: modules/mycred-module-general.php:154
+msgid "Update Settings"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:25
+msgid "Payment for tickets to %link_with_title%"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:26
+msgid "Ticket refund for %link_with_title%"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:30
+msgid "Pay using your %_plural% balance"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:32
+msgid "Pay"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:35
+msgid "Thank you for your payment!"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:36
+msgid "I'm sorry but you can not pay for these tickets using %_plural%"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:287
+msgid "Ticket Type"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:296
+msgid "Spaces"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:365
+msgid "Balance After Payment"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:472
+msgid "Click to toggle"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:472
+#, php-format
+msgid "%s Payments"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:481
+msgid "Disabled - Users CAN NOT pay for tickets using %plural%."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:482
+msgid "Single - Users can ONLY pay for tickets using %plural%."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:483
+msgid "Multi - Users can pay for tickets using other gateways or %plural%."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:487
+#: addons/gateway/event-booking/mycred-eventsmanager.php:513
+msgid "Refunds"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:490
+msgid ""
+"The percentage of the paid amount to refund if a booking gets cancelled. Use "
+"zero for no refunds. No refunds are given to \"Rejected\" bookings."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:503
+msgid "Log Templates"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:506
+msgid "Purchases"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:509
+#: addons/gateway/event-booking/mycred-eventsmanager.php:516
+msgid "Available template tags: General and Post related."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:535
+msgid "Payment Link Label"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:538
+msgid ""
+"The payment link shows / hides the payment form under \"My Bookings\". No "
+"HTML allowed."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:542
+msgid "Payment Header"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:545
+msgid "Shown on top of the payment form. No HTML allowed."
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:552
+msgid "The button label for payments. No HTML allowed!"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:556
+msgid "Messages"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:559
+msgid "Successful Payments"
+msgstr ""
+
+#: addons/gateway/event-booking/mycred-eventsmanager.php:562
+#: addons/gateway/event-booking/mycred-eventsmanager.php:569
+msgid "No HTML allowed! Available template tags: General"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:12
+#: addons/import/myCRED-addon-import.php:40
+#: addons/import/myCRED-addon-import.php:41
+#: addons/import/myCRED-addon-import.php:42
+#: addons/import/myCRED-addon-import.php:466
+#: addons/import/myCRED-addon-import.php:742
+msgid "Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:13
+msgid ""
+"With the Import add-on you can import CSV files, CubePoints or existing "
+"points under any custom user meta values."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:91
+#: addons/import/myCRED-addon-import.php:748
+msgid "CSV File"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:92
+msgid "Import %_plural% from a comma-separated values (CSV) file."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:95
+msgid "CubePoints"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:96
+msgid "Import CubePoints"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:99
+#: addons/import/myCRED-addon-import.php:768
+msgid "Custom User Meta"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:100
+msgid "Import %_plural% from pre-existing custom user meta."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:217
+msgid "No file selected. Please select your CSV file and try again."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:232
+msgid "Failed to load file."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:253
+#: addons/import/myCRED-addon-import.php:423
+#, php-format
+msgid ""
+"Zero rows imported! Skipped %d entries. Import completed in %.2f seconds."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:262
+msgid ""
+"No valid records found in file. Make sure you have selected the correct way "
+"to identify users in the mycred_user column!"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:268
+#: addons/import/myCRED-addon-import.php:351
+#: addons/import/myCRED-addon-import.php:438
+#, php-format
+msgid ""
+"Import successfully completed. A total of %d users were effected and %d "
+"entires were skipped. Import completed in %.2f seconds."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:302
+#: addons/import/myCRED-addon-import.php:587
+msgid "No CubePoints found."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:336
+#, php-format
+msgid ""
+"Zero CubePoints imported! Skipped %d entries. Import completed in %.2f "
+"seconds."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:345
+msgid "No valid CubePoints founds."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:371
+msgid "Missing meta key. Not sure what I should be looking for."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:390
+#, php-format
+msgid "No rows found for the <strong>%s</strong> meta key."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:432
+msgid "No valid records founds."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:478
+msgid "Remember to de-activate this add-on once you are done importing!"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:510
+msgid "File"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:514
+msgid "Maximum allowed upload size is "
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:514
+msgid ""
+"Required columns: <code>mycred_user</code> and <code>mycred_amount</code>. "
+"Optional columns: <code>mycred_log</code>."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:517
+msgid "Identify Users By"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:520 includes/mycred-admin.php:331
+msgid "ID"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:521 modules/mycred-module-log.php:187
+msgid "Username"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:522
+msgid "Email"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:529
+msgid "How much is 1 imported value worth?"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:534
+#: addons/import/myCRED-addon-import.php:602
+#: addons/import/myCRED-addon-import.php:666
+msgid "Round"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:535
+msgid "None"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:536
+#: addons/import/myCRED-addon-import.php:604
+#: addons/import/myCRED-addon-import.php:668
+msgid "Round Up"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:537
+#: addons/import/myCRED-addon-import.php:605
+#: addons/import/myCRED-addon-import.php:669
+msgid "Round Down"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:542
+#: addons/import/myCRED-addon-import.php:610
+#: addons/import/myCRED-addon-import.php:674
+msgid "Precision"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:544
+#: addons/import/myCRED-addon-import.php:612
+#: addons/import/myCRED-addon-import.php:676
+msgid ""
+"The optional number of decimal digits to round to. Use zero to round the "
+"nearest whole number."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:553
+#: addons/import/myCRED-addon-import.php:627
+#: addons/import/myCRED-addon-import.php:685
+msgid "See the help tab for available template tags. Leave blank to disable."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:558
+#: addons/import/myCRED-addon-import.php:632
+#: addons/import/myCRED-addon-import.php:696
+msgid "Run Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:585
+#, php-format
+msgid "Found %d users with CubePoints."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:588
+#: addons/import/myCRED-addon-import.php:652
+msgid "Meta Key"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:603
+#: addons/import/myCRED-addon-import.php:667
+msgid "Do not round"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:617
+#: addons/import/myCRED-addon-import.php:688
+msgid "After Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:620
+msgid "Delete users CubePoints balance."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:691
+msgid "Delete the old value."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:719
+msgid "Failed to get file contents."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:724
+msgid "Failed to put file contents."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:744
+msgid ""
+"This add-on lets you import %_plural% either though a CSV-file or from your "
+"database. Remember that the import can take time depending on your file size "
+"or the number of users being imported."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:750
+msgid "CSV Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:751
+msgid ""
+"Imports using a comma-separated values file requires the following columns:"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:752
+msgid ""
+"Column identifing the user. All rows must identify the user the same way, "
+"either using an ID, Username (user_login) or email. Users that can not be "
+"found will be ignored."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:753
+msgid ""
+"Column with the amount to be imported. If set, an exchange rate is applied "
+"to this value before import."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:754
+msgid ""
+"Optionally you can also use the <code>mycred_log</code> column to pre-define "
+"the log entry for each import."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:758
+msgid "Cubepoints"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:760
+msgid "Cubepoints Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:761
+msgid ""
+"When this page loads, the importer will automatically check if you have been "
+"using Cubepoints. If you have, you can import these with the option to "
+"delete the original Cubepoints once completed to help keep your database "
+"clean."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:762
+#: addons/import/myCRED-addon-import.php:772
+msgid ""
+"Before a value is imported, you can apply an exchange rate. To import "
+"without changing the value, use 1 as the exchange rate."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:763
+#: addons/import/myCRED-addon-import.php:773
+msgid ""
+"You can select to add a log entry for each import or leave the template "
+"empty to skip."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:764
+msgid ""
+"The Cubepoints importer will automatically disable itself if no Cubepoints "
+"installation exists."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:770
+msgid "Custom User Meta Import"
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:771
+msgid ""
+"You can import any type of points that have previously been saved in your "
+"database. All you need is the meta key under which it has been saved."
+msgstr ""
+
+#: addons/import/myCRED-addon-import.php:774
+msgid ""
+"Please note that the meta key is case sensitive and can not contain "
+"whitespaces!"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:12
+#: addons/ranks/myCRED-addon-ranks.php:156
+#: addons/ranks/myCRED-addon-ranks.php:162
+#: addons/ranks/myCRED-addon-ranks.php:168
+#: addons/ranks/myCRED-addon-ranks.php:691
+#: addons/ranks/myCRED-addon-ranks.php:883
+msgid "Ranks"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:13
+msgid ""
+"Create ranks for users reaching a certain number of %_plural% with the "
+"option to add logos for each rank."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:157
+#: addons/ranks/myCRED-addon-ranks.php:387
+#: addons/ranks/myCRED-addon-ranks.php:404
+#: addons/ranks/myCRED-addon-ranks.php:499
+msgid "Rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:159
+msgid "Add New Rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:160
+msgid "Edit Rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:161
+msgid "New Rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:163
+msgid "View Rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:164
+msgid "Search Ranks"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:165
+msgid "No ranks found"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:166
+msgid "No ranks found in Trash"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:233
+#, php-format
+msgid "Completed - Total of %d users effected"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:235
+msgid "Log is Empty"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:428
+msgid "Newbie"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:459
+#: addons/ranks/myCRED-addon-ranks.php:462
+#, php-format
+msgid "Rank Updated. View <a href=\"%1$s\">All Ranks</a>."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:464
+msgid "Rank Activated"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:465
+msgid "Rank Saved"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:466
+#, php-format
+msgid "Rank Submitted for approval. View <a href=\"%1$s\">All Ranks</a>."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:468
+#, php-format
+msgid "Rank scheduled for: <strong>%1$s</strong>."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:525
+#: addons/ranks/myCRED-addon-ranks.php:580
+msgid "Rank Title"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:526
+msgid "Logo"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:527
+msgid "Requirement"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:528
+msgid "Users"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:544
+msgid "No Logo Set"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:553
+#: addons/ranks/myCRED-addon-ranks.php:558
+msgid "Any Value"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:560
+msgid "Maximum %plural%"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:593
+msgid "Rank Settings"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:615
+msgid "Minimum %plural% to reach this rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:619
+msgid "Maximum %plural% to be included in this rank"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:624
+msgid "All Published Ranks"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:631
+#: addons/ranks/myCRED-addon-ranks.php:633
+msgid "Not Set"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:638
+msgid "No Ranks found"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:693
+msgid "Rank Features"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:697
+msgid "%plural% requirement"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:698
+msgid "Featured Image (Logo)"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:699
+msgid "Content"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:700
+msgid "Excerpt"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:701
+msgid "Comments"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:702
+msgid "Page Attributes"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:703
+msgid "Custom Fields"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:706
+msgid "Public"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:710
+msgid ""
+"If you want to create a template archive for each rank, you must select to "
+"have ranks public. Defaults to disabled."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:713
+#: addons/ranks/myCRED-addon-ranks.php:886
+msgid "Rank Basis"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:716
+msgid "Users are ranked according to their current balance."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:719
+msgid ""
+"Users are ranked according to the total amount of %_plural% they have "
+"accumulated."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:723
+#: addons/ranks/myCRED-addon-ranks.php:728
+msgid "Calculate Totals"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:726
+msgid ""
+"Use this button to calculate or re-calcualte your users totals. If not used, "
+"the users current balance will be used as a starting point."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:726
+msgid ""
+"Once a users total has been calculated, they will be assigned to their "
+"appropriate roles. For this reason, it is highly recommended that you first "
+"setup your ranks!"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:727
+msgid ""
+"Depending on your log size and number of users this process may take a "
+"while. Please do not leave, click \"Update Settings\" or re-fresh this page "
+"until this is completed!"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:732
+msgid "Archive URL"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:736
+msgid "Ignored if Ranks are not public"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:739
+msgid "Display Order"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:746
+msgid "Ascending - Lowest rank to highest"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:747
+msgid "Descending - Highest rank to lowest"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:756
+msgid ""
+"Select in what order ranks should be displayed in your admin area and/or "
+"front if ranks are \"Public\""
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:772
+msgid "Rank in BuddyPress"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:840
+msgid "Script Communication Error"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:885
+msgid ""
+"You can create ranks according to the amount of points a user has. By "
+"default, ranks are only visible in widgets and shortcodes however it is "
+"possible for you to also create archive pages in your theme for all ranks or "
+"specific ones."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:887
+msgid ""
+"As of version 1.2, you can select to rank users according to their current "
+"balance or the total amount of %_plural% they have accumulated. This is "
+"recommended if you do not want users to get demoted if they use their "
+"%_plural% to pay for items in your store or event tickets."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:889
+msgid ""
+"Ranks are just another custom post type which means that you can, if you "
+"select to make Ranks Public, create custom template files for ranks in your "
+"theme folder."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:890
+#, php-format
+msgid ""
+"For more information on Templates for Custom Post Types visit the <a href="
+"\"%s\">WordPress Codex</a>."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:891
+msgid "Changing URL Slug"
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:892
+msgid "You can change the URL slug used for ranks to any URL friendly value."
+msgstr ""
+
+#: addons/ranks/myCRED-addon-ranks.php:893
+msgid ""
+"If you are using a custom permalink structure and you make ranks public or "
+"change the slug, you will need to visit your permalink settings page and "
+"click \"Save Changes\" to flush your re-write rules! Otherwise you will get "
+"a 404 error message when trying to view a rank archive page."
+msgstr ""
+
+#: addons/ranks/includes/mycred-rank-functions.php:145
+#: addons/ranks/includes/mycred-rank-functions.php:151
+msgid "No Rank"
+msgstr ""
+
+#: addons/ranks/includes/mycred-rank-shortcodes.php:57
+#: addons/ranks/includes/mycred-rank-shortcodes.php:132
+msgid "No users found with this rank"
+msgstr ""
+
+#: addons/ranks/includes/mycred-rank-shortcodes.php:62
+#: includes/mycred-shortcodes.php:144 includes/mycred-shortcodes.php:147
+#: includes/mycred-shortcodes.php:206 includes/mycred-shortcodes.php:255
+#: includes/mycred-shortcodes.php:259 includes/mycred-shortcodes.php:263
+msgid "error"
+msgstr ""
+
+#: addons/ranks/includes/mycred-rank-shortcodes.php:62
+msgid "Rank ID is required!"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:12
+#: addons/sell-content/myCRED-addon-sell-content.php:304
+#: addons/sell-content/myCRED-addon-sell-content.php:1052
+msgid "Sell Content"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:13
+msgid ""
+"This add-on allows you to sell posts, pages or any public post types on your "
+"website. You can either sell the entire content or using our shortcode, sell "
+"parts of your content allowing you to offer \"teasers\"."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:42
+msgid "<p>Buy this %post_type% for only %price% %buy_button%</p>"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:43
+msgid ""
+"<p><a href=\"%login_url_here%\">Login</a> to buy access to this %post_type%."
+"</p>"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:44
+msgid ""
+"<p>You do not have enough %plural% to buy access to this %post_type%.</p>\n"
+"<p><strong>Price</strong>: %price%</p>"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:54
+msgid "Purchase of %link_with_title%"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:55
+msgid "Sale of %link_with_title%"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:72
+msgid "Hours"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:214
+msgid "You can not buy this content."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:277
+msgid "Error. Try Again"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:299
+msgid "No Payout. Just charge."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:300
+msgid "Pay Content Author."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:306
+msgid "Post Types"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:310
+msgid "Comma separated list of post types that can be sold."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:327
+msgid "Percentage to pay Author"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:329
+msgid ""
+"Percentage of the price to pay the author. Can not be zero and is ignored if "
+"authors are not paid."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:337
+#: addons/sell-content/myCRED-addon-sell-content.php:1055
+msgid "Defaults"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:345
+msgid "Allow authors to change price."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:354
+msgid "Allow authors to change button label."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:358
+msgid "Purchases expire after"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:360
+msgid "Use zero for permanent sales."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:363
+msgid "Sale Template for non members"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:367
+msgid ""
+"Do <strong>not</strong> use the %buy_button% in this template as a user must "
+"be logged in to buy content!"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:368
+msgid ""
+"Available template tags are: %singular%, %plural%, %post_title%, %post_url%, "
+"%link_with_title%, %price%"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:371
+msgid "Sale Template for members"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:375
+#: addons/sell-content/myCRED-addon-sell-content.php:383
+msgid "Your template must contain the %buy_button% tag for purchases to work!"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:376
+#: addons/sell-content/myCRED-addon-sell-content.php:384
+msgid ""
+"Available template tags are: %singular%, %plural%, %post_title%, %post_url%, "
+"%link_with_title%, %buy_button%, %price%"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:379
+msgid "Insufficient funds template"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:387
+msgid "Log template for Purchases"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:391
+#: addons/sell-content/myCRED-addon-sell-content.php:398
+msgid ""
+"Available template tags are: %singular%, %plural%, %post_title%, %post_url% "
+"or %link_with_title%"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:394
+msgid "Log template for Sales"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:450
+msgid "Sell This"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:499
+msgid " Sell Content needs to be setup before you can use this feature."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:502
+msgid "Setup add-on"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:502
+msgid "Lets do it"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:531
+msgid "Enable sale of this "
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:545
+msgid "Purchase expires after"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:791
+msgid "Thank you for your purchase!"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:872
+#: addons/sell-content/myCRED-addon-sell-content.php:952
+msgid "The following content is set for sale:"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:970
+msgid "No purchases found"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:1007
+msgid "Purchased"
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:1054
+msgid ""
+"This add-on lets you sell either entire contents or parts of it. You can "
+"select if you want to just charge users or share a percentage of the sale "
+"with the post author."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:1056
+msgid ""
+"The default price and button label is applied to all content that is set for "
+"sale. You can select if you want to enforce these settings or let the "
+"content authors set their own."
+msgstr ""
+
+#: addons/sell-content/myCRED-addon-sell-content.php:1058
+msgid ""
+"You can either sell entire posts via the Sell Content Meta Box or by using "
+"the <code>mycred_sell_this</code> shortcode.<br />For more information on "
+"how to use the shortcode, please visit the"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:12
+#: addons/transfer/myCRED-addon-transfer.php:50
+#: addons/transfer/myCRED-addon-transfer.php:488
+msgid "Transfer"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:13
+msgid ""
+"Allow your users to send or \"donate\" points to other members by either "
+"using the mycred_transfer shortcode or the myCRED Transfer widget."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:43
+msgid "You do not have enough %plural% to send."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:44
+msgid "You have exceeded your %limit% transfer limit."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:143
+msgid "Transaction completed."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:144
+msgid ""
+"Security token could not be verified. Please contact your site administrator!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:145
+msgid "Communications error. Please try again later."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:146
+msgid "Recipient not found. Please try again."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:147
+msgid "Transaction declined by recipient."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:148
+msgid "Incorrect amount. Please try again."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:149
+msgid ""
+"This myCRED Add-on has not yet been setup! No transfers are allowed until "
+"this has been done!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:150
+msgid "Insufficient funds. Please enter a lower amount."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:151
+msgid "Transfer Limit exceeded."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:152
+msgid ""
+"The request amount will exceed your transfer limit. Please try again with a "
+"lower amount!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:177
+msgid "No limits."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:178
+msgid "Impose daily limit."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:179
+msgid "Impose weekly limit."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:183
+#: addons/transfer/myCRED-addon-transfer.php:588
+msgid "Transfer %plural%"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:185
+msgid "Log template for sending"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:192
+msgid "Log template for receiving"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:199
+#: modules/mycred-module-hooks.php:992 modules/mycred-module-hooks.php:1235
+msgid "Limits"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:216
+msgid "Maximum Amount"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:218
+msgid "This amount is ignored if no limits are imposed."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:221
+msgid "Form Templates"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:224
+msgid "Not logged in Template"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:226
+msgid ""
+"Text to show when users are not logged in. Leave empty to hide. No HTML "
+"elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:230
+msgid "Balance Template"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:232
+msgid ""
+"Template to use when displaying the users balance (if included). No HTML "
+"elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:236
+msgid "Limit Template"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:238
+msgid ""
+"Template to use when displaying limits (if used). No HTML elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:242
+msgid "Button Template"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:244
+msgid "Send Transfer button template. No HTML elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:247
+msgid "Error Messages"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:250
+msgid "Balance to low to send."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:252
+msgid ""
+"Text to show when a users balance is to low for transfers. Leave empty to "
+"hide. No HTML elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:256
+msgid "Transfer Limit Reached."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:258
+msgid ""
+"Text to show when a user has reached their transfer limit (if used). Leave "
+"empty to hide. No HTML elements allowed!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:490
+msgid ""
+"This add-on lets your users transfer %_plural% to each other. Members who "
+"are set to be excluded can neither send or receive %_plural%."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:491
+msgid "Transfer Limit"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:492
+msgid ""
+"You can impose a daily-, weekly- or monthly transfer limit for each user. "
+"Note, that this transfer limit is imposed on everyone who are not excluded "
+"from using myCRED."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:494
+msgid ""
+"Transfers can be made by either using the <code>mycred_transfer</code> "
+"shortcode or via the myCRED Transfer Widget.<br />For more information on "
+"how to use the shortcode, please visit the"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:517
+msgid "Allow transfers between users."
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:519
+#, php-format
+msgid "%s Transfer"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:534
+msgid "The myCRED Transfer add-on has not yet been setup!"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:599
+msgid "Show users balance"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:603
+msgid "Show users limit"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:726
+msgid "To:"
+msgstr ""
+
+#: addons/transfer/myCRED-addon-transfer.php:730
+msgid "Amount:"
+msgstr ""
+
+#: includes/mycred-admin.php:68
+msgid "User is excluded"
+msgstr ""
+
+#: includes/mycred-admin.php:73
+msgid "Log Entry can not be empty"
+msgstr ""
+
+#: includes/mycred-admin.php:77
+msgid "Amount can not be zero"
+msgstr ""
+
+#: includes/mycred-admin.php:173
+msgid "Excluded"
+msgstr ""
+
+#: includes/mycred-admin.php:180
+msgid "History"
+msgstr ""
+
+#: includes/mycred-admin.php:182
+msgid "Adjust"
+msgstr ""
+
+#: includes/mycred-admin.php:233
+#, php-format
+msgid "My current %singular% balance"
+msgstr ""
+
+#: includes/mycred-admin.php:256
+msgid "Adjust Your Balance"
+msgstr ""
+
+#: includes/mycred-admin.php:258
+msgid "Adjust Users Balance"
+msgstr ""
+
+#: includes/mycred-admin.php:265 includes/mycred-admin.php:325
+msgid "required"
+msgstr ""
+
+#: includes/mycred-admin.php:267 includes/mycred-admin.php:327
+msgid "optional"
+msgstr ""
+
+#: includes/mycred-admin.php:273
+msgid "Log description for adjustment"
+msgstr ""
+
+#: includes/mycred-admin.php:274
+msgid "Update"
+msgstr ""
+
+#: includes/mycred-admin.php:275
+msgid "Description is required!"
+msgstr ""
+
+#: includes/mycred-admin.php:280
+msgid "Users Current Balance"
+msgstr ""
+
+#: includes/mycred-admin.php:336
+msgid "A positive or negative value"
+msgstr ""
+
+#: includes/mycred-admin.php:338
+msgid "Update Balance"
+msgstr ""
+
+#: includes/mycred-functions.php:312
+msgid "Deleted"
+msgstr ""
+
+#: includes/mycred-functions.php:447
+msgid "Deleted Item"
+msgstr ""
+
+#: includes/mycred-functions.php:1212
+msgid "ref empty"
+msgstr ""
+
+#: includes/mycred-functions.php:1220
+msgid "incorrect user id format"
+msgstr ""
+
+#: includes/mycred-functions.php:1233
+msgid "incorrect unix timestamp (from):"
+msgstr ""
+
+#: includes/mycred-functions.php:1242
+msgid "incorrect unix timestamp (to):"
+msgstr ""
+
+#: includes/mycred-install.php:35
+msgid "myCRED requires WordPress 3.1 or higher. Version detected:"
+msgstr ""
+
+#: includes/mycred-install.php:40
+msgid "myCRED requires PHP 5.2.0 or higher. Version detected: "
+msgstr ""
+
+#: includes/mycred-install.php:45
+msgid "myCRED requires SQL 5.0 or higher. Version detected: "
+msgstr ""
+
+#: includes/mycred-install.php:50
+msgid ""
+"Sorry but your WordPress installation does not reach the minimum "
+"requirements for running myCRED. The following errors were given:"
+msgstr ""
+
+#: includes/mycred-install.php:269
+msgid "myCRED needs your attention."
+msgstr ""
+
+#: includes/mycred-install.php:269
+msgid "Run Setup"
+msgstr ""
+
+#: includes/mycred-install.php:281 includes/mycred-install.php:282
+msgid "myCRED Setup"
+msgstr ""
+
+#: includes/mycred-install.php:421
+msgid "Step"
+msgstr ""
+
+#: includes/mycred-install.php:444
+msgid ""
+"Click \"Begin Setup\" to install myCRED. You will be able to select your "
+"points format, layout and security settings."
+msgstr ""
+
+#: includes/mycred-install.php:445
+msgid "Begin Setup"
+msgstr ""
+
+#: includes/mycred-install.php:502
+msgid "Select the format you want to use for your points."
+msgstr ""
+
+#: includes/mycred-install.php:503 includes/mycred-widgets.php:199
+msgid "Format"
+msgstr ""
+
+#: includes/mycred-install.php:506
+msgid "Separators"
+msgstr ""
+
+#: includes/mycred-install.php:516
+msgid "Decimals"
+msgstr ""
+
+#: includes/mycred-install.php:518
+msgid "Use zero for no decimals."
+msgstr ""
+
+#: includes/mycred-install.php:521 modules/mycred-module-general.php:75
+msgid "Presentation"
+msgstr ""
+
+#: includes/mycred-install.php:524 modules/mycred-module-general.php:62
+msgid "Name (Singular)"
+msgstr ""
+
+#: includes/mycred-install.php:528 modules/mycred-module-general.php:67
+msgid "Name (Plural)"
+msgstr ""
+
+#: includes/mycred-install.php:534 modules/mycred-module-general.php:78
+msgid "Prefix"
+msgstr ""
+
+#: includes/mycred-install.php:542 modules/mycred-module-general.php:86
+msgid "Suffix"
+msgstr ""
+
+#: includes/mycred-install.php:547
+msgid "Cancel Setup"
+msgstr ""
+
+#: includes/mycred-install.php:547
+msgid "Cancel"
+msgstr ""
+
+#: includes/mycred-install.php:547 includes/mycred-install.php:627
+msgid "Next"
+msgstr ""
+
+#: includes/mycred-install.php:576 modules/mycred-module-general.php:94
+msgid "Security"
+msgstr ""
+
+#: includes/mycred-install.php:579
+msgid "Edit Settings Capability"
+msgstr ""
+
+#: includes/mycred-install.php:583
+msgid "Edit Users %plural% Capability"
+msgstr ""
+
+#: includes/mycred-install.php:591 modules/mycred-module-general.php:111
+msgid "Exclude those who can \"Edit Settings\"."
+msgstr ""
+
+#: includes/mycred-install.php:595 modules/mycred-module-general.php:115
+msgid "Exclude those who can \"Edit Users %plural%\"."
+msgstr ""
+
+#: includes/mycred-install.php:598 modules/mycred-module-general.php:119
+msgid "Exclude the following user IDs:"
+msgstr ""
+
+#: includes/mycred-install.php:602 modules/mycred-module-general.php:124
+msgid "Rankings"
+msgstr ""
+
+#: includes/mycred-install.php:606 modules/mycred-module-general.php:128
+msgid "Update rankings each time a users balance changes."
+msgstr ""
+
+#: includes/mycred-install.php:610 modules/mycred-module-general.php:132
+msgid "Update rankings once a day."
+msgstr ""
+
+#: includes/mycred-install.php:614 modules/mycred-module-general.php:136
+msgid "Update rankings once a week."
+msgstr ""
+
+#: includes/mycred-install.php:618 modules/mycred-module-general.php:140
+msgid "Update rankings on a specific date."
+msgstr ""
+
+#: includes/mycred-install.php:622 modules/mycred-module-general.php:144
+#: modules/mycred-module-log.php:810
+msgid "Date"
+msgstr ""
+
+#: includes/mycred-install.php:646
+msgid "Ready"
+msgstr ""
+
+#: includes/mycred-install.php:647
+msgid "Almost done! Click the button below to finish this setup."
+msgstr ""
+
+#: includes/mycred-install.php:648
+msgid "Install & Run"
+msgstr ""
+
+#: includes/mycred-network.php:62 includes/mycred-network.php:63
+msgid "Network Settings"
+msgstr ""
+
+#: includes/mycred-network.php:128
+msgid "Network"
+msgstr ""
+
+#: includes/mycred-network.php:133
+msgid "Network Settings Updated"
+msgstr ""
+
+#: includes/mycred-network.php:135
+#, php-format
+msgid "Configure network settings for %s."
+msgstr ""
+
+#: includes/mycred-network.php:141
+msgid "Master Template"
+msgstr ""
+
+#: includes/mycred-network.php:145
+msgid "Yes"
+msgstr ""
+
+#: includes/mycred-network.php:149
+msgid "No"
+msgstr ""
+
+#: includes/mycred-network.php:152
+#, php-format
+msgid "If enabled, your main site's %s setup will be used for all other sites."
+msgstr ""
+
+#: includes/mycred-network.php:155
+msgid "Site Block"
+msgstr ""
+
+#: includes/mycred-network.php:159
+#, php-format
+msgid "Comma separated list of blog ids where %s is to be disabled."
+msgstr ""
+
+#: includes/mycred-network.php:168
+msgid "Save Network Settings"
+msgstr ""
+
+#: includes/mycred-shortcodes.php:67
+msgid "Leaderboard is empty."
+msgstr ""
+
+#: includes/mycred-shortcodes.php:144 includes/mycred-shortcodes.php:255
+msgid "Amount missing!"
+msgstr ""
+
+#: includes/mycred-shortcodes.php:147 includes/mycred-shortcodes.php:263
+msgid "Log Template Missing!"
+msgstr ""
+
+#: includes/mycred-shortcodes.php:206
+msgid "Anchor missing URL!"
+msgstr ""
+
+#: includes/mycred-shortcodes.php:259
+msgid "User ID missing for recipient."
+msgstr ""
+
+#: includes/mycred-shortcodes.php:317
+msgid "A video ID is required for this shortcode"
+msgstr ""
+
+#: includes/mycred-widgets.php:19
+#, php-format
+msgid "Show the current users %s balance"
+msgstr ""
+
+#: includes/mycred-widgets.php:21
+#, php-format
+msgid "%s Balance"
+msgstr ""
+
+#: includes/mycred-widgets.php:155
+msgid "My Balance"
+msgstr ""
+
+#: includes/mycred-widgets.php:166
+msgid "<a href=\"%login_url_here%\">Login</a> to view your balance."
+msgstr ""
+
+#: includes/mycred-widgets.php:190
+msgid "Layout"
+msgstr ""
+
+#: includes/mycred-widgets.php:192 includes/mycred-widgets.php:215
+#: includes/mycred-widgets.php:225 includes/mycred-widgets.php:374
+msgid "See the help tab for available template tags."
+msgstr ""
+
+#: includes/mycred-widgets.php:197
+msgid "Include users ranking"
+msgstr ""
+
+#: includes/mycred-widgets.php:201
+msgid ""
+"This will be appended after the balance. See the help tab for available "
+"template tags."
+msgstr ""
+
+#: includes/mycred-widgets.php:207
+msgid "Include history"
+msgstr ""
+
+#: includes/mycred-widgets.php:209
+msgid "History Title"
+msgstr ""
+
+#: includes/mycred-widgets.php:211
+msgid "Number of entires"
+msgstr ""
+
+#: includes/mycred-widgets.php:213 includes/mycred-widgets.php:372
+msgid "Row layout"
+msgstr ""
+
+#: includes/mycred-widgets.php:221
+msgid "Show message when not logged in"
+msgstr ""
+
+#: includes/mycred-widgets.php:223
+msgid "Message"
+msgstr ""
+
+#: includes/mycred-widgets.php:296
+#, php-format
+msgid "Show a list of users sorted by their %s balance"
+msgstr ""
+
+#: includes/mycred-widgets.php:298
+#, php-format
+msgid "%s List"
+msgstr ""
+
+#: includes/mycred-widgets.php:352
+msgid "Leaderboard"
+msgstr ""
+
+#: includes/mycred-widgets.php:365
+msgid "Visible to non-members"
+msgstr ""
+
+#: includes/mycred-widgets.php:368
+msgid "Number of users"
+msgstr ""
+
+#: includes/mycred-widgets.php:377
+msgid "Offset"
+msgstr ""
+
+#: includes/mycred-widgets.php:379
+msgid "Optional offset of order. Use zero to return the first in the list."
+msgstr ""
+
+#: includes/mycred-widgets.php:382
+msgid "Order"
+msgstr ""
+
+#: includes/mycred-widgets.php:386 modules/mycred-module-log.php:194
+msgid "Ascending"
+msgstr ""
+
+#: includes/mycred-widgets.php:387 modules/mycred-module-log.php:194
+msgid "Descending"
+msgstr ""
+
+#: modules/mycred-module-addons.php:23 modules/mycred-module-addons.php:24
+#: modules/mycred-module-addons.php:25 modules/mycred-module-addons.php:264
+msgid "Add-ons"
+msgstr ""
+
+#: modules/mycred-module-addons.php:257
+msgid "Add-on Activated"
+msgstr ""
+
+#: modules/mycred-module-addons.php:259
+msgid "Add-on Deactivated"
+msgstr ""
+
+#: modules/mycred-module-addons.php:265
+msgid "Add-ons can expand your current installation with further features."
+msgstr ""
+
+#: modules/mycred-module-addons.php:303
+msgid "Deactivate Add-on"
+msgstr ""
+
+#: modules/mycred-module-addons.php:304
+msgid "Deactivate"
+msgstr ""
+
+#: modules/mycred-module-addons.php:309
+msgid "Activate Add-on"
+msgstr ""
+
+#: modules/mycred-module-addons.php:310
+msgid "Activate"
+msgstr ""
+
+#: modules/mycred-module-addons.php:327
+msgid "Version"
+msgstr ""
+
+#: modules/mycred-module-addons.php:330
+msgid "By"
+msgstr ""
+
+#: modules/mycred-module-addons.php:330
+msgid "View Authors Website"
+msgstr ""
+
+#: modules/mycred-module-addons.php:333
+msgid "View Add-ons Website"
+msgstr ""
+
+#: modules/mycred-module-addons.php:333
+msgid "Visit Website"
+msgstr ""
+
+#: modules/mycred-module-general.php:49
+msgid "Facebook"
+msgstr ""
+
+#: modules/mycred-module-general.php:50
+msgid "Google Plus"
+msgstr ""
+
+#: modules/mycred-module-general.php:51
+msgid "Support Forum"
+msgstr ""
+
+#: modules/mycred-module-general.php:57 modules/mycred-module-help.php:212
+msgid "Core Settings"
+msgstr ""
+
+#: modules/mycred-module-general.php:59
+msgid "Name"
+msgstr ""
+
+#: modules/mycred-module-general.php:64
+msgid "Accessible though the %singular% template tag."
+msgstr ""
+
+#: modules/mycred-module-general.php:69
+msgid "Accessible though the %plural% template tag."
+msgstr ""
+
+#: modules/mycred-module-general.php:72
+msgid "Tip"
+msgstr ""
+
+#: modules/mycred-module-general.php:72
+msgid ""
+"Adding an underscore at the beginning of template tag for names will return "
+"them in lowercase. i.e. %_singular%"
+msgstr ""
+
+#: modules/mycred-module-general.php:90
+msgid "Separator"
+msgstr ""
+
+#: modules/mycred-module-general.php:97
+msgid "Edit Settings"
+msgstr ""
+
+#: modules/mycred-module-general.php:99 modules/mycred-module-general.php:104
+msgid "Capability to check for."
+msgstr ""
+
+#: modules/mycred-module-general.php:102
+msgid "Edit Users %plural%"
+msgstr ""
+
+#: modules/mycred-module-general.php:121
+msgid "Comma separated list of user ids to exclude. No spaces allowed!"
+msgstr ""
+
+#: modules/mycred-module-help.php:66
+msgid "The Log"
+msgstr ""
+
+#: modules/mycred-module-help.php:68
+msgid ""
+"myCRED logs everything giving you a complete overview of %_plural% awarded "
+"or deducted from your users. The Log page can be filtered by user, date or "
+"reference and we have included a search function for you."
+msgstr ""
+
+#: modules/mycred-module-help.php:69
+msgid ""
+"You can select how many log entries you want to show under \"Screen Options"
+"\". By default you will be shown 10 entries."
+msgstr ""
+
+#: modules/mycred-module-help.php:70
+msgid "Filter by Date"
+msgstr ""
+
+#: modules/mycred-module-help.php:71
+msgid ""
+"You can select to show log entries for: Today, Yesterday, This Week or This "
+"Month."
+msgstr ""
+
+#: modules/mycred-module-help.php:72
+msgid "Filter by Reference"
+msgstr ""
+
+#: modules/mycred-module-help.php:73
+msgid ""
+"Each time a log entry is made a reference is used to identify where or why "
+"points were awarded or deducted."
+msgstr ""
+
+#: modules/mycred-module-help.php:74
+msgid "Filter by User"
+msgstr ""
+
+#: modules/mycred-module-help.php:75
+msgid "Show log entries for a particular username."
+msgstr ""
+
+#: modules/mycred-module-help.php:87 modules/mycred-module-hooks.php:28
+#: modules/mycred-module-hooks.php:29 modules/mycred-module-hooks.php:30
+#: modules/mycred-module-hooks.php:244
+msgid "Hooks"
+msgstr ""
+
+#: modules/mycred-module-help.php:89
+msgid ""
+"Each instance where users might gain or loose %_plural%, are called hooks. "
+"Hooks can relate to WordPress specific actions or any third party plugin "
+"action that myCRED supports."
+msgstr ""
+
+#: modules/mycred-module-help.php:90
+msgid ""
+"A hook can relate to a specific instance or several instances. You can "
+"disable specific instances in a hook by awarding zero %_plural%."
+msgstr ""
+
+#: modules/mycred-module-help.php:94
+msgid "Third Party Plugins"
+msgstr ""
+
+#: modules/mycred-module-help.php:96
+msgid ""
+"myCRED supports several third party plugins by default. These hooks are only "
+"available / visible if the plugin has been installed and enabled."
+msgstr ""
+
+#: modules/mycred-module-help.php:97
+msgid "Supported Plugins:"
+msgstr ""
+
+#: modules/mycred-module-help.php:105
+msgid "Template Tags"
+msgstr ""
+
+#: modules/mycred-module-help.php:107
+msgid "General:"
+msgstr ""
+
+#: modules/mycred-module-help.php:108 modules/mycred-module-help.php:152
+#: modules/mycred-module-help.php:157 modules/mycred-module-help.php:174
+msgid "Singular %plural% Name."
+msgstr ""
+
+#: modules/mycred-module-help.php:109
+msgid "Singular %plural% Name in lowercase."
+msgstr ""
+
+#: modules/mycred-module-help.php:110 modules/mycred-module-help.php:153
+#: modules/mycred-module-help.php:158 modules/mycred-module-help.php:175
+msgid "Plural %plural% Name."
+msgstr ""
+
+#: modules/mycred-module-help.php:111
+msgid "Plural %plural% Name in lowercase."
+msgstr ""
+
+#: modules/mycred-module-help.php:112 modules/mycred-module-help.php:162
+msgid "The login URL without redirection."
+msgstr ""
+
+#: modules/mycred-module-help.php:113 modules/mycred-module-help.php:163
+msgid "The login URL with redirection to current page."
+msgstr ""
+
+#: modules/mycred-module-help.php:114
+msgid "Post:"
+msgstr ""
+
+#: modules/mycred-module-help.php:115
+msgid "The posts title."
+msgstr ""
+
+#: modules/mycred-module-help.php:116
+msgid "The posts URL address."
+msgstr ""
+
+#: modules/mycred-module-help.php:117
+msgid "The post type."
+msgstr ""
+
+#: modules/mycred-module-help.php:118
+msgid "The posts permalink with the post title as title."
+msgstr ""
+
+#: modules/mycred-module-help.php:119
+msgid "User:"
+msgstr ""
+
+#: modules/mycred-module-help.php:120
+msgid "The users ID."
+msgstr ""
+
+#: modules/mycred-module-help.php:121
+msgid "The users \"username\"."
+msgstr ""
+
+#: modules/mycred-module-help.php:122
+msgid "The users \"username\" URL encoded."
+msgstr ""
+
+#: modules/mycred-module-help.php:123
+msgid "The users display name."
+msgstr ""
+
+#: modules/mycred-module-help.php:124
+msgid "The users profile URL."
+msgstr ""
+
+#: modules/mycred-module-help.php:125
+msgid "The users profile link with the display name as title."
+msgstr ""
+
+#: modules/mycred-module-help.php:126
+msgid "Comment:"
+msgstr ""
+
+#: modules/mycred-module-help.php:127
+msgid "The comment ID."
+msgstr ""
+
+#: modules/mycred-module-help.php:128
+msgid "The post id where the comment was made."
+msgstr ""
+
+#: modules/mycred-module-help.php:129
+msgid "The post title where the comment was made."
+msgstr ""
+
+#: modules/mycred-module-help.php:130
+msgid "The post URL address where the comment was made."
+msgstr ""
+
+#: modules/mycred-module-help.php:131
+msgid "Link to the post where the comment was made."
+msgstr ""
+
+#: modules/mycred-module-help.php:143
+msgid "myCRED Balance Template Tags"
+msgstr ""
+
+#: modules/mycred-module-help.php:146
+msgid "Layout:"
+msgstr ""
+
+#: modules/mycred-module-help.php:147 modules/mycred-module-help.php:155
+#: modules/mycred-module-help.php:172
+msgid "Balance amount in plain format."
+msgstr ""
+
+#: modules/mycred-module-help.php:148 modules/mycred-module-help.php:156
+#: modules/mycred-module-help.php:173
+msgid "Balance amount formatted with prefix and/or suffix."
+msgstr ""
+
+#: modules/mycred-module-help.php:149
+msgid "Rank Format:"
+msgstr ""
+
+#: modules/mycred-module-help.php:150 modules/mycred-module-help.php:171
+msgid "The users ranking. Was \"%rank%\" before version 1.1"
+msgstr ""
+
+#: modules/mycred-module-help.php:151
+msgid "History Title:"
+msgstr ""
+
+#: modules/mycred-module-help.php:152 modules/mycred-module-help.php:153
+#: modules/mycred-module-help.php:157 modules/mycred-module-help.php:158
+#: modules/mycred-module-help.php:174 modules/mycred-module-help.php:175
+msgid "or"
+msgstr ""
+
+#: modules/mycred-module-help.php:154 modules/mycred-module-help.php:170
+msgid "Row Layout:"
+msgstr ""
+
+#: modules/mycred-module-help.php:159 modules/mycred-module-help.php:176
+msgid "Log entry date."
+msgstr ""
+
+#: modules/mycred-module-help.php:160 modules/mycred-module-help.php:177
+msgid "The log entry."
+msgstr ""
+
+#: modules/mycred-module-help.php:161
+msgid "Message:"
+msgstr ""
+
+#: modules/mycred-module-help.php:167
+msgid "myCRED List Template Tags"
+msgstr ""
+
+#: modules/mycred-module-help.php:178
+msgid "Users display name."
+msgstr ""
+
+#: modules/mycred-module-help.php:179
+msgid "Users profile URL."
+msgstr ""
+
+#: modules/mycred-module-help.php:180
+msgid "Users \"username\"."
+msgstr ""
+
+#: modules/mycred-module-help.php:181
+msgid "Users \"username\" URL encoded."
+msgstr ""
+
+#: modules/mycred-module-help.php:182
+msgid "Link to users profile with their display name as title."
+msgstr ""
+
+#: modules/mycred-module-help.php:194
+msgid "Editing %plural%"
+msgstr ""
+
+#: modules/mycred-module-help.php:196
+msgid ""
+"You can adjust this users %_plural% by giving a positive or negative amount "
+"and a log description. Remember that plugin and point editors will always be "
+"able to adjust their own balance."
+msgstr ""
+
+#: modules/mycred-module-help.php:197
+msgid ""
+"If the option to edit a users balance is missing the user is set to be "
+"excluded from using myCRED."
+msgstr ""
+
+#: modules/mycred-module-help.php:209
+msgid "Core"
+msgstr ""
+
+#: modules/mycred-module-help.php:211
+msgid "On this page, you can edit all myCRED settings."
+msgstr ""
+
+#: modules/mycred-module-help.php:213
+msgid ""
+"Here you can name your installation along with setting your layout and "
+"format. You can use any name as long as you set both the singular and plural "
+"format and you can change the name at any time."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:89
+msgid "%plural% for registrations"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:90
+msgid "Award %_plural% for users joining your website."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:96
+msgid "%plural% for logins"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:97
+msgid ""
+"Award %_plural% for logging in to your website. You can also set an optional "
+"limit."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:103
+msgid "%plural% for publishing content"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:104
+msgid ""
+"Award %_plural% for publishing content on your website. If your custom post "
+"type is not shown bellow, make sure it is set to \"Public\"."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:110
+msgid "%plural% for comments"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:111
+msgid "Award %_plural% for making comments."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:117
+msgid "%plural% for clicking on links"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:118
+msgid ""
+"Award %_plural% to users who clicks on links generated by the [mycred_link] "
+"shortcode."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:124
+msgid "%plural% for viewing Videos"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:125
+msgid ""
+"Award %_plural% to users who watches videos embedded using the "
+"[mycred_video] shortcode."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:132
+msgid "bbPress"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:133
+msgid "Awards %_plural% for bbPress actions."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:141
+msgid "Invite Anyone Plugin"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:142
+msgid ""
+"Awards %_plural% for sending invitations and/or %_plural% if the invite is "
+"accepted."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:150
+msgid "Contact Form 7 Form Submissions"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:151
+msgid "Awards %_plural% for successful form submissions (by logged in users)."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:159
+msgid "Jetpack Subscriptions"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:160
+msgid ""
+"Awards %_plural% for users signing up for site or comment updates using "
+"Jetpack."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:168
+msgid "BadgeOS"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:169
+msgid ""
+"Default settings for each BadgeOS Achievement type. These settings may be "
+"overridden for individual achievement type."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:177
+msgid "WP-Polls"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:178
+msgid "Awards %_plural% for users voting in polls."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:186
+msgid "WP Favorite Posts"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:187
+msgid "Awards %_plural% for users adding posts to their favorites."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:195
+msgid "Events Manager"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:196
+msgid "Awards %_plural% for users attending events."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:204
+msgid "GD Star Rating"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:205
+msgid "Awards %_plural% for users rate items using the GD Star Rating plugin."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:245
+msgid ""
+"Hooks are instances where %_plural% are awarded or deducted from a user, "
+"depending on their actions around your website."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:526 modules/mycred-module-plugins.php:642
+#: modules/mycred-module-plugins.php:663
+msgid "Limit"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:619
+msgid "%plural% for Posts"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:629 modules/mycred-module-hooks.php:642
+#: modules/mycred-module-hooks.php:677 modules/mycred-module-plugins.php:403
+#: modules/mycred-module-plugins.php:416 modules/mycred-module-plugins.php:429
+#: modules/mycred-module-plugins.php:447 modules/mycred-module-plugins.php:460
+#: modules/mycred-module-plugins.php:479 modules/mycred-module-plugins.php:792
+#: modules/mycred-module-plugins.php:1036
+#: modules/mycred-module-plugins.php:1046
+msgid "Available template tags: General, Post"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:632
+msgid "%plural% for Pages"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:667
+msgid "%plural% for %s"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:956
+msgid "Approved Comment"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:965 modules/mycred-module-hooks.php:977
+#: modules/mycred-module-hooks.php:989
+msgid "Available template tags: General, Comment"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:968
+msgid "Comment Marked SPAM"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:980
+msgid "Trashed / Unapproved Comments"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:995
+msgid "Limit per post"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:997
+msgid ""
+"The number of comments per post that grants %_plural%. User zero for "
+"unlimited."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1001
+msgid "Limit per day"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1003
+msgid ""
+"Number of comments per day that grants %_plural%. User zero for unlimited."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1008
+msgid ""
+"%plural% is to be awarded even when comment authors reply to their own "
+"comment."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1075
+msgid "Once for each unique URL"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1076
+msgid "Once for each unique link id"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1225
+msgid ""
+"The default amount to award for clicking on links. You can override this in "
+"the shortcode."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1232
+msgid "Available template tags: General and custom tags: %url% or %id%."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1243
+msgid "Remember!"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1243
+msgid ""
+"If you select to limit by id and you do not include the id attribute in the "
+"shortcode, no %_plural% will be awarded!"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1500
+msgid "Amount to award for viewing videos."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1510
+msgid "Award Logic"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1512
+msgid "Select when %_plural% should be awarded or deducted."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1513
+msgid "Play - As soon as video starts playing."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1514
+msgid "Full - First when the entire video has played."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1515
+msgid "Interval - For each x number of seconds watched."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1520
+msgid "Number of seconds"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1527
+msgid "Leniency"
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1529
+msgid ""
+"The maximum percentage a users view of a movie can differ from the actual "
+"length."
+msgstr ""
+
+#: modules/mycred-module-hooks.php:1532
+msgid ""
+"Do not set this value to zero! A lot of thing can happen while a user "
+"watches a movie and sometimes a few seconds can drop of the counter due to "
+"buffering or play back errors."
+msgstr ""
+
+#: modules/mycred-module-log.php:23
+msgid "Activity Log"
+msgstr ""
+
+#: modules/mycred-module-log.php:93
+msgid "Entries"
+msgstr ""
+
+#: modules/mycred-module-log.php:174
+msgid "Show all references"
+msgstr ""
+
+#: modules/mycred-module-log.php:193
+msgid "Show in order"
+msgstr ""
+
+#: modules/mycred-module-log.php:206
+msgid "Filter"
+msgstr ""
+
+#: modules/mycred-module-log.php:233
+msgid "entry"
+msgstr ""
+
+#: modules/mycred-module-log.php:252
+msgid "Search results for"
+msgstr ""
+
+#: modules/mycred-module-log.php:812
+msgid "Entry"
+msgstr ""
+
+#: modules/mycred-module-log.php:912
+msgid "User Missing"
+msgstr ""
+
+#: modules/mycred-module-log.php:951
+msgid "No log entries found"
+msgstr ""
+
+#: modules/mycred-module-log.php:966 modules/mycred-module-log.php:968
+msgid "Search Log"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:394
+msgid "%plural% for New Forum"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:407
+msgid "%plural% for Forum Deletion"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:420
+msgid "%plural% for New Topic"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:434
+msgid "Forum authors can receive %_plural% for creating new topics."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:438
+msgid "%plural% for Topic Deletion"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:451
+msgid "%plural% for Favorited Topic"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:464 modules/mycred-module-plugins.php:488
+msgid "Daily Limit"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:466 modules/mycred-module-plugins.php:490
+msgid "Use zero for unlimited"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:470
+msgid "%plural% for New Reply"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:484
+msgid "Topic authors can receive %_plural% for replying to their own Topic"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:494
+msgid "Show users %_plural% balance in replies"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:630
+msgid "%plural% for Sending An Invite"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:646
+msgid ""
+"Maximum number of invites that grants %_plural%. User zero for unlimited."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:650
+msgid "%plural% for Accepting An Invite"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:654
+msgid "%plural% for each invited user that accepts an invitation."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:667
+msgid ""
+"Maximum number of accepted invitations that grants %_plural%. User zero for "
+"unlimited."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:762
+msgid "No forms found."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:861
+#, php-format
+msgid ""
+"Please setup your <a href=\"%s\">default settings</a> before using this "
+"feature."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:872 modules/mycred-module-plugins.php:874
+msgid "%plural% to Award"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:876
+msgid "Use zero to disable"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:887
+msgid "Deduction Log Template"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1023
+#, php-format
+msgid "Default %s for %s"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1030
+msgid "User zero to disable users gaining %_plural%"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1034
+msgid "Default Log template"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1040
+msgid "Deduct %_plural% if user looses "
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1172
+msgid ""
+"Available template tags: General. You can also use %poll_id% and "
+"%poll_question%."
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1282
+msgid "Adding Content to Favorites"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1292
+#: modules/mycred-module-plugins.php:1305
+#: modules/mycred-module-plugins.php:1443
+#: modules/mycred-module-plugins.php:1456
+msgid "Available template tags: General and Post Related"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1295
+msgid "Removing Content from Favorites"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1433
+msgid "Attending Event"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1446
+msgid "Cancelling Attendance"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1542
+msgid "Rating"
+msgstr ""
+
+#: modules/mycred-module-plugins.php:1555
+msgid "Up / Down Vote"
+msgstr ""
+
+#: modules/mycred-module-subscriptions.php:479
+msgid "Site Subscriptions"
+msgstr ""
+
+#: modules/mycred-module-subscriptions.php:492
+msgid "Comment Subscriptions"
+msgstr ""
