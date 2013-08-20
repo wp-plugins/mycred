@@ -656,7 +656,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 */
 		public function count_members() {
 			global $wpdb;
-			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->users}" );
+			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->users};" );
 		}
 
 		/**
