@@ -112,7 +112,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		public function count_records() {
 			global $wpdb;
 
-			return $wpdb->get_var( "SELECT COUNT(*) AS %s FROM " . $wpdb->prefix . 'myCRED_log' . ";" );
+			return $wpdb->get_var( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . ";" );
 		}
 
 		/**
