@@ -85,10 +85,10 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			// BuddyPress
 			if ( function_exists( 'bp_displayed_user_id' ) && isset( $this->rank['bb_location'] ) && !empty( $this->rank['bb_location'] ) ) {
 				if ( $this->rank['bb_location'] == 'top' || $this->rank['bb_location'] == 'both' )
-					add_action( 'bp_before_member_header_meta', array( $this, 'insert_rank_header' ) );
+					add_action( 'bp_before_member_header_meta',  array( $this, 'insert_rank_header' ) );
 
 				if ( $this->rank['bb_location'] == 'profile_tab' || $this->rank['bb_location'] == 'both' )
-					add_action( 'bp_profile_field_item',        array( $this, 'insert_rank_profile' ) );
+					add_action( 'bp_after_profile_loop_content', array( $this, 'insert_rank_profile' ) );
 			}
 
 			// Shortcodes
@@ -267,7 +267,7 @@ GROUP BY
 		 * Publishing Content
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.0
 		 */
 		public function post_status_change( $new_status, $old_status, $post ) {
 			// Only ranks please
@@ -283,9 +283,6 @@ GROUP BY
 			elseif ( $old_status == 'publish' && $new_status == 'trash' ) {
 				$this->assign_ranks();
 			}
-			
-			// Delete transient
-			delete_transient( 'mycred_ranks' );
 		}
 
 		/**
@@ -390,13 +387,17 @@ GROUP BY
 			if ( $this->core->exclude_user( $user_id ) ) return;
 			$rank_name = mycred_get_users_rank( $user_id ); ?>
 
+<div class="bp-widget mycred-field">
+	<table class="profile-fields">
 	<tr id="mycred-users-rank">
 		<td class="label"><?php _e( 'Rank', 'mycred' ); ?></td>
-		<td class="data">
-			<?php echo $rank_name . ' ' . mycred_get_rank_logo( $rank_name ); ?>
+			<td class="data">
+				<?php echo $rank_name . ' ' . mycred_get_rank_logo( $rank_name ); ?>
 
-		</td>
-	</tr>
+			</td>
+		</tr>
+	</table>
+</div>
 <?php
 		}
 
