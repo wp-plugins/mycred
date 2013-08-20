@@ -8,7 +8,14 @@
  * Author URI: http://www.merovingi.com
  * Requires: bp_displayed_user_id
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'BuddyPress', 'mycred' ),
+	__( 'The BuddyPress add-on extends <strong>my</strong>CRED to work with BuddyPress allowing you to hook into most BuddyPress related actions.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_BP',           __FILE__ );
 define( 'myCRED_BP_DIR',       myCRED_ADDONS_DIR . 'buddypress/' );
 define( 'myCRED_BP_HOOKS_DIR', myCRED_BP_DIR . 'hooks/' );

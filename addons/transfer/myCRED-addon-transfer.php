@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Transfer', 'mycred' ),
+	__( 'Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_TRANSFER',         __FILE__ );
 define( 'myCRED_TRANSFER_VERSION', myCRED_VERSION . '.1' );
 /**

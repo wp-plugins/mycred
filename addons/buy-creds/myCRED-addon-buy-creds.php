@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'buyCRED', 'mycred' ),
+	__( 'The <strong>buy</strong>CRED Add-on allows your users to buy points using PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can also let your users buy points for other members.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_PURCHASE',         __FILE__ );
 define( 'myCRED_PURCHASE_VERSION', myCRED_VERSION . '.1' );
 define( 'myCRED_PURCHASE_DIR',     myCRED_ADDONS_DIR . 'buy-creds/' );

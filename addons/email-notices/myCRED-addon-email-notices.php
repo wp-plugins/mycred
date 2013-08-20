@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Email Notices', 'mycred' ),
+	__( 'Create email notices for any type of myCRED instance.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_EMAIL',         __FILE__ );
 define( 'myCRED_EMAIL_VERSION', myCRED_VERSION . '.1' );
 /**

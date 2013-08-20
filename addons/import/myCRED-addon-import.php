@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Import', 'mycred' ),
+	__( 'With the Import add-on you can import CSV files, CubePoints or existing points under any custom user meta values.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_IMPORT',         __FILE__ );
 define( 'myCRED_IMPORT_VERSION', myCRED_VERSION . '.1' );
 /**

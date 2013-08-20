@@ -3,10 +3,16 @@
  * Addon: Gateway
  * Addon URI: http://mycred.me/add-ons/gateway/
  * Version: 1.2
- * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager
+ * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Gateway', 'mycred' ),
+	__( 'Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_GATE',            __FILE__ );

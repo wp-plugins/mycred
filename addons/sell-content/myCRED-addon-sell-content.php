@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Sell Content', 'mycred' ),
+	__( 'This add-on allows you to sell posts, pages or any public post types on your website. You can either sell the entire content or using our shortcode, sell parts of your content allowing you to offer "teasers".', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_SELL',         __FILE__ );
 define( 'myCRED_SELL_VERSION', myCRED_VERSION . '.1' );
 /**

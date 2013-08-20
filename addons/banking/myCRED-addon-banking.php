@@ -7,7 +7,14 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Banking', 'mycred' ),
+	__( 'This add-on allows you to offer interest on your users %_plural% balances or setup recurring payouts.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_BANK',              __FILE__ );
 define( 'myCRED_BANK_DIR',          myCRED_ADDONS_DIR . 'banking/' );
 define( 'myCRED_BANK_ABSTRACT_DIR', myCRED_BANK_DIR . 'abstracts/' );

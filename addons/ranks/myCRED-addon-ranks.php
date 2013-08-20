@@ -7,10 +7,18 @@
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
+// Translate Header (by Dan bp-fr)
+$mycred_addon_header_translate = array(
+	__( 'Ranks', 'mycred' ),
+	__( 'Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank.', 'mycred' )
+);
+
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 define( 'myCRED_RANKS',         __FILE__ );
 define( 'myCRED_RANKS_DIR',     myCRED_ADDONS_DIR . 'ranks/' );
 define( 'myCRED_RANKS_VERSION', myCRED_VERSION . '.1' );
+
 include_once( myCRED_RANKS_DIR . 'includes/mycred-rank-functions.php' );
 include_once( myCRED_RANKS_DIR . 'includes/mycred-rank-shortcodes.php' );
 /**
