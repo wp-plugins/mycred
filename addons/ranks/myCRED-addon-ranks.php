@@ -267,7 +267,7 @@ GROUP BY
 		 * Publishing Content
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function post_status_change( $new_status, $old_status, $post ) {
 			// Only ranks please
@@ -283,6 +283,9 @@ GROUP BY
 			elseif ( $old_status == 'publish' && $new_status == 'trash' ) {
 				$this->assign_ranks();
 			}
+			
+			// Delete transient
+			delete_transient( 'mycred_ranks' );
 		}
 
 		/**
@@ -380,7 +383,7 @@ GROUP BY
 		/**
 		 * Insert Rank In Profile Details
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function insert_rank_profile() {
 			$user_id = bp_displayed_user_id();
@@ -389,8 +392,8 @@ GROUP BY
 
 <div class="bp-widget mycred-field">
 	<table class="profile-fields">
-	<tr id="mycred-users-rank">
-		<td class="label"><?php _e( 'Rank', 'mycred' ); ?></td>
+		<tr id="mycred-users-rank">
+			<td class="label"><?php _e( 'Rank', 'mycred' ); ?></td>
 			<td class="data">
 				<?php echo $rank_name . ' ' . mycred_get_rank_logo( $rank_name ); ?>
 
