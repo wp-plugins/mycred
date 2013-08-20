@@ -165,7 +165,8 @@ See: http://mycred.me/download/changelog/2/
 * Added User Batches for Banking Add-on to support websites with more then 2k users.
 * Added Cache option to myCRED_Query_Log class.
 * Adjusted template tags handling to improve performance.
-* Fixed Bug #46 - Missing text domains for translations (thanks Dan).
+* Added missing options and schedules to the uninstaller.
+* Fixed Bug #46 - Missing text domains for translations and incorrect html syntaxes. (thanks Dan).
 * Fixed Bug #47 - Rank shown multiple times in BP Profile.
 * Fixed Bug #48 - 
 

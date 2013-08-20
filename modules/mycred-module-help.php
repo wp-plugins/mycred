@@ -66,13 +66,13 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 				'title'		=> __( 'The Log', 'mycred' ),
 				'content'	=> '
 <p>' . $this->core->template_tags_general( __( 'myCRED logs everything giving you a complete overview of %_plural% awarded or deducted from your users. The Log page can be filtered by user, date or reference and we have included a search function for you.', 'mycred' ) ) . '</p>
-<p>' . __( 'You can select how many log entries you want to show under "Screen Options". By default you will be shown 10 entires.', 'mycred' ) . '</p>
+<p>' . __( 'You can select how many log entries you want to show under "Screen Options". By default you will be shown 10 entries.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Filter by Date', 'mycred' ) . '</strong></p>
 <p>' . __( 'You can select to show log entries for: Today, Yesterday, This Week or This Month.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Filter by Reference', 'mycred' ) . '</strong></p>
 <p>' . __( 'Each time a log entry is made a reference is used to identify where or why points were awarded or deducted.', 'mycred' ) . '</p>
 <p><strong>' . __( 'Filter by User', 'mycred' ) . '</strong></p>
-<p>' . __( 'You can select to show log entries for a specific user. Users with no log entries are not included.', 'mycred' ) . '</p>'
+<p>' . __( 'Show log entries for a particular username.', 'mycred' ) . '</p>'
 			) );
 		}
 

@@ -923,7 +923,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 					__( 'Email Notice scheduled for: <strong>%1$s</strong>.', 'mycred' ),
 					date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) )
 					),
-				10 => __( '', 'mycred' )
+				10 => ''
 			);
 
 			return $messages;

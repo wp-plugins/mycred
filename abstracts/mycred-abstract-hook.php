@@ -54,7 +54,7 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 		 * @version 1.0
 		 */
 		function run() {
-			wp_die( 'function myCRED_Hook::run() must be over-ridden in a sub-class.' );
+			wp_die( __( 'function myCRED_Hook::run() must be over-ridden in a sub-class.', 'mycred' ) );
 		}
 
 		/**

@@ -460,7 +460,7 @@ GROUP BY
 					__( 'Rank scheduled for: <strong>%1$s</strong>.', 'mycred' ),
 					date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) )
 					),
-				10 => __( '', 'mycred' )
+				10 => ''
 			);
 
 			return $messages;
@@ -715,7 +715,7 @@ GROUP BY
 						<label class="subheader" for=""><?php _e( 'Calculate Totals', 'mycred' ); ?></label>
 						<ol id="mycred-rank-calculate">
 							<li>
-								<p><?php _e( 'Use this button to calculate or re-calcualte your users totals. If not used, the users current balance will be used as a starting point.', 'mycred' ); ?><br /><?php _e( 'Once a users total has been calculated, they will be assigned to their appropirate roles. For this reason, it is highly recommended that you first setup your ranks!', 'mycred' ); ?></p>
+								<p><?php _e( 'Use this button to calculate or re-calcualte your users totals. If not used, the users current balance will be used as a starting point.', 'mycred' ); ?><br /><?php _e( 'Once a users total has been calculated, they will be assigned to their appropriate roles. For this reason, it is highly recommended that you first setup your ranks!', 'mycred' ); ?></p>
 								<p><strong><?php _e( 'Depending on your log size and number of users this process may take a while. Please do not leave, click "Update Settings" or re-fresh this page until this is completed!', 'mycred' ); ?></strong></p>
 								<input type="button" name="mycred-update-totals" id="mycred-update-totals" value="<?php _e( 'Calculate Totals', 'mycred' ); ?>" class="button button-large button-<?php if ( $this->rank['base'] == 'current' ) echo 'secondary'; else echo 'primary'; ?>"<?php if ( $this->rank['base'] == 'current' ) echo ' disabled="disabled"'; ?> />
 							</li>
@@ -735,8 +735,8 @@ GROUP BY
 								<?php
 			// Order added in 1.1.1
 			$options = array(
-				'ASC'  => 'Ascending - Lowest rank to highest',
-				'DESC' => 'Descending - Highest rank to lowest'
+				'ASC'  => __( 'Ascending - Lowest rank to highest', 'mycred' ),
+				'DESC' => __( 'Descending - Highest rank to lowest', 'mycred' )
 			);
 			foreach ( $options as $option_value => $option_label ) {
 				echo '<option value="' . $option_value . '"';

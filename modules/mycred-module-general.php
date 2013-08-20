@@ -46,9 +46,9 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
 		<div id="mycred-social">
-			<a href="https://www.facebook.com/myCRED" class="zocial facebook" target="_blank">Facebook</a>
-			<a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="zocial googleplus" target="_blank">Google Plus</a>
-			<a href="http://mycred.me/support/forums/" class="zocial wordpress" target="_blank">Support Forum</a>
+			<a href="https://www.facebook.com/myCRED" class="zocial facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>
+			<a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="zocial googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a>
+			<a href="http://mycred.me/support/forums/" class="zocial wordpress" target="_blank"><?php _e( 'Support Forum', 'mycred' ); ?></a>
 		</div>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
@@ -61,12 +61,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 						<li>
 							<label for="<?php echo $this->field_id( array( 'name' => 'singular' ) ); ?>"><?php _e( 'Name (Singular)', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'name' => 'singular' ) ); ?>" id="<?php echo $this->field_id( array( 'name' => 'singular' ) ); ?>" value="<?php echo $this->core->name['singular']; ?>" /></div>
-							<div class="description"><?php _e( 'Accessible though the %singular% template tag.' ); ?></div>
+							<div class="description"><?php _e( 'Accessible though the %singular% template tag.', 'mycred' ); ?></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'name' => 'plural' ) ); ?>"><?php _e( 'Name (Plural)', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'name' => 'plural' ) ); ?>" id="<?php echo $this->field_id( array( 'name' => 'plural' ) ); ?>" value="<?php echo $this->core->name['plural']; ?>" /></div>
-							<div class="description"><?php _e( 'Accessible though the %plural% template tag.' ); ?></div>
+							<div class="description"><?php _e( 'Accessible though the %plural% template tag.', 'mycred' ); ?></div>
 						</li>
 						<li class="block">
 							<span class="description"><strong><?php _e( 'Tip', 'mycred' ); ?>:</strong> <?php _e( 'Adding an underscore at the beginning of template tag for names will return them in lowercase. i.e. %_singular%', 'mycred' ); ?></span>
@@ -96,12 +96,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 						<li>
 							<label for="<?php echo $this->field_id( array( 'caps' => 'plugin' ) ); ?>"><?php _e( 'Edit Settings', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'caps' => 'plugin' ) ); ?>" id="<?php echo $this->field_id( array( 'caps' => 'plugin' ) ); ?>" value="<?php echo $this->core->caps['plugin']; ?>" /></div>
-							<div class="description"><?php _e( 'Capability to check for.' ); ?></div>
+							<div class="description"><?php _e( 'Capability to check for.', 'mycred' ); ?></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'caps' => 'creds' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Edit Users %plural%', 'mycred' ) ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'caps' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'caps' => 'creds' ) ); ?>" value="<?php echo $this->core->caps['creds']; ?>" /></div>
-							<div class="description"><?php _e( 'Capability to check for.' ); ?></div>
+							<div class="description"><?php _e( 'Capability to check for.', 'mycred' ); ?></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Excludes', 'mycred' ); ?></label>
@@ -118,7 +118,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 						<li>
 							<label for="<?php echo $this->field_id( array( 'exclude' => 'list' ) ); ?>"><?php _e( 'Exclude the following user IDs:', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'exclude' => 'list' ) ); ?>" id="<?php echo $this->field_id( array( 'exclude' => 'list' ) ); ?>" value="<?php echo $this->core->exclude['list']; ?>" class="long" /></div>
-							<div class="description"><?php _e( 'Comma separated list of user ids to exclude. No spaces allowed!' ); ?></div>
+							<div class="description"><?php _e( 'Comma separated list of user ids to exclude. No spaces allowed!', 'mycred' ); ?></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Rankings', 'mycred' ); ?></label>

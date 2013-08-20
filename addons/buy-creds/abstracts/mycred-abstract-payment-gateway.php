@@ -58,7 +58,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @version 1.0
 		 */
 		function process() {
-			wp_die( 'function myCRED_Payment_Gateway::process() must be over-ridden in a sub-class.' );
+			wp_die( __( 'function myCRED_Payment_Gateway::process() must be over-ridden in a sub-class.', 'mycred' ) );
 		}
 
 		/**
@@ -67,7 +67,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @version 1.0
 		 */
 		function buy() {
-			wp_die( 'function myCRED_Payment_Gateway::buy() must be over-ridden in a sub-class.' );
+			wp_die( __( 'function myCRED_Payment_Gateway::buy() must be over-ridden in a sub-class.', 'mycred' ) );
 		}
 
 		/**
@@ -83,7 +83,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @version 1.0
 		 */
 		function preferences() {
-			echo '<p>' . __( 'This Payment Gateway has no settings' ) . '</p>';
+			echo '<p>' . __( 'This Payment Gateway has no settings', 'mycred' ) . '</p>';
 		}
 
 		/**

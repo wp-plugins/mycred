@@ -487,7 +487,7 @@ jQuery(function($) {
 							<th scope="row"><?php _e( 'Refunds', 'mycred' ); ?></th>
 							<td>
 								<input name="mycred_gateway[refund]" type="text" id="mycred-gateway-log-refund" value="<?php echo $this->prefs['refund']; ?>" size="5" /> %<br />
-								<span class="description"><?php _e( 'The percentage of the paid amount to refund if a booking gets cancelled. User zero for no refunds. No refunds are given to "Rejected" bookings.', 'mycred' ); ?></span>
+								<span class="description"><?php _e( 'The percentage of the paid amount to refund if a booking gets cancelled. Use zero for no refunds. No refunds are given to "Rejected" bookings.', 'mycred' ); ?></span>
 							</td>
 						</tr>
 					</table>

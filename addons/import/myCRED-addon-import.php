@@ -81,15 +81,15 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		public function get( $save = false ) {
 			// Defaults
 			$installed['csv'] = array(
-				'title'        => __( 'CSV File' ),
+				'title'        => __( 'CSV File', 'mycred' ),
 				'description'  => __( 'Import %_plural% from a comma-separated values (CSV) file.', 'mycred' )
 			);
 			$installed['cubepoints'] = array(
-				'title'       => __( 'CubePoints' ),
+				'title'       => __( 'CubePoints', 'mycred' ),
 				'description' => __( 'Import CubePoints', 'mycred' )
 			);
 			$installed['custom'] = array(
-				'title'       => __( 'Custom User Meta' ),
+				'title'       => __( 'Custom User Meta', 'mycred' ),
 				'description' => __( 'Import %_plural% from pre-existing custom user meta.', 'mycred' )
 			);
 			$installed = apply_filters( 'mycred_setup_imports', $installed );
@@ -524,7 +524,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 						</ol>
 						<ol class="inline">
 							<li>
-								<lable for=""><?php _e( 'Round', 'mycred' ); ?></label><br />
+								<label><?php _e( 'Round', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-csv-round-none" value="none" checked="checked" /> <label for="mycred-csv-round-none"><?php _e( 'None', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-csv-round-up" value="up" /> <label for="mycred-csv-round-up"><?php _e( 'Round Up', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-csv-round-down" value="down" /> <label for="mycred-csv-round-down"><?php _e( 'Round Down', 'mycred' ); ?></label>
@@ -532,7 +532,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 							<?php if ( $this->core->format['decimals'] > 0 ) { ?>
 
 							<li>
-								<lable for="mycred-csv-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
+								<label for="mycred-csv-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
 								<div class="h2"><input type="text" name="precision" id="mycred-csv-precision" value="1" class="short" /></div>
 								<span class="description"><?php echo __( 'The optional number of decimal digits to round to. Use zero to round the nearest whole number.', 'mycred' ); ?></span>
 							</li>
@@ -592,7 +592,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 						</ol>
 						<ol class="inline">
 							<li>
-								<lable for=""><?php _e( 'Round', 'mycred' ); ?></label><br />
+								<label><?php _e( 'Round', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-cubepoints-round-none" value="none" checked="checked" /> <label for="mycred-cubepoints-round-none"><?php _e( 'Do not round', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-cubepoints-round-up" value="up" /> <label for="mycred-cubepoints-round-up"><?php _e( 'Round Up', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-cubepoints-round-down" value="down" /> <label for="mycred-cubepoints-round-down"><?php _e( 'Round Down', 'mycred' ); ?></label>
@@ -600,7 +600,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 							<?php if ( $this->core->format['decimals'] > 0 ) { ?>
 
 							<li>
-								<lable for="mycred-cubepoints-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
+								<label for="mycred-cubepoints-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
 								<div class="h2"><input type="text" name="precision" id="mycred-cubepoints-precision" value="1" class="short" /></div>
 								<span class="description"><?php echo __( 'The optional number of decimal digits to round to. Use zero to round the nearest whole number.', 'mycred' ); ?></span>
 							</li>
@@ -656,7 +656,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 						</ol>
 						<ol class="inline">
 							<li>
-								<lable for=""><?php _e( 'Round', 'mycred' ); ?></label><br />
+								<label><?php _e( 'Round', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-custom-round-none" value="none" checked="checked" /> <label for="mycred-custom-round-none"><?php _e( 'Do not round', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-custom-round-up" value="up" /> <label for="mycred-custom-round-up"><?php _e( 'Round Up', 'mycred' ); ?></label><br />
 								<input type="radio" name="round" id="mycred-custom-round-down" value="down" /> <label for="mycred-custom-round-down"><?php _e( 'Round Down', 'mycred' ); ?></label>
@@ -664,7 +664,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 							<?php if ( $this->core->format['decimals'] > 0 ) { ?>
 
 							<li>
-								<lable for="mycred-custom-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
+								<label for="mycred-custom-precision"><?php _e( 'Precision', 'mycred' ); ?></label>
 								<div class="h2"><input type="text" name="precision" id="mycred-custom-precision" value="1" class="short" /></div>
 								<span class="description"><?php echo __( 'The optional number of decimal digits to round to. Use zero to round the nearest whole number.', 'mycred' ); ?></span>
 							</li>
@@ -709,12 +709,12 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 
 					$contents = file_get_contents( $fname );
 					if ( false === $contents ) {
-						trigger_error( 'Failed to get file contents.', E_USER_WARNING );
+						trigger_error( __( 'Failed to get file contents.', 'mycred' ), E_USER_WARNING );
 					}
 					$contents = substr( $contents, 3 );
 					$success = file_put_contents( $fname, $contents );
 					if ( false === $success ) {
-						trigger_error( 'Failed to put file contents.', E_USER_WARNING );
+						trigger_error( __( 'Failed to put file contents.', 'mycred' ), E_USER_WARNING );
 					}
 				} else {
 					fclose( $res );

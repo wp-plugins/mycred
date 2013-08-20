@@ -32,22 +32,22 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			// WordPress check
 			$wp_version = $GLOBALS['wp_version'];
 			if ( version_compare( $wp_version, '3.1', '<' ) )
-				$message[] = 'myCRED requires WordPress 3.1 or higher. Version detected: ' . $wp_version;
+				$message[] = __( 'myCRED requires WordPress 3.1 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
 
 			// PHP check
 			$php_version = phpversion();
 			if ( version_compare( $php_version, '5.2.0', '<' ) )
-				$message[] = 'myCRED requires PHP 5.2.0 or higher. Version detected: ' . $php_version;
+				$message[] = __( 'myCRED requires PHP 5.2.0 or higher. Version detected: ', 'mycred' ) . ' ' . $php_version;
 
 			// SQL check
 			$sql_version = $wpdb->db_version();
 			if ( version_compare( $sql_version, '5.0', '<' ) )
-				$message[] = 'myCRED requires SQL 5.0 or higher. Version detected: ' . $sql_version;
+				$message[] = __( 'myCRED requires SQL 5.0 or higher. Version detected: ', 'mycred' ) . ' ' . $sql_version;
 
 			// Not empty $message means there are issues
 			if ( !empty( $message ) ) {
 				$error_message = implode( "\n", $message );
-				die( __( 'Sorry but your WordPress installation does not reach the minimum requirements for running myCRED. The following errors were given:' . "\n" . $error_message, 'mycred' ) );
+				die( __( 'Sorry but your WordPress installation does not reach the minimum requirements for running myCRED. The following errors were given:', 'mycred' ) . "\n" . $error_message );
 			}
 		}
 
@@ -266,7 +266,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			$image_url = plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS );
 			echo '
 			<div class="updated">
-				<p><strong>my</strong>' . __( 'CRED needs your attention.', 'mycred' ) . ' <a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Run Setup', 'mycred' ) . '</a></p>
+				<p>' . __( 'myCRED needs your attention.', 'mycred' ) . ' <a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Run Setup', 'mycred' ) . '</a></p>
 			</div>';
 		}
 
@@ -544,7 +544,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 				</li>
 
 			</ol>
-			<p class="action-row"><a href="<?php echo admin_url( 'plugins.php?page=myCRED-setup' ); ?>" title="<?php _e( 'Cancel Setup' ); ?>" class="button button-secondary button-large" style="margin-right:24px;"><?php _e( 'Cancel' ); ?></a> <input type="submit" class="button button-primary button-large" name="being-setup" id="mycred-next-button" value="<?php _e( 'Next', 'mycred' ); ?>" /></p>
+			<p class="action-row"><a href="<?php echo admin_url( 'plugins.php?page=myCRED-setup' ); ?>" title="<?php _e( 'Cancel Setup', 'mycred' ); ?>" class="button button-secondary button-large" style="margin-right:24px;"><?php _e( 'Cancel', 'mycred' ); ?></a> <input type="submit" class="button button-primary button-large" name="being-setup" id="mycred-next-button" value="<?php _e( 'Next', 'mycred' ); ?>" /></p>
 		</form>
 <?php
 		}

@@ -1209,7 +1209,7 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 
 		// Reference
 		if ( $ref !== NULL ) {
-			if ( empty( $ref ) ) return 'ref empty';
+			if ( empty( $ref ) ) return __( 'ref empty', 'mycred' );
 
 			$wheres[] = 'ref = %s';
 			$prep[] = $ref;
@@ -1217,7 +1217,7 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 
 		// User
 		if ( $user_id !== NULL ) {
-			if ( !is_int( $user_id ) ) return 'incorrect user id format';
+			if ( !is_int( $user_id ) ) return __( 'incorrect user id format', 'mycred' );
 
 			$wheres[] = 'user_id = %d';
 			$prep[] = $user_id;
@@ -1230,7 +1230,7 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 		}
 
 		// From
-		if ( !is_numeric( $from ) ) return 'incorrect unix timestamp (from): ' . $from;
+		if ( !is_numeric( $from ) ) return __( 'incorrect unix timestamp (from):', 'mycred' ) . ' ' . $from;
 		$wheres[] = 'time >= %d';
 		$prep[] = $from;
 
@@ -1239,7 +1239,7 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 			$to = date_i18n( 'U' );
 
 		// To
-		if ( !is_numeric( $to ) ) return 'incorrect unix timestamp (to): ' . $to;
+		if ( !is_numeric( $to ) ) return __( 'incorrect unix timestamp (to):', 'mycred' ) . ' ' . $to;
 		$wheres[] = 'time <= %d';
 		$prep[] = $to;
 

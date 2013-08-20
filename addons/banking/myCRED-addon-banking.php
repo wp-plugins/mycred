@@ -133,7 +133,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 		 */
 		public function admin_page() {
 			// Security
-			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
+			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
 			
 			// Get installed
 			$installed = $this->get( true );

@@ -309,19 +309,19 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 */
 		public function register_hooks( $installed ) {
 			$installed['hook_bp_groups'] = array(
-				'title'       => __( 'BuddyPress: Groups' ),
+				'title'       => __( 'BuddyPress: Groups', 'mycred' ),
 				'description' => __( 'Awards %_plural% for group related actions. Use minus to deduct %_plural% or zero to disable a specific hook.', 'mycred' ),
 				'callback'    => array( 'myCRED_BuddyPress_Groups' )
 			);
 			$installed['hook_bp_profile'] = array(
-				'title'       => __( 'BuddyPress: Members' ),
+				'title'       => __( 'BuddyPress: Members', 'mycred' ),
 				'description' => __( 'Awards %_plural% for profile related actions.', 'mycred' ),
 				'callback'    => array( 'myCRED_BuddyPress_Profile' )
 			);
 			
 			if ( function_exists( 'bp_links_setup_root_component' ) ) {
 				$installed['hook_bp_links'] = array(
-					'title'       => __( 'BuddyPress: Links' ),
+					'title'       => __( 'BuddyPress: Links', 'mycred' ),
 					'description' => __( 'Awards %_plural% for link related actions.', 'mycred' ),
 					'callback'    => array( 'myCRED_BuddyPress_Links' )
 				);
@@ -329,7 +329,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 
 			if ( function_exists( 'bpa_init' ) || function_exists( 'bpgpls_init' ) ) {
 				$installed['hook_bp_gallery'] = array(
-					'title'       => __( 'BuddyPress: Gallery Actions' ),
+					'title'       => __( 'BuddyPress: Gallery Actions', 'mycred' ),
 					'description' => __( 'Awards %_plural% for creating a new gallery either using BP Album+ or BP Gallery.', 'mycred' ),
 					'callback'    => array( 'myCRED_BuddyPress_Gallery' )
 				);
