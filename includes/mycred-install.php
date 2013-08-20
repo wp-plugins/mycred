@@ -130,13 +130,15 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 		/**
 		 * Uninstall
+		 * TODO: Add a call to all add-ons to allow them to uninstall their own
+		 * settings and data once the core is gone.
 		 * @filter 'mycred_uninstall_this'
 		 * @since 0.1
 		 * @version 1.1
 		 */
 		public function uninstall() {
 			// Everyone should use this filter to delete everything else they have created before returning the option ids.
-			$options = array( 'mycred_pref_core', 'mycred_pref_hooks', 'mycred_pref_addons' );
+			$options = array( 'mycred_pref_core', 'mycred_pref_hooks', 'mycred_pref_addons', 'mycred_pref_bank' );
 			$installed = apply_filters( 'mycred_uninstall_this', $options );
 
 			// Delete each option
@@ -163,6 +165,12 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// Clear Cron
 			wp_clear_scheduled_hook( 'mycred_reset_key' );
+			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
+			wp_clear_scheduled_hook( 'mycred_banking_do_batch' );
+			wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+			wp_clear_scheduled_hook( 'mycred_banking_do_compound_batch' );
+			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
+			wp_clear_scheduled_hook( 'mycred_banking_interest_do_batch' );
 
 			// Delete DB
 			global $wpdb;
