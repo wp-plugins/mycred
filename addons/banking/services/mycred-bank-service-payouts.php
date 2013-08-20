@@ -34,6 +34,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		public function run() {
 			add_action( 'wp_loaded',                       array( $this, 'process' ) );
 			add_action( 'mycred_banking_recurring_payout', array( $this, 'do_payouts' ) );
+			add_action( 'mycred_banking_do_batch',         array( $this, 'do_payout_batch' ) );
 		}
 
 		/**
@@ -48,6 +49,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 
 		/**
 		 * Process
+		 * Determines if we should run a payout or not.
 		 * @since 1.2
 		 * @version 1.0
 		 */
@@ -91,21 +93,58 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 
 		/**
 		 * Payout
-		 * Gathers all eligeble users and award / deducts the amount given.
+		 * In this first step, we start by gathering all user ID's.
+		 * If the amount is higher then our threshold, we split up the ID's
+		 * into batches and schedule then seperate. This is due to the maximum
+		 * execution limit which will not be enough to handle a lot of users in one go.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function do_payouts() {
+			// Make sure to clear any stray schedules to prevent duplicates
+			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
+
 			// Query
 			$users = $this->get_users();
-			if ( !empty( $users ) ) {
-				foreach( $users as $user_id ) {
+			$total = count( $users );
+			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
+			
+			// If we are over the threshold we need to batch
+			if ( $total > $threshold ) {
+				$batches = array_chunk( $users, $threshold );
+				$time = time();
+				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
+				
+				$set = 1;
+				foreach ( $batches as $batch_id => $batch ) {
+					$time = ( $time + ( $interval*$set ) );
+					if ( wp_next_scheduled( $time, 'mycred_banking_do_batch', array( $batch ) ) === false )
+						wp_schedule_single_event( $time, 'mycred_banking_do_batch', array( $batch ) );
+					$set = $set+1;
+				}
+			}
+			// Run single batch now
+			else {
+				$this->do_payout_batch( $users );
+			}
+		}
+		
+		/**
+		 * Do Batch
+		 * Applies points to a batch of user ID's. This is also where we check for exclusions.
+		 * @since 1.2
+		 * @version 1.1
+		 */
+		public function do_payout_batch( $batch ) {
+			if ( !empty( $batch ) && is_array( $batch ) ) {
+				foreach( (array) $batch as $user_id ) {
 					// Handle excludes
 					if ( !empty( $this->prefs['excludes'] ) ) {
 						if ( !is_array( $this->prefs['excludes'] ) )
 							$excludes = explode( ',', $this->prefs['excludes'] );
 
-						if ( in_array( $user_id, $excludes ) ) continue;
+						// Excludes
+						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
 					}
 										
 					// Add / Deduct points
@@ -115,13 +154,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 						$this->prefs['amount'],
 						$this->prefs['log']
 					);
-					
-					// Let others play
-					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs );
 				}
 			}
-			// Make sure to clear any stray schedules to prevent duplicates
-			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
 		}
 
 		/**

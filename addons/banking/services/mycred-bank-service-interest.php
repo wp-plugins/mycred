@@ -36,7 +36,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		public function run() {
 			add_action( 'wp_loaded',                        array( $this, 'process' ) );
 			add_action( 'mycred_banking_interest_compound', array( $this, 'do_compound' ) );
+			add_action( 'mycred_banking_do_compound_batch', array( $this, 'do_compound_batch' ) );
+			
 			add_action( 'mycred_banking_interest_payout',   array( $this, 'do_payouts' ) );
+			add_action( 'mycred_banking_interest_do_batch', array( $this, 'do_interest_batch' ) );
 		}
 
 		/**
@@ -48,24 +51,27 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			// Unschedule compounding
 			$timestamp = wp_next_scheduled( 'mycred_banking_interest_compound' );
 			if ( $timestamp !== false )
-				wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+				wp_clear_scheduled_hook( $timestamp, 'mycred_banking_interest_compound' );
 
 			// Unschedule payouts
 			$timestamp = wp_next_scheduled( 'mycred_banking_interest_payout' );
 			if ( $timestamp !== false )
-				wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
+				wp_clear_scheduled_hook( $timestamp, 'mycred_banking_interest_payout' );
 		}
 		
 		/**
 		 * Process
+		 * Determines if we should run a payout or not and schedule the daily
+		 * compounding.
 		 * @since 1.2
 		 * @version 1.0
 		 */
 		public function process() {
 			// Unschedule if amount is set to zero
 			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) {
-				if ( wp_next_scheduled( 'mycred_banking_interest_compound' ) )
-					wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
+				$timestamp = wp_next_scheduled( 'mycred_banking_interest_compound' );
+				if ( $timestamp !== false )
+					wp_clear_scheduled_hook( $timestamp, 'mycred_banking_interest_compound' );
 			}
 
 			// Schedule if none exist
@@ -89,7 +95,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			if ( $payout_now === false || $last_payout === false ) return;
 			
 			if ( $last_payout != $payout_now ) {
+				// Save
 				$this->save( 'last_payout', $unow );
+				
+				// Schedule Payouts
 				if ( wp_next_scheduled( 'mycred_banking_interest_payout' ) === false )
 					wp_schedule_single_event( time(), 'mycred_banking_interest_payout' );
 			}
@@ -97,8 +106,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 		/**
 		 * Do Compound
-		 * Runs though all user balances and compounds interest. Will un-schedule it self
-		 * once completed.
+		 * Either runs compounding on every single user in one go, or split the users
+		 * up into groups of 2000 IDs and do them in batches.
 		 * @since 1.2
 		 * @version 1.0
 		 */
@@ -106,9 +115,47 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
 			// Get users
 			$users = $this->get_users();
-			if ( !empty( $users ) ) {
-				foreach ( $users as $user_id ) {
+			$total = count( $users );
+			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
+			
+			if ( $total > $threshold ) {
+				$batches = array_chunk( $users, $threshold );
+				$time = time();
+				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
+				
+				$set = 1;
+				foreach ( $batches as $batch_id => $batch ) {
+					$time = ( $time + ( $interval*$set ) );
+					if ( wp_next_scheduled( $time, 'mycred_banking_do_compound_batch', array( $batch ) ) === false )
+						wp_schedule_single_event( $time, 'mycred_banking_do_compound_batch', array( $batch ) );
+					$set = $set+1;
+				}
+			}
+			else {
+				$this->do_compound_batch( $users );
+			}
+		}
+		
+		/**
+		 * Do Compound Batch
+		 * Compounds interest for each user ID given in batch.
+		 * @since 1.2
+		 * @version 1.1
+		 */
+		public function do_compound_batch( $batch ) {
+			if ( !empty( $batch ) && is_array( $batch ) ) {
+				foreach( (array) $batch as $user_id ) {
 					$user_id = intval( $user_id );
+					
+					// Handle excludes
+					if ( !empty( $this->prefs['excludes'] ) ) {
+						if ( !is_array( $this->prefs['excludes'] ) )
+							$excludes = explode( ',', $this->prefs['excludes'] );
+
+						// Excludes
+						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
+					}
+										
 					// Current balance
 					$balance = $this->core->get_users_cred( $user_id );
 					if ( $balance == 0 ) continue;
@@ -119,9 +166,6 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					
 					// Min Balance Limit
 					if ( $balance < $this->core->number( $this->prefs['min_balance'] ) ) continue;
-					
-					// Let others play
-					$this->prefs = apply_filters( 'mycred_banking_do_compound', $this->prefs, $user_id );
 					
 					// Convert rate
 					$rate = $this->prefs['rate']['amount']/100;
@@ -140,17 +184,60 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		}
 
 		/**
-		 * Do Payout
-		 * Runs though all user compounded interest and pays. Will un-schedule it self
-		 * once completed.
+		 * Payout
+		 * Will either payout to all users in one go or if there is more then
+		 * 2000 members, do them in batches of 2000 at a time.
 		 * @since 1.2
 		 * @version 1.1
 		 */
 		public function do_payouts() {
-			// Get users
+			// Make sure to clear any stray schedules to prevent duplicates
+			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
+			
+			update_option( 'mycred_run_count', 0 );
+			// Query
 			$users = $this->get_users();
-			if ( !empty( $users ) ) {
-				foreach ( $users as $user_id ) {
+			$total = count( $users );
+			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
+			
+			if ( $total > $threshold ) {
+				$batches = array_chunk( $users, $threshold );
+				$time = time();
+				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
+				
+				$set = 1;
+				foreach ( $batches as $batch_id => $batch ) {
+					$time = ( $time + ( $interval*$set ) );
+					if ( wp_next_scheduled( $time, 'mycred_banking_interest_do_batch', array( $batch ) ) === false )
+						wp_schedule_single_event( $time, 'mycred_banking_interest_do_batch', array( $batch ) );
+					$set = $set+1;
+				}
+			}
+			else {
+				$this->do_interest_batch( $users );
+			}
+		}
+		
+		/**
+		 * Do Payout
+		 * Runs though all user compounded interest and pays.
+		 * @since 1.2
+		 * @version 1.1
+		 */
+		public function do_interest_batch( $batch ) {
+			if ( !empty( $batch ) && is_array( $batch ) ) {
+				foreach( (array) $batch as $user_id ) {
+					$user_id = intval( $user_id );
+					
+					// Handle excludes
+					if ( !empty( $this->prefs['excludes'] ) ) {
+						if ( !is_array( $this->prefs['excludes'] ) )
+							$excludes = explode( ',', $this->prefs['excludes'] );
+
+						// Excludes
+						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
+					}
+										
 					// Get past interest
 					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
 					if ( empty( $past_interest ) || $past_interest == 0 ) continue;
@@ -158,20 +245,15 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					// Pay / Charge
 					$this->core->add_creds(
 						'payout',
-						intval( $user_id ),
+						$user_id,
 						$past_interest,
 						$this->prefs['log']
 					);
 					
 					// Reset past interest
 					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', 0 );
-
-					// Let others play
-					do_action( 'mycred_banking_do_payout', $this->id, $user_id, $this->prefs, $past_interest );
 				}
 			}
-			// Make sure to clear any stray schedules to prevent duplicates
-			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
 		}
 		
 		/**
@@ -261,4 +343,5 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		}
 	}
 }
+
 ?>

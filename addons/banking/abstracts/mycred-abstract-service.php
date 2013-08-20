@@ -229,8 +229,6 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		 * @version 1.1
 		 */
 		public function get_users() {
-			global $wpdb;
-			
 			// Get daily transient 
 			$data = get_transient( 'mycred_banking_payout_ids' );
 			
@@ -247,6 +245,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			
 			// New Query
 			if ( $data === false ) {
+				global $wpdb;
 				$data = $wpdb->get_col( "SELECT ID FROM {$wpdb->users};" );
 				set_transient( 'mycred_banking_payout_ids', $data, DAY_IN_SECONDS );
 				$wpdb->flush();

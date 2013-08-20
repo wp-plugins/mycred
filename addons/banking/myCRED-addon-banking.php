@@ -147,6 +147,11 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Banking', 'mycred' ); ?></h2>
 		<p><?php echo $this->core->template_tags_general( __( 'This add-on allows you to setup transaction fees for %_plural% transfers, purchases or payments using the Gateway add-on, along with offering interest on %_plural% balances.', 'mycred' ) ); ?></p>
+		<?php if ( defined( 'DISABLE_WP_CRON' ) ) : ?>
+		
+		<p><strong><?php _e( 'WP-Cron deactivation detected!', 'mycred' ); ?></strong></p>
+		<p><?php _e( 'Warning! This add-on requires WP - Cron to work.', 'mycred' ); ?></p>
+		<?php return; endif; ?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-banking' ); ?>
 
