@@ -775,7 +775,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
@@ -800,7 +800,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			$reference = '';
 
 			// Approved comments
-			if ( $this->prefs['approved'] != 0 && $new_status == 'approved' ) {
+			if ( $this->prefs['approved']['creds'] != 0 && $new_status == 'approved' ) {
 				// New approved comment
 				if ( $old_status == 'unapproved' || $old_status == 'hold' ) {
 					// Enforce limits
@@ -812,7 +812,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				}
 
 				// Marked as "Not Spam"
-				elseif ( $this->prefs['spam'] != 0 && $old_status == 'spam' ) {
+				elseif ( $this->prefs['spam']['creds'] != 0 && $old_status == 'spam' ) {
 					$reference = 'approved_comment';
 
 					// Reverse points
@@ -825,7 +825,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				}
 
 				// Returned comment from trash
-				elseif ( $this->prefs['trash'] != 0 && $old_status == 'trash' ) {
+				elseif ( $this->prefs['trash']['creds'] != 0 && $old_status == 'trash' ) {
 					$reference = 'approved_comment';
 					// Reverse points
 					if ( $this->prefs['trash']['creds'] < 0 )
