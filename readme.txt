@@ -168,7 +168,8 @@ See: http://mycred.me/download/changelog/2/
 * Added missing options and schedules to the uninstaller.
 * Fixed Bug #46 - Missing text domains for translations and incorrect html syntaxes. (thanks Dan).
 * Fixed Bug #47 - Rank shown multiple times in BP Profile.
-* Fixed Bug #48 - 
+* Fixed Bug #48 - Disabling specific comment hook instances with zero does not work.
+* Fixed Bug #49 - PHP Notice when user accepts invite though the Invite Anyone Plugin.
 
 = 1.2.1 =
 * Fixed Bug #43 - Users are not sorted according to balance in WP admin.
