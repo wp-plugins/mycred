@@ -593,7 +593,7 @@ if ( !class_exists( 'myCRED_Invite_Anyone' ) && function_exists( 'invite_anyone_
 		 */
 		public function accept_invite( $invited_user_id, $inviters ) {
 			// Invite Anyone will pass on an array of user IDs of those who have invited this user which we need to loop though
-			foreach ( $inviters as $inviter_id ) {
+			foreach ( (array) $inviters as $inviter_id ) {
 				// Limit Check
 				if ( $this->prefs['accept_invite']['limit'] != 0 ) {
 					$user_log = get_user_meta( $inviter_id, 'mycred_invite_anyone', true );
