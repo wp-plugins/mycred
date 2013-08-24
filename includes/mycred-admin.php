@@ -288,14 +288,25 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Save Manual Adjustments
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function adjust_points_manually( $user_id ) {
 			global $mycred_errors;
 
 			// All the reasons we should bail
-			if ( !$this->core->can_edit_creds() || $this->core->exclude_user( $user_id ) ) return false;
+			if ( !$this->core->can_edit_creds() ) return false;
 			if ( !isset( $_POST['myCRED-manual-add-points'] ) || !isset( $_POST['myCRED-manual-add-description'] ) ) return false;
+			
+			// Clean up excludes
+			if ( $this->core->exclude_user( $user_id ) ) {
+				// If excludes has been changed since install we need to delete their points balance
+				// meta to avoid them showing up in the leaderboard or other db queries.
+				$balance = get_user_meta( $user_id, 'mycred_default', true );
+				if ( !empty( $balance ) )
+					delete_user_meta( $user_id, 'mycred_balance' );
+				
+				return false;
+			}
 			
 			// Add new creds
 			$cred = $_POST['myCRED-manual-add-points'];
