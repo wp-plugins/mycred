@@ -253,14 +253,21 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		/**
 		 * Get Leaderboard
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.1
 		 */
 		public function get_leaderboard() {
+			return '<ol class="myCRED-leaderboard">' . $this->loop( 'li' ) . '</ol>';
+		}
+
+		/**
+		 * Leaderboard Loop
+		 * @since 1.1.2
+		 * @version 1.0
+		 */
+		public function loop( $wrap = '' ) {
 			// Default template
 			if ( empty( $this->args['template'] ) ) $this->args['template'] = '#%ranking% %user_profile_link% %cred_f%';
-
-			// Organized list
-			$output = '<ol class="myCRED-leaderboard">';
+			$output = '';
 
 			// Loop
 			foreach ( $this->result as $position => $row ) {
@@ -285,11 +292,15 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 				$layout = $this->core->template_tags_user( $layout, false, $row );
 
 				$layout = apply_filters( 'mycred_ranking_row', $layout, $this->args['template'], $row, $position+1 );
-				$output .= '<li class="' . implode( ' ', $class ) . '">' . $layout . '</li>';
+
+				// Wrapper
+				if ( !empty( $wrap ) )
+					$layout = '<' . $wrap . ' class="%classes%">' . $layout . '</' . $wrap . '>';
+
+				$layout = str_replace( '%classes%', implode( ' ', $class ), $layout );
+				$output .= $layout . "\n";
 			}
 
-			// End
-			$output .= '</ol>';
 			return $output;
 		}
 	}
