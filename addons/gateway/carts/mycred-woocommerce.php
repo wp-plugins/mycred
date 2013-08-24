@@ -240,6 +240,26 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 	}
 
 	/**
+	 * Parse Email Notice
+	 * @since 1.2.2
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_email_before_send', 'mycred_woo_parse_email' );
+	function mycred_woo_parse_email( $email )
+	{
+		if ( $email['request']['ref'] == 'woocommerce_payment' ) {
+			$order = new WC_Order( (int) $email['request']['ref_id'] );
+			if ( isset( $order->id ) ) {
+				$url = esc_url( add_query_arg( 'order', $order->id, get_permalink( woocommerce_get_page_id( 'view_order' ) ) ) );
+
+				$content = str_replace( '%order_id%', $order->id, $email['request']['entry'] );
+				$email['request']['entry'] = str_replace( '%order_link%', '<a href="' . $url . '">#' . $order->id . '</a>', $content );
+			}
+		}
+		return $email;
+	}
+
+	/**
 	 * Register Gateway
 	 * @since 0.1
 	 * @version 1.0

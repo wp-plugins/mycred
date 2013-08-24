@@ -172,7 +172,8 @@ See: http://mycred.me/download/changelog/2/
 * Fixed Bug #49 - PHP Notice when user accepts invite though the Invite Anyone Plugin.
 * Fixed Bug #50 - Users balance is not updated when viewing videos.
 * Fixed Bug #51 - Ranking Loop function missing.
-* Added check to remove balances for users who have been selected to be excluded. 
+* Added check to remove balances for users who have been selected to be excluded.
+* Added support for shopping cart related template tags in the Email Notice add-on. 
 
 = 1.2.1 =
 * Fixed Bug #43 - Users are not sorted according to balance in WP admin.

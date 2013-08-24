@@ -497,5 +497,25 @@ if ( !function_exists( 'mycred_marketpress_parse_log' ) ) {
 
 		return $content;
 	}
+
+	/**
+	 * Parse Email Notice
+	 * @since 1.2.2
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_email_before_send', 'mycred_woo_parse_email' );
+	function mycred_woo_parse_email( $email )
+	{
+		if ( $email['request']['ref'] == 'marketpress_payment' ) {
+			$order = get_post( (int) $email['request']['ref_id'] );
+			if ( isset( $order->id ) ) {
+				$track_link = '<a href="' . mp_orderstatus_link( false, true ) . $order_id . '/' . '">#' . $order->post_title . '/' . '</a>';
+
+				$content = str_replace( '%order_id%', $order->post_title, $email['request']['entry'] );
+				$email['request']['entry'] = str_replace( '%order_link%', $track_link, $content );
+			}
+		}
+		return $email;
+	}
 }
 ?>
