@@ -1314,7 +1314,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function ajax_call_video_points() {
 			// We must be logged in
@@ -1422,12 +1422,14 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 				elseif ( $state == 1 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
 					$award = true;
 					$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
+					$this->core->update_users_balance( $user_id, $amount );
 					$amount = $users_log->creds+$amount;
 				}
 				// Film has ended and we have not reached maximum
 				elseif ( $state == 0 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
 					$award = true;
 					$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
+					$this->core->update_users_balance( $user_id, $amount );
 					$amount = $users_log->creds+$amount;
 					$status = 'max';
 				}
