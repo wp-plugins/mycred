@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: myCRED 1.2.2\n"
-"POT-Creation-Date: 2013-08-20 13:48+0100\n"
-"PO-Revision-Date: 2013-08-20 13:51+0100\n"
+"POT-Creation-Date: 2013-08-24 19:04+0100\n"
+"PO-Revision-Date: 2013-08-24 19:04+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: mycred.me <support@mycred.me>\n"
 "Language: English\n"
@@ -263,7 +263,7 @@ msgstr ""
 #: addons/gateway/carts/mycred-marketpress.php:359
 #: addons/gateway/carts/mycred-woocommerce.php:87
 #: modules/mycred-module-hooks.php:519 modules/mycred-module-hooks.php:1228
-#: modules/mycred-module-hooks.php:1503 modules/mycred-module-plugins.php:878
+#: modules/mycred-module-hooks.php:1505 modules/mycred-module-plugins.php:878
 #: modules/mycred-module-plugins.php:880 modules/mycred-module-plugins.php:889
 #: modules/mycred-module-plugins.php:1168
 #: modules/mycred-module-plugins.php:1288
@@ -303,7 +303,7 @@ msgstr ""
 
 #: addons/banking/services/mycred-bank-service-payouts.php:218
 #: addons/banking/services/mycred-bank-service-payouts.php:231
-#: modules/mycred-module-hooks.php:1518
+#: modules/mycred-module-hooks.php:1520
 msgid "Interval"
 msgstr ""
 
@@ -380,7 +380,7 @@ msgstr ""
 #: addons/buddypress/hooks/bp-profile.php:398
 #: addons/buddypress/hooks/bp-profile.php:411
 #: addons/gateway/event-booking/mycred-eventespresso3.php:428
-#: modules/mycred-module-hooks.php:523 modules/mycred-module-hooks.php:1507
+#: modules/mycred-module-hooks.php:523 modules/mycred-module-hooks.php:1509
 #: modules/mycred-module-plugins.php:639 modules/mycred-module-plugins.php:660
 #: modules/mycred-module-plugins.php:1552
 #: modules/mycred-module-plugins.php:1565
@@ -4485,7 +4485,7 @@ msgstr ""
 
 #: modules/mycred-module-hooks.php:997
 msgid ""
-"The number of comments per post that grants %_plural%. User zero for "
+"The number of comments per post that grants %_plural%. Use zero for "
 "unlimited."
 msgstr ""
 
@@ -4495,7 +4495,7 @@ msgstr ""
 
 #: modules/mycred-module-hooks.php:1003
 msgid ""
-"Number of comments per day that grants %_plural%. User zero for unlimited."
+"Number of comments per day that grants %_plural%. Use zero for unlimited."
 msgstr ""
 
 #: modules/mycred-module-hooks.php:1008
@@ -4532,45 +4532,45 @@ msgid ""
 "shortcode, no %_plural% will be awarded!"
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1500
+#: modules/mycred-module-hooks.php:1502
 msgid "Amount to award for viewing videos."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1510
+#: modules/mycred-module-hooks.php:1512
 msgid "Award Logic"
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1512
+#: modules/mycred-module-hooks.php:1514
 msgid "Select when %_plural% should be awarded or deducted."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1513
+#: modules/mycred-module-hooks.php:1515
 msgid "Play - As soon as video starts playing."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1514
+#: modules/mycred-module-hooks.php:1516
 msgid "Full - First when the entire video has played."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1515
+#: modules/mycred-module-hooks.php:1517
 msgid "Interval - For each x number of seconds watched."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1520
+#: modules/mycred-module-hooks.php:1522
 msgid "Number of seconds"
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1527
+#: modules/mycred-module-hooks.php:1529
 msgid "Leniency"
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1529
+#: modules/mycred-module-hooks.php:1531
 msgid ""
 "The maximum percentage a users view of a movie can differ from the actual "
 "length."
 msgstr ""
 
-#: modules/mycred-module-hooks.php:1532
+#: modules/mycred-module-hooks.php:1534
 msgid ""
 "Do not set this value to zero! A lot of thing can happen while a user "
 "watches a movie and sometimes a few seconds can drop of the counter due to "
@@ -4671,7 +4671,7 @@ msgstr ""
 
 #: modules/mycred-module-plugins.php:646
 msgid ""
-"Maximum number of invites that grants %_plural%. User zero for unlimited."
+"Maximum number of invites that grants %_plural%. Use zero for unlimited."
 msgstr ""
 
 #: modules/mycred-module-plugins.php:650
@@ -4684,7 +4684,7 @@ msgstr ""
 
 #: modules/mycred-module-plugins.php:667
 msgid ""
-"Maximum number of accepted invitations that grants %_plural%. User zero for "
+"Maximum number of accepted invitations that grants %_plural%. Use zero for "
 "unlimited."
 msgstr ""
 
@@ -4717,7 +4717,7 @@ msgid "Default %s for %s"
 msgstr ""
 
 #: modules/mycred-module-plugins.php:1030
-msgid "User zero to disable users gaining %_plural%"
+msgid "Use zero to disable users gaining %_plural%"
 msgstr ""
 
 #: modules/mycred-module-plugins.php:1034

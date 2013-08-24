@@ -994,13 +994,13 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 						<li>
 							<label for="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>"><?php _e( 'Limit per post', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'limits' => 'per_post' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>" value="<?php echo $prefs['limits']['per_post']; ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'The number of comments per post that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'The number of comments per post that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'limits' => 'per_day' ) ); ?>"><?php _e( 'Limit per day', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'limits' => 'per_day' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'per_day' ) ); ?>" value="<?php echo $prefs['limits']['per_day']; ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'Number of comments per day that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'Number of comments per day that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

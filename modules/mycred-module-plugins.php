@@ -643,7 +643,7 @@ if ( !class_exists( 'myCRED_Invite_Anyone' ) && function_exists( 'invite_anyone_
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'send_invite', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'send_invite', 'limit' ) ); ?>" value="<?php echo $prefs['send_invite']['limit']; ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'Maximum number of invites that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'Maximum number of invites that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 					</ol>
 					<!-- Creds for Accepting Invites -->
@@ -664,7 +664,7 @@ if ( !class_exists( 'myCRED_Invite_Anyone' ) && function_exists( 'invite_anyone_
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'accept_invite', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'accept_invite', 'limit' ) ); ?>" value="<?php echo $prefs['accept_invite']['limit']; ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'Maximum number of accepted invitations that grants %_plural%. User zero for unlimited.', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'Maximum number of accepted invitations that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 					</ol>
 <?php		unset( $this );
@@ -1027,7 +1027,7 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs[$post_type]['creds'] ); ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'User zero to disable users gaining %_plural%', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'Use zero to disable users gaining %_plural%', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
