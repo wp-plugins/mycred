@@ -2,7 +2,7 @@
 /**
  * myCRED Bank Service - Recurring Payouts
  * @since 1.2
- * @version 1.0
+ * @version 1.1
  */
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 
@@ -34,7 +34,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		public function run() {
 			add_action( 'wp_loaded',                       array( $this, 'process' ) );
 			add_action( 'mycred_banking_recurring_payout', array( $this, 'do_payouts' ) );
-			add_action( 'mycred_banking_do_batch',         array( $this, 'do_payout_batch' ) );
+			add_action( 'mycred_banking_do_batch',         array( $this, 'do_payout_batch' ), 10, 3 );
 		}
 
 		/**
@@ -51,7 +51,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * Process
 		 * Determines if we should run a payout or not.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function process() {
 			// Get cycles
@@ -76,8 +76,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			// If now or last run returns false bail
 			if ( $now === false || $last_run === false ) return;
 
-			// Mismatch means new run
-			if ( $last_run != $now ) {
+			// Is it time to run?
+			if ( $this->time_to_run( $this->prefs['rate'], $last_run ) ) {
 				// Cycles (-1 means no limit)
 				if ( $cycles > 0-1 ) {
 					$cycles = $cycles-1;
@@ -86,8 +86,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 				$this->save( $unow, $cycles );
 
 				// Schedule payouts
-				if ( ! wp_next_scheduled( 'mycred_banking_recurring_payout' ) )
-					wp_schedule_single_event( time(), 'mycred_banking_recurring_payout' );
+				if ( wp_next_scheduled( 'mycred_banking_recurring_payout', array( $cycles ) ) === false )
+					wp_schedule_single_event( time(), 'mycred_banking_recurring_payout', array( $cycles ) );
 			}
 		}
 
@@ -100,32 +100,33 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * @since 1.2
 		 * @version 1.1
 		 */
-		public function do_payouts() {
+		public function do_payouts( $cycle = NULL ) {
 			// Make sure to clear any stray schedules to prevent duplicates
 			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
 
 			// Query
 			$users = $this->get_users();
 			$total = count( $users );
-			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
-			
+			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2 );
+
 			// If we are over the threshold we need to batch
-			if ( $total > $threshold ) {
+			if ( (int) $total > $threshold ) {
 				$batches = array_chunk( $users, $threshold );
 				$time = time();
-				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
-				
-				$set = 1;
+
+				$set = 0;
 				foreach ( $batches as $batch_id => $batch ) {
-					$time = ( $time + ( $interval*$set ) );
-					if ( wp_next_scheduled( $time, 'mycred_banking_do_batch', array( $batch ) ) === false )
-						wp_schedule_single_event( $time, 'mycred_banking_do_batch', array( $batch ) );
 					$set = $set+1;
+					// Run time = current time + 60 seconds for each set
+					$run_time = ( $time + ( 60*$set ) );
+					if ( wp_next_scheduled( $run_time, 'mycred_banking_do_batch', array( $batch, $set, $cycle ) ) === false )
+						wp_schedule_single_event( $run_time, 'mycred_banking_do_batch', array( $batch, $set, $cycle ) );
 				}
+				set_transient( 'mycred_banking_num_payout_batches', $set, HOUR_IN_SECONDS );
 			}
 			// Run single batch now
 			else {
-				$this->do_payout_batch( $users );
+				$this->do_payout_batch( $users, 'single', $cycle );
 			}
 		}
 		
@@ -135,38 +136,49 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * @since 1.2
 		 * @version 1.1
 		 */
-		public function do_payout_batch( $batch ) {
+		public function do_payout_batch( $batch, $set = NULL, $cycle = NULL ) {
+			$test = get_option( 'mycred_catch_fires', array() );
 			if ( !empty( $batch ) && is_array( $batch ) ) {
-				foreach( (array) $batch as $user_id ) {
+				foreach ( $batch as $user_id ) {
+					$user_id = intval( $user_id );
+
 					// Handle excludes
 					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) )
-							$excludes = explode( ',', $this->prefs['excludes'] );
-
-						// Excludes
+						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
 						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
 					}
-										
+
 					// Add / Deduct points
 					$this->core->add_creds(
 						'payout',
-						intval( $user_id ),
+						$user_id,
 						$this->prefs['amount'],
 						$this->prefs['log']
 					);
 				}
+				// If multiple sets, check if this is the last one to deactivate
+				if ( $set !== NULL ) {
+					$total = get_transient( 'mycred_banking_num_payout_batches' );
+					if ( $total !== false && $set == $total ) {
+						delete_transient( 'mycred_banking_num_payout_batches' );
+
+						if ( $cycle == 0 )
+							$this->save( date_i18n( 'U' ), 0, true );
+					}
+				}
+				// Single set, check if cycle is zero to deactivate
+				elseif ( $set === NULL && $cycle == 0 )
+					$this->save( date_i18n( 'U' ), 0, true );
 			}
 		}
 
 		/**
 		 * Save
 		 * Saves the last run and the number of cycles run.
-		 * If this is the last cycle, this method will remove this service
-		 * from the active list.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function save( $now = 0, $cycles = 0 ) {
+		public function save( $now = 0, $cycles = 0, $deactivate = false ) {
 			// Update last run
 			$this->prefs['last_run'] = $now;
 			// Update cycles count
@@ -179,7 +191,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			$bank['service_prefs'][ $this->id ] = $this->prefs;
 
 			// Deactivate this service if this is the last run
-			if ( $cycles == 0 ) {
+			if ( $cycles == 0 && $deactivate ) {
 				// Should return the service id as a key for us to unset
 				if ( ( $key = array_search( $this->id, $bank['active'] ) ) !== false ) {
 					unset( $bank['active'][ $key ] );

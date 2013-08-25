@@ -2,7 +2,7 @@
 /**
  * myCRED Bank Service - Interest
  * @since 1.2
- * @version 1.0
+ * @version 1.1
  */
 if ( !defined( 'myCRED_VERSION' ) ) exit;
 
@@ -93,8 +93,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 				$last_payout = $this->get_last_run( $this->prefs['last_payout'], $this->prefs['rate']['pay_out'] );
 			}
 			if ( $payout_now === false || $last_payout === false ) return;
-			
-			if ( $last_payout != $payout_now ) {
+
+			// Time to run?
+			if ( $this->time_to_run( $this->prefs['rate']['pay_out'], $last_run ) ) {
 				// Save
 				$this->save( 'last_payout', $unow );
 				
@@ -118,17 +119,16 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			$total = count( $users );
 			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
 			
-			if ( $total > $threshold ) {
+			if ( (int) $total > $threshold ) {
 				$batches = array_chunk( $users, $threshold );
 				$time = time();
-				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
 				
-				$set = 1;
+				$set = 0;
 				foreach ( $batches as $batch_id => $batch ) {
-					$time = ( $time + ( $interval*$set ) );
-					if ( wp_next_scheduled( $time, 'mycred_banking_do_compound_batch', array( $batch ) ) === false )
-						wp_schedule_single_event( $time, 'mycred_banking_do_compound_batch', array( $batch ) );
 					$set = $set+1;
+					$run_time = ( $time + ( 60*$set ) );
+					if ( wp_next_scheduled( $run_time, 'mycred_banking_do_compound_batch', array( $batch ) ) === false )
+						wp_schedule_single_event( $run_time, 'mycred_banking_do_compound_batch', array( $batch ) );
 				}
 			}
 			else {
@@ -144,15 +144,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 */
 		public function do_compound_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
-				foreach( (array) $batch as $user_id ) {
+				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
 					
 					// Handle excludes
 					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) )
-							$excludes = explode( ',', $this->prefs['excludes'] );
-
-						// Excludes
+						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
 						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
 					}
 										
@@ -193,24 +190,22 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		public function do_payouts() {
 			// Make sure to clear any stray schedules to prevent duplicates
 			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );
-			
-			update_option( 'mycred_run_count', 0 );
+
 			// Query
 			$users = $this->get_users();
 			$total = count( $users );
 			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
 			
-			if ( $total > $threshold ) {
+			if ( (int) $total > $threshold ) {
 				$batches = array_chunk( $users, $threshold );
 				$time = time();
-				$interval = (int) apply_filters( 'mycred_do_banking_interval', 60*2 );
 				
-				$set = 1;
+				$set = 0;
 				foreach ( $batches as $batch_id => $batch ) {
-					$time = ( $time + ( $interval*$set ) );
-					if ( wp_next_scheduled( $time, 'mycred_banking_interest_do_batch', array( $batch ) ) === false )
-						wp_schedule_single_event( $time, 'mycred_banking_interest_do_batch', array( $batch ) );
 					$set = $set+1;
+					$run_time = ( $time + ( 60*$set ) );
+					if ( wp_next_scheduled( $run_time, 'mycred_banking_interest_do_batch', array( $batch ) ) === false )
+						wp_schedule_single_event( $run_time, 'mycred_banking_interest_do_batch', array( $batch ) );
 				}
 			}
 			else {
@@ -226,15 +221,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 */
 		public function do_interest_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
-				foreach( (array) $batch as $user_id ) {
+				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
 					
 					// Handle excludes
 					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) )
-							$excludes = explode( ',', $this->prefs['excludes'] );
-
-						// Excludes
+						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
 						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
 					}
 										

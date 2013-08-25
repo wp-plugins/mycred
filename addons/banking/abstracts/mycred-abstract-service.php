@@ -222,6 +222,52 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		}
 
 		/**
+		 * Time To Run
+		 * @since 1.2.2
+		 * @version 1.0
+		 */
+		public function time_to_run( $rate, $last_run ) {
+			$now = $this->get_now( $rate );
+			switch ( $rate ) {
+				case 'hourly' :
+					if ( $now == 0 && $last_run == 23 ) return true;
+					elseif ( $now-1 == $last_run ) return true;
+				break;
+				case 'daily' :
+					if ( $now == 0 && $last_run >= 365 ) return true;
+					elseif ( $now-1 == $last_run ) return true;
+				break;
+				case 'weekly' :
+					if ( $now == 0 && $last_run >= 52 ) return true;
+					elseif ( $now-1 == $last_run ) return true;
+				break;
+				case 'monthly' :
+					if ( $now == 1 && $last_run == 12 ) return true;
+					elseif ( $now-1 == $last_run ) return true;
+				break;
+				case 'quarterly' :
+					$current_quarter = substr( $now, 0, -1 );
+					if ( $current_quarter == 1 )
+						$last_quarter = 4;
+					else
+						$last_quarter = $current_quarter-1;
+					if ( 'Q' . $last_quarter == $last_run ) return true;
+				break;
+				case 'semiannually' :
+					if ( $now != $last_run ) return true;
+				break;
+				case 'annually' :
+					if ( $now-1 == $last_run ) return true;
+				break;
+				default :
+					return apply_filters( 'mycred_banking_time_to_run', false, $rate, $last_run );
+				break;
+			}
+
+			return false;
+		}
+
+		/**
 		 * Get Users
 		 * Returns all blog users IDs either from a daily transient or
 		 * by making a fresh SQL Query.
