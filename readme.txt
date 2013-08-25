@@ -30,7 +30,7 @@ So we built an adaptive plugin which gives it’s users full control on how poin
 * Minimum CSS Styling
 
 
-**Add-ons:**
+**Built-in Add-ons:**
 
 Your myCRED installation comes packed with optional add-ons, adding further features and third-party plugin support.
 
@@ -42,6 +42,8 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 * *Ranks* - Allows you to setup ranks based on your users points balance.
 * *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
 * *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
+* *Banking* - Charge or payout interest on users balances on a regular basis or setup recurring payouts. Added support for websites with large (2k+) user base.
+
 
 **Multisites**
 
@@ -62,6 +64,7 @@ The following third party plugins are supported by default:
 * [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
 * [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
 * [bbPress](http://wordpress.org/extend/plugins/bbpress/) - Award points for new forums, topics, replies and for topics getting added to "Favorites".
+* [GD Star Rating](http://wordpress.org/plugins/gd-star-rating/) - Award points for users rating content.
 
 
 **Further Details**
