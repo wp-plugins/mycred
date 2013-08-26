@@ -167,7 +167,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					}
 				}
 				// Single set, check if cycle is zero to deactivate
-				elseif ( $set === NULL && $cycle == 0 )
+				elseif ( $set === 'single' && $cycle == 0 )
 					$this->save( date_i18n( 'U' ), 0, true );
 			}
 		}
