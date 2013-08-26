@@ -164,6 +164,9 @@ See: http://mycred.me/download/changelog/2/
 
 == Changelog ==
 
+= 1.2.3 =
+* Cart support for Email notices has incorrect function name.
+
 = 1.2.2 =
 * Added User Batches for Banking Add-on to support websites with more then 2k users.
 * Added Cache option to myCRED_Query_Log class.
