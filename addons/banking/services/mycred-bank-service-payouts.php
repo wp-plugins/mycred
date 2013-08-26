@@ -107,7 +107,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			// Query
 			$users = $this->get_users();
 			$total = count( $users );
-			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2 );
+			$threshold = (int) apply_filters( 'mycred_do_banking_limit', 2000 );
 
 			// If we are over the threshold we need to batch
 			if ( (int) $total > $threshold ) {
