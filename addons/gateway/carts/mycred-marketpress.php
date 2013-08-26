@@ -503,8 +503,8 @@ if ( !function_exists( 'mycred_marketpress_parse_log' ) ) {
 	 * @since 1.2.2
 	 * @version 1.0
 	 */
-	add_filter( 'mycred_email_before_send', 'mycred_woo_parse_email' );
-	function mycred_woo_parse_email( $email )
+	add_filter( 'mycred_email_before_send', 'mycred_market_parse_email' );
+	function mycred_market_parse_email( $email )
 	{
 		if ( $email['request']['ref'] == 'marketpress_payment' ) {
 			$order = get_post( (int) $email['request']['ref_id'] );
