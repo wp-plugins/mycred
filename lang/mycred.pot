@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-08-28 15:56+0100\n"
-"PO-Revision-Date: 2013-08-28 15:56+0100\n"
+"POT-Creation-Date: 2013-08-28 17:14+0100\n"
+"PO-Revision-Date: 2013-08-28 17:14+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgid "Cheatin&#8217; huh?"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:115
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:602
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:624
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:476
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:419
 msgid "Setup"
@@ -46,32 +46,32 @@ msgid ""
 "for further details."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:405
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:409
 msgid "My Balance: "
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:509
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:513
 #, php-format
 msgid "Edit Users %s balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:510
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:514
 msgid "Close"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:511
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:559
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:515
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:563
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:827
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:136
 msgid "Processing..."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:560
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:564
 msgid "Sent"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:561
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:565
 msgid "Error - Try Again"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/netbilling.php:514
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/zombaio.php:382
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:186
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:751
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:773
 msgid "Select"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgid "The minimum requires balance for interest to apply."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:303
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:254
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:253
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:216
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:271
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:359
@@ -301,44 +301,44 @@ msgstr ""
 msgid "Daily %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:216
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:215
 msgid "Not yet run"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:221
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:220
 msgid "Pay Users"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:224
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:223
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:667
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:347
 msgid "Amount"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:226
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:225
 msgid "Can not be zero."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:230
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:243
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:229
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:242
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1520
 msgid "Interval"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:235
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:234
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:243
 msgid "Cycles"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:237
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:236
 msgid "Set to -1 for unlimited"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:239
 msgid "Last Run / Activated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:243
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:242
 msgid ""
 "Select how often you want to award %_plural%. Note that when this service is "
 "enabled, the first payout will be in the beginning of the next period. So "
@@ -346,37 +346,37 @@ msgid ""
 "morning."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:243
 msgid ""
 "Cycles let you choose how many intervals this service should run. Each time "
 "a cycle runs, the value will decrease until it hits zero, in which case this "
 "service will deactivate itself. Use -1 to run unlimited times."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:245
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
 msgid "Important"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:245
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
 msgid ""
 "You can always stop payouts by deactivating this service. Just remember that "
 "if you deactivate while there are cycles left, this service will continue on "
 "when it gets re-activated. Set cycles to zero to reset."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:247
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:246
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:587
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:107
 msgid "Excludes"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:251
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:250
 msgid ""
 "Comma separated list of user IDs to exclude from this service. No spaces "
 "allowed!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:258
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:257
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-galleries.php:81
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-groups.php:435
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-groups.php:448
@@ -1497,7 +1497,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:155
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:161
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:167
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:256
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:265
 msgid "Email Notices"
 msgstr ""
 
@@ -1543,7 +1543,7 @@ msgid "No email notices found in Trash"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:188
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:826
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:848
 msgid "General"
 msgstr ""
 
@@ -1599,307 +1599,319 @@ msgstr ""
 msgid "user receives %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:258
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:225
+msgid "Ranks Add-on"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:226
+msgid "user is demoted"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:227
+msgid "user is promoted"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:267
 msgid ""
 "Settings that apply to all email notices and can not be overridden for "
 "individual emails."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:259
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:268
 msgid "Email Format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:263
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:272
 msgid "Plain text emails only."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:267
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:276
 msgid "HTML or Plain text emails."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:270
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:279
 msgid "Filters"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:274
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:283
 msgid ""
 "Allow WordPress and Third Party Plugins to filter the email subject before "
 "an email is sent."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:278
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:287
 msgid ""
 "Allow WordPress and Third Party Plugins to filter the email content before "
 "an email is sent."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:281
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:290
 msgid ""
 "Default email settings. These settings can be individually overridden when "
 "editing emails."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:282
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:665
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:291
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:687
 msgid "Email Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:285
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:782
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:294
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:804
 msgid "Senders Name:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:289
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:784
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:298
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:806
 msgid "Senders Email:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:293
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:302
 msgid "Reply-To:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:297
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:306
 msgid "Default Email Content"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:301
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:310
 msgid "Default email content."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:304
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:313
 msgid "Default Email Styling"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:308
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:317
 msgid "Ignored if HTML is not allowed in emails."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:600
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:714
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:622
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:736
 msgid "Email Subject"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:601
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:623
 msgid "Status"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:621
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:643
 msgid "Not Active"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:623
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:645
 #, php-format
 msgid "Scheduled:<br /><strong>%1$s</strong>"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:627
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:649
 msgid "Active"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:629
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:651
 #, php-format
 msgid "Active - Last run:<br /><strong>%1$s</strong>"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:638
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:660
 msgid "Email is sent when"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:640
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:662
 msgid "Missing instance for this notice!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:649
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:651
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:653
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:671
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:673
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:675
 msgid "Sent To"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:649
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:776
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:671
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:798
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:343
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:812
 msgid "User"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:651
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:777
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:673
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:799
 msgid "Administrator"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:653
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:675
 msgid "Both Administrator and User"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:674
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:696
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-help.php:131
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-help.php:155
 msgid "Available Template Tags"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:685
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:707
 msgid "Email Header"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:745
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:767
 msgid "Send this email notice when..."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:774
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:796
 msgid "Recipient:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:778
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:800
 msgid "Both"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:786
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:808
 msgid "Reply-To Email:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:792
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:814
 msgid "Save"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:804
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:826
 msgid "CSS Styling"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:819
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:841
 msgid "Site Related"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:820
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:842
 msgid "Your websites title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:821
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:843
 msgid "Your websites address"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:822
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:844
 msgid "Your websites tagline (description)"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:823
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:845
 msgid "Your websites admin email"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:824
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:846
 msgid "Total number of blog members"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:827
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:849
 msgid "Points name in singular format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:828
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:850
 msgid "Points name in plural"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:829
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:851
 msgid "Login URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:832
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:854
 msgid "User Related"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:833
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:855
 msgid "The users ID"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:834
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:856
 msgid "The users login name (username)"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:835
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:857
 msgid "The users display name"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:836
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:858
 msgid "The users profile address"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:837
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:859
 msgid "Link to the users profile address with their display name as title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:838
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:860
 msgid "The users current balance unformated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:839
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:861
 msgid "The users current balance formated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:841
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:863
 msgid "Post Related"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:842
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:864
 msgid "Post Title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:843
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:865
 msgid "Post URL address"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:844
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:866
 msgid "Link to post Post title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:845
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:867
 msgid "The post type"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:921
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:924
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:943
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:946
 #, php-format
 msgid "Email Notice Updated. View <a href=\"%1$s\">All Notices</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:922
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:944
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:460
 msgid "Custom field updated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:923
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:945
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:461
 msgid "Custom filed updated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:926
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:948
 msgid "Email Notice Activated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:927
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:949
 msgid "Email Notice Saved"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:928
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:950
 #, php-format
 msgid ""
 "Email Notice Submitted for approval. View <a href=\"%1$s\">All Notices</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:930
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:952
 #, php-format
 msgid "Email Notice scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:949
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:971
 msgid ""
 "Once a notice is \"published\" it becomes active! Select \"Save Draft\" if "
 "you are not yet ready to use this email notice!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:951
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:973
 #, php-format
 msgid "This notice will become active on:<br /><strong>%1$s</strong>"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:953
+#: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:975
 msgid "This email notice is active."
 msgstr ""
 

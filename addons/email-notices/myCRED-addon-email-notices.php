@@ -59,13 +59,13 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Hook into Init
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function module_init() {
 			$this->register_post_type();
 			$this->setup_instances();
 			add_action( 'mycred_admin_enqueue', array( $this, 'enqueue_scripts' )    );
-			add_filter( 'mycred_add',           array( $this, 'email_check' ), 10, 3 );
+			add_filter( 'mycred_add',           array( $this, 'email_check' ), 20, 3 );
 		}
 
 		/**
@@ -180,7 +180,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Setup Instances
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		protected function setup_instances() {
 			$instances[''] = __( 'Select', 'mycred' );
@@ -216,6 +216,15 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 					'label'    => __( 'Transfer Add-on', 'mycred' ),
 					'negative' => __( 'user sends %_plural%', 'mycred' ),
 					'positive' => __( 'user receives %_plural%', 'mycred' ),
+					'end'      => ''
+				);
+			}
+
+			if ( class_exists( 'myCRED_Ranks' ) ) {
+				$instances['ranks'] = array(
+					'label'    => __( 'Ranks Add-on', 'mycred' ),
+					'negative' => __( 'user is demoted', 'mycred' ),
+					'positive' => __( 'user is promoted', 'mycred' ),
 					'end'      => ''
 				);
 			}
@@ -336,9 +345,12 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Email Notice Check
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function email_check( $reply, $request, $mycred ) {
+			// Override - something has already determaned that this should not be executed
+			if ( $reply === false || $reply === 'done' ) return $reply;
+			
 			// Construct events
 			$event = array( 'all' );
 			$amount = $request['amount'];
@@ -355,6 +367,16 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 				$event[] = 'minus';
 			elseif ( $balance-$amount == 0 )
 				$event[] = 'zero';
+
+			// Do Ranks first
+			if ( function_exists( 'mycred_get_users_rank' ) ) {
+				// get users current rank ID
+				$current_rank = mycred_get_users_rank( $request['user_id'] );
+				$maybe_new_rank = mycred_find_users_rank( $request['user_id'], false, $request['amount'], $request['type'] );
+				if ( $current_rank != $maybe_new_rank ) {
+					$this->do_email_notices( 'ranks', $event, $request );
+				}
+			}
 
 			// Before we send a notice, lets execute the request
 			// so that emails show the correct details
