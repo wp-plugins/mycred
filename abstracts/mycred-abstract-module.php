@@ -39,7 +39,7 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		function __construct( $module_id = '', $args = array() ) {
 			// Module ID is required
 			if ( empty( $module_id ) )
-				wp_die( 'myCRED_Module() Error. A Module ID is required!' );
+				wp_die( __( 'myCRED_Module() Error. A Module ID is required!', 'mycred' ) );
 
 			$this->module_id = $module_id;
 			$this->core = mycred_get_settings();
@@ -291,11 +291,11 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		/**
 		 * Add Admin Menu Item
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		function add_menu() {
 			// Network Setting for Multisites
-			if ( is_multisite() && mycred_overwrite() === true && $this->screen_id != 'myCRED' && $GLOBALS['blog_id'] != 1 ) return;
+			if ( ( is_multisite() && mycred_overwrite() === true ) && ( $this->screen_id != 'myCRED' || $GLOBALS['blog_id'] != 1 ) ) return;
 
 			if ( !empty( $this->labels ) && !empty( $this->screen_id ) ) {
 				// Menu Label
