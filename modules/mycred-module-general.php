@@ -32,7 +32,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		 * @version 1.1
 		 */
 		public function admin_page() {
-			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
+			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
 
 			// General Settings
 			$general = $this->general;
