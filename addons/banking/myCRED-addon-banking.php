@@ -10,7 +10,7 @@
 // Translate Header (by Dan bp-fr)
 $mycred_addon_header_translate = array(
 	__( 'Banking', 'mycred' ),
-	__( 'This add-on allows you to offer interest on your users %_plural% balances or setup recurring payouts.', 'mycred' )
+	__( 'This add-on allows you to offer interest on your users points balances or setup recurring payouts.', 'mycred' )
 );
 
 if ( !defined( 'myCRED_VERSION' ) ) exit;

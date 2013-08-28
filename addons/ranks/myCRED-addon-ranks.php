@@ -10,7 +10,7 @@
 // Translate Header (by Dan bp-fr)
 $mycred_addon_header_translate = array(
 	__( 'Ranks', 'mycred' ),
-	__( 'Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank.', 'mycred' )
+	__( 'Create ranks for users reaching a certain number of points with the option to add logos for each rank.', 'mycred' )
 );
 
 if ( !defined( 'myCRED_VERSION' ) ) exit;
