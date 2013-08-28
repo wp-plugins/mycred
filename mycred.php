@@ -128,7 +128,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Runs when the plugin is activated
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function activate_mycred() {
 			// Check if blocked
@@ -154,15 +154,19 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				$frequency = apply_filters( 'mycred_cron_reset_key', 'daily' );
 				wp_schedule_event( date_i18n( 'U' ), $frequency, 'mycred_reset_key' );
 			}
+			
+			// Delete stray debug options
+			delete_option( 'mycred_catch_fires' );
 		}
 
 		/**
 		 * Runs when the plugin is deactivated
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function deactivate_mycred() {
 			// Clear Cron
+			wp_clear_scheduled_hook( 'mycred_reset_key' );
 			wp_clear_scheduled_hook( 'mycred_banking_recurring_payout' );
 			wp_clear_scheduled_hook( 'mycred_banking_interest_compound' );
 			wp_clear_scheduled_hook( 'mycred_banking_interest_payout' );

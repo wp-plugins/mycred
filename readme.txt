@@ -166,6 +166,7 @@ See: http://mycred.me/download/changelog/2/
 
 = 1.2.3 =
 * Cart support for Email notices has incorrect function name.
+* Removed stray debug options on plugin activation.
 
 = 1.2.2 =
 * Added User Batches for Banking Add-on to support websites with more then 2k users.
