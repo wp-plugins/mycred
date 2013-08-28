@@ -347,13 +347,21 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		 * Outputs the "click to open" and "click to close" text to the accordion.
 		 *
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function settings_header() {
 			if ( $this->accordion === true )
 				wp_enqueue_script( 'mycred-admin' );
 
 			wp_enqueue_style( 'mycred-admin' );
+
+			// Load help
+			$help = new myCRED_Help();
+			$help_screen = $this->module_name . '_page';
+			if ( method_exists( $help, $help_screen ) ) {
+				$screen = get_current_screen();
+				$help->$help_screen( $screen );
+			}
 
 			if ( $this->accordion === false ) return;
 			$click_to_open = __( 'click to open', 'mycred' );

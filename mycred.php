@@ -83,6 +83,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
 
 			// myCRED is ready
+			require_once( myCRED_MODULES_DIR . 'mycred-module-help.php' );
 			do_action( 'mycred_ready' );
 
 			// Clean up
@@ -263,7 +264,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * WordPress Ready
 		 * @since 0.1
-		 * @version 3.1
+		 * @version 3.2
 		 */
 		function wp_ready() {
 			load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
@@ -272,8 +273,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			$modules = apply_filters( 'mycred_modules', array(
 				'general' => array( 'class' => 'myCRED_General' ),
 				'hooks'   => array( 'class' => 'myCRED_Hooks' ),
-				'log'     => array( 'class' => 'myCRED_Log' ),
-				'help'    => array( 'class' => 'myCRED_Help' )
+				'log'     => array( 'class' => 'myCRED_Log' )
 			) );
 
 			if ( !empty( $modules ) ) {

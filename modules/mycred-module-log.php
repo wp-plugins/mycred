@@ -79,7 +79,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Log Header
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function settings_header() {
 			// Since we are overwriting the myCRED_Module::settings_header() we need to enqueue admin styles
@@ -87,6 +87,9 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 
 			$user_id = get_current_user_id();
 			$screen = get_current_screen();
+			
+			$help = new myCRED_Help();
+			$help->log_page( $screen );
 
 			// Prep Per Page
 			$args = array(

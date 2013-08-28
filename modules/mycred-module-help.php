@@ -16,29 +16,15 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 		 * Construct
 		 */
 		function __construct() {
-			if ( is_admin() )
-				$this->is_admin = true;
-			else
-				$this->is_admin = false;
-		}
-
-		/**
-		 * Hook Into Contextual Help
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function load() {
-			if ( $this->is_admin ) return;
-			add_filter( 'contextual_help', array( $this, 'run' ), 10, 3 );
+			$this->core = mycred_get_settings();
 		}
 
 		/**
 		 * Run Appropriate Help
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function run( $contextual_help, $screen_id, $screen ) {
-			$this->core = mycred_get_settings();
 			if ( $screen_id == 'toplevel_page_myCRED' )
 				$this->log_page( $screen );
 			elseif ( $screen_id == 'mycred_page_myCRED_page_hooks' )
@@ -203,7 +189,7 @@ if ( !class_exists( 'myCRED_Help' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function settings_page( $screen ) {
+		public function general_page( $screen ) {
 			$screen->add_help_tab( array(
 				'id'		=> 'mycred-settings',
 				'title'		=> __( 'Core', 'mycred' ),
