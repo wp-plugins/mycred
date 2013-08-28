@@ -126,7 +126,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 			}
 			// Run single batch now
 			else {
-				$this->do_payout_batch( $users, 'single', $cycle );
+				$this->do_payout_batch( $users, NULL, $cycle );
 			}
 		}
 		
@@ -134,10 +134,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * Do Batch
 		 * Applies points to a batch of user ID's. This is also where we check for exclusions.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function do_payout_batch( $batch, $set = NULL, $cycle = NULL ) {
-			$test = get_option( 'mycred_catch_fires', array() );
 			if ( !empty( $batch ) && is_array( $batch ) ) {
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
@@ -167,7 +166,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					}
 				}
 				// Single set, check if cycle is zero to deactivate
-				elseif ( $set === 'single' && $cycle == 0 )
+				elseif ( $set === NULL && $cycle == 0 )
 					$this->save( date_i18n( 'U' ), 0, true );
 			}
 		}
