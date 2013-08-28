@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-08-28 17:14+0100\n"
-"PO-Revision-Date: 2013-08-28 17:14+0100\n"
+"POT-Creation-Date: 2013-08-29 01:24+0100\n"
+"PO-Revision-Date: 2013-08-29 01:24+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -115,6 +115,10 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:186
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:773
 msgid "Select"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:42
+msgid "myCRED_Module() Error. A Module ID is required!"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:303
