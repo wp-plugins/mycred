@@ -193,6 +193,9 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 				$this->mycred->add_creds( 'woocommerce_payment', $cui, 0-$cost, $this->log_template, $order_id, array( 'ref_type' => 'post' ) );
 				$order->payment_complete();
 
+				// Let others play
+				do_action( 'mycred_paid_for_woo', $order, $cui );
+
 				// Return the good news
 				return array(
 					'result'   => 'success',
