@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-08-29 01:24+0100\n"
-"PO-Revision-Date: 2013-08-29 01:24+0100\n"
+"POT-Creation-Date: 2013-09-01 23:23+0100\n"
+"PO-Revision-Date: 2013-09-01 23:23+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -1514,7 +1514,7 @@ msgid "Email Notice"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:157
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:158
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:157
 msgid "Add New"
 msgstr ""
 
@@ -2194,11 +2194,11 @@ msgstr ""
 msgid "Insufficient funds. Please try a different payment option."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:209
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:212
 msgid "Your account has successfully been charged."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:419
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:422
 msgid "Your current balance"
 msgstr ""
 
@@ -2769,9 +2769,9 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:12
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:156
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:162
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:168
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:155
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:161
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:167
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:691
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:883
 msgid "Ranks"
@@ -2783,47 +2783,47 @@ msgid ""
 "to add logos for each rank."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:157
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:387
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:404
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:156
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:386
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:403
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:499
 msgid "Rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:159
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:158
 msgid "Add New Rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:160
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:159
 msgid "Edit Rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:161
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:160
 msgid "New Rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:163
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:162
 msgid "View Rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:164
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:163
 msgid "Search Ranks"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:165
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:164
 msgid "No ranks found"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:166
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:165
 msgid "No ranks found in Trash"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:233
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:232
 #, php-format
 msgid "Completed - Total of %d users effected"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:235
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:234
 msgid "Log is Empty"
 msgstr ""
 
@@ -3072,8 +3072,8 @@ msgid ""
 "a 404 error message when trying to view a rank archive page."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/includes/mycred-rank-functions.php:145
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/includes/mycred-rank-functions.php:151
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/includes/mycred-rank-functions.php:148
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/includes/mycred-rank-functions.php:154
 msgid "No Rank"
 msgstr ""
 
