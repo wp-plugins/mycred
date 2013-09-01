@@ -130,6 +130,9 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
+= 1.2.3 =
+Improved Ranking and Banking processes and added support for Email Notices for users getting promoted / demoted.
+
 = 1.2.2 =
 Improved performance, better handling of websites with large user base and several bug fixes.
 
@@ -165,10 +168,12 @@ See: http://mycred.me/download/changelog/2/
 == Changelog ==
 
 = 1.2.3 =
+* Moved .POT file to correct location in /lang
 * Cart support for Email notices has incorrect function name.
 * Removed stray debug options on plugin activation.
 * Added support for Email Notices when users gets promoted or demoted.
 * Improved default ranking check.
+* Improved Banking services by moving exclusion checks from the payout process to the get user IDs process. Also added set_time_limit( 0 ); for larger sites to avoid time out issues.
 
 = 1.2.2 =
 * Added User Batches for Banking Add-on to support websites with more then 2k users.
