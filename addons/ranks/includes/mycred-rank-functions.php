@@ -7,11 +7,14 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.1
  * @version 1.1
  */
-if ( !function_exists( 'have_ranks' ) ) {
+if ( !function_exists( 'mycred_have_ranks' ) ) {
 	function mycred_have_ranks() {
-		
-
 		$data = get_transient( 'mycred_ranks' );
+
+		if ( $data == 0 ) {
+			delete_transient( 'mycred_ranks' );
+			$data = false;
+		}
 		
 		if ( $data === false ) {
 			global $wpdb;
