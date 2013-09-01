@@ -79,8 +79,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 */
 		public function module_init() {
 			$this->register_post_type();
-			if ( !mycred_have_ranks() )
-				$this->add_default_rank();
+			$this->add_default_rank();
 
 			add_filter( 'pre_get_posts',          array( $this, 'adjust_wp_query' ), 20       );
 			add_action( 'mycred_admin_enqueue',   array( $this, 'enqueue_scripts' )           );
@@ -421,9 +420,10 @@ GROUP BY
 		 * @uses get_users()
 		 * @uses update_user_meta()
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function add_default_rank() {
+			if ( mycred_have_ranks() ) return;
 			$rank = array();
 			$rank['post_title'] = __( 'Newbie', 'mycred' );
 			$rank['post_type'] = 'mycred_rank';
