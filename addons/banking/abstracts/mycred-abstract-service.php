@@ -272,7 +272,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		 * Returns all blog users IDs either from a daily transient or
 		 * by making a fresh SQL Query.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function get_users() {
 			// Get daily transient 
@@ -293,6 +293,19 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			if ( $data === false ) {
 				global $wpdb;
 				$data = $wpdb->get_col( "SELECT ID FROM {$wpdb->users};" );
+				
+				foreach ( $data as $num => $user_id ) {
+					$user_id = intval( $user_id );
+					if ( isset( $this->prefs['excludes'] ) ) {
+						if ( !empty( $this->prefs['excludes'] ) ) {
+							if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
+							if ( in_array( $user_id, $excludes )  ) unset( $data[ $num ] );
+						}
+					}
+					
+					if ( $this->core->exclude_user( $user_id ) ) unset( $data[ $num ] );
+				}
+				
 				set_transient( 'mycred_banking_payout_ids', $data, DAY_IN_SECONDS );
 				$wpdb->flush();
 			}

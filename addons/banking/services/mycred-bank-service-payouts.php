@@ -138,14 +138,11 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 */
 		public function do_payout_batch( $batch, $set = NULL, $cycle = NULL ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
+
+				set_time_limit( 0 );
+
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
-
-					// Handle excludes
-					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
-						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
-					}
 
 					// Add / Deduct points
 					$this->core->add_creds(

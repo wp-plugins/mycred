@@ -140,18 +140,15 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Do Compound Batch
 		 * Compounds interest for each user ID given in batch.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function do_compound_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
+
+				set_time_limit( 0 );
+
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
-					
-					// Handle excludes
-					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
-						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
-					}
 										
 					// Current balance
 					$balance = $this->core->get_users_cred( $user_id );
@@ -217,18 +214,15 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Do Payout
 		 * Runs though all user compounded interest and pays.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function do_interest_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
+
+				set_time_limit( 0 );
+
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
-					
-					// Handle excludes
-					if ( !empty( $this->prefs['excludes'] ) ) {
-						if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
-						if ( in_array( $user_id, $excludes ) || $this->core->exclude_user( $user_id ) ) continue;
-					}
 										
 					// Get past interest
 					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
