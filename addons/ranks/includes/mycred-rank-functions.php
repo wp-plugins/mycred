@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Checks if there are any registered rank.
  * @returns (bool) true or false
  * @since 1.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_have_ranks' ) ) {
 	function mycred_have_ranks() {
