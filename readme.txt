@@ -174,6 +174,7 @@ See: http://mycred.me/download/changelog/2/
 * Added support for Email Notices when users gets promoted or demoted.
 * Improved default ranking check.
 * Improved Banking services by moving exclusion checks from the payout process to the get user IDs process. Also added set_time_limit( 0 ); for larger sites to avoid time out issues.
+* Minimized CSS assets
 
 = 1.2.2 =
 * Added User Batches for Banking Add-on to support websites with more then 2k users.

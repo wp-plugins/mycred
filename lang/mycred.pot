@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-01 23:57+0100\n"
-"PO-Revision-Date: 2013-09-01 23:57+0100\n"
+"POT-Creation-Date: 2013-09-02 03:32+0100\n"
+"PO-Revision-Date: 2013-09-02 03:32+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -29,49 +29,50 @@ msgstr ""
 msgid "Setup"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:122
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:341
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:139
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:19
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:20
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:21
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:47
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:249
-msgid "Settings"
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:119
+msgid "Tutorials"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:136
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:120
+msgid "Codex"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:121
+msgid "Store"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:134
 msgid ""
 "myCRED is blocked for this site. Please contact your network administrator "
 "for further details."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:409
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:407
 msgid "My Balance: "
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:513
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:511
 #, php-format
 msgid "Edit Users %s balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:514
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:512
 msgid "Close"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:515
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:563
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:513
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:561
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:827
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:136
 msgid "Processing..."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:564
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:562
 msgid "Sent"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:565
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:563
 msgid "Error - Try Again"
 msgstr ""
 
@@ -1986,6 +1987,16 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:314
 msgid "%_singular% Balance"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:341
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:139
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:19
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:20
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:21
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:47
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:249
+msgid "Settings"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:343
@@ -3998,39 +4009,48 @@ msgstr ""
 msgid "Add-ons can expand your current installation with further features."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:303
-msgid "Deactivate Add-on"
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:283
+#, php-format
+msgid "You can find more add-ons in our %s."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:283
+msgid "online store"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:304
+msgid "Deactivate Add-on"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:305
 msgid "Deactivate"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:309
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:310
 msgid "Activate Add-on"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:310
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:311
 msgid "Activate"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:327
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:328
 msgid "Version"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:330
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:331
 msgid "By"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:330
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:331
 msgid "View Authors Website"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:333
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:334
 msgid "View Add-ons Website"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:333
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:334
 msgid "Visit Website"
 msgstr ""
 

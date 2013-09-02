@@ -280,6 +280,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 				}
 			} ?>
 
+			<p style="text-align:right;"><?php echo sprintf( __( 'You can find more add-ons in our %s.', 'mycred' ), sprintf( '<a href="http://mycred.me/store/" target="_blank">%s</a>', __( 'online store', 'mycred' ) ) ); ?></p>
 		</div>
 	</div>
 <?php
