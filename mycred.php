@@ -107,7 +107,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Plugin Links
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		function plugin_links( $actions, $plugin_file, $plugin_data, $context ) {
 			// Link to Setup
@@ -116,11 +116,9 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				return $actions;
 			}
 
-			// Link to Settings
-			$mycred = mycred_get_settings();
-			if ( $mycred->can_edit_plugin() ) {
-				$actions['settings'] = '<a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'Settings', 'mycred' ) . '</a>';
-			}
+			$actions['tutorials'] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
+			$actions['docs'] = '<a href="http://mycred.me/support/codex/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
+			$actions['store'] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';
 
 			return $actions;
 		}
