@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-02 03:32+0100\n"
-"PO-Revision-Date: 2013-09-02 03:32+0100\n"
+"POT-Creation-Date: 2013-09-02 22:58+0100\n"
+"PO-Revision-Date: 2013-09-02 22:58+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -533,6 +533,7 @@ msgid "Members can view each others %_singular% balance."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:402
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:191
 msgid "Template"
 msgstr ""
 
@@ -2777,6 +2778,49 @@ msgstr ""
 msgid ""
 "Please note that the meta key is case sensitive and can not contain "
 "whitespaces!"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:12
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:182
+msgid "Notifications"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:13
+msgid "Notify your users when their balances changes."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:184
+msgid "Styling"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:188
+msgid "Use the included CSS Styling for notifications."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:195
+msgid ""
+"Use %entry% to show the log entry in the notice and %amount% for the amount."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:198
+msgid "Transient Lifespan"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:202
+msgid ""
+"The number of days a users notification is saved before being automatically "
+"deleted."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:205
+msgid "Duration"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/notifications/myCRED-addon-notifications.php:209
+msgid ""
+"The number of milliseconds a notice should be visible.<br />Use zero to "
+"require that the user closes the notice manually. 1000 milliseconds = 1 "
+"second."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:12
