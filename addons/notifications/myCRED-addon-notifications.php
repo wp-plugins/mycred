@@ -111,6 +111,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		public function mycred_add( $reply, $request, $mycred ) {
 			$template = $this->notifications['template'];
 			$template = str_replace( '%entry%', $request['entry'], $template );
+			$template = str_replace( '%amount%', $request['amount'], $template );
 			$template = $this->core->template_tags_amount( $template, $request['amount'] );
 			$template = apply_filters( 'mycred_notifications_note', $template, $request, $mycred );
 			
