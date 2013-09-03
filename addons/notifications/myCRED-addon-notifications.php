@@ -73,10 +73,12 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 				$stay = 'false';
 			}
 
+			do_action( 'mycred_before_notifications', $notices );
 			foreach ( $notices as $notice ) {
 				$notice = $this->core->template_tags_general( $notice );
 				echo '<script type="text/javascript">(function(jQuery){jQuery.noticeAdd({ text: "' . $notice . '",stay: ' . $stay . '});})(jQuery);</script>';
 			}
+			do_action( 'mycred_after_notifications', $notices );
 		}
 		
 		/**
