@@ -131,7 +131,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 == Upgrade Notice ==
 
 = 1.2.3 =
-Improved Ranking and Banking processes and added support for Email Notices for users getting promoted / demoted.
+New Notifications Add-on and added support for Email Notices for users getting promoted / demoted. Bug fixes.
 
 = 1.2.2 =
 Improved performance, better handling of websites with large user base and several bug fixes.
