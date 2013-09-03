@@ -26,9 +26,6 @@ define( 'myCRED_NOTE_VERSION', myCRED_VERSION . '.1' );
 if ( !class_exists( 'myCRED_Notifications' ) ) {
 	class myCRED_Notifications extends myCRED_Module {
 
-		public $errors = '';
-		public $import_ok = false;
-
 		/**
 		 * Construct
 		 */
