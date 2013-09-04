@@ -43,6 +43,7 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 * *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
 * *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
 * *Banking* - Charge or payout interest on users balances on a regular basis or setup recurring payouts. Added support for websites with large (2k+) user base.
+* *Notifications* - Let your users know when they have earned or lost points on your website though jQuery popups.
 
 
 **Multisites**
