@@ -168,6 +168,10 @@ See: http://mycred.me/download/changelog/2/
 
 == Changelog ==
 
+= 1.3 =
+* Fixed Bug #52 - Notifications add-on does not parse post related template tags.
+
+
 = 1.2.3 =
 * Moved .POT file to correct location in /lang
 * Cart support for Email notices has incorrect function name.
