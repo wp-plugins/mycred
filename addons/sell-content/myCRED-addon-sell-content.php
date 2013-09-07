@@ -887,7 +887,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 *
 		 * @returns (string) content
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function render_ajax_shortcode( $atts, $content ) {
 			global $mycred_buy_content;
