@@ -275,12 +275,12 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * Amount Template Tags
 		 * Replaces the amount template tags in a given string.
 		 * @since 0.1
-		 * @version 1.0.2
+		 * @version 1.0.3
 		 */
 		public function template_tags_amount( $content = '', $amount = 0 ) {
+			$content = $this->template_tags_general( $content );
 			if ( !$this->has_tags( 'amount', 'cred|cred_f', $content ) ) return $content;
 			$content = apply_filters( 'mycred_parse_tags_amount', $content, $amount );
-			$content = $this->template_tags_general( $content );
 			$content = str_replace( '%cred_f%', $this->format_creds( $amount ), $content );
 			$content = str_replace( '%cred%',   $amount, $content );
 			return $content;
@@ -295,10 +295,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
 		public function template_tags_post( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			$content = $this->template_tags_general( $content );
 			if ( !$this->has_tags( 'post', 'post_title|post_url|link_with_title|post_type', $content ) ) return $content;
 
 			// Get Post Object
@@ -321,7 +322,6 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_post', $content, $post, $data );
-			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
 			$content = str_replace( '%post_title%',      $post->post_title, $content );
@@ -349,10 +349,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function template_tags_user( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			$content = $this->template_tags_general( $content );
 			if ( !$this->has_tags( 'user', 'user_id|user_name|user_name_en|display_name|user_profile_url|user_profile_link|user_nicename|user_email|user_url|balance|balance_f', $content ) ) return $content;
 
 			// Get User Object
@@ -375,7 +376,6 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_user', $content, $user, $data );
-			$content = $this->template_tags_general( $content );
 
 			// Replace template tags
 			$content = str_replace( '%user_id%',          $user->ID, $content );
@@ -424,10 +424,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $data (object) Log entry data object
 		 * @return (string) parsed string
 		 * @since 0.1
-		 * @version 1.0.3
+		 * @version 1.0.4
 		 */
 		public function template_tags_comment( $content = '', $ref_id = NULL, $data = '' ) {
 			if ( $ref_id === NULL ) return $content;
+			$content = $this->template_tags_general( $content );
 			if ( !$this->has_tags( 'comment', 'comment_id|c_post_id|c_post_title|c_post_url|c_link_with_title', $content ) ) return $content;
 
 			// Get Comment Object
@@ -453,7 +454,6 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_comment', $content, $comment, $data );
-			$content = $this->template_tags_general( $content );
 
 			$content = str_replace( '%comment_id%',        $comment->comment_ID, $content );
 
