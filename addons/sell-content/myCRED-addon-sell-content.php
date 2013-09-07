@@ -736,7 +736,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 *
 		 * @returns (string) content
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function the_content( $content ) {
 			global $mycred_content_purchase;
@@ -754,6 +754,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 					$template = $sell_content['templates']['visitors'];
 					
 					$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+					$template = $this->core->template_tags_general( $template );
 					$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 					return '<div class="mycred-content-forsale">' . $template . '</div>';
 				}
@@ -763,6 +764,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 					$template = $sell_content['templates']['members'];
 
 					$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+					$template = $this->core->template_tags_general( $template );
 					$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 					$template = $this->get_button( $template, $GLOBALS['post'] );
 					return '
@@ -781,6 +783,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 					$template = $sell_content['templates']['cantafford'];
 
 					$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+					$template = $this->core->template_tags_general( $template );
 					$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 					return '<div class="mycred-content-forsale">' . $template . '</div>';
 				}
@@ -803,7 +806,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 *
 		 * @returns (string) content
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function render_shortcode( $atts, $content ) {
 			$post_id = $GLOBALS['post']->ID;
@@ -832,6 +835,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['visitors'];
 
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 				unset( $content );
 				return '<div class="mycred-content-forsale">' . $template . '</div>';
@@ -842,6 +846,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['members'];
 
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 				$template = $this->get_button( $template, $GLOBALS['post'] );
 				unset( $content );
@@ -862,6 +867,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['cantafford'];
 					
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 				unset( $content );
 				return '<div class="mycred-content-forsale">' . $template . '</div>';
@@ -912,6 +918,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['visitors'];
 
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 				unset( $content );
 				return '<div class="mycred-content-forsale">' . $template . '</div>';
@@ -922,6 +929,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['members'];
 
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 
 				if ( isset( $prefs['button_label'] ) )
@@ -942,6 +950,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$template = $sell_content['templates']['cantafford'];
 					
 				$template = str_replace( '%price%', $this->core->format_creds( $prefs['price'] ), $template );
+				$template = $this->core->template_tags_general( $template );
 				$template = $this->core->template_tags_post( $template, $GLOBALS['post'] );
 				unset( $content );
 				return '<div class="mycred-content-forsale">' . $template . '</div>';

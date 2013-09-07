@@ -170,6 +170,7 @@ See: http://mycred.me/download/changelog/2/
 
 = 1.3 =
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
+* Fixed Bug #53 - General template tags are not parsed in sell content templates.
 
 
 = 1.2.3 =
