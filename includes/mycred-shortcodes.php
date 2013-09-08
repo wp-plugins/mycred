@@ -50,6 +50,57 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 }
 
 /**
+ * myCRED Shortcode: mycred_history
+ * Returns the points history.
+ * @see http://mycred.me/shortcodes/mycred_history/
+ * @since 1.0.9
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
+	function mycred_render_shortcode_history( $atts ) {
+		extract( shortcode_atts( array(
+			'user_id'   => NULL,
+			'number'    => NULL,
+			'time'      => NULL,
+			'ref'       => NULL,
+			'order'     => NULL,
+			'show_user' => false,
+			'login'     => ''
+		), $atts ) );
+
+		// If we are not logged in
+		if ( !is_user_logged_in() && !empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
+
+		if ( $user_id === NULL )
+			$user_id = get_current_user_id();
+
+		$args = array();
+		$args['user_id'] = $user_id;
+
+		if ( $number !== NULL )
+			$args['number'] = $number;
+
+		if ( $time !== NULL )
+			$args['time'] = $time;
+
+		if ( $ref !== NULL )
+			$args['ref'] = $ref;
+
+		if ( $order !== NULL )
+			$args['order'] = $order;
+
+		$log = new myCRED_Query_Log( $args );
+
+		if ( $show_user !== true )
+			unset( $log->headers['column-username'] ); 
+
+		$result = $log->get_display();
+		$log->reset_query();
+		return $result;
+	}
+}
+
+/**
  * myCRED Shortcode: mycred_leaderboard
  * @since 0.1
  * @version 1.2
@@ -288,6 +339,98 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
 		$mycred_sending_points = true;
 
 		return '<input type="button" class="mycred-send-points-button" data-to="' . $to . '" data-ref="' . $ref . '" data-log="' . $log . '" data-amount="' . $amount . '" data-type="' . $type . '" value="' . $mycred->template_tags_general( $content ) . '" />';
+	}
+}
+
+/**
+ * Load myCRED Send Points Footer
+ * @since 0.1
+ * @version 1.2
+ */
+if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
+	add_action( 'wp_footer', 'mycred_send_shortcode_footer' );
+	function mycred_send_shortcode_footer() {
+		global $mycred_sending_points;
+
+		if ( $mycred_sending_points === true ) {
+			$mycred = mycred_get_settings();
+			$base = array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'token'   => wp_create_nonce( 'mycred-send-points' )
+			);
+
+			$language = apply_filters( 'mycred_send_language', array(
+				'working' => __( 'Processing...', 'mycred' ),
+				'done'    => __( 'Sent', 'mycred' ),
+				'error'   => __( 'Error - Try Again', 'mycred' )
+			) );
+			wp_localize_script(
+				'mycred-send-points',
+				'myCREDsend',
+				array_merge_recursive( $base, $language )
+			);
+			wp_enqueue_script( 'mycred-send-points' );
+		}
+	}
+}
+
+/**
+ * myCRED Send Points Ajax
+ * @since 0.1
+ * @version 1.2
+ */
+if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
+	add_action( 'wp_ajax_mycred-send-points', 'mycred_shortcode_send_points_ajax' );
+	function mycred_shortcode_send_points_ajax() {
+		// We must be logged in
+		if ( !is_user_logged_in() ) die();
+
+		// Security
+		check_ajax_referer( 'mycred-send-points', 'token' );
+			
+		$mycred = mycred_get_settings();
+		$user_id = get_current_user_id();
+			
+		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
+		$balance = $mycred->get_users_cred( $user_id );
+		$amount = $mycred->number( $_POST['amount'] );
+		$new_balance = $balance-$amount;
+			
+		// Insufficient Funds
+		if ( $new_balance < $account_limit )
+			die();
+		// After this transfer our account will reach zero
+		elseif ( $new_balance == $account_limit )
+			$reply = 'zero';
+		// Check if this is the last time we can do these kinds of amounts
+		elseif ( $new_balance-$amount < $account_limit )
+			$reply = 'minus';
+		// Else everything is fine
+		else
+			$reply = 'done';
+			
+		// First deduct points
+		$mycred->add_creds(
+			trim( $_POST['reference'] ),
+			$user_id,
+			0-$amount,
+			trim( $_POST['log'] ),
+			$_POST['recipient'],
+			array( 'ref_type' => 'user' )
+		);
+			
+		// Then add to recipient
+		$mycred->add_creds(
+			trim( $_POST['reference'] ),
+			$_POST['recipient'],
+			$amount,
+			trim( $_POST['log'] ),
+			$user_id,
+			array( 'ref_type' => 'user' )
+		);
+			
+		// Share the good news
+		die( json_encode( $reply ) );
 	}
 }
 
