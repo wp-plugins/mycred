@@ -1,21 +1,21 @@
 <?php
-/*
-Plugin Name: myCRED
-Plugin URI: http://mycred.me
-Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
-Version: 1.3
-Tags: points, tokens, credit, management, reward, charge
-Author: Gabriel S Merovingi
-Author URI: http://www.merovingi.com
-Author Email: mycred@merovingi.com
-Requires at least: WP 3.1
-Tested up to: WP 3.6
-Text Domain: mycred
-Domain Path: /lang
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-*/
-define( 'myCRED_VERSION',      '1.3' );
+/**
+ * Plugin Name: myCRED
+ * Plugin URI: http://mycred.me
+ * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
+ * Version: 1.3Alpha
+ * Tags: points, tokens, credit, management, reward, charge
+ * Author: Gabriel S Merovingi
+ * Author URI: http://www.merovingi.com
+ * Author Email: info@merovingi.com
+ * Requires at least: WP 3.1
+ * Tested up to: WP 3.6
+ * Text Domain: mycred
+ * Domain Path: /lang
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+define( 'myCRED_VERSION',      '1.3Alpha' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -83,26 +83,25 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
 
 			// myCRED is ready
-			require_once( myCRED_MODULES_DIR . 'mycred-module-help.php' );
 			do_action( 'mycred_ready' );
 
 			// Clean up
 			$this->clean_up();
 		}
-		
+
 		/**
 		 * Prevent myCRED from being cloned
 		 * @since 1.1.1
 		 * @version 1.0
 		 */
-		public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), '1.1.1' ); }
+		public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), myCRED_VERSION ); }
 
 		/**
 		 * Prevent myCRED from being unserialized
 		 * @since 1.1.1
 		 * @version 1.0
 		 */
-		public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), '1.1.1' ); }
+		public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'mycred' ), myCRED_VERSION ); }
 
 		/**
 		 * Plugin Links
@@ -152,7 +151,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				$frequency = apply_filters( 'mycred_cron_reset_key', 'daily' );
 				wp_schedule_event( date_i18n( 'U' ), $frequency, 'mycred_reset_key' );
 			}
-			
+
 			// Delete stray debug options
 			delete_option( 'mycred_catch_fires' );
 		}
@@ -249,14 +248,13 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		function load() {
 			// Rankings
 			require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
-			
+			// Log
+			require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 			// Shortcodes
 			require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
-			
 			// Abstract Classes
 			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
 			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
-
 			// Start with Add-ons so they can hook in as early as possible
 			require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
 			$addons = new myCRED_Addons();
@@ -271,42 +269,18 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		function wp_ready() {
 			load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
-			// Load Modules
-			$modules = apply_filters( 'mycred_modules', array(
-				'general' => array( 'class' => 'myCRED_General' ),
-				'hooks'   => array( 'class' => 'myCRED_Hooks' ),
-				'log'     => array( 'class' => 'myCRED_Log' )
-			) );
+			require_once( myCRED_MODULES_DIR . 'mycred-module-log.php' );
+			$log = new myCRED_Log();
+			$log->load();
 
-			if ( !empty( $modules ) ) {
+			require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
+			$hooks = new myCRED_Hooks();
+			$hooks->load();
 
-				// Include, init and load each module
-				foreach ( $modules as $id => $data ) {
-					// If a file is not specified we assume it is our own and load from the default locaiton
-					if ( !isset( $data['file'] ) )
-						require_once( myCRED_MODULES_DIR . 'mycred-module-' . $id . '.php' );
-					// Load the custom file
-					else
-						require_once( $data['file'] );
+			require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
+			$settings = new myCRED_General();
+			$settings->load();
 
-					// Load class
-					if ( isset( $data['class'] ) ) {
-						$class = $data['class'];
-						if ( !class_exists( $class ) ) continue;
-						$module = new $class();
-						$module->load(); 
-					}
-					// Load function
-					elseif ( isset( $data['function'] ) ) {
-						$function = $data['function'];
-						if ( !function_exists( $function ) ) continue;
-						$function( 'load' );
-					}
-				}
-				// Clean up
-				unset( $modules );
-			}
-			
 			// First Custom Hook
 			do_action( 'mycred_pre_init' );
 		}
@@ -328,14 +302,15 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			add_action( 'admin_bar_menu',        array( $this, 'tool_bar' ) );
 
 			// Shortcodes
-			add_shortcode( 'mycred_leaderboard', 'mycred_render_leaderboard'          );
-			add_shortcode( 'mycred_my_ranking',  'mycred_render_my_ranking'           );
-			add_shortcode( 'mycred_my_balance',  'mycred_render_shortcode_my_balance' );
-			add_shortcode( 'mycred_give',        'mycred_render_shortcode_give'       );
-			add_shortcode( 'mycred_send',        'mycred_render_shortcode_send'       );
+			if ( !is_admin() ) {
+				add_shortcode( 'mycred_history',     'mycred_render_shortcode_history'    );
+				add_shortcode( 'mycred_leaderboard', 'mycred_render_leaderboard'          );
+				add_shortcode( 'mycred_my_ranking',  'mycred_render_my_ranking'           );
+				add_shortcode( 'mycred_my_balance',  'mycred_render_shortcode_my_balance' );
+				add_shortcode( 'mycred_give',        'mycred_render_shortcode_give'       );
+				add_shortcode( 'mycred_send',        'mycred_render_shortcode_send'       );
+			}
 
-			add_action( 'wp_footer',                  array( $this, 'footer' )      );
-			add_action( 'wp_ajax_mycred-send-points', array( $this, 'send_points' ) );
 			// Let others play
 			do_action( 'mycred_init' );
 		}
@@ -371,6 +346,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			register_widget( 'myCRED_Widget_Balance' );
 			register_widget( 'myCRED_Widget_List' );
 
+			// Let others play
 			do_action( 'mycred_widgets_init' );
 		}
 
@@ -381,7 +357,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 */
 		function tool_bar( $wp_admin_bar ) {
 			global $bp;
-
 			if ( isset( $bp ) ) return;
 
 			$mycred = mycred_get_settings();
@@ -443,15 +418,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 */
 		function front_enqueue() {
 			global $mycred_sending_points;
-			
-			// Widget Scripts
-			wp_register_script(
-				'mycred-widget',
-				plugins_url( 'assets/js/widget.js', myCRED_THIS ),
-				array( 'jquery' ),
-				myCRED_VERSION . '.1'
-			);
-			
 			// Send Points Shortcode
 			wp_register_script(
 				'mycred-send-points',
@@ -460,9 +426,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				myCRED_VERSION . '.1',
 				true
 			);
-			
-			// Enqueue
-			wp_enqueue_script( 'mycred-widget' );
 
 			// Widget Style (can be disabled)
 			if ( apply_filters( 'mycred_remove_widget_css', false ) === false ) {
@@ -533,7 +496,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			// Let others play
 			do_action( 'mycred_admin_enqueue' );
 		}
-		
+
 		/**
 		 * Enqueue Admin Styling
 		 * @since 0.1
@@ -541,34 +504,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 */
 		function admin_print_styles() {
 			wp_enqueue_style( 'mycred-admin' );
-		}
-		
-		/**
-		 * WP Footer
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function footer() {
-			global $mycred_sending_points;
-			if ( $mycred_sending_points === true ) {
-				$mycred = mycred_get_settings();
-				$base = array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'token'   => wp_create_nonce( 'mycred-send-points' )
-				);
-				
-				$language = apply_filters( 'mycred_send_language', array(
-					'working' => __( 'Processing...', 'mycred' ),
-					'done'    => __( 'Sent', 'mycred' ),
-					'error'   => __( 'Error - Try Again', 'mycred' )
-				) );
-				wp_localize_script(
-					'mycred-send-points',
-					'myCREDsend',
-					array_merge_recursive( $base, $language )
-				);
-				wp_enqueue_script( 'mycred-send-points' );
-			}
 		}
 
 		/**
@@ -644,67 +579,9 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 
 			// Insert table
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " ) DEFAULT CHARSET = utf8 COLLATE = utf8_general_ci;" );
+			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " );" );
 			add_blog_option( 'mycred_version_db', '1.0', '', 'no' );
 			return true;
-		}
-		
-		/**
-		 * Send Points Ajax Call Handler
-		 *
-		 * @since 1.1
-		 * @version 1.1
-		 */
-		public function send_points() {
-			// We must be logged in
-			if ( !is_user_logged_in() ) die();
-
-			// Security
-			check_ajax_referer( 'mycred-send-points', 'token' );
-			
-			$mycred = mycred_get_settings();
-			$user_id = get_current_user_id();
-			
-			$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
-			$balance = $mycred->get_users_cred( $user_id );
-			$amount = $mycred->number( $_POST['amount'] );
-			$new_balance = $balance-$amount;
-			
-			// Insufficient Funds
-			if ( $new_balance < $account_limit )
-				die();
-			// After this transfer our account will reach zero
-			elseif ( $new_balance == $account_limit )
-				$reply = 'zero';
-			// Check if this is the last time we can do these kinds of amounts
-			elseif ( $new_balance-$amount < $account_limit )
-				$reply = 'minus';
-			// Else everything is fine
-			else
-				$reply = 'done';
-			
-			// First deduct points
-			$mycred->add_creds(
-				trim( $_POST['reference'] ),
-				$user_id,
-				0-$amount,
-				trim( $_POST['log'] ),
-				$_POST['recipient'],
-				array( 'ref_type' => 'user' )
-			);
-			
-			// Then add to recipient
-			$mycred->add_creds(
-				trim( $_POST['reference'] ),
-				$_POST['recipient'],
-				$amount,
-				trim( $_POST['log'] ),
-				$user_id,
-				array( 'ref_type' => 'user' )
-			);
-			
-			// Share the good news
-			die( json_encode( $reply ) );
 		}
 	}
 	new myCRED_Core();
