@@ -1,7 +1,6 @@
 <?php
 /**
  * Third-Party Plugin Hooks
- *
  * @since 1.1
  * @version 1.0
  */
@@ -14,8 +13,36 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  */
 if ( class_exists( 'bbPress' ) ) {
 	/**
+	 * Register Hook
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'bbPress_myCRED_Hook' );
+	function bbPress_myCRED_Hook( $installed ) {
+		$installed['hook_bbpress'] = array(
+			'title'       => __( 'bbPress' ),
+			'description' => __( 'Awards %_plural% for bbPress actions.', 'mycred' ),
+			'callback'    => array( 'myCRED_bbPress' )
+		);
+		return $installed;
+	}
+
+	/**
+	 * Exclude bbPress Post Types
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_post_type_excludes', 'mycred_exclude_post_type_bbPress' );
+	function mycred_exclude_post_type_bbPress( $excludes ) {
+		$excludes[] = bbp_get_forum_post_type();
+		$excludes[] = bbp_get_topic_post_type();
+		$excludes[] = bbp_get_reply_post_type();
+		return $excludes;
+	}
+
+	/**
 	 * Insert Points Balance in Profile
-	 * @since 1.1.1
+	 * @since 0.1
 	 * @version 1.0
 	 */
 	add_action( 'bbp_template_after_user_profile', 'mycred_bbp_add_balance_in_profile' );
@@ -31,12 +58,11 @@ if ( class_exists( 'bbPress' ) ) {
 
 	/**
 	 * bbPress Hook
-	 * @since 1.1.1
+	 * @since 0.1
 	 * @version 1.2
 	 */
 	if ( !class_exists( 'myCRED_bbPress' ) ) {
 		class myCRED_bbPress extends myCRED_Hook {
-
 			/**
 			 * Construct
 			 */
@@ -142,7 +168,7 @@ if ( class_exists( 'bbPress' ) ) {
 					array( 'ref_type' => 'post' )
 				);
 			}
-			
+
 			/**
 			 * Delete Forum
 			 * @since 1.2
@@ -151,7 +177,7 @@ if ( class_exists( 'bbPress' ) ) {
 			public function delete_forum( $forum_id ) {
 				// Get Author
 				$forum_author = bbp_get_forum_author_id( $forum_id );
-				
+
 				// If gained, points, deduct
 				if ( $this->has_entry( 'new_forum', $forum_id, $forum_author ) ) {
 
@@ -195,7 +221,7 @@ if ( class_exists( 'bbPress' ) ) {
 					array( 'ref_type' => 'post' )
 				);
 			}
-			
+
 			/**
 			 * Delete Topic
 			 * @since 1.2
@@ -204,7 +230,7 @@ if ( class_exists( 'bbPress' ) ) {
 			public function delete_topic( $topic_id ) {
 				// Get Author
 				$topic_author = bbp_get_topic_author_id( $topic_id );
-				
+
 				// If gained, points, deduct
 				if ( $this->has_entry( 'new_forum_topic', $topic_id, $topic_author ) ) {
 
@@ -228,7 +254,6 @@ if ( class_exists( 'bbPress' ) ) {
 			 * @version 1.2
 			 */
 			public function fav_topic( $user_id, $topic_id ) {
-
 				// $user_id is loggedin_user, not author, so get topic author
 				$topic_author = get_post_field( 'post_author', $topic_id );
 
@@ -250,7 +275,7 @@ if ( class_exists( 'bbPress' ) ) {
 					$topic_id,
 					array( 'ref_user' => $user_id, 'ref_type' => 'post' )
 				);
-				
+
 				// Update Limit
 				$this->update_daily_limit( $topic_author, 'fav_topic' );
 			}
@@ -268,7 +293,7 @@ if ( class_exists( 'bbPress' ) ) {
 				if ( (bool) $this->prefs['new_reply']['author'] === false ) {
 					if ( bbp_get_topic_author_id( $topic_id ) == $reply_author ) return;
 				}
-				
+
 				// Check daily limit
 				if ( $this->reached_daily_limit( $reply_author, 'new_reply' ) ) return;
 
@@ -284,11 +309,11 @@ if ( class_exists( 'bbPress' ) ) {
 					$reply_id,
 					array( 'ref_type' => 'post' )
 				);
-				
+
 				// Update Limit
 				$this->update_daily_limit( $topic_author, 'new_reply' );
 			}
-			
+
 			/**
 			 * Delete Reply
 			 * @since 1.2
@@ -297,7 +322,7 @@ if ( class_exists( 'bbPress' ) ) {
 			public function delete_reply( $reply_id ) {
 				// Get Author
 				$reply_author = bbp_get_reply_author_id( $reply_id );
-				
+
 				// If gained, points, deduct
 				if ( $this->has_entry( 'new_forum_reply', $reply_id, $reply_author ) ) {
 
@@ -326,7 +351,7 @@ if ( class_exists( 'bbPress' ) ) {
 				$balance = $this->core->get_users_cred( bbp_get_reply_author_id( $reply_id ) );
 				echo '<div class="mycred-balance">' . $this->core->plural() . ': ' . $this->core->format_creds( $balance ) . '</div>';
 			}
-			
+
 			/**
 			 * Reched Daily Limit
 			 * Checks if a user has reached their daily limit.
@@ -336,17 +361,13 @@ if ( class_exists( 'bbPress' ) ) {
 			public function reached_daily_limit( $user_id, $id ) {
 				// No limit used
 				if ( $this->prefs[$id]['limit'] == 0 ) return false;
-				
 				$today = date( 'Y-m-d' );
 				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
-				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) )
-					$current[$today] = 0;
-				
+				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) ) $current[$today] = 0;
 				if ( $current[ $today ] < $this->prefs[$id]['limit'] ) return false;
-				
 				return true;
 			}
-			
+
 			/**
 			 * Update Daily Limit
 			 * Updates a given users daily limit.
@@ -361,9 +382,9 @@ if ( class_exists( 'bbPress' ) ) {
 				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
 				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) )
 					$current[$today] = 0;
-				
+
 				$current[ $today ] = $current[ $today ]+1;
-				
+
 				update_user_meta( $user_id, 'mycred_bbp_limits_' . $id, $current );
 			}
 
@@ -384,7 +405,6 @@ if ( class_exists( 'bbPress' ) ) {
 					$prefs['fav_topic'] = array( 'creds' => 1, 'log' => '%plural% for someone favorited your forum topic' );
 				if ( !isset( $prefs['new_reply']['author'] ) )
 					$prefs['new_reply']['author'] = 0;
-				
 				if ( !isset( $prefs['fav_topic']['limit'] ) )
 					$prefs['fav_topic']['limit'] = 0;
 				if ( !isset( $prefs['new_reply']['limit'] ) )
@@ -515,116 +535,136 @@ if ( class_exists( 'bbPress' ) ) {
 }
 
 /**
- * Hooks for Invite Anyone Plugin
+ * Invite Anyone Plugin
  * @since 0.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Invite_Anyone' ) && function_exists( 'invite_anyone_init' ) ) {
-	class myCRED_Invite_Anyone extends myCRED_Hook {
+if ( function_exists( 'invite_anyone_init' ) ) {
+	/**
+	 * Register Hook
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'invite_anyone_myCRED_Hook' );
+	function invite_anyone_myCRED_Hook( $installed ) {
+		$installed['invite_anyone'] = array(
+			'title'       => __( 'Invite Anyone Plugin', 'mycred' ),
+			'description' => __( 'Awards %_plural% for sending invitations and/or %_plural% if the invite is accepted.', 'mycred' ),
+			'callback'    => array( 'myCRED_Invite_Anyone' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'invite_anyone',
-				'defaults' => array(
-					'send_invite'   => array(
-						'creds'        => 1,
-						'log'          => '%plural% for sending an invitation',
-						'limit'        => 0
-					),
-					'accept_invite' => array(
-						'creds'        => 1,
-						'log'          => '%plural% for accepted invitation',
-						'limit'        => 0
+	/**
+	 * Invite Anyone Hook
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Invite_Anyone' ) ) {
+		class myCRED_Invite_Anyone extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'invite_anyone',
+					'defaults' => array(
+						'send_invite'   => array(
+							'creds'        => 1,
+							'log'          => '%plural% for sending an invitation',
+							'limit'        => 0
+						),
+						'accept_invite' => array(
+							'creds'        => 1,
+							'log'          => '%plural% for accepted invitation',
+							'limit'        => 0
+						)
 					)
-				)
-			), $hook_prefs );
-		}
-
-		/**
-		 * Run
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function run() {
-			if ( $this->prefs['send_invite']['creds'] != 0 ) {
-				add_action( 'sent_email_invite',     array( $this, 'send_invite' ), 10, 3 );
-			}
-			if ( $this->prefs['accept_invite']['creds'] != 0 ) {
-				add_action( 'accepted_email_invite', array( $this, 'accept_invite' ), 10, 2 );
-			}
-		}
-
-		/**
-		 * Sending Invites
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function send_invite( $user_id, $email, $group ) {
-			// Limit Check
-			if ( $this->prefs['send_invite']['limit'] != 0 ) {
-				$user_log = get_user_meta( $user_id, 'mycred_invite_anyone', true );
-				if ( empty( $user_log['sent'] ) ) $user_log['sent'] = 0;
-				// Return if limit is reached
-				if ( $user_log['sent'] >= $this->prefs['send_invite']['limit'] ) return;
+				), $hook_prefs );
 			}
 
-			// Award Points
-			$this->core->add_creds(
-				'sending_an_invite',
-				$user_id,
-				$this->prefs['send_invite']['creds'],
-				$this->prefs['send_invite']['log']
-			);
-
-			// Update limit
-			if ( $this->prefs['send_invite']['limit'] != 0 ) {
-				$user_log['sent'] = $user_log['sent']+1;
-				update_user_meta( $user_id, 'mycred_invite_anyone', $user_log );
+			/**
+			 * Run
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function run() {
+				if ( $this->prefs['send_invite']['creds'] != 0 ) {
+					add_action( 'sent_email_invite',     array( $this, 'send_invite' ), 10, 3 );
+				}
+				if ( $this->prefs['accept_invite']['creds'] != 0 ) {
+					add_action( 'accepted_email_invite', array( $this, 'accept_invite' ), 10, 2 );
+				}
 			}
-		}
 
-		/**
-		 * Accepting Invites
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function accept_invite( $invited_user_id, $inviters ) {
-			// Invite Anyone will pass on an array of user IDs of those who have invited this user which we need to loop though
-			foreach ( (array) $inviters as $inviter_id ) {
+			/**
+			 * Sending Invites
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function send_invite( $user_id, $email, $group ) {
 				// Limit Check
-				if ( $this->prefs['accept_invite']['limit'] != 0 ) {
-					$user_log = get_user_meta( $inviter_id, 'mycred_invite_anyone', true );
-					if ( empty( $user_log['accepted'] ) ) $user_log['accepted'] = 0;
-					// Continue to next inviter if limit is reached
-					if ( $user_log['accepted'] >= $this->prefs['accept_invite']['limit'] ) continue;
+				if ( $this->prefs['send_invite']['limit'] != 0 ) {
+					$user_log = get_user_meta( $user_id, 'mycred_invite_anyone', true );
+					if ( empty( $user_log['sent'] ) ) $user_log['sent'] = 0;
+					// Return if limit is reached
+					if ( $user_log['sent'] >= $this->prefs['send_invite']['limit'] ) return;
 				}
 
 				// Award Points
 				$this->core->add_creds(
-					'accepting_an_invite',
-					$inviter_id,
-					$this->prefs['accept_invite']['creds'],
-					$this->prefs['accept_invite']['log']
+					'sending_an_invite',
+					$user_id,
+					$this->prefs['send_invite']['creds'],
+					$this->prefs['send_invite']['log']
 				);
 
-				// Update Limit
-				if ( $this->prefs['accept_invite']['limit'] != 0 ) {
-					$user_log['accepted'] = $user_log['accepted']+1;
-					update_user_meta( $inviter_id, 'mycred_invite_anyone', $user_log );
+				// Update limit
+				if ( $this->prefs['send_invite']['limit'] != 0 ) {
+					$user_log['sent'] = $user_log['sent']+1;
+					update_user_meta( $user_id, 'mycred_invite_anyone', $user_log );
 				}
 			}
-		}
 
-		/**
-		 * Preferences
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs; ?>
+			/**
+			 * Accepting Invites
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function accept_invite( $invited_user_id, $inviters ) {
+				// Invite Anyone will pass on an array of user IDs of those who have invited this user which we need to loop though
+				foreach ( (array) $inviters as $inviter_id ) {
+					// Limit Check
+					if ( $this->prefs['accept_invite']['limit'] != 0 ) {
+						$user_log = get_user_meta( $inviter_id, 'mycred_invite_anyone', true );
+						if ( empty( $user_log['accepted'] ) ) $user_log['accepted'] = 0;
+						// Continue to next inviter if limit is reached
+						if ( $user_log['accepted'] >= $this->prefs['accept_invite']['limit'] ) continue;
+					}
+
+					// Award Points
+					$this->core->add_creds(
+						'accepting_an_invite',
+						$inviter_id,
+						$this->prefs['accept_invite']['creds'],
+						$this->prefs['accept_invite']['log']
+					);
+
+					// Update Limit
+					if ( $this->prefs['accept_invite']['limit'] != 0 ) {
+						$user_log['accepted'] = $user_log['accepted']+1;
+						update_user_meta( $inviter_id, 'mycred_invite_anyone', $user_log );
+					}
+				}
+			}
+
+			/**
+			 * Preferences
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs; ?>
 
 					<!-- Creds for Sending Invites -->
 					<label for="<?php echo $this->field_id( array( 'send_invite', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Sending An Invite', 'mycred' ) ); ?></label>
@@ -667,117 +707,137 @@ if ( !class_exists( 'myCRED_Invite_Anyone' ) && function_exists( 'invite_anyone_
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'Maximum number of accepted invitations that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+<?php			unset( $this );
+			}
 		}
 	}
 }
 
 /**
- * Hook for Contact Form 7 Plugin
+ * Contact Form 7 Plugin
  * @since 0.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
-	class myCRED_Contact_Form7 extends myCRED_Hook {
+if ( function_exists( 'wpcf7' ) ) {
+	/**
+	 * Register Hook
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'contact_form_seven_myCRED_Hook' );
+	function contact_form_seven_myCRED_Hook( $installed ) {
+		$installed['contact_form7'] = array(
+			'title'       => __( 'Contact Form 7 Form Submissions', 'mycred' ),
+			'description' => __( 'Awards %_plural% for successful form submissions (by logged in users).', 'mycred' ),
+			'callback'    => array( 'myCRED_Contact_Form7' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'contact_form7',
-				'defaults' => ''
-			), $hook_prefs );
-		}
-
-		/**
-		 * Run
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function run() {
-			add_action( 'wpcf7_mail_sent', array( $this, 'form_submission' ) );
-		}
-
-		/**
-		 * Get Forms
-		 * Queries all Contact Form 7 forms.
-		 * @uses WP_Query()
-		 * @since 0.1
-		 * @version 1.1
-		 */
-		public function get_forms() {
-			$forms = new WP_Query( array(
-				'post_type'      => 'wpcf7_contact_form',
-				'post_status'    => 'any',
-				'posts_per_page' => '-1',
-				'orderby'        => 'ID',
-				'order'          => 'ASC'
-			) );
-
-			$result = array();
-			if ( $forms->have_posts() ) {
-				while ( $forms->have_posts() ) : $forms->the_post();
-					$result[get_the_ID()] = get_the_title();
-				endwhile;
-			}
-			wp_reset_postdata();
-			
-			return $result;
-		}
-
-		/**
-		 * Successful Form Submission
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function form_submission( $cf7_form ) {
-			// Login is required
-			if ( !is_user_logged_in() ) return;
-
-			$form_id = $cf7_form->id;
-			if ( isset( $this->prefs[$form_id] ) && $this->prefs[$form_id]['creds'] != 0 ) {
-				$this->core->add_creds(
-					'contact_form_submission',
-					get_current_user_id(),
-					$this->prefs[$form_id]['creds'],
-					$this->prefs[$form_id]['log'],
-					$form_id,
-					array( 'ref_type' => 'post' )
-				);
-			}
-		}
-
-		/**
-		 * Preferences for Commenting Hook
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs;
-			$forms = $this->get_forms();
-
-			// No forms found
-			if ( empty( $forms ) ) {
-				echo '<p>' . __( 'No forms found.', 'mycred' ) . '</p>';
-				return;
+	/**
+	 * Contact Form 7 Hook
+	 * @since 0.1
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Contact_Form7' ) ) {
+		class myCRED_Contact_Form7 extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'contact_form7',
+					'defaults' => ''
+				), $hook_prefs );
 			}
 
-			// Loop though prefs to make sure we always have a default settings (happens when a new form has been created)
-			foreach ( $forms as $form_id => $form_title ) {
-				if ( !isset( $prefs[$form_id] ) ) {
-					$prefs[$form_id] = array(
-						'creds' => 1,
-						'log'   => ''
+			/**
+			 * Run
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function run() {
+				add_action( 'wpcf7_mail_sent', array( $this, 'form_submission' ) );
+			}
+
+			/**
+			 * Get Forms
+			 * Queries all Contact Form 7 forms.
+			 * @uses WP_Query()
+			 * @since 0.1
+			 * @version 1.1
+			 */
+			public function get_forms() {
+				$forms = new WP_Query( array(
+					'post_type'      => 'wpcf7_contact_form',
+					'post_status'    => 'any',
+					'posts_per_page' => '-1',
+					'orderby'        => 'ID',
+					'order'          => 'ASC'
+				) );
+
+				$result = array();
+				if ( $forms->have_posts() ) {
+					while ( $forms->have_posts() ) : $forms->the_post();
+						$result[get_the_ID()] = get_the_title();
+					endwhile;
+				}
+				wp_reset_postdata();
+				return $result;
+			}
+
+			/**
+			 * Successful Form Submission
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function form_submission( $cf7_form ) {
+				// Login is required
+				if ( !is_user_logged_in() ) return;
+
+				$form_id = $cf7_form->id;
+				if ( isset( $this->prefs[$form_id] ) && $this->prefs[$form_id]['creds'] != 0 ) {
+					$this->core->add_creds(
+						'contact_form_submission',
+						get_current_user_id(),
+						$this->prefs[$form_id]['creds'],
+						$this->prefs[$form_id]['log'],
+						$form_id,
+						array( 'ref_type' => 'post' )
 					);
 				}
 			}
 
-			// Set pref if empty
-			if ( empty( $prefs ) ) $this->prefs = $prefs;
+			/**
+			 * Preferences for Commenting Hook
+			 * @since 0.1
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs;
+				$forms = $this->get_forms();
 
-			// Loop for settings
-			foreach ( $forms as $form_id => $form_title ) { ?>
+				// No forms found
+				if ( empty( $forms ) ) {
+					echo '<p>' . __( 'No forms found.', 'mycred' ) . '</p>';
+					return;
+				}
+
+				// Loop though prefs to make sure we always have a default settings (happens when a new form has been created)
+				foreach ( $forms as $form_id => $form_title ) {
+					if ( !isset( $prefs[$form_id] ) ) {
+						$prefs[$form_id] = array(
+							'creds' => 1,
+							'log'   => ''
+						);
+					}
+				}
+
+				// Set pref if empty
+				if ( empty( $prefs ) ) $this->prefs = $prefs;
+
+				// Loop for settings
+				foreach ( $forms as $form_id => $form_title ) { ?>
 
 					<!-- Creds for  -->
 					<label for="<?php echo $this->field_id( array( $form_id, 'creds' ) ); ?>" class="subheader"><?php echo $form_title; ?></label>
@@ -792,8 +852,9 @@ if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		}
-			unset( $this );
+<?php			}
+				unset( $this );
+			}
 		}
 	}
 }
@@ -803,71 +864,102 @@ if ( !class_exists( 'myCRED_Contact_Form7' ) && function_exists( 'wpcf7' ) ) {
  * @since 1.0.8
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
-	class myCRED_Hook_BadgeOS extends myCRED_Hook {
+if ( class_exists( 'BadgeOS' ) ) {
+	/**
+	 * Register Hook
+	 * @since 1.0.8
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'badgeOS_myCRED_Hook' );
+	function badgeOS_myCRED_Hook( $installed ) {
+		$installed['badgeos'] = array(
+			'title'       => __( 'BadgeOS', 'mycred' ),
+			'description' => __( 'Default settings for each BadgeOS Achievement type. These settings may be overridden for individual achievement type.', 'mycred' ),
+			'callback'    => array( 'myCRED_Hook_BadgeOS' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'badgeos',
-				'defaults' => ''
-			), $hook_prefs );
-		}
+	/**
+	 * Exclude BadgeOS Post Types
+	 * @since 1.0.8
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_post_type_excludes', 'mycred_exclude_post_type_badgeOS' );
+	function mycred_exclude_post_type_badgeOS( $excludes ) {
+		$excludes = array_merge( $excludes, badgeos_get_achievement_types_slugs() );
+		return $excludes;
+	}
 
-		/**
-		 * Run
-		 * @since 1.0.8
-		 * @version 1.0
-		 */
-		public function run() {
-			add_action( 'add_meta_boxes',             array( $this, 'add_metaboxes' )             );
-			add_action( 'save_post',                  array( $this, 'save_achivement_data' )      );
-
-			add_action( 'badgeos_award_achievement',  array( $this, 'award_achievent' ), 10, 2    );
-			add_action( 'badgeos_revoke_achievement', array( $this, 'revoke_achievement' ), 10, 2 );
-		}
-
-		/**
-		 * Add Metaboxes
-		 * @since 1.0.8
-		 * @version 1.0
-		 */
-		public function add_metaboxes() {
-			// Get all Achievement Types
-			$badge_post_types = badgeos_get_achievement_types_slugs();
-			foreach ( $badge_post_types as $post_type ) {
-				// Add Meta Box
-				add_meta_box(
-					'mycred_badgeos_' . $post_type,
-					__( 'myCRED', 'mycred' ),
-					array( $this, 'render_meta_box' ),
-					$post_type,
-					'side',
-					'core'
-				);
-			}
-		}
-
-		/**
-		 * Render Meta Box
-		 * @since 1.0.8
-		 * @version 1.0
-		 */
-		public function render_meta_box( $post ) {
-			// Setup is needed
-			if ( !isset( $this->prefs[$post->post_type] ) ) {
-				$message = sprintf( __( 'Please setup your <a href="%s">default settings</a> before using this feature.', 'mycred' ), admin_url( 'admin.php?page=myCRED_page_hooks' ) );
-				echo '<p>' . $message . '</p>';
+	/**
+	 * BadgeOS Hook
+	 * @since 1.0.8
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Hook_BadgeOS' ) ) {
+		class myCRED_Hook_BadgeOS extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'badgeos',
+					'defaults' => ''
+				), $hook_prefs );
 			}
 
-			// Prep Achievement Data
-			$prefs = $this->prefs;
-			$mycred = mycred_get_settings();
-			$achievement_data = get_post_meta( $post->ID, '_mycred_values', true );
-			if ( empty( $achievement_data ) )
-				$achievement_data = $prefs[$post->post_type]; ?>
+			/**
+			 * Run
+			 * @since 1.0.8
+			 * @version 1.0
+			 */
+			public function run() {
+				add_action( 'add_meta_boxes',             array( $this, 'add_metaboxes' )             );
+				add_action( 'save_post',                  array( $this, 'save_achivement_data' )      );
+
+				add_action( 'badgeos_award_achievement',  array( $this, 'award_achievent' ), 10, 2    );
+				add_action( 'badgeos_revoke_achievement', array( $this, 'revoke_achievement' ), 10, 2 );
+			}
+
+			/**
+			 * Add Metaboxes
+			 * @since 1.0.8
+			 * @version 1.0
+			 */
+			public function add_metaboxes() {
+				// Get all Achievement Types
+				$badge_post_types = badgeos_get_achievement_types_slugs();
+				foreach ( $badge_post_types as $post_type ) {
+					// Add Meta Box
+					add_meta_box(
+						'mycred_badgeos_' . $post_type,
+						__( 'myCRED', 'mycred' ),
+						array( $this, 'render_meta_box' ),
+						$post_type,
+						'side',
+						'core'
+					);
+				}
+			}
+
+			/**
+			 * Render Meta Box
+			 * @since 1.0.8
+			 * @version 1.0
+			 */
+			public function render_meta_box( $post ) {
+				// Setup is needed
+				if ( !isset( $this->prefs[$post->post_type] ) ) {
+					$message = sprintf( __( 'Please setup your <a href="%s">default settings</a> before using this feature.', 'mycred' ), admin_url( 'admin.php?page=myCRED_page_hooks' ) );
+					echo '<p>' . $message . '</p>';
+				}
+
+				// Prep Achievement Data
+				$prefs = $this->prefs;
+				$mycred = mycred_get_settings();
+				$achievement_data = get_post_meta( $post->ID, '_mycred_values', true );
+				if ( empty( $achievement_data ) )
+					$achievement_data = $prefs[$post->post_type]; ?>
 
 			<p><strong><?php echo $mycred->template_tags_general( __( '%plural% to Award', 'mycred' ) ); ?></strong></p>
 			<p>
@@ -890,137 +982,137 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 				<input type="text" name="mycred_values[deduct_log]" id="mycred-values-deduct-log" value="<?php echo $achievement_data['deduct_log']; ?>" style="width:99%;" />
 			</p>
 <?php
+				}
 			}
-		}
 
-		/**
-		 * Save Achievement Data
-		 * @since 1.0.8
-		 * @version 1.1
-		 */
-		public function save_achivement_data( $post_id ) {
-			// Post Type
-			$post_type = get_post_type( $post_id );
+			/**
+			 * Save Achievement Data
+			 * @since 1.0.8
+			 * @version 1.1
+			 */
+			public function save_achivement_data( $post_id ) {
+				// Post Type
+				$post_type = get_post_type( $post_id );
 
-			// Make sure this is a BadgeOS Object
-			if ( !in_array( $post_type, badgeos_get_achievement_types_slugs() ) ) return;
+				// Make sure this is a BadgeOS Object
+				if ( !in_array( $post_type, badgeos_get_achievement_types_slugs() ) ) return;
 
-			// Make sure preference is set
-			if ( !isset( $this->prefs[$post_type] ) || !isset( $_POST['mycred_values']['creds'] ) || !isset( $_POST['mycred_values']['log'] ) ) return;
+				// Make sure preference is set
+				if ( !isset( $this->prefs[$post_type] ) || !isset( $_POST['mycred_values']['creds'] ) || !isset( $_POST['mycred_values']['log'] ) ) return;
 
-			// Only save if the settings differ, otherwise we default
-			if ( $_POST['mycred_values']['creds'] == $this->prefs[$post_type]['creds'] &&
-				 $_POST['mycred_values']['log'] == $this->prefs[$post_type]['log'] ) return;
+				// Only save if the settings differ, otherwise we default
+				if ( $_POST['mycred_values']['creds'] == $this->prefs[$post_type]['creds'] &&
+					 $_POST['mycred_values']['log'] == $this->prefs[$post_type]['log'] ) return;
 
-			$data = array();
+				$data = array();
 
-			// Creds
-			if ( !empty( $_POST['mycred_values']['creds'] ) && $_POST['mycred_values']['creds'] != $this->prefs[$post_type]['creds'] )
-				$data['creds'] = $this->core->format_number( $_POST['mycred_values']['creds'] );
-			else
-				$data['creds'] = $this->core->format_number( $this->prefs[$post_type]['creds'] );
-
-			// Log template
-			if ( !empty( $_POST['mycred_values']['log'] ) && $_POST['mycred_values']['log'] != $this->prefs[$post_type]['log'] )
-				$data['log'] = strip_tags( $_POST['mycred_values']['log'] );
-			else
-				$data['log'] = strip_tags( $this->prefs[$post_type]['log'] );
-
-			// If deduction is enabled save log template
-			if ( $this->prefs[$post_type]['deduct'] == 1 ) {
-				if ( !empty( $_POST['mycred_values']['deduct_log'] ) && $_POST['mycred_values']['deduct_log'] != $this->prefs[$post_type]['deduct_log'] )
-					$data['deduct_log'] = strip_tags( $_POST['mycred_values']['deduct_log'] );
+				// Creds
+				if ( !empty( $_POST['mycred_values']['creds'] ) && $_POST['mycred_values']['creds'] != $this->prefs[$post_type]['creds'] )
+					$data['creds'] = $this->core->format_number( $_POST['mycred_values']['creds'] );
 				else
-					$data['deduct_log'] = strip_tags( $this->prefs[$post_type]['deduct_log'] );
+					$data['creds'] = $this->core->format_number( $this->prefs[$post_type]['creds'] );
+
+				// Log template
+				if ( !empty( $_POST['mycred_values']['log'] ) && $_POST['mycred_values']['log'] != $this->prefs[$post_type]['log'] )
+					$data['log'] = strip_tags( $_POST['mycred_values']['log'] );
+				else
+					$data['log'] = strip_tags( $this->prefs[$post_type]['log'] );
+
+				// If deduction is enabled save log template
+				if ( $this->prefs[$post_type]['deduct'] == 1 ) {
+					if ( !empty( $_POST['mycred_values']['deduct_log'] ) && $_POST['mycred_values']['deduct_log'] != $this->prefs[$post_type]['deduct_log'] )
+						$data['deduct_log'] = strip_tags( $_POST['mycred_values']['deduct_log'] );
+					else
+						$data['deduct_log'] = strip_tags( $this->prefs[$post_type]['deduct_log'] );
+				}
+
+				// Update sales values
+				update_post_meta( $post_id, '_mycred_values', $data );
 			}
 
-			// Update sales values
-			update_post_meta( $post_id, '_mycred_values', $data );
-		}
+			/**
+			 * Award Achievement
+			 * Run by BadgeOS when ever needed, we make sure settings are not zero otherwise
+			 * award points whenever this hook fires.
+			 * @since 1.0.8
+			 * @version 1.0
+			 */
+			public function award_achievent( $user_id, $achievement_id ) {
+				$post_type = get_post_type( $achievement_id );
+				// Settings are not set
+				if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
 
-		/**
-		 * Award Achievement
-		 * Run by BadgeOS when ever needed, we make sure settings are not zero otherwise
-		 * award points whenever this hook fires.
-		 * @since 1.0.8
-		 * @version 1.0
-		 */
-		public function award_achievent( $user_id, $achievement_id ) {
-			$post_type = get_post_type( $achievement_id );
-			// Settings are not set
-			if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
+				// Get achievemen data
+				$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
+				if ( empty( $achievement_data ) )
+					$achievement_data = $this->prefs[$post_type];
 
-			// Get achievemen data
-			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
-			if ( empty( $achievement_data ) )
-				$achievement_data = $this->prefs[$post_type];
+				// Make sure its not disabled
+				if ( $achievement_data['creds'] == 0 ) return;
 
-			// Make sure its not disabled
-			if ( $achievement_data['creds'] == 0 ) return;
-
-			// Execute
-			$post_type_object = get_post_type_object( $post_type );
-			$this->core->add_creds(
-				$post_type_object->labels->name,
-				$user_id,
-				$achievement_data['creds'],
-				$achievement_data['log'],
-				$achievement_id,
-				array( 'ref_type' => 'post' )
-			);
-		}
-
-		/**
-		 * Revoke Achievement
-		 * Run by BadgeOS when a users achievement is revoed.
-		 * @since 1.0.8
-		 * @version 1.1
-		 */
-		public function revoke_achievement( $user_id, $achievement_id ) {
-			$post_type = get_post_type( $achievement_id );
-			// Settings are not set
-			if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
-
-			// Get achievemen data
-			$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
-			if ( empty( $achievement_data ) )
-				$achievement_data = $this->prefs[$post_type];
-
-			// Make sure its not disabled
-			if ( $achievement_data['creds'] == 0 ) return;
-
-			// Execute
-			$post_type_object = get_post_type_object( $post_type );
-			$this->core->add_creds(
-				$post_type_object->labels->name,
-				$user_id,
-				0-$achievement_data['creds'],
-				$achievement_data['deduct_log'],
-				$achievement_id,
-				array( 'ref_type' => 'post' )
-			);
-		}
-
-		/**
-		 * Preferences for BadgeOS
-		 * @since 1.0.8
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs;
-			$badge_post_types = badgeos_get_achievement_types_slugs();
-			foreach ( $badge_post_types as $post_type ) {
-				if ( in_array( $post_type, apply_filters( 'mycred_badgeos_excludes', array( 'step' ) ) ) ) continue;
-				if ( !isset( $prefs[$post_type] ) )
-					$prefs[$post_type] = array(
-						'creds'      => 10,
-						'log'        => '',
-						'deduct'     => 1,
-						'deduct_log' => '%plural% deduction'
-					);
-
+				// Execute
 				$post_type_object = get_post_type_object( $post_type );
-				$title = sprintf( __( 'Default %s for %s', 'mycred' ), $this->core->plural(), $post_type_object->labels->singular_name ); ?>
+				$this->core->add_creds(
+					$post_type_object->labels->name,
+					$user_id,
+					$achievement_data['creds'],
+					$achievement_data['log'],
+					$achievement_id,
+					array( 'ref_type' => 'post' )
+				);
+			}
+
+			/**
+			 * Revoke Achievement
+			 * Run by BadgeOS when a users achievement is revoed.
+			 * @since 1.0.8
+			 * @version 1.1
+			 */
+			public function revoke_achievement( $user_id, $achievement_id ) {
+				$post_type = get_post_type( $achievement_id );
+				// Settings are not set
+				if ( !isset( $this->prefs[$post_type]['creds'] ) ) return;
+
+				// Get achievemen data
+				$achievement_data = get_post_meta( $achievement_id, '_mycred_values', true );
+				if ( empty( $achievement_data ) )
+					$achievement_data = $this->prefs[$post_type];
+
+				// Make sure its not disabled
+				if ( $achievement_data['creds'] == 0 ) return;
+
+				// Execute
+				$post_type_object = get_post_type_object( $post_type );
+				$this->core->add_creds(
+					$post_type_object->labels->name,
+					$user_id,
+					0-$achievement_data['creds'],
+					$achievement_data['deduct_log'],
+					$achievement_id,
+					array( 'ref_type' => 'post' )
+				);
+			}
+
+			/**
+			 * Preferences for BadgeOS
+			 * @since 1.0.8
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs;
+				$badge_post_types = badgeos_get_achievement_types_slugs();
+				foreach ( $badge_post_types as $post_type ) {
+					if ( in_array( $post_type, apply_filters( 'mycred_badgeos_excludes', array( 'step' ) ) ) ) continue;
+					if ( !isset( $prefs[$post_type] ) )
+						$prefs[$post_type] = array(
+							'creds'      => 10,
+							'log'        => '',
+							'deduct'     => 1,
+							'deduct_log' => '%plural% deduction'
+						);
+
+					$post_type_object = get_post_type_object( $post_type );
+					$title = sprintf( __( 'Default %s for %s', 'mycred' ), $this->core->plural(), $post_type_object->labels->singular_name ); ?>
 
 					<!-- Creds for  -->
 					<label for="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" class="subheader"><?php echo $title; ?></label>
@@ -1046,118 +1138,136 @@ if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'BadgeOS' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php
+<?php			}
+				unset( $this );
 			}
 		}
 	}
 }
 
 /**
- * Hook for WP-Polls Plugin
+ * WP-Polls Plugin
  * @since 1.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_WPPolls' ) && function_exists( 'vote_poll' ) ) {
-	class myCRED_Hook_WPPolls extends myCRED_Hook {
+if ( function_exists( 'vote_poll' ) ) {
+	/**
+	 * Register Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'WP_Polls_myCRED_Hook' );
+	function WP_Polls_myCRED_Hook( $installed ) {
+		$installed['wppolls'] = array(
+			'title'       => __( 'WP-Polls', 'mycred' ),
+			'description' => __( 'Awards %_plural% for users voting in polls.', 'mycred' ),
+			'callback'    => array( 'myCRED_Hook_WPPolls' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'wppolls',
-				'defaults' => array(
-					'creds' => 1,
-					'log'   => '%plural% for voting'
-				)
-			), $hook_prefs );
-		}
+	/**
+	 * WP-Polls Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Hook_WPPolls' ) ) {
+		class myCRED_Hook_WPPolls extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'wppolls',
+					'defaults' => array(
+						'creds' => 1,
+						'log'   => '%plural% for voting'
+					)
+				), $hook_prefs );
+			}
 
-		/**
-		 * Run
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function run() {
-			add_action( 'wp_ajax_polls',          array( $this, 'vote_poll' ), 1 );
-			add_filter( 'mycred_parse_tags_poll', array( $this, 'parse_custom_tags' ), 10, 2 );
-		}
+			/**
+			 * Run
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function run() {
+				add_action( 'wp_ajax_polls',          array( $this, 'vote_poll' ), 1 );
+				add_filter( 'mycred_parse_tags_poll', array( $this, 'parse_custom_tags' ), 10, 2 );
+			}
 
-		/**
-		 * Poll Voting
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function vote_poll() {
-			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'polls' && is_user_logged_in() ) {
-				// Get Poll ID
-				$poll_id = ( isset( $_REQUEST['poll_id'] ) ? intval( $_REQUEST['poll_id'] ) : 0 );
-
-				// Ensure Poll ID Is Valid
-				if ( $poll_id != 0 ) {
-					// Verify Referer
-					if ( check_ajax_referer( 'poll_' . $poll_id . '-nonce', 'poll_' . $poll_id . '_nonce', false ) ) {
-						// Which View
-						switch ( $_REQUEST['view'] ) {
-							case 'process':
-								$poll_aid = $_POST["poll_$poll_id"];
-								$poll_aid_array = array_unique( array_map( 'intval', explode( ',', $poll_aid ) ) );
-								if ( $poll_id > 0 && !empty( $poll_aid_array ) && check_allowtovote() ) {
-									$check_voted = check_voted( $poll_id );
-									if ( $check_voted == 0 ) {
-										$user_id = get_current_user_id();
-										// Make sure we are not excluded
-										if ( !$this->core->exclude_user( $user_id ) ) {
-											$this->core->add_creds(
-												'poll_voting',
-												$user_id,
-												$this->prefs['creds'],
-												$this->prefs['log'],
-												$poll_id,
-												array( 'ref_type' => 'poll' )
-											);
+			/**
+			 * Poll Voting
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function vote_poll() {
+				if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'polls' && is_user_logged_in() ) {
+					// Get Poll ID
+					$poll_id = ( isset( $_REQUEST['poll_id'] ) ? intval( $_REQUEST['poll_id'] ) : 0 );
+					// Ensure Poll ID Is Valid
+					if ( $poll_id != 0 ) {
+						// Verify Referer
+						if ( check_ajax_referer( 'poll_' . $poll_id . '-nonce', 'poll_' . $poll_id . '_nonce', false ) ) {
+							// Which View
+							switch ( $_REQUEST['view'] ) {
+								case 'process':
+									$poll_aid = $_POST["poll_$poll_id"];
+									$poll_aid_array = array_unique( array_map( 'intval', explode( ',', $poll_aid ) ) );
+									if ( $poll_id > 0 && !empty( $poll_aid_array ) && check_allowtovote() ) {
+										$check_voted = check_voted( $poll_id );
+										if ( $check_voted == 0 ) {
+											$user_id = get_current_user_id();
+											// Make sure we are not excluded
+											if ( !$this->core->exclude_user( $user_id ) ) {
+												$this->core->add_creds(
+													'poll_voting',
+													$user_id,
+													$this->prefs['creds'],
+													$this->prefs['log'],
+													$poll_id,
+													array( 'ref_type' => 'poll' )
+												);
+											}
 										}
 									}
-								}
-							break;
+								break;
+							}
 						}
 					}
 				}
 			}
-		}
 
-		/**
-		 * Parse Custom Tags in Log
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function parse_custom_tags( $content, $log_entry ) {
-			$poll_id = $log_entry->ref_id;
-			$content = str_replace( '%poll_id%', $poll_id, $content );
-			$content = str_replace( '%poll_question%', $this->get_poll_name( $poll_id ), $content );
+			/**
+			 * Parse Custom Tags in Log
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function parse_custom_tags( $content, $log_entry ) {
+				$poll_id = $log_entry->ref_id;
+				$content = str_replace( '%poll_id%', $poll_id, $content );
+				$content = str_replace( '%poll_question%', $this->get_poll_name( $poll_id ), $content );
+				return $content;
+			}
 
-			return $content;
-		}
+			/**
+			 * Get Poll Name (Question)
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			protected function get_poll_name( $poll_id ) {
+				global $wpdb;
+				$sql = "SELECT pollq_question FROM $wpdb->pollsq WHERE pollq_id = %d ";
+				return $wpdb->get_var( $wpdb->prepare( $sql, $poll_id ) );
+			}
 
-		/**
-		 * Get Poll Name (Question)
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		protected function get_poll_name( $poll_id ) {
-			global $wpdb;
-
-			$sql = "SELECT pollq_question FROM $wpdb->pollsq WHERE pollq_id = %d ";
-			return $wpdb->get_var( $wpdb->prepare( $sql, $poll_id ) );
-		}
-
-		/**
-		 * Preferences for WP-Polls
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs; ?>
+			/**
+			 * Preferences for WP-Polls
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs; ?>
 
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
@@ -1172,112 +1282,133 @@ if ( !class_exists( 'myCRED_Hook_WPPolls' ) && function_exists( 'vote_poll' ) ) 
 							<span class="description"><?php _e( 'Available template tags: General. You can also use %poll_id% and %poll_question%.', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+<?php			unset( $this );
+			}
 		}
 	}
 }
 
 /**
- * Hook for WP Favorite Posts
+ * WP Favorite Posts
  * @since 1.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && function_exists( 'wp_favorite_posts' ) ) {
-	class myCRED_Hook_WPFavorite extends myCRED_Hook {
+if ( function_exists( 'wp_favorite_posts' ) ) {
+	/**
+	 * Register Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'WP_Favorite_myCRED_Hook' );
+	function WP_Favorite_myCRED_Hook( $installed ) {
+		$installed['wpfavorite'] = array(
+			'title'       => __( 'WP Favorite Posts', 'mycred' ),
+			'description' => __( 'Awards %_plural% for users adding posts to their favorites.', 'mycred' ),
+			'callback'    => array( 'myCRED_Hook_WPFavorite' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'wpfavorite',
-				'defaults' => array(
-					'add'    => array(
-						'creds' => 1,
-						'log'   => '%plural% for adding a post as favorite'
-					),
-					'remove' => array(
-						'creds' => 1,
-						'log'   => '%plural% deduction for removing a post from favorites'
+	/**
+	 * WP Favorite Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Hook_WPFavorite' ) ) {
+		class myCRED_Hook_WPFavorite extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'wpfavorite',
+					'defaults' => array(
+						'add'    => array(
+							'creds' => 1,
+							'log'   => '%plural% for adding a post as favorite'
+						),
+						'remove' => array(
+							'creds' => 1,
+							'log'   => '%plural% deduction for removing a post from favorites'
+						)
 					)
-				)
-			), $hook_prefs );
-		}
+				), $hook_prefs );
+			}
 
-		/**
-		 * Run
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function run() {
-			if ( $this->prefs['add']['creds'] != 0 )
-				add_action( 'wpfp_after_add',    array( $this, 'add_favorite' ) );
+			/**
+			 * Run
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function run() {
+				if ( $this->prefs['add']['creds'] != 0 )
+					add_action( 'wpfp_after_add',    array( $this, 'add_favorite' ) );
 
-			if ( $this->prefs['remove']['creds'] != 0 )
-				add_action( 'wpfp_after_remove', array( $this, 'remove_favorite' ) );
-		}
+				if ( $this->prefs['remove']['creds'] != 0 )
+					add_action( 'wpfp_after_remove', array( $this, 'remove_favorite' ) );
+			}
 
-		/**
-		 * Add Favorite
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function add_favorite( $post_id ) {
-			// Must be logged in
-			if ( !is_user_logged_in() ) return;
+			/**
+			 * Add Favorite
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function add_favorite( $post_id ) {
+				// Must be logged in
+				if ( !is_user_logged_in() ) return;
 
-			$user_id = get_current_user_id();
-			// Check for exclusion
-			if ( $this->core->exclude_user( $user_id ) ) return;
+				$user_id = get_current_user_id();
+				// Check for exclusion
+				if ( $this->core->exclude_user( $user_id ) ) return;
 
-			// Make sure this is unique event
-			if ( $this->core->has_entry( 'add_favorite_post', $post_id, $user_id ) ) return;
+				// Make sure this is unique event
+				if ( $this->core->has_entry( 'add_favorite_post', $post_id, $user_id ) ) return;
 
-			// Execute
-			$this->core->add_creds(
-				'add_favorite_post',
-				$user_id,
-				$this->prefs['add']['creds'],
-				$this->prefs['add']['log'],
-				$post_id,
-				array( 'ref_type' => 'post' )
-			);
-		}
+				// Execute
+				$this->core->add_creds(
+					'add_favorite_post',
+					$user_id,
+					$this->prefs['add']['creds'],
+					$this->prefs['add']['log'],
+					$post_id,
+					array( 'ref_type' => 'post' )
+				);
+			}
 
-		/**
-		 * Remove Favorite
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function remove_favorite( $post_id ) {
-			// Must be logged in
-			if ( !is_user_logged_in() ) return;
+			/**
+			 * Remove Favorite
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function remove_favorite( $post_id ) {
+				// Must be logged in
+				if ( !is_user_logged_in() ) return;
 
-			$user_id = get_current_user_id();
-			// Check for exclusion
-			if ( $this->core->exclude_user( $user_id ) ) return;
+				$user_id = get_current_user_id();
+				// Check for exclusion
+				if ( $this->core->exclude_user( $user_id ) ) return;
 
-			// Make sure this is unique event
-			if ( $this->core->has_entry( 'favorite_post_removed', $post_id, $user_id ) ) return;
+				// Make sure this is unique event
+				if ( $this->core->has_entry( 'favorite_post_removed', $post_id, $user_id ) ) return;
 
-			// Execute
-			$this->core->add_creds(
-				'favorite_post_removed',
-				$user_id,
-				$this->prefs['remove']['creds'],
-				$this->prefs['remove']['log'],
-				$post_id,
-				array( 'ref_type' => 'post' )
-			);
-		}
+				// Execute
+				$this->core->add_creds(
+					'favorite_post_removed',
+					$user_id,
+					$this->prefs['remove']['creds'],
+					$this->prefs['remove']['log'],
+					$post_id,
+					array( 'ref_type' => 'post' )
+				);
+			}
 
-		/**
-		 * Preferences for WP-Polls
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs; ?>
+			/**
+			 * Preferences for WP-Polls
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs; ?>
 
 					<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>"><?php _e( 'Adding Content to Favorites', 'mycred' ); ?></label>
 					<ol>
@@ -1305,130 +1436,149 @@ if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && function_exists( 'wp_favorite_
 							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+<?php			unset( $this );
+			}
 		}
 	}
 }
 
 /**
- * Hook for Events Manager
+ * Events Manager
  * @since 1.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_init' ) ) {
-	class myCRED_Hook_Events_Manager extends myCRED_Hook {
+if ( function_exists( 'bp_em_init' ) ) {
+	/**
+	 * Register Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'Events_Manager_myCRED_Hook' );
+	function Events_Manager_myCRED_Hook( $installed ) {
+		$installed['eventsmanager'] = array(
+			'title'       => __( 'Events Manager', 'mycred' ),
+			'description' => __( 'Awards %_plural% for users attending events.', 'mycred' ),
+			'callback'    => array( 'myCRED_Hook_Events_Manager' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'eventsmanager',
-				'defaults' => array(
-					'attend' => array(
-						'creds' => 1,
-						'log'   => '%plural% for attending an %link_with_title%'
-					),
-					'cancel' => array(
-						'creds' => 1,
-						'log'   => '%plural% for cancelled attendance at %link_with_title%'
+	/**
+	 * Events Manager Hook
+	 * @since 1.1
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Hook_Events_Manager' ) ) {
+		class myCRED_Hook_Events_Manager extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'eventsmanager',
+					'defaults' => array(
+						'attend' => array(
+							'creds' => 1,
+							'log'   => '%plural% for attending an %link_with_title%'
+						),
+						'cancel' => array(
+							'creds' => 1,
+							'log'   => '%plural% for cancelled attendance at %link_with_title%'
+						)
 					)
-				)
-			), $hook_prefs );
-		}
+				), $hook_prefs );
+			}
 
-		/**
-		 * Run
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function run() {
-			if ( $this->prefs['attend']['creds'] != 0 && get_option( 'dbem_bookings_approval' ) != 0 )
-				add_filter( 'em_bookings_add',       array( $this, 'new_booking' ), 10, 2 );
+			/**
+			 * Run
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function run() {
+				if ( $this->prefs['attend']['creds'] != 0 && get_option( 'dbem_bookings_approval' ) != 0 )
+					add_filter( 'em_bookings_add',       array( $this, 'new_booking' ), 10, 2 );
 
-			add_filter( 'em_booking_set_status', array( $this, 'adjust_booking' ), 10, 2 );
-		}
-		
-		/**
-		 * New Booking
-		 * When users can make their own bookings.
-		 * @since 1.1
-		 * @version 1.1
-		 */
-		public function new_booking( $result, $booking ) {
-			$user_id = $booking->person->id;
-			// Check for exclusion
-			if ( $this->core->exclude_user( $user_id ) ) return $result;
-			
-			// Successfull Booking
-			if ( $result === true ) {
-				// Execute
-				$this->core->add_creds(
-					'event_booking',
-					$user_id,
-					$this->prefs['attend']['creds'],
-					$this->prefs['attend']['log'],
-					$booking->event->post_id,
-					array( 'ref_type' => 'post' )
-				);
+				add_filter( 'em_booking_set_status', array( $this, 'adjust_booking' ), 10, 2 );
 			}
-			
-			return $result;
-		}
-		
-		/**
-		 * Adjust Booking
-		 * Incase an administrator needs to approve bookings first or if booking gets
-		 * cancelled.
-		 * @since 1.1
-		 * @version 1.1
-		 */
-		public function adjust_booking( $result, $booking ) {
-			$user_id = $booking->person->id;
-			// Check for exclusion
-			if ( $this->core->exclude_user( $user_id ) ) return $result;
-			
-			// If the new status is 'approved', add points
-			if ( $booking->booking_status == 1 && $booking->previous_status != 1 ) {
-				// If we do not award points for attending an event bail now
-				if ( $this->prefs['attend']['creds'] == 0 ) return $result;
-				
-				// Execute
-				$this->core->add_creds(
-					'event_attendance',
-					$user_id,
-					$this->prefs['attend']['creds'],
-					$this->prefs['attend']['log'],
-					$booking->event->post_id,
-					array( 'ref_type' => 'post' )
-				);
+
+			/**
+			 * New Booking
+			 * When users can make their own bookings.
+			 * @since 1.1
+			 * @version 1.1
+			 */
+			public function new_booking( $result, $booking ) {
+				$user_id = $booking->person->id;
+				// Check for exclusion
+				if ( $this->core->exclude_user( $user_id ) ) return $result;
+
+				// Successfull Booking
+				if ( $result === true ) {
+					// Execute
+					$this->core->add_creds(
+						'event_booking',
+						$user_id,
+						$this->prefs['attend']['creds'],
+						$this->prefs['attend']['log'],
+						$booking->event->post_id,
+						array( 'ref_type' => 'post' )
+					);
+				}
+				return $result;
 			}
-			// Else if status got changed from previously 'approved', remove points given
-			elseif ( $booking->booking_status != 1 && $booking->previous_status == 1 ) {
-				// If we do not deduct points for cancellation bail now
-				if ( $this->prefs['cancel']['creds'] == 0 ) return $result;
-				
-				// Execute
-				$this->core->add_creds(
-					'cancelled_event_attendance',
-					$user_id,
-					$this->prefs['cancel']['creds'],
-					$this->prefs['cancel']['log'],
-					$booking->event->post_id,
-					array( 'ref_type' => 'post' )
-				);
-			}
-			
-			return $result;
-		}
 		
-		/**
-		 * Preferences for Events Manager
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs; ?>
+			/**
+			 * Adjust Booking
+			 * Incase an administrator needs to approve bookings first or if booking gets
+			 * cancelled.
+			 * @since 1.1
+			 * @version 1.1
+			 */
+			public function adjust_booking( $result, $booking ) {
+				$user_id = $booking->person->id;
+				// Check for exclusion
+				if ( $this->core->exclude_user( $user_id ) ) return $result;
+
+				// If the new status is 'approved', add points
+				if ( $booking->booking_status == 1 && $booking->previous_status != 1 ) {
+					// If we do not award points for attending an event bail now
+					if ( $this->prefs['attend']['creds'] == 0 ) return $result;
+
+					// Execute
+					$this->core->add_creds(
+						'event_attendance',
+						$user_id,
+						$this->prefs['attend']['creds'],
+						$this->prefs['attend']['log'],
+						$booking->event->post_id,
+						array( 'ref_type' => 'post' )
+					);
+				}
+				// Else if status got changed from previously 'approved', remove points given
+				elseif ( $booking->booking_status != 1 && $booking->previous_status == 1 ) {
+					// If we do not deduct points for cancellation bail now
+					if ( $this->prefs['cancel']['creds'] == 0 ) return $result;
+
+					// Execute
+					$this->core->add_creds(
+						'cancelled_event_attendance',
+						$user_id,
+						$this->prefs['cancel']['creds'],
+						$this->prefs['cancel']['log'],
+						$booking->event->post_id,
+						array( 'ref_type' => 'post' )
+					);
+				}
+				return $result;
+			}
+
+			/**
+			 * Preferences for Events Manager
+			 * @since 1.1
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs; ?>
 
 					<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>"><?php _e( 'Attending Event', 'mycred' ); ?></label>
 					<ol>
@@ -1456,88 +1606,108 @@ if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && function_exists( 'bp_em_in
 							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+<?php			unset( $this );
+			}
 		}
 	}
 }
 
 /**
- * Hook for GD Star Rating
+ * GD Star Rating
  * @since 1.2
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) && defined( 'STARRATING_DEBUG' ) ) {
-	class myCRED_Hook_GD_Star_Rating extends myCRED_Hook {
+if ( defined( 'STARRATING_DEBUG' ) ) {
+	/**
+	 * Register Hook
+	 * @since 1.2
+	 * @version 1.0
+	 */
+	add_filter( 'mycred_setup_hooks', 'GD_Star_myCRED_Hook' );
+	function GD_Star_myCRED_Hook( $installed ) {
+		$installed['gdstars'] = array(
+			'title'       => __( 'GD Star Rating', 'mycred' ),
+			'description' => __( 'Awards %_plural% for users rate items using the GD Star Rating plugin.', 'mycred' ),
+			'callback'    => array( 'myCRED_Hook_GD_Star_Rating' )
+		);
+		return $installed;
+	}
 
-		/**
-		 * Construct
-		 */
-		function __construct( $hook_prefs ) {
-			parent::__construct( array(
-				'id'       => 'gdstars',
-				'defaults' => array(
-					'star_rating' => array(
-						'creds' => 1,
-						'log'   => '%plural% for rating'
-					),
-					'up_down' => array(
-						'creds' => 1,
-						'log'   => '%plural% for rating'
+	/**
+	 * GD Star Rating Hook
+	 * @since 1.2
+	 * @version 1.0
+	 */
+	if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) ) {
+		class myCRED_Hook_GD_Star_Rating extends myCRED_Hook {
+			/**
+			 * Construct
+			 */
+			function __construct( $hook_prefs ) {
+				parent::__construct( array(
+					'id'       => 'gdstars',
+					'defaults' => array(
+						'star_rating' => array(
+							'creds' => 1,
+							'log'   => '%plural% for rating'
+						),
+						'up_down' => array(
+							'creds' => 1,
+							'log'   => '%plural% for rating'
+						)
 					)
-				)
-			), $hook_prefs );
-		}
-
-		/**
-		 * Run
-		 * @since 1.2
-		 * @version 1.0
-		 */
-		public function run() {
-			add_action( 'gdsr_vote', array( $this, 'vote' ), 10, 4 );
-		}
-
-		/**
-		 * Vote
-		 * @since 1.2
-		 * @version 1.0
-		 */
-		public function vote( $vote_value, $post_id, $vote_tpl, $vote_size ) {
-			if ( !is_user_logged_in() ) return;
-			
-			if ( is_string( $vote_value ) && $this->prefs['up_down']['creds'] == 0 ) return;
-			elseif ( !is_string( $vote_value ) && $this->prefs['star_rating']['creds'] == 0 ) return;
-			
-			if ( is_string( $vote_value ) ) {
-				$vote = 'up_down';
-				$star = false;
+				), $hook_prefs );
 			}
-			else {
-				$vote = 'star_rating';
-				$star = true;
+
+			/**
+			 * Run
+			 * @since 1.2
+			 * @version 1.0
+			 */
+			public function run() {
+				add_action( 'gdsr_vote', array( $this, 'vote' ), 10, 4 );
 			}
-			$user_id = get_current_user_id();
-			
-			if ( $this->core->has_entry( 'rating', $post_id, $user_id, $vote ) ) return;
 
-			// Execute
-			$this->core->add_creds(
-				'rating',
-				$user_id,
-				( $star ) ? $this->prefs['star_rating']['creds'] : $this->prefs['up_down']['creds'],
-				( $star ) ? $this->prefs['star_rating']['log'] : $this->prefs['up_down']['log'],
-				$post_id,
-				$vote
-			);
-		}
+			/**
+			 * Vote
+			 * @since 1.2
+			 * @version 1.0
+			 */
+			public function vote( $vote_value, $post_id, $vote_tpl, $vote_size ) {
+				if ( !is_user_logged_in() ) return;
 
-		/**
-		 * Preferences for GD Star Rating
-		 * @since 1.2
-		 * @version 1.0
-		 */
-		public function preferences() {
-			$prefs = $this->prefs; ?>
+				if ( is_string( $vote_value ) && $this->prefs['up_down']['creds'] == 0 ) return;
+				elseif ( !is_string( $vote_value ) && $this->prefs['star_rating']['creds'] == 0 ) return;
+
+				if ( is_string( $vote_value ) ) {
+					$vote = 'up_down';
+					$star = false;
+				} else {
+					$vote = 'star_rating';
+					$star = true;
+				}
+				$user_id = get_current_user_id();
+
+				if ( $this->core->has_entry( 'rating', $post_id, $user_id, $vote ) ) return;
+
+				// Execute
+				$this->core->add_creds(
+					'rating',
+					$user_id,
+					( $star ) ? $this->prefs['star_rating']['creds'] : $this->prefs['up_down']['creds'],
+					( $star ) ? $this->prefs['star_rating']['log'] : $this->prefs['up_down']['log'],
+					$post_id,
+					$vote
+				);
+			}
+
+			/**
+			 * Preferences for GD Star Rating
+			 * @since 1.2
+			 * @version 1.0
+			 */
+			public function preferences() {
+				$prefs = $this->prefs; ?>
 
 					<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>"><?php _e( 'Rating', 'mycred' ); ?></label>
 					<ol>
@@ -1565,7 +1735,8 @@ if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) && defined( 'STARRATING_DEBUG
 							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
 						</li>
 					</ol>
-<?php		unset( $this );
+<?php			unset( $this );
+			}
 		}
 	}
 }

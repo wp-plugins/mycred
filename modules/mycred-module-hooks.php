@@ -11,7 +11,6 @@ require_once( myCRED_MODULES_DIR . 'mycred-module-plugins.php' );
  */
 if ( !class_exists( 'myCRED_Hooks' ) ) {
 	class myCRED_Hooks extends myCRED_Module {
-
 		/**
 		 * Construct
 		 */
@@ -84,6 +83,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		 * @version 1.1
 		 */
 		public function get( $save = false ) {
+			$installed = array();
 			// Registrations
 			$installed['registration'] = array(
 				'title'        => __( '%plural% for registrations', 'mycred' ),
@@ -125,88 +125,6 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				'description' => __( 'Award %_plural% to users who watches videos embedded using the [mycred_video] shortcode.', 'mycred' ),
 				'callback'    => array( 'myCRED_Hook_Video_Views' )
 			);
-
-			// Prep for bbPress
-			if ( class_exists( 'bbPress' ) ) {
-				$installed['hook_bbpress'] = array(
-					'title'       => __( 'bbPress' ),
-					'description' => __( 'Awards %_plural% for bbPress actions.', 'mycred' ),
-					'callback'    => array( 'myCRED_bbPress' )
-				);
-			}
-
-			// Prep for Invite Anyone Plugin
-			if ( function_exists( 'invite_anyone_init' ) ) {
-				$installed['invite_anyone'] = array(
-					'title'       => __( 'Invite Anyone Plugin', 'mycred' ),
-					'description' => __( 'Awards %_plural% for sending invitations and/or %_plural% if the invite is accepted.', 'mycred' ),
-					'callback'    => array( 'myCRED_Invite_Anyone' )
-				);
-			}
-
-			// Prep for Contact Form 7
-			if ( function_exists( 'wpcf7' ) ) {
-				$installed['contact_form7'] = array(
-					'title'       => __( 'Contact Form 7 Form Submissions', 'mycred' ),
-					'description' => __( 'Awards %_plural% for successful form submissions (by logged in users).', 'mycred' ),
-					'callback'    => array( 'myCRED_Contact_Form7' )
-				);
-			}
-
-			// Prep for Jetpack
-			if ( class_exists( 'Jetpack' ) ) {
-				$installed['jetpack'] = array(
-					'title'       => __( 'Jetpack Subscriptions', 'mycred' ),
-					'description' => __( 'Awards %_plural% for users signing up for site or comment updates using Jetpack.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_Jetpack' )
-				);
-			}
-
-			// Prep for BadgeOS
-			if ( class_exists( 'BadgeOS' ) ) {
-				$installed['badgeos'] = array(
-					'title'       => __( 'BadgeOS', 'mycred' ),
-					'description' => __( 'Default settings for each BadgeOS Achievement type. These settings may be overridden for individual achievement type.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_BadgeOS' )
-				);
-			}
-
-			// Prep for WP-Polls
-			if ( function_exists( 'vote_poll' ) ) {
-				$installed['wppolls'] = array(
-					'title'       => __( 'WP-Polls', 'mycred' ),
-					'description' => __( 'Awards %_plural% for users voting in polls.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_WPPolls' )
-				);
-			}
-
-			// WP Favorite Posts
-			if ( function_exists( 'wp_favorite_posts' ) ) {
-				$installed['wpfavorite'] = array(
-					'title'       => __( 'WP Favorite Posts', 'mycred' ),
-					'description' => __( 'Awards %_plural% for users adding posts to their favorites.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_WPFavorite' )
-				);
-			}
-
-			// Events Manager
-			if ( function_exists( 'bp_em_init' ) ) {
-				$installed['eventsmanager'] = array(
-					'title'       => __( 'Events Manager', 'mycred' ),
-					'description' => __( 'Awards %_plural% for users attending events.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_Events_Manager' )
-				);
-			}
-
-			// GD Star
-			if ( defined( 'STARRATING_DEBUG' ) ) {
-				$installed['gdstars'] = array(
-					'title'       => __( 'GD Star Rating', 'mycred' ),
-					'description' => __( 'Awards %_plural% for users rate items using the GD Star Rating plugin.', 'mycred' ),
-					'callback'    => array( 'myCRED_Hook_GD_Star_Rating' )
-				);
-			}
-
 			$installed = apply_filters( 'mycred_setup_hooks', $installed );
 
 			if ( $save === true && $this->core->can_edit_plugin() ) {
@@ -251,7 +169,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 <?php		if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
-				<h4 class="<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"><label><?php echo $this->core->template_tags_general( $data['title'] ); ?></label></h4>
+				<h4><div class="icon icon-<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; echo ' ' . $key; ?>"></div><label><?php echo $this->core->template_tags_general( $data['title'] ); ?></label></h4>
 				<div class="body" style="display:none;">
 					<p><?php echo nl2br( $this->core->template_tags_general( $data['description'] ) ); ?></p>
 					<label class="subheader"><?php _e( 'Enable', 'mycred' ); ?></label>
@@ -267,7 +185,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 			} ?>
 
 			</div>
-			<?php submit_button( __( 'Update Changes', 'mycred' ), 'primary large' ); ?>
+			<?php submit_button( __( 'Update Changes', 'mycred' ), 'primary large', 'submit', false ); ?>
 
 		</form>
 	</div>
@@ -307,7 +225,6 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 					}
 				}
 			}
-
 			return $new_post;
 		}
 	}
@@ -320,7 +237,6 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Registration' ) ) {
 	class myCRED_Hook_Registration extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -397,7 +313,6 @@ if ( !class_exists( 'myCRED_Hook_Registration' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 	class myCRED_Hook_Logging_In extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -542,7 +457,6 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 	class myCRED_Hook_Publishing_Content extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -690,19 +604,6 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 		protected function include_post_type( $post_type ) {
 			// Exclude Core
 			$excludes = array( 'post', 'page' );
-			
-			// Prep for bbPress
-			if ( class_exists( 'bbPress' ) ) {
-				$excludes[] = bbp_get_forum_post_type();
-				$excludes[] = bbp_get_topic_post_type();
-				$excludes[] = bbp_get_reply_post_type();
-			}
-			
-			// Prep for BadgeOS
-			if ( function_exists( 'badgeos_get_achievement_types_slugs' ) ) {
-				$excludes = array_merge( $excludes, badgeos_get_achievement_types_slugs() );
-			}
-			
 			if ( in_array( $post_type, apply_filters( 'mycred_post_type_excludes', $excludes ) ) ) return false;
 			return true;
 		}
@@ -716,7 +617,6 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 	class myCRED_Hook_Comments extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -754,12 +654,11 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			add_action( 'comment_post',              array( $this, 'new_comment' ), 10, 2         );
 			add_action( 'transition_comment_status', array( $this, 'comment_transitions' ), 10, 3 );
 		}
-		
+
 		/**
 		 * New Comment
 		 * If comments are approved without moderation, we apply the corresponding method
 		 * or else we will wait till the appropriate instance.
-		 *
 		 * @since 0.1
 		 * @version 1.1
 		 */
@@ -771,7 +670,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			elseif ( $comment_status == '1' && $this->prefs['approved'] != 0 )
 				$this->comment_transitions( 'approved', 'unapproved', $comment_id );
 		}
-		
+
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
@@ -832,7 +731,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 						$points = abs( $this->prefs['trash']['creds'] );
 					else
 						$points = $this->prefs['trash']['creds'];
-					
+
 					$log = $this->prefs['approved']['log'];
 				}
 			}
@@ -1034,7 +933,6 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 	class myCRED_Hook_Click_Links extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -1254,7 +1152,6 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
  */
 if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 	class myCRED_Hook_Video_Views extends myCRED_Hook {
-
 		/**
 		 * Construct
 		 */
@@ -1278,7 +1175,6 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		 */
 		public function run() {
 			add_action( 'mycred_front_enqueue',        array( $this, 'register_script' )        );
-			
 			add_shortcode( 'mycred_video',             'mycred_render_shortcode_video'          );
 			add_action( 'wp_ajax_mycred-video-points', array( $this, 'ajax_call_video_points' ) );
 		}
@@ -1322,32 +1218,32 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 
 			// Security
 			check_ajax_referer( 'mycred-video-points', 'token' );
-			
+
 			$award = false;
 			$status = 'silence';
-			
+
 			// Check for amount override
 			if ( isset( $_POST['amount'] ) && $_POST['amount'] != $this->prefs['creds'] )
 				$amount = $this->core->number( $_POST['amount'] );
 			else
 				$amount = $this->prefs['creds'];
-				
+
 			// Check for logic override
 			if ( isset( $_POST['logic'] ) || $_POST['logic'] != $this->prefs['logic'] )
 				$logic = $_POST['logic'];
 			else
 				$logic = $this->prefs['logic'];
-			
+
 			// Check for interval override
 			if ( isset( $_POST['interval'] ) && !empty( $_POST['interval'] ) )
 				$interval = abs( $_POST['interval']/1000 );
 			else
 				$interval = abs( $this->prefs['interval'] );
-			
+
 			$video_id = trim( $_POST['video_id'] );
 			$state = trim( $_POST['video_state'] );
 			$duration = abs( $_POST['video_length'] );
-			
+
 			$user_id = abs( $_POST['user_id'] );
 			$watched = abs( $_POST['user_watched'] );
 			$actions = trim( $_POST['user_actions'] );
@@ -1381,7 +1277,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 				if ( !preg_match( '/22/', $actions, $matches ) || $watched >= $duration ) {
 					if ( $state == 0 && !$this->has_entry( 'watching_video', '', $user_id, $video_id ) ) {
 						$award = true;
-						
+
 						// Execute
 						$this->core->add_creds(
 							'watching_video',
@@ -1391,7 +1287,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 							'',
 							$video_id
 						);
-						
+
 						$status = 'max';
 					}
 				}
@@ -1401,13 +1297,10 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 				// The maximum points a video can earn you
 				$num_intervals = floor( $duration / $interval );
 				$max = abs( $num_intervals * $amount );
-				
 				$users_log = $this->get_users_video_log( $video_id, $user_id );
-				
 				// Film is playing and we just started
 				if ( $state == 1 && $users_log === NULL ) {
 					$award = true;
-
 					// Execute
 					$this->core->add_creds(
 						'watching_video',
@@ -1434,7 +1327,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 					$status = 'max';
 				}
 			}
-			
+
 			$data = array(
 				'status'   => $status,
 				'video_id' => $video_id,
@@ -1442,7 +1335,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 			);
 			die( json_encode( $data ) );
 		}
-		
+
 		/**
 		 * Get Users Video Log
 		 * Returns the log for a given video id.
@@ -1451,12 +1344,11 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		 */
 		public function get_users_video_log( $video_id, $user_id ) {
 			global $wpdb;
-			
 			$db = $wpdb->prefix . $this->core->db_name;
 			$sql = "SELECT * FROM $db WHERE user_id = %d AND data = %s";
 			return $wpdb->get_row( $wpdb->prepare( $sql, $user_id, $video_id ) );
 		}
-		
+
 		/**
 		 * Update Points
 		 * @since 1.2
@@ -1468,7 +1360,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 				$decimals = $this->core->core['format']['decimals'];
 			else
 				$decimals = $this->core->format['decimals'];
-			
+
 			if ( $decimals > 0 )
 				$format = '%f';
 			else
@@ -1477,7 +1369,6 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 			$amount = $this->core->number( $amount );
 
 			global $wpdb;
-			
 			$wpdb->update(
 				$wpdb->prefix . $this->core->db_name,
 				array( 'creds' => $amount ),
@@ -1486,7 +1377,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 				array( '%d' )
 			);
 		}
-		
+
 		/**
 		 * Preference for Viewing Videos
 		 * @since 1.2
