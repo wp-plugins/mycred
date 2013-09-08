@@ -269,7 +269,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
-			<h4 class="<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"><label><?php _e( $this->core->template_tags_general( $data['name'] ), 'mycred' ); ?></label></h4>
+			<h4><div class="icon icon-<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; echo ' ' . $key; ?>"></div><label><?php _e( $this->core->template_tags_general( $data['name'] ), 'mycred' ); ?></label></h4>
 			<div class="body" style="display:none;">
 				<div class="wrapper">
 						<?php $this->present_addon( $key ); ?>
@@ -280,8 +280,8 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 				}
 			} ?>
 
-			<p style="text-align:right;"><?php echo sprintf( __( 'You can find more add-ons in our %s.', 'mycred' ), sprintf( '<a href="http://mycred.me/store/" target="_blank">%s</a>', __( 'online store', 'mycred' ) ) ); ?></p>
 		</div>
+		<p style="text-align:right;"><?php echo sprintf( __( 'You can find more add-ons in our %s.', 'mycred' ), sprintf( '<a href="http://mycred.me/store/" target="_blank">%s</a>', __( 'online store', 'mycred' ) ) ); ?></p>
 	</div>
 <?php
 			unset( $this );
@@ -317,7 +317,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Add-on Details
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function addon_links( $key ) {
 			$data = $this->installed[$key];
@@ -328,10 +328,10 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 				$info[] = __( 'Version', 'mycred' ) . ' ' . $data['version'];
 
 			if ( isset( $data['author_uri'] ) && !empty( $data['author_uri'] ) && isset( $data['author'] ) && !empty( $data['author'] ) )
-				$info[] = __( 'By', 'mycred' ) . ' <a href="' . $data['author_uri'] . '" title="' . __( 'View Authors Website', 'mycred' ) . '">' . $data['author'] . '</a>';
+				$info[] = __( 'By', 'mycred' ) . ' <a href="' . $data['author_uri'] . '" target="_blank">' . $data['author'] . '</a>';
 
 			if ( isset( $data['addon_uri'] ) && !empty( $data['addon_uri'] ) )
-				$info[] = ' <a href="' . $data['addon_uri'] . '" title="' . __( 'View Add-ons Website', 'mycred' ) . '">' . __( 'Visit Website', 'mycred' ) . '</a>';
+				$info[] = ' <a href="' . $data['addon_uri'] . '" target="_blank">' . __( 'Documentation', 'mycred' ) . '</a>';
 
 			unset( $data );
 			if ( !empty( $info ) )
