@@ -45,16 +45,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
-		<div id="mycred-social">
-			<a href="https://www.facebook.com/myCRED" class="zocial facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>
-			<a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="zocial googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a>
-			<a href="http://mycred.me/support/forums/" class="zocial wordpress" target="_blank"><?php _e( 'Support Forum', 'mycred' ); ?></a>
-		</div>
+		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
 
 			<div class="list-items expandable-li" id="accordion">
-				<h4 style="color:#333;"><?php _e( 'Core Settings', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-inactive core"></div><label><?php _e( 'Core Settings', 'mycred' ); ?></label></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'Name', 'mycred' ); ?></label>
 					<ol id="myCRED-settings-name" class="inline">
@@ -151,7 +147,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 				<?php do_action( 'mycred_after_core_prefs', $this ); ?>
 
 			</div>
-			<?php submit_button( __( 'Update Settings', 'mycred' ), 'primary large' ); ?>
+			<?php submit_button( __( 'Update Settings', 'mycred' ), 'primary large', 'submit', false ); ?>
 
 		</form>
 		<?php do_action( 'mycred_bottom_settings_page', $this ); ?>
