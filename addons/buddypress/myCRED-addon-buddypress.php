@@ -306,26 +306,31 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		</form>
 	</div>
 <?php
-			unset( $log );
+			$log->reset_query();
 		}
 		
 		/**
 		 * Register Hooks
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function register_hooks( $installed ) {
-			$installed['hook_bp_groups'] = array(
-				'title'       => __( 'BuddyPress: Groups', 'mycred' ),
-				'description' => __( 'Awards %_plural% for group related actions. Use minus to deduct %_plural% or zero to disable a specific hook.', 'mycred' ),
-				'callback'    => array( 'myCRED_BuddyPress_Groups' )
-			);
-			$installed['hook_bp_profile'] = array(
-				'title'       => __( 'BuddyPress: Members', 'mycred' ),
-				'description' => __( 'Awards %_plural% for profile related actions.', 'mycred' ),
-				'callback'    => array( 'myCRED_BuddyPress_Profile' )
-			);
-			
+			if ( bp_is_active( 'groups' ) ) {
+				$installed['hook_bp_groups'] = array(
+					'title'       => __( 'BuddyPress: Groups', 'mycred' ),
+					'description' => __( 'Awards %_plural% for group related actions. Use minus to deduct %_plural% or zero to disable a specific hook.', 'mycred' ),
+					'callback'    => array( 'myCRED_BuddyPress_Groups' )
+				);
+			}
+
+			if ( bp_is_active( 'xprofile' ) ) {
+				$installed['hook_bp_profile'] = array(
+					'title'       => __( 'BuddyPress: Members', 'mycred' ),
+					'description' => __( 'Awards %_plural% for profile related actions.', 'mycred' ),
+					'callback'    => array( 'myCRED_BuddyPress_Profile' )
+				);
+			}
+
 			if ( function_exists( 'bp_links_setup_root_component' ) ) {
 				$installed['hook_bp_links'] = array(
 					'title'       => __( 'BuddyPress: Links', 'mycred' ),
@@ -376,7 +381,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				}
 			}?>
 			
-				<h4 style="color:#BBD865;"><?php _e( 'BuddyPress', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-hook icon-active"></div><label><?php _e( 'BuddyPress', 'mycred' ); ?></label></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader" for="<?php echo $this->field_id( 'balance_location' ); ?>"><?php echo $this->core->template_tags_general( __( '%singular% Balance', 'mycred' ) ); ?></label>
 					<ol>
