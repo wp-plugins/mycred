@@ -2,7 +2,7 @@
 /**
  * Addon: Import
  * Addon URI: http://mycred.me/add-ons/import/
- * Version: 1.0.1
+ * Version: 1.0.2
  * Description: With the Import add-on you can import CSV files, CubePoints or existing points under any custom user meta values.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -502,7 +502,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 			$memory_limit = (int) ( ini_get( 'memory_limit' ) );
 			$upload_mb = min( $max_upload, $max_post, $memory_limit ); ?>
 
-				<h4 class="active"><label><?php echo $data['title']; ?></label></h4>
+				<h4><div class="icon icon-active"></div><label><?php echo $data['title']; ?></label></h4>
 				<div class="body" style="display:none;">
 					<form class="add:the-list: validate" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="selected-import" value="csv" />
@@ -575,7 +575,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 			) );
 			$cp_users = count( $quick_check ); ?>
 
-				<h4 class="<?php if ( $cp_users > 0 ) echo 'active'; else echo 'inactive'; ?>"><label><?php echo $data['title']; ?></label></h4>
+				<h4><div class="icon icon-<?php if ( $cp_users > 0 ) echo 'active'; else echo 'inactive'; ?>"></div><label><?php echo $data['title']; ?></label></h4>
 				<div class="body" style="display:none;">
 					<form class="add:the-list: validate" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="selected-import" value="cubepoints" />
@@ -644,7 +644,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		 */
 		public function custom_form( $data ) { ?>
 
-				<h4 class="active"><label><?php echo $data['title']; ?></label></h4>
+				<h4><div class="icon icon-active"></div><label><?php echo $data['title']; ?></label></h4>
 				<div class="body" style="display:none;">
 					<form class="add:the-list: validate" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="selected-import" value="custom" />
@@ -699,6 +699,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 					</form>
 				</div>
 <?php
+			unset( $this );
 		}
 
 		/**
