@@ -115,6 +115,8 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 						}
 						echo '</ol>';
 					}
+					$log->reset_query();
+
 					echo '</div>';
 				}
 
