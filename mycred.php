@@ -27,6 +27,7 @@ define( 'myCRED_ASSETS_DIR',    myCRED_ROOT_DIR . 'assets/' );
 define( 'myCRED_INCLUDES_DIR',  myCRED_ROOT_DIR . 'includes/' );
 define( 'myCRED_LANG_DIR',      myCRED_ROOT_DIR . 'lang/' );
 define( 'myCRED_MODULES_DIR',   myCRED_ROOT_DIR . 'modules/' );
+define( 'myCRED_PLUGINS_DIR',   myCRED_ROOT_DIR . 'plugins/' );
 
 /**
  * myCRED_Core class
@@ -252,9 +253,10 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 			// Shortcodes
 			require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
-			// Abstract Classes
+
+			// Prep for Modules
 			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
-			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
+
 			// Start with Add-ons so they can hook in as early as possible
 			require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
 			$addons = new myCRED_Addons();
@@ -267,22 +269,72 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 * @version 3.2
 		 */
 		function wp_ready() {
+			// Translations
 			load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
-			require_once( myCRED_MODULES_DIR . 'mycred-module-log.php' );
-			$log = new myCRED_Log();
-			$log->load();
+			$in_admin = is_admin();
+			$is_admin = mycred_is_admin();
 
-			require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
-			$hooks = new myCRED_Hooks();
-			$hooks->load();
+			// Log page
+			if ( $in_admin && $is_admin ) {
+				require_once( myCRED_MODULES_DIR . 'mycred-module-log.php' );
+				$log = new myCRED_Log();
+				$log->load();
+			}
 
-			require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
-			$settings = new myCRED_General();
-			$settings->load();
+			// Hooks
+			$this->load_hooks();
+
+			// Settings page
+			if ( $in_admin && $is_admin ) {
+				require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
+				$settings = new myCRED_General();
+				$settings->load();
+			}
 
 			// First Custom Hook
 			do_action( 'mycred_pre_init' );
+		}
+
+		/**
+		 * Load Hooks
+		 * Loads all built-in plugin support if the plugin is enabled.
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		function load_hooks() {
+			require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
+			require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
+			
+			if ( defined( 'JETPACK__PLUGIN_DIR' ) ) 
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-jetpack.php' );
+			
+			if ( class_exists( 'bbPress' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-bbPress.php' );
+			
+			if ( function_exists( 'invite_anyone_init' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-invite-anyone.php' );
+			
+			if ( function_exists( 'wpcf7' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-contact-form7.php' );
+			
+			if ( class_exists( 'BadgeOS' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-badgeOS.php' );
+			
+			if ( function_exists( 'vote_poll' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-wp-polls.php' );
+			
+			if ( function_exists( 'wp_favorite_posts' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-wp-favorite-posts.php' );
+			
+			if ( function_exists( 'bp_em_init' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-events-manager-light.php' );
+			
+			if ( defined( 'STARRATING_DEBUG' ) )
+				require_once( myCRED_PLUGINS_DIR . 'mycred-hook-gd-star-rating.php' );
+			
+			$hooks = new myCRED_Hooks();
+			$hooks->load();
 		}
 
 		/**

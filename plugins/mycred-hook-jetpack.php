@@ -1,20 +1,10 @@
 <?php
 /**
- * Subscription related Hooks
- * Adds support for Jetpack
- *
- * @since 1.0.5
- * @version 1.0
- */
-if ( !defined( 'myCRED_VERSION' ) ) exit;
-/**
  * Jetpack
- * Adds support for Jetpack.
- *
  * @since 1.0.5
  * @version 1.0
  */
-if ( defined( 'JETPACK__PLUGIN_DIR' ) ) {
+if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Register Hook
 	 * @since 1.0.5

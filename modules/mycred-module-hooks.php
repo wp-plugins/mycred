@@ -1,9 +1,5 @@
 <?php
 if ( !defined( 'myCRED_VERSION' ) ) exit;
-// Subscription Related Hooks
-include_once( myCRED_MODULES_DIR . 'mycred-module-subscriptions.php' );
-// Third-Party Plugin Hooks
-require_once( myCRED_MODULES_DIR . 'mycred-module-plugins.php' );
 /**
  * myCRED_Hooks class
  * @since 0.1
@@ -150,16 +146,14 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
 
 			// Get installed
-			$installed = $this->get( true );
-
-			// Message
-			if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) {
-				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>';
-			} ?>
+			$installed = $this->get( true ); ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Hooks', 'mycred' ); ?></h2>
+		<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true )
+				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>'; ?>
+
 		<p><?php echo $this->core->template_tags_general( __( 'Hooks are instances where %_plural% are awarded or deducted from a user, depending on their actions around your website.', 'mycred' ) ); ?></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-hooks' ); ?>
@@ -196,7 +190,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Sanititze Settings
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function sanitize_settings( $post ) {
 			// Loop though all installed hooks
@@ -209,22 +203,31 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 
 			if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) {
-					if ( isset( $data['callback'] ) && isset( $post['hook_prefs'][$key] ) ) {
+					if ( isset( $data['callback'] ) && isset( $post['hook_prefs'][ $key ] ) ) {
 						// Old settings
-						$old_settings = $post['hook_prefs'][$key];
+						$old_settings = $post['hook_prefs'][ $key ];
 						
 						// New settings
 						$new_settings = $this->call( 'sanitise_preferences', $data['callback'], $old_settings );
 						
 						// If something went wrong use the old settings
 						if ( empty( $new_settings ) || $new_settings === NULL || !is_array( $new_settings ) )
-							$new_post['hook_prefs'][$key] = $old_settings;
+							$new_post['hook_prefs'][ $key ] = $old_settings;
 						// Else we got ourselves new settings
 						else
-							$new_post['hook_prefs'][$key] = $new_settings;
+							$new_post['hook_prefs'][ $key ] = $new_settings;
+						
+						// Handle de-activation
+						if ( !isset( $this->active ) ) continue;
+						if ( in_array( $key, (array) $this->active ) && !in_array( $key, $new_post['active'] ) )
+							$this->call( 'deactivate', $data['callback'], $new_post['hook_prefs'][ $key ] );
+
+						// Next item
 					}
 				}
 			}
+			
+			$installed = NULL;
 			return $new_post;
 		}
 	}
