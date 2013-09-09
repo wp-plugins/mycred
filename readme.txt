@@ -173,6 +173,7 @@ See: http://mycred.me/download/changelog/2/
 * Re-designed hooks, add-ons and settings accordion.
 * Moved Log Query to mycred-log.php in the includes/ folder.
 * Removed mycred_modules hook.
+* Improved Hooks management and re-structured hooks in new plugins/ folder.
 * Adjusted styling for MP6 users.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
