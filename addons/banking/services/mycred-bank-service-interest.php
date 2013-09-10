@@ -95,7 +95,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			if ( $payout_now === false || $last_payout === false ) return;
 
 			// Time to run?
-			if ( $this->time_to_run( $this->prefs['rate']['pay_out'], $last_run ) ) {
+			if ( $this->time_to_run( $this->prefs['rate']['pay_out'], $last_payout ) ) {
 				// Save
 				$this->save( 'last_payout', $unow );
 				
