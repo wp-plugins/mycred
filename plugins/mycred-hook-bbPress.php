@@ -4,7 +4,7 @@
  * @since 0.1
  * @version 1.2
  */
-if ( defined( 'myCRED_VERSION' ) ) {
+if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Register Hook
 	 * @since 0.1
