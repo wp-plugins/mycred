@@ -402,7 +402,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		 * Render Shortcode Basic
 		 * This shortcode returns a link element to a specified payment gateway.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function render_shortcode_basic( $atts, $title = '' ) {
 			// Make sure the add-on has been setup
@@ -417,6 +417,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 				'gateway' => '',
 				'amount'  => '',
 				'gift_to' => false,
+				'class'   => 'mycred-buy-link button large custom',
 				'login'   => $this->core->template_tags_general( $this->core->buy_creds['login'] )
 			), $atts ) );
 
@@ -478,7 +479,12 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 				'amount'     => $this->core->number( $amount ),
 				'token'      => wp_create_nonce( 'mycred-buy-creds' )
 			);
-			$classes = array( 'mycred-buy-link', $gateway, 'button large', 'custom' );
+
+			// Classes
+			$classes = explode( ' ', $class );
+			if ( empty( $classes ) )
+				$classes = array( 'mycred-buy-link', 'button large', 'custom' );
+			$classes[] = $gateway;
 
 			if ( $buy_author || $buy_member )
 				$args = array_merge_recursive( $args, array( 'gift_to' => $user_id ) );
@@ -487,25 +493,6 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			$element = '<a href="' . add_query_arg( $args, $url ) . '" class="' . implode( ' ', $classes ) . '" title="' . $title . '">' . $title . '</a>';
 			unset( $this );
 			return $element;
-		}
-
-		/**
-		 * Parse Attributes
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function parse_atts( $atts ) {
-			$defaults = array(
-				'gateway'      => '',
-				'amount'       => '',
-				'gift_to'      => false
-			);
-			$atts = wp_parse_args( $atts, $defaults );
-			$accepted = array();
-			foreach ( $atts as $attribute ) {
-				if ( in_array( $attribute, array( 'gateway', 'amount', 'gift_to', 'select' ) ) ) $accepted[] = $attribute;
-			}
-			return $accepted;
 		}
 
 		/**
