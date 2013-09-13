@@ -3,7 +3,7 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.3Alpha
+ * Version: 1.3Alpha2
  * Tags: points, tokens, credit, management, reward, charge
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -15,7 +15,7 @@
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
-define( 'myCRED_VERSION',      '1.3Alpha' );
+define( 'myCRED_VERSION',      '1.3Alpha2' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -50,12 +50,12 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 
 			// Plugin related
 			$this->plug = plugin_basename( myCRED_THIS );
-			add_filter( 'plugin_action_links_' . $this->plug, array( $this, 'plugin_links' ), 99, 4 );
+			add_filter( 'plugin_action_links_' . $this->plug, array( $this, 'plugin_links' ), 10, 4 );
 
 			// Introduce ourselves to WordPress
 			register_uninstall_hook(    myCRED_THIS, array( __CLASS__, 'uninstall_mycred' ) );
-			register_activation_hook(   myCRED_THIS, array( $this, 'activate_mycred' )      );
-			register_deactivation_hook( myCRED_THIS, array( $this, 'deactivate_mycred' )    );
+			register_activation_hook(   myCRED_THIS, array( $this, 'activate_mycred' ) );
+			register_deactivation_hook( myCRED_THIS, array( $this, 'deactivate_mycred' ) );
 
 			// Network Settings
 			if ( is_multisite() && is_admin() )
@@ -68,20 +68,20 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			$this->load();
 
 			// Plugins Loaded (attempt to run last so others can load before us)
-			add_action( 'plugins_loaded',   array( $this, 'wp_ready' ), 999       );
+			add_action( 'plugins_loaded',   array( $this, 'wp_ready' ), 99 );
 
 			// Init
-			add_action( 'init',             array( $this, 'init_mycred' )         );
+			add_action( 'init',             array( $this, 'init_mycred' ) );
 
 			// Admin Init
 			if ( is_admin() )
-				add_action( 'admin_init',   array( $this, 'admin_init_mycred' )   );
+				add_action( 'admin_init',   array( $this, 'admin_init_mycred' ) );
 
 			// Widget Init
 			add_action( 'widgets_init',     array( $this, 'widgets_init_mycred' ) );
 
 			// Add key reset to cron
-			add_action( 'mycred_reset_key', array( $this, 'reset_key' )           );
+			add_action( 'mycred_reset_key', array( $this, 'reset_key' ) );
 
 			// myCRED is ready
 			do_action( 'mycred_ready' );
