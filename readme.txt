@@ -131,29 +131,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.2.3 =
-New Notifications Add-on and added support for Email Notices for users getting promoted / demoted. Bug fixes.
-
-= 1.2.2 =
-Improved performance, better handling of websites with large user base and several bug fixes.
-
-= 1.2.1 =
-See http://mycred.me/download/changelog/
-
-= 1.2 =
-See http://mycred.me/download/changelog/
-
-= 1.1.2 =
-See: http://mycred.me/download/changelog/
-
-= 1.1.1 =
-See: http://mycred.me/download/changelog/
-
-= 1.1 =
-See: http://mycred.me/download/changelog/
-
-= 1.0.9.3 =
-See: http://mycred.me/download/changelog/2/
+= 1.3 =
+Performance improvement and new features.
 
 
 == Other Notes ==
@@ -175,9 +154,11 @@ See: http://mycred.me/download/changelog/2/
 * Removed mycred_modules hook.
 * Improved Hooks management and re-structured hooks in new plugins/ folder.
 * Adjusted styling for MP6 users.
+* Added %title% as new template tag for mycred_link.
 * Added class attribute to mycred_buy shortcode.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
+* Fixed Bug #54 - mycred_link shortcode does not support target attribute.
 
 
 = 1.2.3 =
