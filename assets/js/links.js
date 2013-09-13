@@ -1,10 +1,10 @@
 /**
  * myCRED Points for Link Clicks jQuery Scripts
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 jQuery(function($) {
-	var mycred_click = function( points, href, id ) {
+	var mycred_click = function( points, href, id, title ) {
 		$.ajax({
 			type : "POST",
 			data : {
@@ -12,33 +12,20 @@ jQuery(function($) {
 				amount    : points,
 				url       : href,
 				eid       : id,
-				token     : myCREDgive.token
+				token     : myCREDgive.token,
+				etitle    : title
 			},
 			dataType : "JSON",
-			url : myCREDgive.ajaxurl,
-			// Before we start
-			beforeSend : function() {},
-			// On Successful Communication
-			success    : function( data ) {
-				setTimeout(function(){ window.location.href = href; }, 1000 );
-			},
-			// Error (sent to console)
-			error      : function( jqXHR, textStatus, errorThrown ) {
-				// Debug - uncomment to use
-				//console.log( jqXHR );
-				setTimeout(function(){ window.location.href = href; }, 1000 );
-			}
+			url : myCREDgive.ajaxurl
 		});
 	};
 	
 	$('.mycred-points-link').click(function(){
-		if ( $(this).attr( 'id' ) && $(this).attr( 'id' ) != '' ) {
-			mycred_click( $(this).attr( 'data-amount' ), $(this).attr( 'href' ), $(this).attr( 'id' ) );
-			return false;
+		var id = $(this).attr( 'id' );
+		if ( typeof id === 'undefined' && id === false ) {
+			id = '';
 		}
-		else {
-			mycred_click( $(this).attr( 'data-amount' ), $(this).attr( 'href' ), '' );
-			return false;
-		}
+		
+		mycred_click( $(this).attr( 'data-amount' ), $(this).attr( 'href' ), id, $(this).text() );
 	});
 });

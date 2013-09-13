@@ -929,6 +929,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		}
 	}
 }
+
 /**
  * Hooks for Clicking on Links
  * @since 1.1
@@ -987,6 +988,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			$data = unserialize( $log_entry->data );
 			$content = str_replace( '%url%', $data['link_url'], $content );
 			$content = str_replace( '%id%',  $data['link_id'], $content );
+			$content = str_replace( '%title%',  $data['link_title'], $content );
 
 			return $content;
 		}
@@ -1057,7 +1059,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
@@ -1103,7 +1105,8 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 				array(
 					'ref_type' => 'link',
 					'link_url' => ( isset( $_POST['url'] ) ) ? $_POST['url'] : '',
-					'link_id'  => ( isset( $_POST['eid'] ) ) ? $_POST['eid'] : ''
+					'link_id'  => ( isset( $_POST['eid'] ) ) ? $_POST['eid'] : '',
+					'link_title' => ( isset( $_POST['etitle'] ) ) ? $_POST['etitle'] : ''
 				)
 			);
 
@@ -1114,7 +1117,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Preference for Link Click Hook
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -1130,7 +1133,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $prefs['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General and custom tags: %url% or %id%.', 'mycred' ); ?></span>
+							<span class="description"><?php _e( 'Available template tags: General and custom tags: %url%, %title% or %id%.', 'mycred' ); ?></span>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Limits', 'mycred' ); ?></label>
