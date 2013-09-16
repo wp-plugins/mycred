@@ -68,8 +68,9 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 					'custom-fields'   => 0
 				);
 			
-			add_action( 'mycred_help',            array( $this, 'help' ), 10, 2 );
-			add_action( 'mycred_parse_tags_user', array( $this, 'parse_rank' ), 10, 3 );
+			add_action( 'mycred_help',               array( $this, 'help' ), 10, 2 );
+			add_action( 'mycred_parse_tags_user',    array( $this, 'parse_rank' ), 10, 3 );
+			add_action( 'mycred_post_type_excludes', array( $this, 'exclude_ranks' ) );
 		}
 
 		/**
@@ -126,6 +127,16 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			add_action( 'add_meta_boxes_mycred_rank', array( $this, 'add_meta_boxes' )        );
 			add_action( 'save_post',                  array( $this, 'save_rank_settings' )    );
+		}
+
+		/**
+		 * Exclude Ranks from Publish Content Hook
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function exclude_ranks( $excludes ) {
+			$excludes[] = 'mycred_rank';
+			return $excludes;
 		}
 
 		/**
