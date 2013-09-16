@@ -504,7 +504,8 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 
 			// We want to fire when content get published or when it gets privatly published
 			$status = apply_filters( 'mycred_publish_hook_old', array( 'new', 'auto-draft', 'draft', 'private', 'pending' ) );
-			if ( in_array( $old_status, $status ) && $new_status == 'publish' && array_key_exists( $post_type, $this->prefs ) ) {
+			$publish_status = apply_filters( 'mycred_publish_hook_new', array( 'publish', 'private' ) );
+			if ( in_array( $old_status, $status ) && in_array( $new_status, $publish_status ) && array_key_exists( $post_type, $this->prefs ) ) {
 
 				// Make sure this is unique
 				if ( $this->core->has_entry( 'publishing_content', $post_id, $user_id ) ) return;
