@@ -292,7 +292,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * AJAX Transfer Creds
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function ajax_call_transfer() {
 			// Security
@@ -308,6 +308,10 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$to = $_POST['recipient'];
 			$from = $_POST['sender'];
 			$amount = abs( $_POST['amount'] );
+
+			// Prevent transfers to ourselves
+			if ( $to == $from )
+				die( json_encode( 'error_4' ) );
 
 			// Add-on has not been installed
 			if ( !isset( $this->transfers ) )

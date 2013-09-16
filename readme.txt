@@ -159,6 +159,7 @@ Performance improvement and new features.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.
+* Fixed Bug #55 - Users can transfer points to themselves.
 
 
 = 1.2.3 =

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-13 11:37+0100\n"
-"PO-Revision-Date: 2013-09-13 11:37+0100\n"
+"POT-Creation-Date: 2013-09-16 15:46+0100\n"
+"PO-Revision-Date: 2013-09-16 15:46+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -933,7 +933,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:749
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:1066
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:493
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:497
 msgid "Usage"
 msgstr ""
 
@@ -1417,7 +1417,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:386
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:75
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:696
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:594
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:598
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:187
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:362
 msgid "Title"
@@ -3351,7 +3351,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:12
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:50
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:488
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:492
 msgid "Transfer"
 msgstr ""
 
@@ -3427,7 +3427,7 @@ msgid "Impose weekly limit."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:183
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:588
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:592
 msgid "Transfer %plural%"
 msgstr ""
 
@@ -3518,56 +3518,56 @@ msgid ""
 "empty to hide. No HTML elements allowed!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:490
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:494
 msgid ""
 "This add-on lets your users transfer %_plural% to each other. Members who "
 "are set to be excluded can neither send or receive %_plural%."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:491
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:495
 msgid "Transfer Limit"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:492
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:496
 msgid ""
 "You can impose a daily-, weekly- or monthly transfer limit for each user. "
 "Note, that this transfer limit is imposed on everyone who are not excluded "
 "from using myCRED."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:494
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:498
 msgid ""
 "Transfers can be made by either using the <code>mycred_transfer</code> "
 "shortcode or via the myCRED Transfer Widget.<br />For more information on "
 "how to use the shortcode, please visit the"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:517
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:521
 msgid "Allow transfers between users."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:519
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:523
 #, php-format
 msgid "%s Transfer"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:534
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:538
 msgid "The myCRED Transfer add-on has not yet been setup!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:599
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:603
 msgid "Show users balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:603
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:607
 msgid "Show users limit"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:726
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:730
 msgid "To:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:730
+#: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:734
 msgid "Amount:"
 msgstr ""
 
