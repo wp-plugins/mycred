@@ -309,10 +309,6 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$from = $_POST['sender'];
 			$amount = abs( $_POST['amount'] );
 
-			// Prevent transfers to ourselves
-			if ( $to == $from )
-				die( json_encode( 'error_4' ) );
-
 			// Add-on has not been installed
 			if ( !isset( $this->transfers ) )
 				die( json_encode( 'error_6' ) );
@@ -326,6 +322,10 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			if ( $ruser === false ) die( json_encode( 'error_3' ) );
 			if ( $this->core->exclude_user( $ruser->ID ) ) die( json_encode( 'error_4' ) );
 			$recipient_id = $ruser->ID;
+
+			// Prevent transfers to ourselves
+			if ( $recipient_id == $from )
+				die( json_encode( 'error_4' ) );
 
 			// Check amount
 			$amount = $this->core->number( $amount );
