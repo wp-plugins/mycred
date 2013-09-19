@@ -6,7 +6,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Custom Payment Gateway for WooCommerce.
  * @see http://docs.woothemes.com/document/payment-gateway-api/
  * @since 0.1
- * @version 1.0
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 	/**
@@ -60,7 +60,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 			/**
 			 * Initialise Gateway Settings Form Fields
 			 * @since 0.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			function init_form_fields() {
 				// Fields
@@ -123,6 +123,21 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 					);
 				}
 
+				// Profit Sharing added in 1.3
+				$fields['profit_sharing_percent'] = array(
+					'title'       => __( 'Profit Sharing', 'mycred' ),
+					'type'        => 'text',
+					'description' => __( 'Option to share a percentage of the sale with the product owner.', 'mycred' ),
+					'default'     => 0,
+					'desc_tip'    => true
+				);
+				$fields['profit_sharing_log'] = array(
+					'title'       => __( 'Log Template', 'mycred' ),
+					'type'        => 'text',
+					'description' => __( 'Log entry template for profit sharing. Available template tags: General and Post related.', 'mycred' ),
+					'default'     => __( 'Sale of %post_title%', 'mycred' )
+				);
+				
 				$this->form_fields = apply_filters( 'mycred_woo_fields', $fields, $this );
 			}
 
@@ -159,7 +174,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 			/**
 			 * Process Payment
 			 * @since 0.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			function process_payment( $order_id ) {
 				global $woocommerce;
@@ -190,8 +205,48 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 				}
 
 				// Charge
-				$this->mycred->add_creds( 'woocommerce_payment', $cui, 0-$cost, $this->log_template, $order_id, array( 'ref_type' => 'post' ) );
+				$this->mycred->add_creds(
+					'woocommerce_payment',
+					$cui,
+					0-$cost,
+					$this->log_template,
+					$order_id,
+					array( 'ref_type' => 'post' )
+				);
 				$order->payment_complete();
+
+				// Profit Sharing
+				if ( $this->profit_sharing_percent > 0 ) {
+					// Get Items
+					$items = $order->get_items();
+
+					// Loop though items
+					foreach ( $items as $item ) {
+						// Get Product
+						$product = get_post( (int) $item['product_id'] );
+
+						// Continue if product has just been deleted or owner is buyer
+						if ( $product === NULL || $product->post_author == $cui ) continue;
+
+						// Calculate Cost
+						$price = $item['line_total'];
+						$quantity = $item['qty'];
+						$cost = $price*$quantity;
+
+						// Calculate Share
+						$share = ( $this->profit_sharing_percent / 100 ) * $cost;
+
+						// Payout
+						$this->mycred->add_creds(
+							'store_sale',
+							$product->post_author,
+							$this->mycred->format_number( $share ),
+							$this->profit_sharing_log,
+							$product->ID,
+							array( 'ref_type' => 'post' )
+						);
+					}
+				}
 
 				// Let others play
 				do_action( 'mycred_paid_for_woo', $order, $cui );
