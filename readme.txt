@@ -1,7 +1,7 @@
 === myCRED ===
 Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
-Requires at least: 3.1
+Requires at least: 3.5
 Tested up to: 3.6
 Stable tag: 1.2.3
 License: GPLv2 or later
@@ -156,6 +156,8 @@ Performance improvement and new features.
 * Adjusted styling for MP6 users.
 * Added %title% as new template tag for mycred_link.
 * Added class attribute to mycred_buy shortcode.
+* Added support for profit sharing to Supported Shopping Carts.
+* Added support for WP E-Commerce Shopping cart.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.

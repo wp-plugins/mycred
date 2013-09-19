@@ -31,7 +31,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			$message = array();
 			// WordPress check
 			$wp_version = $GLOBALS['wp_version'];
-			if ( version_compare( $wp_version, '3.1', '<' ) )
+			if ( version_compare( $wp_version, '3.5', '<' ) )
 				$message[] = __( 'myCRED requires WordPress 3.1 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
 
 			// PHP check
