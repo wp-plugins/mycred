@@ -152,7 +152,6 @@ if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
 		<td class="amount"' . $red . '>' . $this->mycred->format_creds( $balance-$total ) . '</td>
 	</tr>
 </table>
-<pre>' . print_r( $cart, true ) . '</pre>
 </div>';
 			}
 
