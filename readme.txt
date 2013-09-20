@@ -132,12 +132,13 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 == Upgrade Notice ==
 
 = 1.3 =
-Performance improvement and new features.
+Performance improvement and new features. REQUIRES WP 3.5 +
 
 
 == Other Notes ==
 
 = Requirements =
+* WordPress 3.5 or greater
 * PHP version 5.2.4 or greater
 * MySQL version 5.0 or greater
 
@@ -148,6 +149,7 @@ Performance improvement and new features.
 == Changelog ==
 
 = 1.3 =
+* Adjusted minimum requirements from WP 3.1 to WP 3.5
 * Improved myCRED's module management lowering memory usage.
 * Re-designed hooks, add-ons and settings accordion.
 * Moved Log Query to mycred-log.php in the includes/ folder.

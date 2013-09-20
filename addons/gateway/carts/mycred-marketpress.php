@@ -1,15 +1,27 @@
 <?php
-if ( !defined( 'WP_PLUGIN_DIR' ) ) exit;
+if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * MarketPress Payment Gateway
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
-if ( !class_exists( 'mycred_load_marketpress' ) ) {
-	add_action( 'plugins_init', 'mycred_init_marketpress_gateway' );
+if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
+	add_action( 'plugins_loaded', 'mycred_init_marketpress_gateway', 5 );
 	function mycred_init_marketpress_gateway()
 	{
-		if ( !class_exists( 'MarketPress' ) || !class_exists( 'MP_Gateway_API' ) ) return;
+		if ( !function_exists( 'is_plugin_active' ) )
+			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+		$file = '/marketpress-includes/marketpress-gateways.php';
+		// Pro
+		if ( is_plugin_active( 'marketpress/marketpress.php' ) )
+			include_once( WP_PLUGIN_DIR . '/marketpress' . $file );
+		// Light
+		elseif ( is_plugin_active( 'wordpress-ecommerce/marketpress.php' ) )
+			include_once( WP_PLUGIN_DIR . '/wordpress-ecommerce' . $file );
+		else
+			return;
+		
 		class MP_Gateway_myCRED extends MP_Gateway_API {
 
 			var $plugin_name = 'mycred';
@@ -140,6 +152,7 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 		<td class="amount"' . $red . '>' . $this->mycred->format_creds( $balance-$total ) . '</td>
 	</tr>
 </table>
+<pre>' . print_r( $cart, true ) . '</pre>
 </div>';
 			}
 
@@ -230,6 +243,7 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 				$result = $mp->create_order( $order_id, $cart, $shipping_info, $payment_info, $paid );
 				
 				$order = get_page_by_title( $result, 'OBJECT', 'mp_order' );
+
 				// Deduct cost
 				$this->mycred->add_creds(
 					'marketpress_payment',
@@ -239,6 +253,36 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 					$order->ID,
 					array( 'ref_type' => 'post' )
 				);
+				
+				// Profit Sharing
+				if ( $settings['gateways']['mycred']['profit_share_percent'] > 0 ) {
+					foreach ( $cart as $product_id => $variations ) {
+						// Get Product
+						$product = get_post( (int) $product_id );
+						
+						// Continue if product has just been deleted or owner is buyer
+						if ( $product === NULL || $product->post_author == $cui ) continue;
+						
+						foreach ( $variations as $data ) {
+							$price = $data['price'];
+							$quantity = $data['quantity'];
+							$cost = $price*$quantity;
+
+							// Calculate Share
+							$share = ( $settings['gateways']['mycred']['profit_share_percent'] / 100 ) * $cost;
+
+							// Payout
+							$this->mycred->add_creds(
+								'store_sale',
+								$product->post_author,
+								$share,
+								$settings['gateways']['mycred']['profit_share_log'],
+								$product->ID,
+								array( 'ref_type' => 'post' )
+							);
+						}
+					}
+				}
 			}
 		
 			function order_confirmation( $order ) { }
@@ -284,7 +328,7 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 			/**
 			 * myCRED Gateway Settings
 			 * @since 1.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			function gateway_settings_box( $settings ) {
 				global $mp;
@@ -292,35 +336,21 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 				$mycred = mycred_get_settings();
 			
 				$name = apply_filters( 'mycred_label', myCRED_NAME );
-			
-				if ( empty( $settings['gateways']['mycred']['name'] ) )
-					$settings['gateways']['mycred']['name'] = strip_tags( $name ) . ' ' . $mycred->template_tags_general( __( '%_singular% Balance', 'mycred' ) );
-			
-				if ( !isset( $settings['gateways']['mycred']['logo'] ) )
-					$settings['gateways']['mycred']['logo'] = $this->method_button_img_url;
-			
-				if ( !isset( $settings['gateways']['mycred']['log_template'] ) )
-					$settings['gateways']['mycred']['log_template'] = 'Payment for Order: #%order_id%';
-			
-				if ( !isset( $settings['gateways']['mycred']['exchange'] ) )
-					$settings['gateways']['mycred']['exchange'] = 1;
-			
-				if ( !isset( $settings['gateways']['mycred']['instructions'] ) )
-					$settings['gateways']['mycred']['instructions'] = 'Pay using your account balance.';
-			
-				if ( !isset( $settings['gateways']['mycred']['confirmation'] ) )
-					$settings['gateways']['mycred']['confirmation'] = 'TOTAL amount has been deducted from your account. Your current balance is: %balance_f%';
-			
-				if ( !isset( $settings['gateways']['mycred']['lowfunds'] ) )
-					$settings['gateways']['mycred']['lowfunds'] = 'Insufficient funds. Please select another form of payment. Your current balance is: %balance_f%';
-				
-				if ( !isset( $settings['gateways']['mycred']['visitors'] ) )
-					$settings['gateways']['mycred']['visitors'] = 'You must be logged in to pay with %_plural%. Please <a href="%login_url_here%">login</a>.';
+				$settings['gateways']['mycred'] = shortcode_atts( array(
+					'name'                 => strip_tags( $name ) . ' ' . $mycred->template_tags_general( __( '%_singular% Balance', 'mycred' ) ),
+					'logo'                 => $this->method_button_img_url,
+					'log_template'         => __( 'Payment for Order: #%order_id%', 'mycred' ),
+					'exchange'             => 1,
+					'profit_share_percent' => 0,
+					'profit_share_log'     => __( 'Product Sale: %post_title%', 'mycred' ),
+					'instructions'         => __( 'Pay using your account balance.', 'mycred' ),
+					'confirmation'         => __( 'TOTAL amount has been deducted from your account. Your current balance is: %balance_f%', 'mycred' ),
+					'lowfunds'             => __( 'Insufficient funds. Please select another form of payment. Your current balance is: %balance_f%', 'mycred' ),
+					'visitors'             => __( 'You must be logged in to pay with %_plural%. Please <a href="%login_url_here%">login</a>.', 'mycred' ),
+					'email'                => $settings['email']['new_order_txt']
+				), ( isset( $settings['gateways']['mycred'] ) ) ? $settings['gateways']['mycred'] : array() ); ?>
 
-				if ( !isset( $settings['gateways']['mycred']['email'] ) )
-					$settings['gateways']['mycred']['email'] = $settings['email']['new_order_txt']; ?>
-
-<div id="mp_cubepoints_payments" class="postbox mp-pages-msgs">
+<div id="mp_mycred_payments" class="postbox mp-pages-msgs">
 	<h3 class="handle"><span><?php echo $name . ' ' . __( 'Settings', 'mycred' ); ?></span></h3>
 	<div class="inside">
 		<span class="description"><?php echo sprintf( __( 'Let your users pay for items in their shopping cart using their %s Account. Note! This gateway requires your users to be logged in when making a purchase!', 'mycred' ), $name ); ?></span>
@@ -359,8 +389,28 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 					<p><input value="<?php echo esc_attr( $settings['gateways']['mycred']['exchange'] ); ?>" size="8" name="mp[gateways][mycred][exchange]" id="mycred-exchange-rate" type="text" /></p>
 				</td>
 			</tr>
-<?php		endif; ?>
+<?php			endif; ?>
 
+			<tr>
+				<td colspan="2"><h4><?php _e( 'Profit Sharing', 'mycred' ); ?></h4></td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="mycred-profit-sharing"><?php _e( 'Percentage', 'mycred' ); ?></label></th>
+				<td>
+					<span class="description"><?php _e( 'Option to share sales with the product owner. User zero to disable', 'mycred' ); ?></span>
+					<p><input value="<?php echo esc_attr( $settings['gateways']['mycred']['profit_share_percent'] ); ?>" size="8" name="mp[gateways][mycred][profit_share_percent]" id="mycred-profit-sharing" type="text" /> %</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="mycred-profit-sharing-log"><?php _e( 'Log Template', 'mycred' ); ?></label></th>
+				<td>
+					<span class="description"><?php _e( 'Log entry template for profit sharing. Available template tags: General and Post related', 'mycred' ); ?></span>
+					<p><input value="<?php echo esc_attr( $settings['gateways']['mycred']['profit_share_log'] ); ?>" style="width: 100%;" name="mp[gateways][mycred][profit_share_log]" id="mycred-profit-sharing-log" type="text" /></p>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><h4><?php _e( 'Messages', 'mycred' ); ?></h4></td>
+			</tr>
 			<tr>
 				<th scope="row"><label for="mycred-lowfunds"><?php _e( 'Insufficient Funds', 'mycred' ); ?></label></th>
 				<td>
@@ -410,7 +460,7 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 			/**
 			 * Filter Gateway Settings
 			 * @since 1.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			function process_gateway_settings( $settings ) {
 				// Name (no html)
@@ -432,6 +482,9 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 				else
 					$settings['gateways']['mycred']['exchange'] = 1;
 			
+				$settings['gateways']['mycred']['profit_share_percent'] = stripslashes( trim( $settings['gateways']['mycred']['profit_share_percent'] ) );
+				$settings['gateways']['mycred']['profit_share_log'] = stripslashes( wp_filter_nohtml_kses( $settings['gateways']['mycred']['profit_share_log'] ) );
+			
 				$settings['gateways']['mycred']['lowfunds'] = stripslashes( wp_filter_post_kses( $settings['gateways']['mycred']['lowfunds'] ) );
 				$settings['gateways']['mycred']['visitors'] = stripslashes( wp_filter_post_kses( $settings['gateways']['mycred']['visitors'] ) );
 				$settings['gateways']['mycred']['instructions'] = stripslashes( wp_filter_post_kses( $settings['gateways']['mycred']['instructions'] ) );
@@ -443,13 +496,12 @@ if ( !class_exists( 'mycred_load_marketpress' ) ) {
 				return $settings;
 			}
 		}
+		mp_register_gateway_plugin( 'MP_Gateway_myCRED', 'mycred', 'myCRED' );
 	}
 }
 
-if ( function_exists( 'mp_register_gateway_plugin' ) ) {
-	// Register Gateway
-	mp_register_gateway_plugin( 'MP_Gateway_myCRED', 'mycred', 'myCRED' );
-}
+	
+
 /**
  * Filter the myCRED Log
  * Parses the %order_id% and %order_link% template tags.
@@ -481,12 +533,14 @@ if ( !function_exists( 'mycred_marketpress_parse_log' ) ) {
 
 		return $content;
 	}
+}
 
-	/**
-	 * Parse Email Notice
-	 * @since 1.2.2
-	 * @version 1.0
-	 */
+/**
+ * Parse Email Notice
+ * @since 1.2.2
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_market_parse_email' ) ) {
 	add_filter( 'mycred_email_before_send', 'mycred_market_parse_email' );
 	function mycred_market_parse_email( $email )
 	{
