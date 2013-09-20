@@ -121,7 +121,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				$output .= '<tr><td class="cart-item" colspan="2">' . __( 'Your current balance', 'mycred' ) . '</td><td class="cart-item-cost"' . $highlight . '>' . $this->core->format_creds( $balance ) . '</td></tr></tdody></table></tr>';
 
 				if ( !empty( $this->prefs['message'] ) ) {
-					$output .= '<tr><td>' . $this->core->general_template_tags( $this->prefs['message'] ) . '</td></tr>';
+					$output .= '<tr><td>' . $this->core->template_tags_general( $this->prefs['message'] ) . '</td></tr>';
 				}
 
 				return apply_filters( 'mycred_wpecom_form', $output );
