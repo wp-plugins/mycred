@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-16 22:07+0100\n"
-"PO-Revision-Date: 2013-09-16 22:07+0100\n"
+"POT-Creation-Date: 2013-09-22 18:19+0100\n"
+"PO-Revision-Date: 2013-09-22 18:19+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -77,7 +77,7 @@ msgid "This Hook has no settings"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-hook.php:133
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:976
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:977
 msgid "No limit"
 msgstr ""
 
@@ -272,11 +272,14 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:250
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:216
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:271
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:359
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:371
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:404
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:87
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:135
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:337
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:437
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1132
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1402
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1133
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1403
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:110
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:112
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:121
@@ -318,7 +321,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:226
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:239
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1417
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1418
 msgid "Interval"
 msgstr ""
 
@@ -397,7 +400,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:411
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:428
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:441
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1406
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1407
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-gd-star-rating.php:109
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-gd-star-rating.php:122
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-invite-anyone.php:144
@@ -609,12 +612,12 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:396
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:409
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:300
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:542
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:555
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:590
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:865
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:877
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:889
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:543
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:556
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:591
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:866
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:878
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:890
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:414
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:427
@@ -1542,6 +1545,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:188
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:848
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:319
 msgid "General"
 msgstr ""
 
@@ -1922,7 +1926,7 @@ msgid ""
 "Espresso, Events Manager."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:148
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:143
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:254
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:278
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:357
@@ -1930,45 +1934,46 @@ msgstr ""
 msgid "Current Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:152
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:147
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:113
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:258
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:282
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:361
 msgid "Total Cost"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:156
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:151
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:262
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:286
 msgid "Balance After Purchase"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:180
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:175
 msgid "Payment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:183
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:232
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:178
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:227
 #, php-format
 msgid "<a href=\"%s\">Go Back</a>"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:186
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:181
 msgid "will be deducted from your account."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:222
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:217
 #, php-format
 msgid ""
 "Sorry, but you can not use this gateway as your account is excluded. Please "
 "<a href=\"%s\">select a different payment method</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:241
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:236
 msgid "Paid"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:244
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:239
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:34
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:53
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:54
@@ -1976,11 +1981,43 @@ msgstr ""
 msgid "myCRED"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:314
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:339
 msgid "%_singular% Balance"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:341
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:90
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:26
+msgid "Payment for Order: #%order_id%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:344
+msgid "Product Sale: %post_title%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:345
+msgid "Pay using your account balance."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:346
+msgid ""
+"TOTAL amount has been deducted from your account. Your current balance is: "
+"%balance_f%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:347
+msgid ""
+"Insufficient funds. Please select another form of payment. Your current "
+"balance is: %balance_f%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:348
+msgid ""
+"You must be logged in to pay with %_plural%. Please <a href=\"%login_url_here"
+"%\">login</a>."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:353
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:139
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:19
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:20
@@ -1990,7 +2027,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:343
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:355
 #, php-format
 msgid ""
 "Let your users pay for items in their shopping cart using their %s Account. "
@@ -1998,34 +2035,35 @@ msgid ""
 "purchase!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:346
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:358
 msgid "Method Name"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:348
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:360
 msgid ""
 "Enter a public name for this payment method that is displayed to users - No "
 "HTML"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:353
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:365
 msgid "Gateway Logo URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:361
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:373
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:89
 msgid ""
 "Log entry template for successful payments. Available template tags: "
 "%order_id%, %order_link%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:368
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:380
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:95
 msgid "How much is 1 %_singular% worth in %currency%?"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:373
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:385
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:100
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:326
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:411
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:496
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:525
@@ -2034,62 +2072,91 @@ msgstr ""
 msgid "Exchange Rate"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:382
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:394
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:128
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:330
+msgid "Profit Sharing"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:397
+msgid "Percentage"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:399
+msgid "Option to share sales with the product owner. User zero to disable"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:406
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:338
+msgid ""
+"Log entry template for profit sharing. Available template tags: General and "
+"Post related"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:411
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:341
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:556
+msgid "Messages"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:414
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:352
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:566
 msgid "Insufficient Funds"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:384
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:416
 msgid "Message to show when the user can not use this gateway."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:386
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:394
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:418
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:426
 msgid "Available template tags are: General."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:390
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:422
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:348
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:446
 msgid "Visitors"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:392
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:424
 msgid "Message to show to buyers that are not logged in."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:398
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:430
 msgid "User Instructions"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:400
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:432
 msgid "Information to show users before payment."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:402
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:434
 msgid ""
 "Available template tags are: %balance% and %balance_f% for users current "
 "balance."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:406
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:438
 msgid "Confirmation Information"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:408
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:440
 msgid "Information to display on the order confirmation page. - HTML allowed"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:410
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:442
 msgid ""
 "Available template tags: TOTAL - total cart cost, %balance% and %balance_f% "
 "- users current balance."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:414
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:446
 msgid "Order Confirmation Email"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:416
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:448
 #, php-format
 msgid ""
 "This is the email text to send to those who have made %s checkouts. It "
@@ -2098,7 +2165,7 @@ msgid ""
 "PAYMENTINFO, TOTAL, TRACKINGURL. No HTML allowed."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:418
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:450
 #, php-format
 msgid "Available template tags: %balance% or %balance_f% for users balance."
 msgstr ""
@@ -2137,10 +2204,6 @@ msgstr ""
 msgid "Deduct the amount from your %_plural% balance."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:90
-msgid "Payment for Order: #%order_id%"
-msgstr ""
-
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:107
 msgid "Show Total"
 msgstr ""
@@ -2173,35 +2236,119 @@ msgstr ""
 msgid "Order Total in %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:148
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:130
+msgid "Option to share a percentage of the sale with the product owner."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:137
+msgid ""
+"Log entry template for profit sharing. Available template tags: General and "
+"Post related."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:138
+msgid "Sale of %post_title%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:163
 msgid "myCRED Payment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:149
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:164
 msgid ""
 "Allows users to pay using their myCRED %_singular% balance. Please note that "
 "users with insufficient funds and users who are not logged in will not see "
 "this payment gateway on the checkout page."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:170
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:185
 msgid "You must be logged in to pay with %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:176
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:191
 msgid "You can not use this gateway. Please try a different payment option."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:188
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:203
 msgid "Insufficient funds. Please try a different payment option."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:212
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:267
 msgid "Your account has successfully been charged."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:422
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:477
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:121
 msgid "Your current balance"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:28
+msgid "Store sale"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:30
+msgid "You must be logged in to use this gateway"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:31
+msgid "Insufficient Funds."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:32
+msgid "Deduct the amount from your balance."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:102
+msgid "Item"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:188
+msgid "You can not use this gateway."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:322
+msgid "Log Template for Payments"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:323
+msgid ""
+"Log entry template for successful payments. Available template tags: "
+"General, %order_id%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:327
+#, php-format
+msgid "How much is 1 %s worth in %s"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:333
+msgid "Payout"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:334
+msgid ""
+"Option to share a percentage of the sale with the product owner (post "
+"author). User zero to disable."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:344
+msgid "Instructions"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:345
+msgid ""
+"Optional instructions to show users when selecting this gateway. Leave empty "
+"to hide."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:349
+msgid "Message to show visitors who are not logged in."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:353
+msgid ""
+"Message to show when users does not have enough %plural% to pay using this "
+"gateway."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:24
@@ -2444,10 +2591,6 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:552
 msgid "The button label for payments. No HTML allowed!"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:556
-msgid "Messages"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:559
@@ -3440,8 +3583,8 @@ msgid "Log template for receiving"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:199
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:894
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1139
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:895
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1140
 msgid "Limits"
 msgstr ""
 
@@ -3642,27 +3785,27 @@ msgstr ""
 msgid "Update Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:313
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:328
 msgid "Deleted"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:448
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:463
 msgid "Deleted Item"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1214
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1229
 msgid "ref empty"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1222
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1237
 msgid "incorrect user id format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1235
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1250
 msgid "incorrect unix timestamp (from):"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1244
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1259
 msgid "incorrect unix timestamp (to):"
 msgstr ""
 
@@ -4238,13 +4381,13 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:536
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:537
 msgid "%plural% for Posts"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:546
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:559
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:594
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:547
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:560
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:595
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:268
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:278
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:416
@@ -4257,125 +4400,125 @@ msgstr ""
 msgid "Available template tags: General, Post"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:549
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:550
 msgid "%plural% for Pages"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:584
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:585
 msgid "%plural% for %s"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:858
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:859
 msgid "Approved Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:867
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:879
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:891
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:868
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:880
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:892
 msgid "Available template tags: General, Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:870
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:871
 msgid "Comment Marked SPAM"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:882
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:883
 msgid "Trashed / Unapproved Comments"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:897
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:898
 msgid "Limit per post"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:899
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:900
 msgid ""
 "The number of comments per post that grants %_plural%. Use zero for "
 "unlimited."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:903
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:904
 msgid "Limit per day"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:905
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:906
 msgid ""
 "Number of comments per day that grants %_plural%. Use zero for unlimited."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:910
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:911
 msgid ""
 "%plural% is to be awarded even when comment authors reply to their own "
 "comment."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:977
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:978
 msgid "Once for each unique URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:978
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:979
 msgid "Once for each unique link id"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1129
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1130
 msgid ""
 "The default amount to award for clicking on links. You can override this in "
 "the shortcode."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1136
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1137
 msgid ""
 "Available template tags: General and custom tags: %url%, %title% or %id%."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1147
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1148
 msgid "Remember!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1147
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1148
 msgid ""
 "If you select to limit by id and you do not include the id attribute in the "
 "shortcode, no %_plural% will be awarded!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1399
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1400
 msgid "Amount to award for viewing videos."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1409
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1410
 msgid "Award Logic"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1411
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1412
 msgid "Select when %_plural% should be awarded or deducted."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1412
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1413
 msgid "Play - As soon as video starts playing."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1413
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1414
 msgid "Full - First when the entire video has played."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1414
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1415
 msgid "Interval - For each x number of seconds watched."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1419
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1420
 msgid "Number of seconds"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1426
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1427
 msgid "Leniency"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1428
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1429
 msgid ""
 "The maximum percentage a users view of a movie can differ from the actual "
 "length."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1431
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1432
 msgid ""
 "Do not set this value to zero! A lot of thing can happen while a user "
 "watches a movie and sometimes a few seconds can drop of the counter due to "
