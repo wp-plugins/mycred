@@ -23,7 +23,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					),
 					'last_payout'   => '',
 					'log'           => __( '%plural% interest rate payment', 'mycred' ),
-					'min_balance'   => 1
+					'min_balance'   => 1,
+					'run_time'   => 60
 				)
 			), $service_prefs );
 		}
@@ -140,12 +141,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Do Compound Batch
 		 * Compounds interest for each user ID given in batch.
 		 * @since 1.2
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function do_compound_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
 
-				set_time_limit( 0 );
+				set_time_limit( $this->prefs['run_time'] );
 
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
@@ -214,12 +215,12 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Do Payout
 		 * Runs though all user compounded interest and pays.
 		 * @since 1.2
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function do_interest_batch( $batch ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
 
-				set_time_limit( 0 );
+				set_time_limit( $this->prefs['run_time'] );
 
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
@@ -266,7 +267,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		/**
 		 * Preference for Savings
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -301,6 +302,13 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General, %timeframe%, %rate%, %base%', 'mycred' ); ?></span>
 						</li>
 					</ol>
+					<label class="subheader" for="<?php echo $this->field_id( 'run_time' ); ?>"><?php _e( 'Run Time', 'mycred' ); ?></label>
+					<ol>
+						<li>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'run_time' ); ?>" id="<?php echo $this->field_id( 'run_time' ); ?>" value="<?php echo $prefs['run_time']; ?>" size="4" /></div>
+							<span class="description"><?php _e( 'For large websites, if you are running into time out issues during payouts, you can set the number of seconds a process can run. Use zero for unlimited, but be careful especially if you are on a shared server.', 'mycred' ); ?></span>
+						</li>
+					</ol>
 					<?php do_action( 'mycred_banking_compound_interest', $this->prefs ); ?>
 <?php
 		}
@@ -308,7 +316,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		/**
 		 * Sanitise Preferences
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		function sanitise_preferences( $post ) {
 			$new_settings = $post;
@@ -324,6 +332,9 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 			$new_settings['last_payout'] = trim( $post['last_payout'] );
 
 			$new_settings['log'] = trim( $post['log'] );
+
+			$post['run_time'] = abs( $post['run_time'] );
+			$new_settings['run_time'] = sanitize_text_field( $post['run_time'] );
 
 			return apply_filters( 'mycred_banking_save_interest', $new_settings, $this->prefs );
 		}

@@ -21,7 +21,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					'log'        => __( 'Daily %_plural%', 'mycred' ),
 					'excludes'   => '',
 					'cycles'     => 0,
-					'last_run'   => ''
+					'last_run'   => '',
+					'run_time'   => 60
 				)
 			), $service_prefs );
 		}
@@ -139,7 +140,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		public function do_payout_batch( $batch, $set = NULL, $cycle = NULL ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
 
-				set_time_limit( 0 );
+				set_time_limit( $this->prefs['run_time'] );
 
 				foreach ( $batch as $user_id ) {
 					$user_id = intval( $user_id );
@@ -201,7 +202,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		/**
 		 * Preference for Savings
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs;
@@ -254,6 +255,13 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
 						</li>
 					</ol>
+					<label class="subheader" for="<?php echo $this->field_id( 'run_time' ); ?>"><?php _e( 'Run Time', 'mycred' ); ?></label>
+					<ol>
+						<li>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'run_time' ); ?>" id="<?php echo $this->field_id( 'run_time' ); ?>" value="<?php echo $prefs['run_time']; ?>" size="4" /></div>
+							<span class="description"><?php _e( 'For large websites, if you are running into time out issues during payouts, you can set the number of seconds a process can run. Use zero for unlimited, but be careful especially if you are on a shared server.', 'mycred' ); ?></span>
+						</li>
+					</ol>
 					<?php do_action( 'mycred_banking_recurring_payouts', $this->prefs ); ?>
 <?php
 		}
@@ -261,7 +269,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		/**
 		 * Sanitise Preferences
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function sanitise_preferences( $post ) {
 			// Amount
@@ -287,6 +295,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 
 			// Log
 			$new_settings['log'] = trim( $post['log'] );
+
+			// Run Time
+			$post['run_time'] = abs( $post['run_time'] );
+			$new_settings['run_time'] = sanitize_text_field( $post['run_time'] );
 
 			return apply_filters( 'mycred_banking_save_recurring', $new_settings, $this->prefs );
 		}
