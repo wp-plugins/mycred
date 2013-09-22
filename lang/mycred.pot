@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-22 18:19+0100\n"
-"PO-Revision-Date: 2013-09-22 18:19+0100\n"
+"POT-Creation-Date: 2013-09-22 21:12+0100\n"
+"PO-Revision-Date: 2013-09-22 21:12+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -99,8 +99,8 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-hook.php:144
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/abstracts/mycred-abstract-service.php:342
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:238
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:259
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:262
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:283
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:515
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:538
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/netbilling.php:514
@@ -119,19 +119,23 @@ msgstr ""
 msgid "Surprise"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:361
-msgid "click to open"
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:368
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:154
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:180
+msgid "click to close"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:362
-msgid "click to close"
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:369
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:155
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:181
+msgid "click to open"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:12
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:49
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:50
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:51
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:155
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:179
 msgid "Banking"
 msgstr ""
 
@@ -163,46 +167,46 @@ msgid ""
 "number of times you want this payout to run (cycles)."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:143
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:167
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:458
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:115
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:249
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:35
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:146
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:262
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:342
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:266
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:346
 msgid "Access Denied"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:150
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:317
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:174
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:341
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:42
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:155
 msgid "Settings Updated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:156
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:180
 msgid ""
 "This add-on allows you to setup transaction fees for %_plural% transfers, "
 "purchases or payments using the Gateway add-on, along with offering interest "
 "on %_plural% balances."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:159
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:183
 msgid "WP-Cron deactivation detected!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:160
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:184
 msgid "Warning! This add-on requires WP - Cron to work."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:173
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:346
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:197
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:370
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:169
 msgid "Enable"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:186
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:210
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:182
 msgid "Update Changes"
 msgstr ""
@@ -247,31 +251,31 @@ msgstr ""
 msgid "%plural% interest rate payment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:274
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:275
 msgid "Interest Rate"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:281
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:282
 msgid "Payed / Charged"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:287
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:288
 msgid ""
 "The interest rate can be either positive or negative and is compounded daily."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:290
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:291
 msgid "Minimum Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:294
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:295
 msgid "The minimum requires balance for interest to apply."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:297
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:250
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:216
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:271
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:298
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:251
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:240
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:295
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:371
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:404
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:87
@@ -293,52 +297,65 @@ msgstr ""
 msgid "Log Template"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:301
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:302
 msgid "Available template tags: General, %timeframe%, %rate%, %base%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:305
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:258
+msgid "Run Time"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-interest.php:309
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:262
+msgid ""
+"For large websites, if you are running into time out issues during payouts, "
+"you can set the number of seconds a process can run. Use zero for unlimited, "
+"but be careful especially if you are on a shared server."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:21
 msgid "Daily %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:212
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:213
 msgid "Not yet run"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:217
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:218
 msgid "Pay Users"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:220
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:654
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:347
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:221
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:678
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:348
 msgid "Amount"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:222
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:223
 msgid "Can not be zero."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:226
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:239
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:227
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1418
 msgid "Interval"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:231
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:232
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:241
 msgid "Cycles"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:233
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:234
 msgid "Set to -1 for unlimited"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:236
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:237
 msgid "Last Run / Activated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:239
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
 msgid ""
 "Select how often you want to award %_plural%. Note that when this service is "
 "enabled, the first payout will be in the beginning of the next period. So "
@@ -346,37 +363,37 @@ msgid ""
 "morning."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:241
 msgid ""
 "Cycles let you choose how many intervals this service should run. Each time "
 "a cycle runs, the value will decrease until it hits zero, in which case this "
 "service will deactivate itself. Use -1 to run unlimited times."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:241
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:242
 msgid "Important"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:241
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:242
 msgid ""
 "You can always stop payouts by deactivating this service. Just remember that "
 "if you deactivate while there are cycles left, this service will continue on "
 "when it gets re-activated. Set cycles to zero to reset."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:243
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:587
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:103
 msgid "Excludes"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:247
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:248
 msgid ""
 "Comma separated list of user IDs to exclude from this service. No spaces "
 "allowed!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:254
+#: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:255
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-galleries.php:81
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-groups.php:435
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-groups.php:448
@@ -423,7 +440,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:56
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:69
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:366
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:370
 msgid "My History"
 msgstr ""
 
@@ -434,27 +451,27 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:219
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:227
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:410
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:414
 msgid "All"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:220
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:411
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:415
 msgid "Today"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:221
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:412
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:416
 msgid "Yesterday"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:222
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:413
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:417
 msgid "This Week"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:223
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:414
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:418
 msgid "This Month"
 msgstr ""
 
@@ -750,7 +767,7 @@ msgid "%plural% for Sending Gift"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:12
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:200
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:224
 msgid "buyCRED"
 msgstr ""
 
@@ -764,12 +781,12 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:55
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:56
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:57
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:322
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:346
 msgid "Payment Gateways"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:141
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:760
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:784
 msgid "PayPal Payments Standard"
 msgstr ""
 
@@ -786,185 +803,197 @@ msgstr ""
 msgid "Zombaio"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:175
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:199
 msgid "Please login to purchase %_plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:189
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:213
 msgid "Gift purchase from %display_name%."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:202
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:226
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:566
 msgid "Minimum %plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:206
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:230
 msgid "Minimum amount of %plural% a user must purchase. Will default to 1."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:209
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:233
 msgid "Login Template"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:213
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:237
 msgid "Content to show when a user is not logged in."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:220
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:244
 msgid ""
 "Available template tags: General and %gateway% for the payment gateway used."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:223
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:247
 msgid "Thank You Page"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:226
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:247
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:250
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:271
 msgid "Custom URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:231
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:252
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:255
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:276
 msgid "Page"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:244
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:268
 msgid "Cancellation Page"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:265
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:289
 msgid "Gifting"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:267
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:291
 msgid "Allow users to buy %_plural% for other users."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:268
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:292
 msgid "Allow users to buy %_plural% for content authors."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:273
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:297
 msgid "Available template tags: %singular%, %plural% and %display_name%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:323
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:347
 msgid ""
 "Select the payment gateways you want to offer your users to buy %plural%."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:364
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:363
+msgid "Test Mode"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:365
+msgid "Enabled"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:368
+msgid "Disabled"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:388
 msgid "Update Gateway Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:411
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:508
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:435
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:532
 msgid "This Add-on needs to setup before you can use this shortcode."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:429
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:525
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:453
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:549
 msgid "No gateways installed."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:430
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:526
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:454
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:550
 msgid "Gateway does not exist."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:466
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:490
 msgid "Yourself"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:527
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:551
 msgid "No active gateways found."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:528
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:552
 msgid "The selected gateway is not active."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:568
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:592
 msgid "Buy with"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:572
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:596
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:49
 msgid "Buy Now"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:605
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:629
 msgid "No users found"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:615
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:639
 msgid "To"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:632
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:656
 msgid "Select Amount"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:656
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:680
 msgid "min."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:664
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:688
 msgid "Select Gateway"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:744
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:768
 msgid "Buy %plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:746
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:770
 msgid "This add-on lets your users buy %_plural% using a payment gateway."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:747
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:771
 msgid "Supported Gateways"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:748
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:772
 msgid ""
 "myCRED supports purchases through: PayPal Payments Standard, Skrill "
 "(Moneybookers) and NETbilling. Let us know if you want to add other payment "
 "gateways."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:749
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:773
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:1066
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:497
 msgid "Usage"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:750
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:774
 msgid "Purchases can be made using one of the following shortcodes:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:752
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:776
 msgid ""
 "When you want to sell a pre-set amount, sell to a specific user or use a "
 "specific gateway.<br />For more information on how to use the shortcode, "
 "please visit the"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:753
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:777
 msgid ""
 "When you want to give your users the option to select an amount, gateway or "
 "recipient.<br />For more information on how to use the shortcode, please "
 "visit the"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:762
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:786
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/paypal-standard.php:327
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:344
 msgid "Currency"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:763
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:787
 msgid ""
 "Make sure you select a currency that your PayPal account supports. Otherwise "
 "transactions will not be approved until you login to your PayPal account and "
@@ -972,11 +1001,11 @@ msgid ""
 "will not be applied to the buyer until you have resolved the issue."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:764
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:788
 msgid "Instant Payment Notifications"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:765
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:789
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/paypal-standard.php:358
 msgid ""
 "For this gateway to work, you must login to your PayPal account and under "
@@ -985,11 +1014,11 @@ msgid ""
 "have selected \"Receive IPN messages (Enabled)\"."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:769
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:793
 msgid "Skrill"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:771
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:795
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/netbilling.php:607
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/paypal-standard.php:321
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:338
@@ -997,25 +1026,25 @@ msgstr ""
 msgid "Sandbox Mode"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:772
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:796
 msgid ""
 "Transactions made while Sandbox mode is active are real transactions! "
 "Remember to use your \"Test Merchant Account\" when Sandbox mode is active!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:773
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:797
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:383
 msgid "Checkout Page"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:774
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:798
 msgid ""
 "By default all Skrill Merchant account accept payments via Bank Transfers. "
 "When a user selects this option, no points are awarded! You will need to "
 "manually award these once the bank transfer is completed."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:775
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:799
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:403
 msgid ""
 "By default purchases made using Skrill will result in users having to signup "
@@ -1731,8 +1760,8 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:671
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:798
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:343
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:239
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:344
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:243
 msgid "User"
 msgstr ""
 
@@ -1930,7 +1959,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:254
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:278
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:357
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:344
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:345
 msgid "Current Balance"
 msgstr ""
 
@@ -2023,7 +2052,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:20
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:21
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:47
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:242
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:246
 msgid "Settings"
 msgstr ""
 
@@ -2450,7 +2479,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:549
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:623
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:681
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:348
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:349
 msgid "Log Entry"
 msgstr ""
 
@@ -2725,7 +2754,7 @@ msgid "Identify Users By"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:520
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:342
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:343
 msgid "ID"
 msgstr ""
 
@@ -3726,62 +3755,62 @@ msgstr ""
 msgid "Amount can not be zero"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:173
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:174
 msgid "Excluded"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:180
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:181
 msgid "History"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:182
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:183
 msgid "Adjust"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:233
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:234
 #, php-format
 msgid "My current %singular% balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:256
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:257
 msgid "Adjust Your Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:258
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:259
 msgid "Adjust Users Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:265
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:336
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:266
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:337
 msgid "required"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:267
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:338
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:268
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:339
 msgid "optional"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:273
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:274
 msgid "Log description for adjustment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:274
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:275
 msgid "Update"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:275
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:276
 msgid "Description is required!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:280
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:281
 msgid "Users Current Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:347
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:348
 msgid "A positive or negative value"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:349
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:350
 msgid "Update Balance"
 msgstr ""
 
@@ -3967,7 +3996,7 @@ msgid "Update rankings on a specific date."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:622
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:240
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:244
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:140
 msgid "Date"
 msgstr ""
@@ -3984,20 +4013,20 @@ msgstr ""
 msgid "Install & Run"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:242
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:246
 msgid "Entry"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:342
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:346
 msgid "User Missing"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:381
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:385
 msgid "No log entries found"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:396
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:398
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:400
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:402
 msgid "Search Log"
 msgstr ""
 
@@ -4182,12 +4211,12 @@ msgid "Order"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:388
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:191
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:195
 msgid "Ascending"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:389
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:191
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:195
 msgid "Descending"
 msgstr ""
 
@@ -4533,32 +4562,32 @@ msgstr ""
 msgid "Entries"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:171
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:175
 msgid "Show all references"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:184
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:188
 msgid "User ID"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:190
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:194
 msgid "Show in order"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:203
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:207
 msgid "Filter"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:229
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:233
 #, php-format
 msgid "Showing %d %s"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:229
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:233
 msgid "entry"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:248
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:252
 msgid "Search results for"
 msgstr ""
 
