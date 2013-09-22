@@ -32,7 +32,7 @@ require_once( myCRED_BANK_SERVICES_DIR . 'mycred-bank-service-payouts.php' );
  */
 if ( !class_exists( 'myCRED_Banking' ) ) {
 	class myCRED_Banking extends myCRED_Module {
-		
+
 		/**
 		 * Constructor
 		 */
@@ -55,7 +55,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 				'menu_pos'    => 30
 			) );
 		}
-		
+
 		/**
 		 * Load Services
 		 * @since 1.2
@@ -98,7 +98,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 				}
 			}
 		}
-		
+
 		/**
 		 * Get Bank Services
 		 * @since 1.2
@@ -132,7 +132,31 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 			$this->services = $services;
 			return $services;
 		}
-		
+
+		/**
+		 * Page Header
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function settings_header() {
+			wp_dequeue_script( 'bpge_admin_js_acc' );
+			wp_enqueue_script( 'mycred-admin' );
+			wp_enqueue_style( 'mycred-admin' ); ?>
+
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+#myCRED-wrap #accordion h4 .gate-icon { display: block; width: 48px; height: 48px; margin: 0 0 0 0; padding: 0; float: left; line-height: 48px; }
+#myCRED-wrap #accordion h4 .gate-icon { background-repeat: no-repeat; background-image: url(<?php echo plugins_url( 'assets/images/gateway-icons.png', myCRED_THIS ); ?>); background-position: 0 0; }
+#myCRED-wrap #accordion h4 .gate-icon.inactive { background-position-x: 0; }
+#myCRED-wrap #accordion h4 .gate-icon.active { background-position-x: -48px; }
+#myCRED-wrap #accordion h4 .gate-icon.sandbox { background-position-x: -96px; }
+h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
+h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
+</style>
+<?php
+		}
+
 		/**
 		 * Admin Page
 		 * @since 0.1
@@ -141,10 +165,10 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 		public function admin_page() {
 			// Security
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
-			
+
 			// Get installed
 			$installed = $this->get( true );
-			
+
 			// Message
 			if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) {
 				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>';
@@ -155,7 +179,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Banking', 'mycred' ); ?></h2>
 		<p><?php echo $this->core->template_tags_general( __( 'This add-on allows you to setup transaction fees for %_plural% transfers, purchases or payments using the Gateway add-on, along with offering interest on %_plural% balances.', 'mycred' ) ); ?></p>
 		<?php if ( defined( 'DISABLE_WP_CRON' ) ) : ?>
-		
+
 		<p><strong><?php _e( 'WP-Cron deactivation detected!', 'mycred' ); ?></strong></p>
 		<p><?php _e( 'Warning! This add-on requires WP - Cron to work.', 'mycred' ); ?></p>
 		<?php return; endif; ?>
@@ -167,7 +191,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 <?php		if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
-				<h4 class="<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"><label><?php echo $this->core->template_tags_general( $data['title'] ); ?></label></h4>
+				<h4><div class="gate-icon <?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; ?>"></div><?php echo $this->core->template_tags_general( $data['title'] ); ?></h4>
 				<div class="body" style="display:none;">
 					<p><?php echo nl2br( $this->core->template_tags_general( $data['description'] ) ); ?></p>
 					<label class="subheader"><?php _e( 'Enable', 'mycred' ); ?></label>
@@ -183,7 +207,7 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 			} ?>
 
 			</div>
-			<?php submit_button( __( 'Update Changes', 'mycred' ), 'primary large' ); ?>
+			<?php submit_button( __( 'Update Changes', 'mycred' ), 'primary large', 'submit', false ); ?>
 
 		</form>
 	</div>
@@ -212,17 +236,17 @@ if ( !class_exists( 'myCRED_Banking' ) ) {
 					if ( isset( $data['callback'] ) && isset( $post['service_prefs'][$key] ) ) {
 						// Old settings
 						$old_settings = $post['service_prefs'][$key];
-						
+
 						// New settings
 						$new_settings = $this->call( 'sanitise_preferences', $data['callback'], $old_settings );
-						
+
 						// If something went wrong use the old settings
 						if ( empty( $new_settings ) || $new_settings === NULL || !is_array( $new_settings ) )
 							$new_post['service_prefs'][$key] = $old_settings;
 						// Else we got ourselves new settings
 						else
 							$new_post['service_prefs'][$key] = $new_settings;
-						
+
 						// Handle de-activation
 						if ( isset( $this->active ) && !empty( $this->active ) ) {
 							foreach ( $this->active as $id ) {
