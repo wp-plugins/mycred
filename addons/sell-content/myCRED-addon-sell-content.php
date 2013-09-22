@@ -301,7 +301,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			);
 			$available_payees = apply_filters( 'mycred_sell_content_payees', $payees, $sell_content ); ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'Sell Content', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-active"></div><?php _e( 'Sell Content', 'mycred' ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader" for="<?php echo $this->field_id( 'post_types' ); ?>"><?php _e( 'Post Types', 'mycred' ); ?></label>
 					<ol id="myCRED-buy-postypes">

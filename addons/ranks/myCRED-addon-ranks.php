@@ -699,7 +699,7 @@ GROUP BY
 			else
 				$box = 'display: block;'; ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'Ranks', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-active"></div><?php _e( 'Ranks', 'mycred' ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader" for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'Rank Features', 'mycred' ); ?></label>
 					<ol id="myCRED-rank-supports">

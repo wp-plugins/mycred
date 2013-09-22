@@ -180,7 +180,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		public function after_general_settings() {
 			$settings = $this->notifications; ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'Notifications', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-active"></div><?php _e( 'Notifications', 'mycred' ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'Styling', 'mycred' ); ?></label>
 					<ol>

@@ -262,7 +262,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			else
 				$use_html = 0; ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'Email Notices', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-active"></div><?php _e( 'Email Notices', 'mycred' ); ?></h4>
 				<div class="body" style="display:none;">
 					<p><?php _e( 'Settings that apply to all email notices and can not be overridden for individual emails.', 'mycred' ); ?></p>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'use_html' => 'no' ) ); ?>"><?php _e( 'Email Format', 'mycred' ); ?></label>

@@ -365,7 +365,7 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 
 <style type="text/css">
 h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
-h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' );; ?>"; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
 h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
 </style>
 <?php

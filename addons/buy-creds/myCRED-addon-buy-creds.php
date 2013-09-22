@@ -160,6 +160,30 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		}
 
 		/**
+		 * Page Header
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function settings_header() {
+			wp_dequeue_script( 'bpge_admin_js_acc' );
+			wp_enqueue_script( 'mycred-admin' );
+			wp_enqueue_style( 'mycred-admin' ); ?>
+
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+#myCRED-wrap #accordion h4 .gate-icon { display: block; width: 48px; height: 48px; margin: 0 0 0 0; padding: 0; float: left; line-height: 48px; }
+#myCRED-wrap #accordion h4 .gate-icon { background-repeat: no-repeat; background-image: url(<?php echo plugins_url( 'assets/images/gateway-icons.png', myCRED_THIS ); ?>); background-position: 0 0; }
+#myCRED-wrap #accordion h4 .gate-icon.inactive { background-position-x: 0; }
+#myCRED-wrap #accordion h4 .gate-icon.active { background-position-x: -48px; }
+#myCRED-wrap #accordion h4 .gate-icon.sandbox { background-position-x: -96px; }
+h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
+h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
+</style>
+<?php
+		}
+
+		/**
 		 * Add to General Settings
 		 * @since 0.1
 		 * @version 1.0
@@ -197,7 +221,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			$thankyou_use = $buy_creds['thankyou']['use'];
 			$cancelled_use = $buy_creds['cancelled']['use']; ?>
 
-				<h4 style="color:#BBD865;"><?php _e( 'buyCRED', 'mycred' ); ?></h4>
+				<h4><div class="icon icon-active"></div><?php _e( 'buyCRED', 'mycred' ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php echo $this->core->template_tags_general( __( 'Minimum %plural%', 'mycred' ) ); ?></label>
 					<ol id="mycred-buy-creds-minimum-amount">
@@ -307,7 +331,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 		/**
 		 * Payment Gateways Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page() {
 			$installed = $this->get();
@@ -331,17 +355,17 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			if ( !empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
-				<h4 class="<?php
+				<h4><div class="gate-icon <?php
 
 					// Mark
 					if ( $this->is_active( $key ) ) {
 						if ( isset( $this->gateway_prefs[$key]['sandbox'] ) && $this->gateway_prefs[$key]['sandbox'] == 1 )
-							echo 'sandbox';
+							echo 'sandbox" title="' . __( 'Test Mode', 'mycred' );
 						else
-							echo 'active';
+							echo 'active" title="' . __( 'Enabled', 'mycred' );
 					}
 					else
-						echo 'inactive'; ?>"><label><?php echo $this->core->template_tags_general( $data['title'] ); ?></label></h4>
+						echo 'inactive" title="' . __( 'Disabled', 'mycred' ); ?>"></div><?php echo $this->core->template_tags_general( $data['title'] ); ?></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'Enable', 'mycred' ); ?></label>
 					<ol id="">
@@ -361,7 +385,7 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			</div>
 			<?php do_action( 'mycred_after_buycreds_page', $this ); ?>
 
-			<?php submit_button( __( 'Update Gateway Settings', 'mycred' ), 'primary large' ); ?>
+			<?php submit_button( __( 'Update Gateway Settings', 'mycred' ), 'primary large', 'submit', false ); ?>
 
 		</form>
 		<?php do_action( 'mycred_bottom_buycreds_page', $this ); ?>
