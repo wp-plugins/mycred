@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Query Log
  * @see http://mycred.me/classes/mycred_query_log/ 
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !class_exists( 'myCRED_Query_Log' ) ) {
 	class myCRED_Query_Log {
@@ -150,15 +150,19 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				// Search
 				if ( $this->args['s'] !== NULL ) {
 					$search_query = sanitize_text_field( $this->args['s'] );
+					
 					if ( is_int( $search_query ) )
-					$search_query = (string) $search_query;
-
+						$search_query = (string) $search_query;
+				
+					$wheres[] = "entry LIKE %s OR data LIKE %s OR ref LIKE %s";
+					$prep[] = "%$search_query%";
+					$prep[] = "%$search_query%";
+					$prep[] = "%$search_query%";
+					
 					if ( $this->args['user_id'] !== NULL ) {
-						$user_id = $this->args['user_id'];
-						$wheres[] = "entry LIKE '%$search_query%' OR user_id = $user_id AND data LIKE '%$search_query%' OR user_id = $user_id AND ref LIKE '%$search_query%'";
+						$wheres[] = 'AND user_id = %d';
+						$prep[] = $user_id;
 					}
-					else
-						$wheres[] = "entry LIKE '%$search_query%' OR data LIKE '%$search_query%' OR ref LIKE '%$search_query%'";
 				}
 
 				// Order by
