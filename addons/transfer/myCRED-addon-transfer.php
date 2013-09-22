@@ -329,7 +329,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 
 			// Check amount
 			$amount = $this->core->number( $amount );
-			if ( $amount == $this->core->number( 0 ) ) die( json_encode( 'error_5' ) );
+			if ( $amount == $this->core->zero() ) die( json_encode( 'error_5' ) );
 
 			// Check funds
 			if ( mycred_user_can_transfer( $from, $amount ) === 'low' ) die( json_encode( 'error_7' ) );
@@ -349,7 +349,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 					// Add new defaults
 					$history = array(
 						'frame'  => ( $prefs['limit']['limit'] == 'daily' ) ? $today : $this_week,
-						'amount' => $this->core->number( 0 )
+						'amount' => $this->core->zero()
 					);
 					update_user_meta( $from, 'mycred_transactions', $history );
 				}
@@ -363,7 +363,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 					if ( $today != $history['frame'] ) {
 						$history = array(
 							'frame'  => $today,
-							'amount' => $this->core->number( 0 )
+							'amount' => $this->core->zero()
 						);
 						update_user_meta( $from, 'mycred_transactions', $history );
 					}
@@ -378,7 +378,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 					if ( $this_week != $history['frame'] ) {
 						$history = array(
 							'frame'  => $this_week,
-							'amount' => $this->core->number( 0 )
+							'amount' => $this->core->zero()
 						);
 						update_user_meta( $from, 'mycred_transactions', $history );
 					}
@@ -732,7 +732,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		</li>
 		<li class="mycred-send-amount">
 			<label>' . __( 'Amount:', 'mycred' ) . '</label>
-			<div>' . $before . '<input type="text" class="short" name="mycred-transfer-amount" value="' . $mycred->format_number( 0 ) . '" size="8" />' . $after . '</div> 
+			<div>' . $before . '<input type="text" class="short" name="mycred-transfer-amount" value="' . $mycred->zero() . '" size="8" />' . $after . '</div> 
 			<input type="button" class="button large button-large mycred-click" value="' . $pref['templates']['button'] . '" />
 		</li>
 		';
@@ -818,7 +818,7 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 			// Apply defaults if not set
 			$history = array(
 				'frame'  => '',
-				'amount' => $mycred->number( 0 )
+				'amount' => $mycred->zero()
 			);
 		}
 
@@ -828,7 +828,7 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 			if ( $today != $history['frame'] ) {
 				$new_data = array(
 					'frame' => $today,
-					'amount' => $mycred->number( 0 )
+					'amount' => $mycred->zero()
 				);
 				update_user_meta( $user_id, 'mycred_transactions', $new_data );
 				$current = $new_data['amount'];
@@ -851,7 +851,7 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 			if ( $this_week != $history['frame'] ) {
 				$new_data = array(
 					'frame' => $this_week,
-					'amount' => $mycred->number( 0 )
+					'amount' => $mycred->zero()
 				);
 				update_user_meta( $user_id, 'mycred_transactions', $new_data );
 				$current = $new_data['amount'];

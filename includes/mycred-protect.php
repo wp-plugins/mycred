@@ -18,7 +18,7 @@ class myCRED_Protect {
 		else
 			$skey = get_blog_option( 1, 'mycred_key' );
 
-		if ( $skey === false || ( $new_key === true && function_exists( 'current_user_can' ) && current_user_can( 'update_core' ) ) ) {
+		if ( $skey === false || ( $new_key === true && function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) ) {
 			$skey = $this->reset_key();
 		}
 		$this->skey = $skey;

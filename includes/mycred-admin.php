@@ -269,7 +269,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 <tr>
 <th scope="row"><label for="myCRED-manual-add-points"><?php echo $label; ?></label></th>
 <td id="myCRED-adjust-users-points">
-<?php echo $this->core->plural(); ?>: <input type="text" name="myCRED-manual-add-points" id="myCRED-manual-add-points" value="<?php echo $this->core->number( 0 ); ?>" size="4" /><br /><br />
+<?php echo $this->core->plural(); ?>: <input type="text" name="myCRED-manual-add-points" id="myCRED-manual-add-points" value="<?php echo $this->core->zero(); ?>" size="4" /><br /><br />
 <label for="myCRED-manual-add-description"><?php _e( 'Log description for adjustment', 'mycred' ); ?> <?php echo $req; ?></label><br />
 <input type="text" name="myCRED-manual-add-description" id="myCRED-manual-add-description" value="" class="regular-text" /> <?php submit_button( __( 'Update', 'mycred' ), 'primary medium', 'myCRED_update', '' ); ?>
 <?php if ( $mycred_errors ) echo '<p style="color:red;">' . __( 'Description is required!', 'mycred' ) . '</p>'; ?>

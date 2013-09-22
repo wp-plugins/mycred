@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Settings class
  * @see http://mycred.me/classes/mycred_settings/
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !class_exists( 'myCRED_Settings' ) ) {
 	class myCRED_Settings {
@@ -46,6 +46,21 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		public function plural() {
 			return $this->name['plural'];
 		}
+		
+		/**
+		 * Zero
+		 * Returns zero formated with or without decimals.
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function zero() {
+			if ( !isset( $this->format['decimals'] ) )
+				$decimals = $this->core['format']['decimals'];
+			else
+				$decimals = $this->format['decimals'];
+			
+			return number_format( 0, $decimals );
+		}
 
 		/**
 		 * Number
@@ -56,18 +71,18 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $number (int|float) the initial number
 		 * @returns the given number formated either as an integer or float
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function number( $number = '' ) {
-			if ( empty( $number ) ) return $number;
+			if ( $number === '' ) return $number;
 
 			if ( !isset( $this->format['decimals'] ) )
-				$decimals = $this->core['format']['decimals'];
+				$decimals = (int) $this->core['format']['decimals'];
 			else
-				$decimals = $this->format['decimals'];
+				$decimals = (int) $this->format['decimals'];
 
-			if ( (int) $decimals > 0 ) {
-				return (float) number_format( (float) $number, (int) $decimals, '.', '' );
+			if ( $decimals > 0 ) {
+				return (float) number_format( (float) $number, $decimals, '.', '' );
 			}
 			else {
 				return (int) $number;
@@ -84,10 +99,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @returns the given number formated either as an integer or float
 		 * @filter 'mycred_format_number'
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function format_number( $number = '' ) {
-			if ( empty( $number ) ) return $number;
+			if ( $number === '' ) return $number;
 
 			$number = $this->number( $number );
 			$decimals = $this->format['decimals'];
@@ -518,7 +533,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 */
 		public function edit_creds_cap() {
 			if ( !isset( $this->caps['creds'] ) || empty( $this->caps['creds'] ) )
-				$this->caps['creds'] = 'edit_users';
+				$this->caps['creds'] = 'delete_users';
 
 			return $this->caps['creds'];
 		}

@@ -68,7 +68,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 */
 		public function process() {
 			// Unschedule if amount is set to zero
-			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) {
+			if ( $this->prefs['rate']['amount'] == $this->core->zero() ) {
 				$timestamp = wp_next_scheduled( 'mycred_banking_interest_compound' );
 				if ( $timestamp !== false )
 					wp_clear_scheduled_hook( $timestamp, 'mycred_banking_interest_compound' );
@@ -81,7 +81,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 
 			$unow = date_i18n( 'U' );
 			// Cant pay interest on zero
-			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
+			if ( $this->prefs['rate']['amount'] == $this->core->zero() ) return;
 			
 			// Should we payout
 			$payout_now = $this->get_now( $this->prefs['rate']['pay_out'] );
@@ -113,7 +113,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * @version 1.0
 		 */
 		public function do_compound() {
-			if ( $this->prefs['rate']['amount'] == $this->core->format_number( 0 ) ) return;
+			if ( $this->prefs['rate']['amount'] == $this->core->zero() ) return;
 			// Get users
 			$users = $this->get_users();
 			$total = count( $users );

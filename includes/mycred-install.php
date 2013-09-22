@@ -76,7 +76,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 				'after'     => '',
 				'caps'      => array(
 					'plugin'   => 'manage_options',
-					'creds'    => 'edit_users'
+					'creds'    => 'delete_users'
 				),
 				'exclude'   => array(
 					'plugin_editors' => false,
@@ -366,7 +366,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			elseif ( $step == 3 ) {
 				// Capabilities
 				$settings['caps']['plugin'] = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? trim( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
-				$settings['caps']['creds'] = ( isset( $_POST['myCRED-cap-creds'] ) ) ? trim( $_POST['myCRED-cap-creds'] ) : 'edit_users';
+				$settings['caps']['creds'] = ( isset( $_POST['myCRED-cap-creds'] ) ) ? trim( $_POST['myCRED-cap-creds'] ) : 'delete_users';
 
 				// Excludes
 				$settings['exclude']['plugin_editors'] = ( isset( $_POST['myCRED-exclude-plugin-editors'] ) ) ? true : false;
