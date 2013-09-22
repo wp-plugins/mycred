@@ -79,7 +79,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		/**
 		 * Log Header
 		 * @since 0.1
-		 * @version 1.1.1
+		 * @version 1.2
 		 */
 		public function settings_header() {
 			// Since we are overwriting the myCRED_Module::settings_header() we need to enqueue admin styles
@@ -96,8 +96,12 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			add_screen_option( 'per_page', $args );
 			$per_page = get_user_meta( get_current_user_id(), $args['option'], true );
 			if ( empty( $per_page ) || $per_page < 1 ) $per_page = $args['default'];
-			$this->per_page = $per_page;
-			$screen = NULL;
+			$this->per_page = $per_page; ?>
+
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+</style>
+<?php
 		}
 
 		/**

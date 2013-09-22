@@ -16,7 +16,7 @@
 .tj { text-align: justify; }
 
 /* Specifics */
-#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(../images/cred-icon32.png); background-repeat: no-repeat; background-position: 0 0; }
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-repeat: no-repeat; background-position: 0 0; }
 #myCRED-wrap p.submit { margin-top: 0; padding-top: 0; }
 #mycred-social { text-align: right; }
 

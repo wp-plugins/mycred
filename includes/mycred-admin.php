@@ -97,8 +97,9 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 
 		/**
 		 * Admin Header
+		 * @filter mycred_icon_menu
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function admin_header() {
 			$screen = get_current_screen();
@@ -107,7 +108,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 				wp_enqueue_style( 'mycred-inline-edit' );
 			}
 
-			$image = plugins_url( 'assets/images/logo-menu.png', myCRED_THIS );
+			$image = apply_filters( 'mycred_icon_menu', plugins_url( 'assets/images/logo-menu.png', myCRED_THIS ) );
 			echo '
 <style type="text/css">
 #adminmenu .toplevel_page_myCRED div.wp-menu-image { background-image: url(' . $image . '); background-position: 1px -28px; }

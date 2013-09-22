@@ -347,7 +347,7 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		 * Outputs the "click to open" and "click to close" text to the accordion.
 		 *
 		 * @since 0.1
-		 * @version 1.1.1
+		 * @version 1.2
 		 */
 		function settings_header() {
 			if ( $this->accordion === true ) {
@@ -355,16 +355,18 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 				wp_enqueue_script( 'mycred-admin' );
 			}
 
-			wp_enqueue_style( 'mycred-admin' );
+			wp_enqueue_style( 'mycred-admin' ); ?>
 
-			if ( $this->accordion === false ) return;
-			$click_to_open = __( 'click to open', 'mycred' );
-			$click_to_close = __( 'click to close', 'mycred' ); ?>
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+</style>
+<?php
+			if ( $this->accordion === false ) return; ?>
 
 <style type="text/css">
 h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
-h4.ui-accordion-header.ui-state-active:before { content: "<?php echo $click_to_close; ?>";  }
-h4.ui-accordion-header:before { content: "<?php echo $click_to_open; ?>"; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' );; ?>"; }
+h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
 </style>
 <?php
 		}
