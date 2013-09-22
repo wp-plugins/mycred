@@ -63,5 +63,5 @@ function mycred_load_events_manager() {
 /**
  * Supported Membership Plugins
  */
-require_once( myCRED_GATE_MEMBER_DIR . 'mycred-wpmumembership.php' );
+
 ?>
