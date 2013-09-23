@@ -147,7 +147,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 * @version 1.1
 		 */
 		public function sort_by_points( $query ) {
-			if ( !is_admin() ) return;
+			if ( !is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
 			$screen = get_current_screen();
 			if ( $screen->id != 'users' ) return;
 
