@@ -165,7 +165,7 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 				<?php do_action( 'mycred_after_network_prefs', $this ); ?>
 
 			</div>
-			<p><?php submit_button( __( 'Save Network Settings', 'mycred' ) ); ?></p>
+			<p><?php submit_button( __( 'Save Network Settings', 'mycred' ), 'primary large', 'submit', false ); ?></p>
 		</form>	
 		<?php do_action( 'mycred_bottom_network_page', $this ); ?>
 

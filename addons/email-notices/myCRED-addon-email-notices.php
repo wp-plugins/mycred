@@ -811,7 +811,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 	<?php do_action( 'mycred_email_settings_box', $this ); ?>
 
 	<div class="mycred-save">
-		<?php submit_button( __( 'Save', 'mycred' ), 'secondary', 'mycred-save-email', '' ); ?>
+		<?php submit_button( __( 'Save', 'mycred' ), 'primary', 'mycred-save-email', false ); ?>
 	</div>
 <?php
 		}
