@@ -26,7 +26,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			) );
 			
 			if ( get_transient( 'mycred-accounts-reset' ) !== false )
-				add_filter( 'mycred_add', array( $this, 'action_remove_reset' ) );
+				add_filter( 'mycred_add', array( $this, 'action_remove_reset' ), 10, 3 );
 		}
 
 		/**
@@ -85,8 +85,9 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		 * @since 1.3
 		 * @version 1.0
 		 */
-		public function action_remove_reset() {
+		public function action_remove_reset( $reply, $request, $mycred ) {
 			delete_transient( 'mycred-accounts-reset' );
+			return $reply;
 		}
 
 		/**
@@ -240,7 +241,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			if ( get_transient( 'mycred-accounts-reset' ) !== false )
 				$reset_block = true; ?>
 
-				<h4><div class="icon icon-inactive core"></div><label><?php _e( 'Management', 'mycred' ); ?></label></h4>
+				<h4><div class="icon icon-active core"></div><label><?php _e( 'Management', 'mycred' ); ?></label></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'The Log', 'mycred' ); ?></label>
 					<ol id="myCRED-actions-log" class="inline">
