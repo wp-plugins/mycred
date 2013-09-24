@@ -983,13 +983,14 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Parse Custom Tags in Log
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function parse_custom_tags( $content, $log_entry ) {
 			$data = unserialize( $log_entry->data );
 			$content = str_replace( '%url%', $data['link_url'], $content );
 			$content = str_replace( '%id%',  $data['link_id'], $content );
-			$content = str_replace( '%title%',  $data['link_title'], $content );
+			if ( isset( $data['link_title'] ) )
+				$content = str_replace( '%title%',  $data['link_title'], $content );
 
 			return $content;
 		}
