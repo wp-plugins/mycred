@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_General class
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_General' ) ) {
 	class myCRED_General extends myCRED_Module {
@@ -24,12 +24,97 @@ if ( !class_exists( 'myCRED_General' ) ) {
 				'accordion'   => true,
 				'menu_pos'    => 99
 			) );
+			
+			if ( get_transient( 'mycred-accounts-reset' ) !== false )
+				add_filter( 'mycred_add', array( $this, 'action_remove_reset' ) );
+		}
+
+		/**
+		 * Admin Init
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function module_admin_init() {
+			add_action( 'wp_ajax_mycred-action-empty-log',      array( $this, 'action_empty_log' ) );
+			add_action( 'wp_ajax_mycred-action-reset-accounts', array( $this, 'action_reset_balance' ) );
+		}
+
+		/**
+		 * Empty Log Action
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function action_empty_log() {
+			check_ajax_referer( 'mycred-management-actions', 'token' );
+
+			if ( !is_user_logged_in() || !$this->core->can_edit_plugin() )
+				die( json_encode( array( 'status' => 'ERROR', 'rows' => __( 'Access denied for this action', 'mycred' ) ) ) );
+
+			global $wpdb;
+
+			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$wpdb->query( "TRUNCATE TABLE $table_name;" );
+			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
+			$wpdb->flush();
+
+			die( json_encode( array( 'status' => 'OK', 'rows' => $total_rows ) ) );
+		}
+
+		/**
+		 * Reset All Balances Action
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function action_reset_balance() {
+			check_ajax_referer( 'mycred-management-actions', 'token' );
+
+			if ( !is_user_logged_in() || !$this->core->can_edit_plugin() )
+				die( json_encode( array( 'status' => 'ERROR', 'rows' => __( 'Access denied for this action', 'mycred' ) ) ) );
+
+			global $wpdb;
+
+			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = %d WHERE meta_key = %s;", 0, 'mycred_default' ) );
+
+			set_transient( 'mycred-accounts-reset', time(), (60*60*24) );
+			die( json_encode( array( 'status' => 'OK', 'rows' => __( 'Accounts successfully reset', 'mycred' ) ) ) );
+		}
+
+		/**
+		 * Remove Reset Block
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function action_remove_reset() {
+			delete_transient( 'mycred-accounts-reset' );
+		}
+
+		/**
+		 * Settings Header
+		 * Outputs the "click to open" and "click to close" text to the accordion.
+		 *
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function settings_header() {
+			wp_dequeue_script( 'bpge_admin_js_acc' );
+			wp_enqueue_script( 'mycred-manage' );
+
+			wp_enqueue_style( 'mycred-admin' ); ?>
+
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
+h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
+</style>
+<?php
 		}
 
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.3
 		 */
 		public function admin_page() {
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
@@ -142,6 +227,54 @@ if ( !class_exists( 'myCRED_General' ) ) {
 						</li>
 					</ol>
 					<?php do_action( 'mycred_core_prefs', $this ); ?>
+
+				</div>
+				<?php
+
+			global $wpdb;
+
+			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
+
+			$reset_block = false;
+			if ( get_transient( 'mycred-accounts-reset' ) !== false )
+				$reset_block = true; ?>
+
+				<h4><div class="icon icon-inactive core"></div><label><?php _e( 'Management', 'mycred' ); ?></label></h4>
+				<div class="body" style="display:none;">
+					<label class="subheader"><?php _e( 'The Log', 'mycred' ); ?></label>
+					<ol id="myCRED-actions-log" class="inline">
+						<li style="min-width:280px;">
+							<label><?php _e( 'Table Name', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" id="mycred-manage-table-name" disabled="disabled" value="<?php echo $table_name; ?>" class="readonly" /></div>
+							<div class="description"><?php _e( 'The name of the database log table.', 'mycred' ); ?></div>
+						</li>
+						<li>
+							<label><?php _e( 'Entries', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" id="mycred-manage-table-rows" disabled="disabled" value="<?php echo $total_rows; ?>" class="readonly short" /></div>
+						</li>
+						<li>
+							<label><?php _e( 'Actions', 'mycred' ); ?></label>
+							<div class="h2"><input type="button" id="mycred-manage-action-empty-log" value="<?php _e( 'Empty Log', 'mycred' ); ?>" class="button button-large large <?php if ( $total_rows == 0 ) echo '"disabled="disabled'; else echo 'button-primary'; ?>" /></div>
+						</li>
+					</ol>
+					<label class="subheader"><?php echo $this->core->plural(); ?></label>
+					<ol id="myCRED-actions-cred" class="inline">
+						<li style="min-width:280px;">
+							<label><?php _e( 'User Meta Key', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" id="" disabled="disabled" value="<?php echo $this->core->cred_id; ?>" class="readonly" /></div>
+							<div class="description"><?php echo sprintf( __( 'The user meta key used to store users %s.', 'mycred' ), $this->core->plural() ); ?></div>
+						</li>
+						<li>
+							<label><?php _e( 'Users', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" id="" disabled="disabled" value="<?php echo $this->core->count_members(); ?>" class="readonly short" /></div>
+						</li>
+						<li>
+							<label><?php _e( 'Actions', 'mycred' ); ?></label>
+							<div class="h2"><input type="button" id="mycred-manage-action-reset-accounts" value="<?php _e( 'Set all to zero', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="" value="<?php _e( 'CSV Export', 'mycred' ); ?>" class="button button-large large"<?php if ( $reset_block ) echo ' disabled="disabled"'; ?> /></div>
+						</li>
+					</ol>
+					<?php do_action( 'mycred_management_prefs', $this ); ?>
 
 				</div>
 				<?php do_action( 'mycred_after_core_prefs', $this ); ?>

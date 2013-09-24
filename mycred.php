@@ -498,7 +498,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		/**
 		 * Enqueue Admin
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function admin_enqueue() {
 			$mycred = mycred_get_settings();
@@ -510,6 +510,26 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				myCRED_VERSION . '.1'
 			);
 			wp_localize_script( 'mycred-admin', 'myCRED', apply_filters( 'mycred_localize_admin', array( 'active' => '-1' ) ) );
+
+			// Management Admin Script
+			wp_register_script(
+				'mycred-manage',
+				plugins_url( 'assets/js/management.js', myCRED_THIS ),
+				array( 'jquery', 'mycred-admin' ),
+				myCRED_VERSION . '.1'
+			);
+			wp_localize_script(
+				'mycred-manage',
+				'myCREDmanage',
+				array(
+					'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+					'token'         => wp_create_nonce( 'mycred-management-actions' ),
+					'working'       => __( 'Processing...', 'mycred' ),
+					'confirm_log'   => __( 'Warning! All entries in your log will be permamenly removed! This can not be undone!', 'mycred' ),
+					'confirm_reset' => __( 'Warning! All user balances will be set to zero! This can not be undone!', 'mycred' ),
+					'done'          => __( 'Done!', 'mycred' )
+				)
+			);
 
 			// Inline Editing Script
 			wp_register_script(
