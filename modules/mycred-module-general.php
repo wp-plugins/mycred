@@ -308,7 +308,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 * Sanititze Settings
 		 * @filter 'mycred_save_core_prefs'
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_settings( $post ) {
 			$new_data = array();
@@ -335,6 +335,10 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				'plugin' => sanitize_text_field( $post['caps']['plugin'] ),
 				'creds'  => sanitize_text_field( $post['caps']['creds'] )
 			);
+
+			// Make sure multisites uses capabilities that exists
+			if ( in_array( $new_data['caps']['creds'], array( 'create_users', 'delete_themes', 'edit_plugins', 'edit_themes', 'edit_users' ) ) && is_multisite() )
+				$new_data['caps']['creds'] = 'delete_users';
 
 			// Excludes
 			$new_data['exclude'] = array(
