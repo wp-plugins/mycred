@@ -528,7 +528,6 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 		 * Widget Output
 		 */
 		function widget( $args, $instance ) {
-			ob_start();
 			extract( $args, EXTR_SKIP );
 
 			// Prep

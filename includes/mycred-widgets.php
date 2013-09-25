@@ -26,7 +26,6 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 		 * Widget Output
 		 */
 		function widget( $args, $instance ) {
-			ob_start();
 			extract( $args, EXTR_SKIP );
 
 			// If we are logged in
@@ -305,7 +304,6 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 		 * Widget Output
 		 */
 		function widget( $args, $instance ) {
-			ob_start();
 			extract( $args, EXTR_SKIP );
 
 			// Check if we want to show this to visitors
