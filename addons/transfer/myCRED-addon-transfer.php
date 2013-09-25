@@ -506,7 +506,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 /**
  * Widget: myCRED Transfer
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 	class myCRED_Widget_Transfer extends WP_Widget {
@@ -589,8 +589,8 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 		function form( $instance ) {
 			// Defaults
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Transfer %plural%', 'mycred' );
-			$show_balance = isset( $instance['show_balance'] ) ? esc_attr( $instance['show_balance'] ) : false;
-			$show_limit = isset( $instance['show_limit'] ) ? esc_attr( $instance['show_limit'] ) : false; ?>
+			$show_balance = isset( $instance['show_balance'] ) ? 1 : 0;
+			$show_limit = isset( $instance['show_limit'] ) ? 1 : 0; ?>
 
 		<!-- Widget Options -->
 		<p class="myCRED-widget-field">
@@ -615,8 +615,8 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			$instance = $old_instance;
 			$instance['title'] = trim( $new_instance['title'] );
 
-			$instance['show_balance'] = (bool) $new_instance['show_balance'];
-			$instance['show_limit'] = (bool) $new_instance['show_limit'];
+			$instance['show_balance'] = ( isset( $new_instance['show_balance'] ) ) ? 1 : 0;
+			$instance['show_limit'] = ( isset( $new_instance['show_limit'] ) ) ? 1 : 0;
 
 			mycred_flush_widget_cache( 'mycred_widget_transfer' );
 			return $instance;

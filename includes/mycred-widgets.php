@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Widget: myCRED Balance
  * @since 0.1
- * @version 1.1
+ * @version 1.3
  */
 if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 	class myCRED_Widget_Balance extends WP_Widget {
@@ -156,14 +156,14 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'My Balance', 'mycred' );
 			$cred_format = isset( $instance['cred_format'] ) ? esc_attr( $instance['cred_format'] ) : '%cred_f%';
 
-			$show_history = isset( $instance['show_history'] ) ? $instance['show_history'] : 0;
+			$show_history = isset( $instance['show_history'] ) ? 1 : 0;
 			$history_title = isset( $instance['history_title'] ) ? $instance['history_title'] : __( '%plural% History', 'mycred' );
 			$history_entry = isset( $instance['history_format'] ) ? esc_attr( $instance['history_format'] ) : '%entry% <span class="creds">%cred_f%</span>';
 			$history_length = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
 
-			$show_rank = isset( $instance['show_rank'] ) ? $instance['show_rank'] : 0;
+			$show_rank = isset( $instance['show_rank'] ) ? 1 : 0;
 			$rank_format = isset( $instance['rank_format'] ) ? $instance['rank_format'] : '#%ranking%';
-			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
+			$show_visitors = isset( $instance['show_visitors'] ) ? 1 : 0;
 			$message = isset( $instance['message'] ) ? esc_attr( $instance['message'] ) : __( '<a href="%login_url_here%">Login</a> to view your balance.', 'mycred' );
 
 			// CSS to help with show/hide
@@ -256,7 +256,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$instance['title'] = trim( $new_instance['title'] );
 			$instance['cred_format'] = trim( $new_instance['cred_format'] );
 
-			$instance['show_rank'] = (bool) $new_instance['show_rank'];
+			$instance['show_rank'] = ( isset( $new_instance['show_rank'] ) ) ? 1 : 0;
 			$rank_format = trim( $new_instance['rank_format'] );
 
 			if ( !function_exists( 'mycred_get_users_rank' ) ) 
@@ -264,12 +264,12 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			else
 				$instance['rank_format'] = $rank_format;
 
-			$instance['show_history'] = (bool) $new_instance['show_history'];
+			$instance['show_history'] = ( isset( $new_instance['show_history'] ) ) ? 1 : 0;
 			$instance['history_title'] = trim( $new_instance['history_title'] );
 			$instance['history_format'] = trim( $new_instance['history_format'] );
 			$instance['number'] = (int) $new_instance['number'];
 
-			$instance['show_visitors'] = (bool) $new_instance['show_visitors'];
+			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? 1 : 0;
 			$instance['message'] = $mycred->allowed_tags( trim( $new_instance['message'] ) );
 
 			mycred_flush_widget_cache( 'mycred_widget_list' );
@@ -281,7 +281,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 /**
  * Widget: User List
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Widget_List' ) ) {
 	class myCRED_Widget_List extends WP_Widget {
@@ -405,7 +405,7 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			$instance = $old_instance;
 			$instance['number'] = (int) $new_instance['number'];
 			$instance['title'] = trim( $new_instance['title'] );
-			$instance['show_visitors'] = $new_instance['show_visitors'];
+			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? 1 : 0;
 			
 			$rank_format = trim( $new_instance['text'] );
 			$instance['text'] = str_replace( '%rank%', '%ranking%', $rank_format );
