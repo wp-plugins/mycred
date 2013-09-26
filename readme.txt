@@ -149,7 +149,6 @@ Performance improvement and new features. REQUIRES WP 3.5 +
 == Changelog ==
 
 = 1.3 =
-* Adjusted minimum requirements from WP 3.1 to WP 3.5
 * Improved myCRED's module management lowering memory usage.
 * Re-designed hooks, add-ons and settings accordion.
 * Moved Log Query to mycred-log.php in the includes/ folder.
@@ -160,10 +159,13 @@ Performance improvement and new features. REQUIRES WP 3.5 +
 * Added class attribute to mycred_buy shortcode.
 * Added support for profit sharing to Supported Shopping Carts.
 * Added support for WP E-Commerce Shopping cart.
+* Added new constant MYCRED_LOG_TABLE to allow custom table names for the log.
+* Added new Management to settings page allowing to empty the log and reset all user points to zero.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.
 * Fixed Bug #55 - Users can transfer points to themselves.
+* Fixed Bug #56 - Incorrect use of ob_start() in myCRED widgets.
 
 
 = 1.2.3 =
