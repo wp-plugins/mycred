@@ -1001,7 +1001,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			}
 			
 			// Query
-			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE user_id = %d AND ref = %s ORDER BY time ";
+			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE user_id = %d AND ref = %s ORDER BY time ";
 			$results = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content' ) );
 			$rows = array();
 			

@@ -192,7 +192,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				$where = 'WHERE ' . implode( ' AND ', $wheres );
 
 				// Run
-				$this->request = "$select FROM " . $wpdb->prefix . 'myCRED_log' . " $where $sortby $limits";
+				$this->request = "$select FROM " . $wpdb->prefix . $this->core->db_name . " $where $sortby $limits";
 				$this->results = $wpdb->get_results( $wpdb->prepare( $this->request, $prep ) );
 				$this->prep = $prep;
 

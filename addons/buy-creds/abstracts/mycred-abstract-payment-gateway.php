@@ -43,9 +43,8 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 				// Apply defaults (if needed)
 				if ( empty( $this->prefs ) || $this->prefs === false )
 					$this->prefs = $this->defaults;
-
-				$this->core = mycred_get_settings();
 			}
+			$this->core = mycred_get_settings();
 
 			// Decode Log Entries
 			add_filter( 'mycred_prep_template_tags',                          array( $this, 'decode_log_entries' ), 10, 2 );
@@ -408,7 +407,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			global $wpdb;
 
 			// Make sure this is a new transaction
-			$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND data LIKE %s";
+			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref = %s AND data LIKE %s";
 
 			$gateway = str_replace( '-', '_', $this->id );
 			$gateway_id = 'buy_creds_with_' . $gateway;

@@ -220,7 +220,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			global $wpdb;
 
-			$db = $wpdb->prefix . 'myCRED_Log';
+			$db = $wpdb->prefix . $this->core->db_name;
 			$sql = "
 SELECT 
   user_id AS ID, 

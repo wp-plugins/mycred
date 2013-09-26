@@ -52,7 +52,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$table_name = $wpdb->prefix . $this->core->db_name;
 			$wpdb->query( "TRUNCATE TABLE $table_name;" );
 			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
 			$wpdb->flush();
@@ -73,7 +73,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$table_name = $wpdb->prefix . $this->core->db_name;
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = %d WHERE meta_key = %s;", 0, 'mycred_default' ) );
 
 			set_transient( 'mycred-accounts-reset', time(), (60*60*24) );
@@ -234,7 +234,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . 'myCRED_Log';
+			$table_name = $wpdb->prefix . $this->core->db_name;
 			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
 
 			$reset_block = false;

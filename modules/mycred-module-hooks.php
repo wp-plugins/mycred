@@ -1051,7 +1051,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			}
 			else return false;
 
-			$sql = "SELECT id FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d AND data LIKE %s";
+			$sql = "SELECT id FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref = %s AND user_id = %d AND data LIKE %s;";
 			$wpdb->get_results( $wpdb->prepare( $sql, $action, $user_id, $string ) );
 			if ( $wpdb->num_rows > 0 ) return true;
 

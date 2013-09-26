@@ -31,7 +31,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			$message = array();
 			// WordPress check
 			$wp_version = $GLOBALS['wp_version'];
-			if ( version_compare( $wp_version, '3.5', '<' ) )
+			if ( version_compare( $wp_version, '3.1', '<' ) )
 				$message[] = __( 'myCRED requires WordPress 3.1 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
 
 			// PHP check
@@ -174,7 +174,12 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// Delete DB
 			global $wpdb;
-			$table_name = $wpdb->prefix . 'myCRED_log';
+
+			if ( defined( 'MYCRED_LOG_TABLE' ) )
+				$table_name = $wpdb->prefix . MYCRED_LOG_TABLE;
+			else
+				$table_name = $wpdb->prefix . 'myCRED_log';
+
 			$wpdb->query( "DROP TABLE IF EXISTS " . $table_name . ";" );
 
 			// Multisite
@@ -236,8 +241,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		function __construct() {
 			// Status
 			$this->status = false;
-			$mycred = mycred_get_settings();
-			$this->core = $mycred->core;
+			$this->core = mycred_get_settings();
 
 			// Setup Step
 			$this->step = false;
@@ -673,7 +677,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			global $wpdb;
 
 			// Table Name
-			$table_name = $wpdb->prefix . 'myCRED_log';
+			$table_name = $wpdb->prefix . $this->core->db_name;
 			// Log structure
 			$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
 				ref VARCHAR(256) NOT NULL, 

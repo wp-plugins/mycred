@@ -4,12 +4,13 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Settings class
  * @see http://mycred.me/classes/mycred_settings/
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 if ( !class_exists( 'myCRED_Settings' ) ) {
 	class myCRED_Settings {
 
 		public $core;
+		public $db_name;
 
 		/**
 		 * Construct
@@ -26,7 +27,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				}
 			}
 			
-			$this->db_name = 'myCRED_log';
+			if ( defined( 'MYCRED_LOG_TABLE' ) )
+				$this->db_name = MYCRED_LOG_TABLE;
+			else
+				$this->db_name = 'myCRED_log';
 		}
 
 		/**
@@ -850,7 +854,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Insert into DB
 			$new_entry = $wpdb->insert(
-				$wpdb->prefix . 'myCRED_log',
+				$wpdb->prefix . $this->db_name,
 				array(
 					'ref'     => $ref,
 					'ref_id'  => $ref_id,
@@ -917,7 +921,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$where = implode( ' AND ', $where );
 
 			if ( !empty( $where ) ) {
-				$sql = "SELECT * FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE $where";
+				$sql = "SELECT * FROM " . $wpdb->prefix . $this->db_name . " WHERE $where";
 				$wpdb->get_results( $wpdb->prepare( $sql, $prep ) );
 				if ( $wpdb->num_rows > 0 ) return true;
 			}
@@ -1179,17 +1183,19 @@ if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 	{
 		if ( empty( $reference ) ) return 999999999;
 
+		$mycred = mycred_get_settings();
+
 		global $wpdb;
 
 		if ( $user_id !== NULL ) {
 			return $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s AND user_id = %d",
+				"SELECT COUNT(*) FROM " . $wpdb->prefix . $mycred->db_name . " WHERE ref = %s AND user_id = %d",
 				$reference,
 				$user_id
 			) );
 		}
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . 'myCRED_log' . " WHERE ref = %s", $reference ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . $mycred->db_name . " WHERE ref = %s", $reference ) );
 	}
 }
 
