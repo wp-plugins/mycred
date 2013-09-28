@@ -120,7 +120,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			$query = $wpdb->get_results( $wpdb->prepare( $SQL, 'mycred_default' ) );
 			
 			if ( empty( $query ) )
-				die( json_encode( array( 'status' => 'ERROR', 'log' => __( 'No users found to export', 'mycred' ) ) ) );
+				die( json_encode( array( 'status' => 'ERROR', 'string' => __( 'No users found to export', 'mycred' ) ) ) );
 			
 			$array = array();
 			foreach ( $query as $result ) {
@@ -137,7 +137,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			
 			set_transient( 'mycred-export-raw', apply_filters( 'mycred_export_raw', $array ), 3000 );
 			
-			die( json_encode( array( 'status' => 'OK', 'location' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
+			die( json_encode( array( 'status' => 'OK', 'string' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
 		}
 
 		/**

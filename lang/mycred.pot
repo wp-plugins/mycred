@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-26 17:50+0100\n"
-"PO-Revision-Date: 2013-09-26 17:50+0100\n"
+"POT-Creation-Date: 2013-09-28 15:16+0100\n"
+"PO-Revision-Date: 2013-09-28 15:16+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:115
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:624
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:476
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:423
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:424
 msgid "Setup"
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:527
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:548
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:838
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:837
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:136
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:363
@@ -137,14 +137,14 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:368
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:154
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:180
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:109
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:195
 msgid "click to close"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:369
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:155
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:181
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:110
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:196
 msgid "click to open"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:458
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:115
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-addons.php:249
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:121
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:208
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:146
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:266
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:346
@@ -197,7 +197,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:174
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:341
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:128
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:217
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:155
 msgid "Settings Updated"
 msgstr ""
@@ -399,8 +399,8 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:244
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:591
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:189
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:592
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:278
 msgid "Excludes"
 msgstr ""
 
@@ -530,22 +530,22 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:365
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:372
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:777
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:776
 msgid "Do not show."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:366
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:778
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:777
 msgid "Include in Profile Header."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:367
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:779
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:778
 msgid "Include under the \"Profile\" tab"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/myCRED-addon-buddypress.php:368
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:780
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:779
 msgid "Include under the \"Profile\" tab and Profile Header."
 msgstr ""
 
@@ -829,7 +829,7 @@ msgid "Gift purchase from %display_name%."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:226
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:566
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:565
 msgid "Minimum %plural%"
 msgstr ""
 
@@ -1465,7 +1465,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:386
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:75
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:707
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:706
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:597
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:186
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:360
@@ -1918,12 +1918,12 @@ msgid "Email Notice Updated. View <a href=\"%1$s\">All Notices</a>."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:944
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:471
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:470
 msgid "Custom field updated"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:945
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:472
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:471
 msgid "Custom filed updated"
 msgstr ""
 
@@ -2068,7 +2068,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:19
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:20
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:21
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:133
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:222
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:246
 msgid "Settings"
 msgstr ""
@@ -2501,7 +2501,7 @@ msgid "Log Entry"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:433
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:899
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:898
 msgid "Templates"
 msgstr ""
 
@@ -2532,7 +2532,7 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:458
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:284
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:370
 msgid "Update Settings"
 msgstr ""
 
@@ -3005,8 +3005,8 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:166
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:172
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:178
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:702
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:894
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:701
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:893
 msgid "Ranks"
 msgstr ""
 
@@ -3017,9 +3017,9 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:167
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:397
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:414
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:510
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:396
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:413
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:509
 msgid "Rank"
 msgstr ""
 
@@ -3051,216 +3051,216 @@ msgstr ""
 msgid "No ranks found in Trash"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:243
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:242
 #, php-format
 msgid "Completed - Total of %d users effected"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:245
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:244
 msgid "Log is Empty"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:439
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:438
 msgid "Newbie"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:470
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:473
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:469
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:472
 #, php-format
 msgid "Rank Updated. View <a href=\"%1$s\">All Ranks</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:475
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:474
 msgid "Rank Activated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:476
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:475
 msgid "Rank Saved"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:477
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:476
 #, php-format
 msgid "Rank Submitted for approval. View <a href=\"%1$s\">All Ranks</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:479
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:478
 #, php-format
 msgid "Rank scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:536
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:591
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:535
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:590
 msgid "Rank Title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:537
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:536
 msgid "Logo"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:538
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:537
 msgid "Requirement"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:539
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:270
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:538
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:356
 msgid "Users"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:555
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:554
 msgid "No Logo Set"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:564
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:569
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:563
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:568
 msgid "Any Value"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:571
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:570
 msgid "Maximum %plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:604
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:603
 msgid "Rank Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:626
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:625
 msgid "Minimum %plural% to reach this rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:630
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:629
 msgid "Maximum %plural% to be included in this rank"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:635
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:634
 msgid "All Published Ranks"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:642
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:644
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:641
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:643
 msgid "Not Set"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:649
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:648
 msgid "No Ranks found"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:704
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:703
 msgid "Rank Features"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:708
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:707
 msgid "%plural% requirement"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:709
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:708
 msgid "Featured Image (Logo)"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:710
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:709
 msgid "Content"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:711
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:710
 msgid "Excerpt"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:712
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:711
 msgid "Comments"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:713
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:712
 msgid "Page Attributes"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:714
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:713
 msgid "Custom Fields"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:717
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:716
 msgid "Public"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:721
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:720
 msgid ""
 "If you want to create a template archive for each rank, you must select to "
 "have ranks public. Defaults to disabled."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:724
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:897
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:723
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:896
 msgid "Rank Basis"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:727
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:726
 msgid "Users are ranked according to their current balance."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:730
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:729
 msgid ""
 "Users are ranked according to the total amount of %_plural% they have "
 "accumulated."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:734
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:739
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:733
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:738
 msgid "Calculate Totals"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:737
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:736
 msgid ""
 "Use this button to calculate or re-calcualte your users totals. If not used, "
 "the users current balance will be used as a starting point."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:737
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:736
 msgid ""
 "Once a users total has been calculated, they will be assigned to their "
 "appropriate roles. For this reason, it is highly recommended that you first "
 "setup your ranks!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:738
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:737
 msgid ""
 "Depending on your log size and number of users this process may take a "
 "while. Please do not leave, click \"Update Settings\" or re-fresh this page "
 "until this is completed!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:743
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:742
 msgid "Archive URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:747
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:746
 msgid "Ignored if Ranks are not public"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:750
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:749
 msgid "Display Order"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:757
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:756
 msgid "Ascending - Lowest rank to highest"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:758
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:757
 msgid "Descending - Highest rank to lowest"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:767
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:766
 msgid ""
 "Select in what order ranks should be displayed in your admin area and/or "
 "front if ranks are \"Public\""
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:783
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:782
 msgid "Rank in BuddyPress"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:851
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:850
 msgid "Script Communication Error"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:896
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:895
 msgid ""
 "You can create ranks according to the amount of points a user has. By "
 "default, ranks are only visible in widgets and shortcodes however it is "
@@ -3268,7 +3268,7 @@ msgid ""
 "specific ones."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:898
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:897
 msgid ""
 "As of version 1.2, you can select to rank users according to their current "
 "balance or the total amount of %_plural% they have accumulated. This is "
@@ -3276,29 +3276,29 @@ msgid ""
 "%_plural% to pay for items in your store or event tickets."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:900
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:899
 msgid ""
 "Ranks are just another custom post type which means that you can, if you "
 "select to make Ranks Public, create custom template files for ranks in your "
 "theme folder."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:901
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:900
 #, php-format
 msgid ""
 "For more information on Templates for Custom Post Types visit the <a href="
 "\"%s\">WordPress Codex</a>."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:902
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:901
 msgid "Changing URL Slug"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:903
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:902
 msgid "You can change the URL slug used for ranks to any URL friendly value."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:904
+#: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:903
 msgid ""
 "If you are using a custom permalink structure and you make ranks public or "
 "change the slug, you will need to visit your permalink settings page and "
@@ -3832,27 +3832,27 @@ msgstr ""
 msgid "Update Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:332
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:335
 msgid "Deleted"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:467
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:470
 msgid "Deleted Item"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1235
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1238
 msgid "ref empty"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1243
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1246
 msgid "incorrect user id format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1256
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1259
 msgid "incorrect unix timestamp (from):"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1265
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1268
 msgid "incorrect unix timestamp (to):"
 msgstr ""
 
@@ -3874,160 +3874,160 @@ msgid ""
 "requirements for running myCRED. The following errors were given:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:273
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:274
 msgid "myCRED needs your attention."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:273
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:274
 msgid "Run Setup"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:285
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:286
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:287
 msgid "myCRED Setup"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:425
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:426
 msgid "Step"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:448
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:449
 msgid ""
 "Click \"Begin Setup\" to install myCRED. You will be able to select your "
 "points format, layout and security settings."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:449
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:450
 msgid "Begin Setup"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:506
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:507
 msgid "Select the format you want to use for your points."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:507
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:508
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-widgets.php:200
 msgid "Format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:510
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:511
 msgid "Separators"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:520
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:521
 msgid "Decimals"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:522
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:523
 msgid "Use zero for no decimals."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:525
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:157
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:526
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:246
 msgid "Presentation"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:528
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:144
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:529
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:233
 msgid "Name (Singular)"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:532
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:149
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:533
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:238
 msgid "Name (Plural)"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:538
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:160
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:539
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:249
 msgid "Prefix"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:546
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:168
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:547
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:257
 msgid "Suffix"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:551
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:552
 msgid "Cancel Setup"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:551
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:552
 msgid "Cancel"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:551
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:631
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:552
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:632
 msgid "Next"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:580
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:176
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:581
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:265
 msgid "Security"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:583
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:584
 msgid "Edit Settings Capability"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:587
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:588
 msgid "Edit Users %plural% Capability"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:595
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:193
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:596
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:282
 msgid "Exclude those who can \"Edit Settings\"."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:599
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:197
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:600
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:286
 msgid "Exclude those who can \"Edit Users %plural%\"."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:602
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:201
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:603
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:290
 msgid "Exclude the following user IDs:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:606
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:206
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:607
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:295
 msgid "Rankings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:610
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:210
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:611
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:299
 msgid "Update rankings each time a users balance changes."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:614
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:214
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:615
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:303
 msgid "Update rankings once a day."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:618
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:218
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:619
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:307
 msgid "Update rankings once a week."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:622
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:222
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:623
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:311
 msgid "Update rankings on a specific date."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:626
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:627
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:244
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:226
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:315
 msgid "Date"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:650
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:651
 msgid "Ready"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:651
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:652
 msgid "Almost done! Click the button below to finish this setup."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:652
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:653
 msgid "Install & Run"
 msgstr ""
 
@@ -4294,119 +4294,152 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:51
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:72
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:55
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:75
 msgid "Access denied for this action"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:80
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:92
 msgid "Accounts successfully reset"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:134
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:123
+msgid "No users found to export"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:223
 msgid "Adjust your core or add-on settings. Follow us on:"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:134
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:223
 msgid "Facebook"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:134
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:223
 msgid "Google Plus"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:139
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:228
 msgid "Core Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:141
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:230
 msgid "Name"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:146
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:235
 msgid "Accessible though the %singular% template tag."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:151
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:240
 msgid "Accessible though the %plural% template tag."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:154
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:243
 msgid "Tip"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:154
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:243
 msgid ""
 "Adding an underscore at the beginning of template tag for names will return "
 "them in lowercase. i.e. %_singular%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:172
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:261
 msgid "Separator"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:179
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:268
 msgid "Edit Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:181
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:186
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:270
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:275
 msgid "Capability to check for."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:184
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:273
 msgid "Edit Users %plural%"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:203
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:292
 msgid "Comma separated list of user ids to exclude. No spaces allowed!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:244
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:332
 msgid "Management"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:246
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:334
 msgid "The Log"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:249
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:337
 msgid "Table Name"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:251
-msgid "The name of the database log table."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:254
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:341
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:92
 msgid "Entries"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:258
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:274
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:345
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:360
 msgid "Actions"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:259
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:346
 msgid "Empty Log"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:265
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:352
 msgid "User Meta Key"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:267
-#, php-format
-msgid "The user meta key used to store users %s."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:275
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:361
 msgid "Set all to zero"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:275
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:361
 msgid "CSV Export"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:378
+msgid "Identify users by"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:383
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:188
+msgid "User ID"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:384
+msgid "User Email"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:385
+msgid "User Login"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:392
+msgid ""
+"Use ID if you intend to use this export as a backup of your current site "
+"while Email is recommended if you want to export to a different site."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:395
+msgid "Import Log Entry"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:397
+#, php-format
+msgid ""
+"Optional log entry to use if you intend to import this file in a different "
+"%s installation."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:400
+msgid "Export"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:23
@@ -4634,10 +4667,6 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:175
 msgid "Show all references"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:188
-msgid "User ID"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:194
