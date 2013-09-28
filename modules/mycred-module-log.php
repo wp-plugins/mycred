@@ -114,7 +114,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			$count = get_transient( 'mycred_log_entries' );
 			if ( $count === false ) {
 				global $wpdb;
-				$count = $wpdb->get_var( "SELECT COUNT(*) FROM " . $wpdb->prefix . $this->core->db_name . ";" );
+				$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$this->core->log_table};" );
 				set_transient( 'mycred_log_entries', $count, DAY_IN_SECONDS*1 );
 			}
 			return $count;
@@ -124,14 +124,14 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		 * Get References
 		 * Returns all available references in the database.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		protected function get_refs() {
 			$refs = wp_cache_get( 'mycred_references' );
 			if ( false === $refs ) {
 				global $wpdb;
-				$sql = "SELECT log.ref FROM " . $wpdb->prefix . $this->core->db_name . " log WHERE %s <> '' ";
-				$refs = $wpdb->get_col( $wpdb->prepare( $sql, 'ref' ) );
+				$sql = "SELECT log.ref FROM {$this->core->log_table} log WHERE %s <> %s;";
+				$refs = $wpdb->get_col( $wpdb->prepare( $sql, 'ref', '' ) );
 				if ( $refs ) {
 					$refs = array_unique( $refs );
 					wp_cache_set( 'mycred_references', $refs );
@@ -420,7 +420,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		public function post_deletions( $post_id ) {
 			global $post_type, $wpdb;
 			// Check log
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref_id = %d ";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE ref_id = %d;";
 			$records = $wpdb->get_results( $wpdb->prepare( $sql, $post_id ) );
 			// If we have results
 			if ( $wpdb->num_rows > 0 ) {
@@ -447,7 +447,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 							$new_data['post_type'] = $post->post_type;
 							// Save
 							$wpdb->update(
-								$wpdb->prefix . $this->core->db_name,
+								$this->core->log_table,
 								array( 'data' => serialize( $new_data ) ),
 								array( 'id'   => $row->id ),
 								array( '%s' ),
@@ -467,7 +467,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		public function user_deletions( $user_id ) {
 			global $wpdb;
 			// Check log
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE user_id = %d ";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE user_id = %d;";
 			$records = $wpdb->get_results( $wpdb->prepare( $sql, $user_id ) );
 			// If we have results
 			if ( $wpdb->num_rows > 0 ) {
@@ -482,7 +482,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 					$new_data['display_name'] = $user->display_name;
 					// Save
 					$wpdb->update(
-						$wpdb->prefix . $this->core->db_name,
+						$this->core->log_table,
 						array( 'data' => serialize( $new_data ) ),
 						array( 'id'   => $row->id ),
 						array( '%s' ),
@@ -500,7 +500,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 		public function comment_deletions( $comment_id ) {
 			global $wpdb;
 			// Check log
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref_id = %d ";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE ref_id = %d;";
 			$records = $wpdb->get_results( $wpdb->prepare( $sql, $comment_id ) );
 			// If we have results
 			if ( $wpdb->num_rows > 0 ) {
@@ -523,7 +523,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 							$new_data['comment_post_ID'] = $comment->comment_post_ID;
 							// Save
 							$wpdb->update(
-								$wpdb->prefix . $this->core->db_name,
+								$this->core->log_table,
 								array( 'data' => serialize( $new_data ) ),
 								array( 'id'   => $row->id ),
 								array( '%s' ),

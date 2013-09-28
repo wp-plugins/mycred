@@ -436,7 +436,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * AJAX Autocomplete
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function ajax_call_autocomplete() {
 			$results = array();
@@ -446,7 +446,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				global $wpdb;
 
 				// prep query
-				$sql = "SELECT user_login, ID FROM " . $wpdb->prefix . 'users' . " WHERE ID != %d AND user_login LIKE %s";
+				$sql = "SELECT user_login, ID FROM {$wpdb->users} WHERE ID != %d AND user_login LIKE %s;";
 				$search = $_REQUEST['string']['term'];
 				$me = $_REQUEST['me'];
 

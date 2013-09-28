@@ -1051,7 +1051,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			}
 			else return false;
 
-			$sql = "SELECT id FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref = %s AND user_id = %d AND data LIKE %s;";
+			$sql = "SELECT id FROM {$this->core->log_table} WHERE ref = %s AND user_id = %d AND data LIKE %s;";
 			$wpdb->get_results( $wpdb->prepare( $sql, $action, $user_id, $string ) );
 			if ( $wpdb->num_rows > 0 ) return true;
 
@@ -1061,7 +1061,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.1.1
+		 * @version 1.2
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
@@ -1105,9 +1105,9 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 				$this->prefs['log'],
 				$ref,
 				array(
-					'ref_type' => 'link',
-					'link_url' => ( isset( $_POST['url'] ) ) ? $_POST['url'] : '',
-					'link_id'  => ( isset( $_POST['eid'] ) ) ? $_POST['eid'] : '',
+					'ref_type'   => 'link',
+					'link_url'   => ( isset( $_POST['url'] ) ) ? $_POST['url'] : '',
+					'link_id'    => ( isset( $_POST['eid'] ) ) ? $_POST['eid'] : '',
 					'link_title' => ( isset( $_POST['etitle'] ) ) ? $_POST['etitle'] : ''
 				)
 			);
@@ -1348,19 +1348,19 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		 * Get Users Video Log
 		 * Returns the log for a given video id.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function get_users_video_log( $video_id, $user_id ) {
 			global $wpdb;
-			$db = $wpdb->prefix . $this->core->db_name;
-			$sql = "SELECT * FROM $db WHERE user_id = %d AND data = %s";
+
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE user_id = %d AND data = %s;";
 			return $wpdb->get_row( $wpdb->prepare( $sql, $user_id, $video_id ) );
 		}
 
 		/**
 		 * Update Points
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function update_creds( $row_id, $user_id, $amount ) {
 			// Prep format
@@ -1378,9 +1378,9 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 
 			global $wpdb;
 			$wpdb->update(
-				$wpdb->prefix . $this->core->db_name,
+				$this->core->log_table,
 				array( 'creds' => $amount ),
-				array( 'ID' => $row_id ),
+				array( 'ID'    => $row_id ),
 				array( $format ),
 				array( '%d' )
 			);

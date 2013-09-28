@@ -35,8 +35,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 		 * @version 1.0
 		 */
 		public function module_admin_init() {
+			if ( isset( $_GET['do'] ) && $_GET['do'] == 'export' )
+				$this->load_export();
+
 			add_action( 'wp_ajax_mycred-action-empty-log',      array( $this, 'action_empty_log' ) );
 			add_action( 'wp_ajax_mycred-action-reset-accounts', array( $this, 'action_reset_balance' ) );
+			add_action( 'wp_ajax_mycred-action-export-balances', array( $this, 'action_export_balances' ) );
 		}
 
 		/**
@@ -52,9 +56,8 @@ if ( !class_exists( 'myCRED_General' ) ) {
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . $this->core->db_name;
-			$wpdb->query( "TRUNCATE TABLE $table_name;" );
-			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
+			$wpdb->query( "TRUNCATE TABLE {$this->core->log_table};" );
+			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM {$this->core->log_table};" );
 			$wpdb->flush();
 
 			die( json_encode( array( 'status' => 'OK', 'rows' => $total_rows ) ) );
@@ -73,11 +76,94 @@ if ( !class_exists( 'myCRED_General' ) ) {
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . $this->core->db_name;
-			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = %d WHERE meta_key = %s;", 0, 'mycred_default' ) );
+			if ( !isset( $this->core->format['decimals'] ) )
+				$decimals = $this->core->core['format']['decimals'];
+			else
+				$decimals = $this->core->format['decimals'];
+
+			if ( $decimals > 0 )
+				$format = '%f';
+			else
+				$format = '%d';
+
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = {$format} WHERE meta_key = %s;", $this->core->zero(), 'mycred_default' ) );
 
 			set_transient( 'mycred-accounts-reset', time(), (60*60*24) );
 			die( json_encode( array( 'status' => 'OK', 'rows' => __( 'Accounts successfully reset', 'mycred' ) ) ) );
+		}
+
+		/**
+		 * Export User Balances
+		 * @filter mycred_export_raw
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function action_export_balances() {
+			check_ajax_referer( 'mycred-management-actions', 'token' );
+			
+			global $wpdb;
+			
+			$log = sanitize_text_field( $_POST['log_temp'] );
+			
+			switch ( $_POST['identify'] ) {
+				case 'ID' :
+					$SQL = "SELECT user_id AS user, meta_value AS balance FROM {$wpdb->usermeta} WHERE meta_key = %s;";
+				break;
+				case 'email' :
+					$SQL = "SELECT user_email AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
+				break;
+				case 'login' :
+					$SQL = "SELECT user_login AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
+				break;
+			}
+			
+			$query = $wpdb->get_results( $wpdb->prepare( $SQL, 'mycred_default' ) );
+			
+			if ( empty( $query ) )
+				die( json_encode( array( 'status' => 'ERROR', 'log' => __( 'No users found to export', 'mycred' ) ) ) );
+			
+			$array = array();
+			foreach ( $query as $result ) {
+				$data = array(
+					'mycred_user'   => $result->user,
+					'mycred_amount' => $result->balance
+				);
+				
+				if ( ! empty( $log ) )
+					$data = array_merge_recursive( $data, array( 'mycred_log' => $log ) );
+				
+				$array[] = $data;
+			}
+			
+			set_transient( 'mycred-export-raw', apply_filters( 'mycred_export_raw', $array ), 3000 );
+			
+			die( json_encode( array( 'status' => 'OK', 'location' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
+		}
+
+		/**
+		 * Load Export
+		 * Creates a CSV export file of the 'mycred-export-raw' transient.
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function load_export() {
+			if ( $this->core->can_edit_plugin( get_current_user_id() ) ) {
+				
+				$export = get_transient( 'mycred-export-raw' );
+				if ( $export === false ) return;
+				
+				if ( isset( $export[0]['mycred_log'] ) )
+					$headers = array( 'mycred_user', 'mycred_amount', 'mycred_log' );
+				else
+					$headers = array( 'mycred_user', 'mycred_amount' );	
+				
+				require_once( myCRED_ASSETS_DIR . 'libs/parsecsv.lib.php' );
+				$csv = new parseCSV();
+				
+				delete_transient( 'mycred-export-raw' );
+				$csv->output( true, 'mycred-balance-export.csv', $export, $headers );
+				die();
+			}
 		}
 
 		/**
@@ -108,6 +194,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
 h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
 h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
+.mycred-export-points { background-color:white; }.mycred-export-points>div { padding:12px; }.mycred-export-points .ui-dialog-titlebar { line-height:24px; border-bottom: 1px solid #dedede; }.mycred-export-points .ui-dialog-titlebar:hover { cursor:move; }.mycred-export-points .ui-dialog-titlebar-close { float:right; }body.mycred_page_myCRED_page_settings .ui-widget-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background: repeat-x scroll 50% 50% #AAA; opacity:0.3; overflow:hidden; }body.mp6 .ui-widget-overlay { background: repeat-x scroll 50% 50% #333; }#export-points ul { display: block; margin: 0; padding: 0; }#export-points ul li { margin: 0 0 6px 0; padding: 0; list-style-type: none; }#export-points .action input { float: right; }
 </style>
 <?php
 		}
@@ -123,6 +210,8 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			// General Settings
 			$general = $this->general;
 
+			$plugin_name = apply_filters( 'mycred_label', myCRED_NAME );
+
 			// Updated settings
 			if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) {
 				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>';
@@ -130,7 +219,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
+		<h2><?php echo $plugin_name . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
 		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
@@ -234,8 +323,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 			global $wpdb;
 
-			$table_name = $wpdb->prefix . $this->core->db_name;
-			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM $table_name;" );
+			$total_rows = $wpdb->get_var( "SELECT COUNT(1) FROM {$this->core->log_table};" );
 
 			$reset_block = false;
 			if ( get_transient( 'mycred-accounts-reset' ) !== false )
@@ -245,10 +333,9 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				<div class="body" style="display:none;">
 					<label class="subheader"><?php _e( 'The Log', 'mycred' ); ?></label>
 					<ol id="myCRED-actions-log" class="inline">
-						<li style="min-width:280px;">
+						<li>
 							<label><?php _e( 'Table Name', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" id="mycred-manage-table-name" disabled="disabled" value="<?php echo $table_name; ?>" class="readonly" /></div>
-							<div class="description"><?php _e( 'The name of the database log table.', 'mycred' ); ?></div>
+							<div class="h2"><input type="text" id="mycred-manage-table-name" disabled="disabled" value="<?php echo $this->core->log_table; ?>" class="readonly" /></div>
 						</li>
 						<li>
 							<label><?php _e( 'Entries', 'mycred' ); ?></label>
@@ -256,15 +343,14 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 						</li>
 						<li>
 							<label><?php _e( 'Actions', 'mycred' ); ?></label>
-							<div class="h2"><input type="button" id="mycred-manage-action-empty-log" value="<?php _e( 'Empty Log', 'mycred' ); ?>" class="button button-large large <?php if ( $total_rows == 0 ) echo '"disabled="disabled'; else echo 'button-primary'; ?>" /></div>
+							<div class="h2"><?php if ( ( ! is_multisite() ) || ( is_multisite() && $GLOBALS['blog_id'] == 1 ) ) { ?><input type="button" id="mycred-manage-action-empty-log" value="<?php _e( 'Empty Log', 'mycred' ); ?>" class="button button-large large <?php if ( $total_rows == 0 ) echo '"disabled="disabled'; else echo 'button-primary'; ?>" /><?php } ?></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol id="myCRED-actions-cred" class="inline">
-						<li style="min-width:280px;">
+						<li>
 							<label><?php _e( 'User Meta Key', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" id="" disabled="disabled" value="<?php echo $this->core->cred_id; ?>" class="readonly" /></div>
-							<div class="description"><?php echo sprintf( __( 'The user meta key used to store users %s.', 'mycred' ), $this->core->plural() ); ?></div>
 						</li>
 						<li>
 							<label><?php _e( 'Users', 'mycred' ); ?></label>
@@ -272,7 +358,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 						</li>
 						<li>
 							<label><?php _e( 'Actions', 'mycred' ); ?></label>
-							<div class="h2"><input type="button" id="mycred-manage-action-reset-accounts" value="<?php _e( 'Set all to zero', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="" value="<?php _e( 'CSV Export', 'mycred' ); ?>" class="button button-large large"<?php if ( $reset_block ) echo ' disabled="disabled"'; ?> /></div>
+							<div class="h2"><input type="button" id="mycred-manage-action-reset-accounts" value="<?php _e( 'Set all to zero', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="mycred-export-users-points" value="<?php _e( 'CSV Export', 'mycred' ); ?>" class="button button-large large"<?php if ( $reset_block ) echo ' disabled="disabled"'; ?> /></div>
 						</li>
 					</ol>
 					<?php do_action( 'mycred_management_prefs', $this ); ?>
@@ -286,6 +372,36 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		</form>
 		<?php do_action( 'mycred_bottom_settings_page', $this ); ?>
 
+		<div id="export-points" style="display:none;">
+			<ul>
+				<li>
+					<label><?php _e( 'Identify users by', 'mycred' ); ?>:</label><br />
+					<select id="mycred-export-identify-by">
+						<?php
+			
+			$identify = apply_filters( 'mycred_export_by', array(
+				'ID'    => __( 'User ID', 'mycred' ),
+				'email' => __( 'User Email', 'mycred' ),
+				'login' => __( 'User Login', 'mycred' )
+			) );
+			
+			foreach ( $identify as $id => $label ) {
+				echo '<option value="' . $id . '">' . $label . '</option>';
+			} ?>
+					</select><br />
+					<span class="description"><?php _e( 'Use ID if you intend to use this export as a backup of your current site while Email is recommended if you want to export to a different site.', 'mycred' ); ?></span>
+				</li>
+				<li>
+					<label><?php _e( 'Import Log Entry', 'mycred' ); ?>:</label><br />
+					<input type="text" id="mycred-export-log-template" value="" class="regular-text" /><br />
+					<span class="description"><?php echo sprintf( __( 'Optional log entry to use if you intend to import this file in a different %s installation.', 'mycred' ), $plugin_name ); ?></span>
+				</li>
+				<li class="action">
+					<input type="button" id="mycred-run-exporter" value="<?php _e( 'Export', 'mycred' ); ?>" class="button button-large button-primary" />
+				</li>
+			</ul>
+			<div class="clear"></div>
+		</div>
 	</div>
 <?php
 		}

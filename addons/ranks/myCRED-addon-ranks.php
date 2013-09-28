@@ -212,7 +212,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * AJAX: Calculate Totals
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function calculate_totals() {
 			// Security
@@ -220,14 +220,13 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			global $wpdb;
 
-			$db = $wpdb->prefix . $this->core->db_name;
 			$sql = "
 SELECT 
   user_id AS ID, 
   SUM(CASE WHEN creds > 0 THEN creds ELSE 0 END) as positives_sum,
   SUM(CASE WHEN creds < 0 THEN creds ELSE 0 END) as negatives_sum
 FROM 
-  $db 
+  {$this->core->log_table} 
 GROUP BY
   user_id;";
 			$users = $wpdb->get_results( $sql );

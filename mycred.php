@@ -616,7 +616,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 		 * Installs the log for a site.
 		 * Requires Multisite
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		private function install_log() {
 			if ( get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
@@ -635,7 +635,6 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 				$cred_format = 'bigint(22)';
 			}
 
-			$table_name = $wpdb->prefix . $mycred->db_name;
 			// Log structure
 			$sql = "id int(11) NOT NULL AUTO_INCREMENT,
 				ref VARCHAR(256) NOT NULL, 
@@ -651,7 +650,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 
 			// Insert table
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " );" );
+			dbDelta( "CREATE TABLE IF NOT EXISTS {$mycred->log_table} ( " . $sql . " );" );
 			add_blog_option( 'mycred_version_db', '1.0', '', 'no' );
 			return true;
 		}

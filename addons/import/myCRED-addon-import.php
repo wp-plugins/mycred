@@ -282,7 +282,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		/**
 		 * Import CubePoints
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function import_cubepoints() {
 			$delete = false;
@@ -294,7 +294,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 			global $wpdb;
 
 			// DB Query
-			$SQL = "SELECT * FROM " . $wpdb->prefix . "usermeta WHERE meta_key = %s";
+			$SQL = "SELECT * FROM {$wpdb->usermeta} WHERE meta_key = %s;";
 			$search = $wpdb->get_results( $wpdb->prepare( $SQL, $meta_key ) );
 
 			// No results
@@ -364,7 +364,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 		/**
 		 * Import Custom User Meta
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function import_custom() {
 			if ( !isset( $_POST['meta_key'] ) || empty( $_POST['meta_key'] ) ) {
@@ -382,7 +382,7 @@ if ( !class_exists( 'myCRED_Import' ) ) {
 			global $wpdb;
 
 			// DB Query
-			$SQL = "SELECT * FROM " . $wpdb->prefix . "usermeta WHERE meta_key = %s";
+			$SQL = "SELECT * FROM {$pwbd->usermeta} WHERE meta_key = %s;";
 			$search = $wpdb->get_results( $wpdb->prepare( $SQL, $meta_key ) );
 
 			// No results

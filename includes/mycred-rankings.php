@@ -43,7 +43,7 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 		 * Get Rankings
 		 * Queries the DB for all users in order of their point balance.
 		 * @since 1.1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function get_rankings() {
 			global $wpdb;
@@ -78,22 +78,20 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 			
 			$prep = array();
 			
-			$wp = $wpdb->prefix;
-			
 			// SELECT
-			$selects = array( $wp . 'users.ID' );
+			$selects = array( "{$wpdb->users}.ID" );
 			foreach ( $user_fields as $field ) {
 				if ( $field == 'ID' ) continue;
-				$selects[] = $wp . 'users.' . $field;
+				$selects[] = "{$wpdb->users}." . $field;
 			}
-			$selects[] = $wp . 'usermeta.meta_value AS cred';
+			$selects[] = "{$wpdb->usermeta}.meta_value AS cred";
 			
 			$select = implode( ', ', $selects );
 			$SQL = "SELECT {$select} 
-					FROM {$wp}users 
-					LEFT JOIN {$wp}usermeta 
-					ON {$wp}users.ID = {$wp}usermeta.user_id AND {$wp}usermeta.meta_key = %s 
-					ORDER BY {$wp}usermeta.meta_value+1 {$order} " . $limit;
+					FROM {$wpdb->users} 
+					LEFT JOIN {$wpdb->usermeta} 
+					ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->usermeta}.meta_key = %s 
+					ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};";
 			
 			$this->result = $wpdb->get_results( $wpdb->prepare( $SQL, $key ), 'ARRAY_A' );
 			$this->count = $wpdb->num_rows;

@@ -1,5 +1,6 @@
 <?php
 if ( !defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Settings class
  * @see http://mycred.me/classes/mycred_settings/
@@ -28,9 +29,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			}
 			
 			if ( defined( 'MYCRED_LOG_TABLE' ) )
-				$this->db_name = MYCRED_LOG_TABLE;
-			else
-				$this->db_name = 'myCRED_log';
+				$this->log_table = MYCRED_LOG_TABLE;
+			else {
+				global $wpdb;
+				$this->log_table = $wpdb->base_prefix . 'myCRED_log';
+			}
 		}
 
 		/**
@@ -854,7 +857,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Insert into DB
 			$new_entry = $wpdb->insert(
-				$wpdb->prefix . $this->db_name,
+				$this->log_table,
 				array(
 					'ref'     => $ref,
 					'ref_id'  => $ref_id,
@@ -921,7 +924,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$where = implode( ' AND ', $where );
 
 			if ( !empty( $where ) ) {
-				$sql = "SELECT * FROM " . $wpdb->prefix . $this->db_name . " WHERE $where";
+				$sql = "SELECT * FROM {$this->log_table} WHERE {$where};";
 				$wpdb->get_results( $wpdb->prepare( $sql, $prep ) );
 				if ( $wpdb->num_rows > 0 ) return true;
 			}
@@ -1189,13 +1192,13 @@ if ( !function_exists( 'mycred_count_ref_instances' ) ) {
 
 		if ( $user_id !== NULL ) {
 			return $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM " . $wpdb->prefix . $mycred->db_name . " WHERE ref = %s AND user_id = %d",
+				"SELECT COUNT(*) FROM {$mycred->log_table} WHERE ref = %s AND user_id = %d;",
 				$reference,
 				$user_id
 			) );
 		}
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . $wpdb->prefix . $mycred->db_name . " WHERE ref = %s", $reference ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$mycred->log_table} WHERE ref = %s;", $reference ) );
 	}
 }
 
@@ -1276,9 +1279,8 @@ if ( !function_exists( 'mycred_get_total_by_time' ) ) {
 		global $wpdb;
 
 		// Construct
-		$db = $wpdb->prefix . $mycred->db_name;
 		$where = implode( ' AND ', $wheres );
-		$sql = "SELECT creds FROM {$db} WHERE {$where} ORDER BY time;";
+		$sql = "SELECT creds FROM {$mycred->log_table} WHERE {$where} ORDER BY time;";
 
 		// Query
 		$query = $wpdb->get_results( $wpdb->prepare( $sql, $prep ) );

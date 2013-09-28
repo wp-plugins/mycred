@@ -399,7 +399,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 *
 		 * @returns (bool) true if transaction id is unique or false
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function transaction_id_is_unique( $transaction_id = '' ) {
 			if ( empty( $transaction_id ) ) return false;
@@ -407,7 +407,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			global $wpdb;
 
 			// Make sure this is a new transaction
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE ref = %s AND data LIKE %s";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE ref = %s AND data LIKE %s;";
 
 			$gateway = str_replace( '-', '_', $this->id );
 			$gateway_id = 'buy_creds_with_' . $gateway;

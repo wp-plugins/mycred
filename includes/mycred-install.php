@@ -134,7 +134,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		 * settings and data once the core is gone.
 		 * @filter 'mycred_uninstall_this'
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function uninstall() {
 			// Everyone should use this filter to delete everything else they have created before returning the option ids.
@@ -176,11 +176,12 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			global $wpdb;
 
 			if ( defined( 'MYCRED_LOG_TABLE' ) )
-				$table_name = $wpdb->prefix . MYCRED_LOG_TABLE;
-			else
-				$table_name = $wpdb->prefix . 'myCRED_log';
+				$table_name = MYCRED_LOG_TABLE;
+			else {
+				$table_name = $wpdb->base_prefix . 'myCRED_log';
+			}
 
-			$wpdb->query( "DROP TABLE IF EXISTS " . $table_name . ";" );
+			$wpdb->query( "DROP TABLE IF EXISTS {$table_name};" );
 
 			// Multisite
 			if ( is_multisite() ) {
@@ -657,7 +658,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		/**
 		 * Install Database
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		protected function install_database( $decimals = 0 ) {
 			// If DB is already installed bail pretending that everything is fine
@@ -676,8 +677,6 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 
 			global $wpdb;
 
-			// Table Name
-			$table_name = $wpdb->prefix . $this->core->db_name;
 			// Log structure
 			$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
 				ref VARCHAR(256) NOT NULL, 
@@ -693,7 +692,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 
 			// Insert table
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS " . $table_name . " ( " . $sql . " );" );
+			dbDelta( "CREATE TABLE IF NOT EXISTS {$this->core->log_table} ( " . $sql . " );" );
 			add_option( 'mycred_version_db', '1.0', '', 'no' );
 			return true;
 		}

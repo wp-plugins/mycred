@@ -623,7 +623,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 * @param $post_id (int) required post id
 		 * @returns (bool) true or false
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function user_paid( $user_id, $post_id ) {
 			// Admins can view
@@ -636,7 +636,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			$sell_content = $this->sell_content;
 
 			// Search for the latest purchase of this item.
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE user_id = %d AND ref = %s AND ref_id = %d ORDER BY time DESC LIMIT 0,1";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE user_id = %d AND ref = %s AND ref_id = %d ORDER BY time DESC LIMIT 0,1;";
 			$purchases = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content', $post_id ) );
 			update_option( 'mycred_purchase_check', $purchases );
 			// We have found purchase records
@@ -967,7 +967,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 * Render Sales History Shortcode
 		 * @see http://mycred.me/shortcodes/mycred_sales_history/
 		 * @since 1.0.9
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function render_sales_history( $atts ) {
 			extract( shortcode_atts( array(
@@ -1001,7 +1001,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			}
 			
 			// Query
-			$sql = "SELECT * FROM " . $wpdb->prefix . $this->core->db_name . " WHERE user_id = %d AND ref = %s ORDER BY time ";
+			$sql = "SELECT * FROM {$this->core->log_table} WHERE user_id = %d AND ref = %s ORDER BY time;";
 			$results = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content' ) );
 			$rows = array();
 			
