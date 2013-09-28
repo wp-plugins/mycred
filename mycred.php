@@ -515,7 +515,7 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 			wp_register_script(
 				'mycred-manage',
 				plugins_url( 'assets/js/management.js', myCRED_THIS ),
-				array( 'jquery', 'mycred-admin' ),
+				array( 'jquery', 'mycred-admin', 'jquery-ui-core', 'jquery-ui-dialog', 'jquery-effects-core', 'jquery-effects-slide' ),
 				myCRED_VERSION . '.1'
 			);
 			wp_localize_script(
@@ -527,7 +527,9 @@ if ( !class_exists( 'myCRED_Core' ) ) {
 					'working'       => __( 'Processing...', 'mycred' ),
 					'confirm_log'   => __( 'Warning! All entries in your log will be permamenly removed! This can not be undone!', 'mycred' ),
 					'confirm_reset' => __( 'Warning! All user balances will be set to zero! This can not be undone!', 'mycred' ),
-					'done'          => __( 'Done!', 'mycred' )
+					'done'          => __( 'Done!', 'mycred' ),
+					'export_close'  => __( 'Close', 'mycred' ),
+					'export_title'  => $mycred->template_tags_general( __( 'Export users %plural%', 'mycred' ) )
 				)
 			);
 
