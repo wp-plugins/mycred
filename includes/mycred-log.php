@@ -388,7 +388,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		/**
 		 * Log Search
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function search() {
 			if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
@@ -398,8 +398,8 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 
 			<p class="search-box">
 				<label class="screen-reader-text" for=""><?php _e( 'Search Log', 'mycred' ); ?>:</label>
-				<input type="search" name="s" value="<?php echo $serarch_string; ?>" />
-				<input type="submit" name="mycred-search-log" id="search-submit" class="button" value="<?php _e( 'Search Log', 'mycred' ); ?>" />
+				<input type="search" name="s" value="<?php echo $serarch_string; ?>" placeholder="<?php _e( 'search log entries', 'mycred' ); ?>" />
+				<input type="submit" name="mycred-search-log" id="search-submit" class="button button-medium button-secondary" value="<?php _e( 'Search Log', 'mycred' ); ?>" />
 			</p>
 <?php
 		}

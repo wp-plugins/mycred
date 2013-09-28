@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-09-28 15:16+0100\n"
-"PO-Revision-Date: 2013-09-28 15:16+0100\n"
+"POT-Creation-Date: 2013-09-28 17:18+0100\n"
+"PO-Revision-Date: 2013-09-28 17:18+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgid "My Balance: "
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:527
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:548
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:550
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:837
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:136
@@ -74,13 +74,18 @@ msgstr ""
 msgid "Done!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:546
-#, php-format
-msgid "Edit Users %s balance"
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:531
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:549
+msgid "Close"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:547
-msgid "Close"
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:532
+msgid "Export users %plural%"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/mycred.php:548
+#, php-format
+msgid "Edit Users %s balance"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-hook.php:57
@@ -4046,6 +4051,10 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:400
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:402
 msgid "Search Log"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-log.php:401
+msgid "search log entries"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:62
