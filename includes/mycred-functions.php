@@ -11,7 +11,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 	class myCRED_Settings {
 
 		public $core;
-		public $db_name;
+		public $log_table;
 
 		/**
 		 * Construct

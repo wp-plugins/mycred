@@ -2,7 +2,7 @@
 /**
  * Addon: Notifications
  * Addon URI: http://mycred.me/add-ons/notifications/
- * Version: 1.0.1
+ * Version: 1.0.2
  * Description: Notify your users when their balances changes.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -41,7 +41,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 				'register'    => false,
 				'add_to_core' => true
 			) );
-			add_filter( 'mycred_add',           array( $this, 'mycred_add' ), 1, 3 );
+			add_filter( 'mycred_add',           array( $this, 'mycred_add' ), 99, 3 );
 		}
 		
 		/**
@@ -60,7 +60,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		/**
 		 * Load Notice in Footer
 		 * @since 1.2.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function wp_footer() {
 			$notices = apply_filters( 'mycred_notifications', array() );
@@ -70,12 +70,13 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 				$stay = 'false';
 			}
 
-			do_action( 'mycred_before_notifications', $notices );
+			do_action_ref_array( 'mycred_before_notifications', array( &$notices ) );
 			foreach ( $notices as $notice ) {
 				$notice = $this->core->template_tags_general( $notice );
+				$notice = str_replace( array( "\r", "\n", "\t" ), '', $notice );
 				echo '<script type="text/javascript">(function(jQuery){jQuery.noticeAdd({ text: "' . $notice . '",stay: ' . $stay . '});})(jQuery);</script>';
 			}
-			do_action( 'mycred_after_notifications', $notices );
+			do_action_ref_array( 'mycred_after_notifications', array( &$notices ) );
 		}
 		
 		/**
@@ -106,9 +107,11 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		/**
 		 * myCRED Add
 		 * @since 1.2.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function mycred_add( $reply, $request, $mycred ) {
+			if ( $reply !== true ) return $reply;
+
 			$template = $this->notifications['template'];
 			$template = str_replace( '%entry%', $request['entry'], $template );
 			$template = str_replace( '%amount%', $request['amount'], $template );
@@ -116,29 +119,10 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 			$template = $this->core->parse_template_tags( $template, (object) $request );
 			$template = apply_filters( 'mycred_notifications_note', $template, $request, $mycred );
 			
-			$this->add_notice( array( 'user_id' => $request['user_id'], 'message' => $template ) );
-			return $reply;
-		}
-		
-		/**
-		 * Add Notice
-		 * @since 1.2.3
-		 * @version 1.0
-		 */
-		public function add_notice( $notice ) {
-			// Get transient
-			$data = get_transient( 'mycred_notice_' . $notice['user_id'] );
+			if ( ! empty( $template ) )
+				mycred_add_new_notice( array( 'user_id' => $request['user_id'], 'message' => $template ), $this->notifications['life'] );
 
-			// If none exists create a new array
-			if ( $data === false || !is_array( $data ) )
-				$notices = array();
-			else
-				$notices = $data;
-			
-			// Add new notice
-			$notices[] = $notice['message'];
-			// Save as a transient
-			set_transient( 'mycred_notice_' . $notice['user_id'], $notices, DAY_IN_SECONDS*$this->notifications['life'] );
+			return $reply;
 		}
 		
 		/**
@@ -229,5 +213,30 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 	}
 	$notice = new myCRED_Notifications();
 	$notice->load();
+}
+
+/**
+ * Add Notice
+ * @since 1.2.3
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_add_new_notice' ) ) {
+	function mycred_add_new_notice( $notice = array(), $life = 1 ) {
+		if ( !isset( $notice['user_id'] ) || !isset( $notice['message'] ) ) return false;
+
+			// Get transient
+		$data = get_transient( 'mycred_notice_' . $notice['user_id'] );
+
+		// If none exists create a new array
+		if ( $data === false || !is_array( $data ) )
+			$notices = array();
+		else
+			$notices = $data;
+			
+		// Add new notice
+		$notices[] = $notice['message'];
+		// Save as a transient
+		set_transient( 'mycred_notice_' . $notice['user_id'], $notices, 86400*$life );
+	}
 }
 ?>

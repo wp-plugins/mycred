@@ -235,6 +235,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		public $status;
 
 		public $core;
+		public $log_table;
 
 		/**
 		 * Construct
@@ -242,7 +243,9 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		function __construct() {
 			// Status
 			$this->status = false;
-			$this->core = mycred_get_settings();
+			$mycred = mycred_get_settings();
+			$this->core = $mycred->core;
+			$this->log_table = $mycred->log_table;
 
 			// Setup Step
 			$this->step = false;
@@ -405,7 +408,12 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		 * @version 1.0
 		 */
 		public function settings_header() {
-			wp_enqueue_style( 'mycred-setup' );
+			wp_enqueue_style( 'mycred-setup' ); ?>
+
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ); ?>); }
+</style>
+<?php
 		}
 
 		/**
@@ -692,7 +700,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 
 			// Insert table
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS {$this->core->log_table} ( " . $sql . " );" );
+			dbDelta( "CREATE TABLE IF NOT EXISTS {$this->log_table} ( " . $sql . " );" );
 			add_option( 'mycred_version_db', '1.0', '', 'no' );
 			return true;
 		}
