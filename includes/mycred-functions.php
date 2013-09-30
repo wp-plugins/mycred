@@ -705,11 +705,11 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @version 1.2
 		 */
 		public function get_users_cred( $user_id = '', $type = '' ) {
-			if ( empty( $user_id ) ) return 0;
+			if ( empty( $user_id ) ) return $this->zero();
 
 			if ( empty( $type ) ) $type = $this->get_cred_id();
 			$balance = get_user_meta( $user_id, $type, true );
-			if ( empty( $balance ) ) $balance = 0;
+			if ( empty( $balance ) ) $balance = $this->zero();
 
 			// Let others play
 			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this, $user_id, $type );
@@ -1374,6 +1374,23 @@ if ( !function_exists( 'mycred_apply_defaults' ) ) {
 			else $return[$key] = $value;
 		}
 		return $return;
+	}
+}
+
+/**
+ * Get Remote API Settings
+ * @since 1.3
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_get_remote' ) ) {
+	function mycred_get_remote() {
+		$defaults = apply_filters( 'mycred_remote_defaults', array(
+			'enabled' => 0,
+			'key'     => '',
+			'uri'     => 'api-dev',
+			'debug'   => 0
+		) );
+		return mycred_apply_defaults( $defaults, get_option( 'mycred_pref_remote', array() ) );
 	}
 }
 ?>

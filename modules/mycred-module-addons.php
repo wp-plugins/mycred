@@ -242,26 +242,27 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page() {
 			// Security
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
 
 			// Get installed
-			$installed = $this->get( true );
-
-			// Message
-			if ( isset( $_GET['addon_action'] ) && isset( $_GET['token'] ) ) {
-				if ( $_GET['addon_action'] == 'activate' && wp_verify_nonce( $_GET['token'], 'myCRED-activate-addon' ) )
-					echo '<div class="updated"><p>' . __( 'Add-on Activated', 'mycred' ) . '</p></div>';
-				elseif ( $_GET['addon_action'] == 'deactivate' && wp_verify_nonce( $_GET['token'], 'myCRED-deactivate-addon' ) )
-					echo '<div class="error"><p>' . __( 'Add-on Deactivated', 'mycred' ) . '</p></div>';
-			} ?>
+			$installed = $this->get( true ); ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
 		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Add-ons', 'mycred' ); ?></h2>
+		<?php
+			// Message
+			if ( isset( $_GET['addon_action'] ) ) {
+				if ( $_GET['addon_action'] == 'activate' )
+					echo '<div class="updated"><p>' . __( 'Add-on Activated', 'mycred' ) . '</p></div>';
+				elseif ( $_GET['addon_action'] == 'deactivate' )
+					echo '<div class="error"><p>' . __( 'Add-on Deactivated', 'mycred' ) . '</p></div>';
+			} ?>
+
 		<p><?php _e( 'Add-ons can expand your current installation with further features.', 'mycred' ); ?></p>
 		<div class="list-items expandable-li" id="accordion">
 <?php

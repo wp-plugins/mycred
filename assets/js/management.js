@@ -120,11 +120,16 @@ jQuery(function($) {
 			success : function( data ) {
 				console.log( data );
 				
-				button.removeAttr( 'disabled' );
-				
 				if ( data.status == 'OK' ) {
-					button.val( myCREDmanage.done );
-					setTimeout(function(){ window.location.href = data.string; }, 1000 );
+					button.val( myCREDmanage.exporting );
+					setTimeout(function(){
+						window.location.href = data.string;
+						button.val( myCREDmanage.done );
+					}, 2000 );
+					setTimeout(function(){
+						button.removeAttr( 'disabled' );
+						button.val( label );
+					}, 4000 );
 				}
 				else {
 					button.val( label );
@@ -142,5 +147,37 @@ jQuery(function($) {
 	
 	$( '#mycred-run-exporter' ).click(function(){
 		mycred_action_export_balances( $(this) );
+	});
+	
+	var mycred_generate_key = function() {
+		$.ajax({
+			type : "POST",
+			data : {
+				action : 'mycred-action-generate-key',
+				token  : myCREDmanage.token
+			},
+			dataType : "JSON",
+			url : myCREDmanage.ajaxurl,
+			success : function( data ) {
+				$( '#myCRED-remote-key' ).val( data );
+				$( '#mycred-length-counter' ).text( data.length );
+			},
+			error   : function( jqXHR, textStatus, errorThrown ) {
+				// Debug
+				console.log( textStatus + ':' + errorThrown );
+			}
+		});
+	}
+	
+	$( '#mycred-generate-api-key' ).click(function(){
+		mycred_generate_key();
+	});
+	
+	$( '#myCRED-remote-key' ).change(function(){
+		$( '#mycred-length-counter' ).text( $(this).val().length );
+	});
+	
+	$( '#myCRED-remote-key' ).keyup(function(){
+		$( '#mycred-length-counter' ).text( $(this).val().length );
 	});
 });

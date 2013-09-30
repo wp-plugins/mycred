@@ -132,13 +132,13 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 == Upgrade Notice ==
 
 = 1.3 =
-Performance improvement and new features. REQUIRES WP 3.5 +
+Performance improvement, new Remote API, updated styling and bug fixes.
 
 
 == Other Notes ==
 
 = Requirements =
-* WordPress 3.5 or greater
+* WordPress 3.1 or greater
 * PHP version 5.2.4 or greater
 * MySQL version 5.0 or greater
 
@@ -161,11 +161,13 @@ Performance improvement and new features. REQUIRES WP 3.5 +
 * Added support for WP E-Commerce Shopping cart.
 * Added new constant MYCRED_LOG_TABLE to allow custom table names for the log.
 * Added new Management to settings page allowing to empty the log, reset all user points to zero or export all user balances to a CSV file.
+* Added myCRED Remote API to allow remote actions for sites.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.
 * Fixed Bug #55 - Users can transfer points to themselves.
 * Fixed Bug #56 - Incorrect use of ob_start() in myCRED widgets.
+* Fixed Bug #57 - Incorrect capability check on Multisites as edit_users is not available.
 
 
 = 1.2.3 =

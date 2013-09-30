@@ -38,9 +38,10 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			if ( isset( $_GET['do'] ) && $_GET['do'] == 'export' )
 				$this->load_export();
 
-			add_action( 'wp_ajax_mycred-action-empty-log',      array( $this, 'action_empty_log' ) );
-			add_action( 'wp_ajax_mycred-action-reset-accounts', array( $this, 'action_reset_balance' ) );
+			add_action( 'wp_ajax_mycred-action-empty-log',       array( $this, 'action_empty_log' ) );
+			add_action( 'wp_ajax_mycred-action-reset-accounts',  array( $this, 'action_reset_balance' ) );
 			add_action( 'wp_ajax_mycred-action-export-balances', array( $this, 'action_export_balances' ) );
+			add_action( 'wp_ajax_mycred-action-generate-key',    array( $this, 'action_generate_key' ) );
 		}
 
 		/**
@@ -126,7 +127,7 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			foreach ( $query as $result ) {
 				$data = array(
 					'mycred_user'   => $result->user,
-					'mycred_amount' => $result->balance
+					'mycred_amount' => $this->core->number( $result->balance )
 				);
 				
 				if ( ! empty( $log ) )
@@ -138,6 +139,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			set_transient( 'mycred-export-raw', apply_filters( 'mycred_export_raw', $array ), 3000 );
 			
 			die( json_encode( array( 'status' => 'OK', 'string' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
+		}
+
+		public function action_generate_key() {
+			check_ajax_referer( 'mycred-management-actions', 'token' );
+			
+			die( json_encode( wp_generate_password( 14, true, true ) ) );
 		}
 
 		/**
@@ -210,16 +217,17 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			// General Settings
 			$general = $this->general;
 
-			$plugin_name = apply_filters( 'mycred_label', myCRED_NAME );
+			$plugin_name = apply_filters( 'mycred_label', myCRED_NAME ); ?>
 
+	<div class="wrap list" id="myCRED-wrap">
+		<div id="icon-myCRED" class="icon32"><br /></div>
+		<h2><?php echo $plugin_name . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
+		<?php
 			// Updated settings
 			if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) {
 				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>';
 			} ?>
 
-	<div class="wrap list" id="myCRED-wrap">
-		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo $plugin_name . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
 		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
@@ -364,6 +372,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 					<?php do_action( 'mycred_management_prefs', $this ); ?>
 
 				</div>
+				<?php do_action( 'mycred_after_management_prefs', $this ); ?>
 				<?php do_action( 'mycred_after_core_prefs', $this ); ?>
 
 			</div>

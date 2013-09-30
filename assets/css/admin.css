@@ -22,6 +22,9 @@
 
 /* General */
 #myCRED-wrap .h2 { font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif; font-size: 22px; line-height: 29px; font-weight: normal; text-shadow: #fff 0 1px 0; }
+body.mp6 #myCRED-wrap .h2 { line-height: 15px; font-size: 18px; }
+body.mp6 #myCRED-wrap .h2 input[type="text"] { font-size: 14px; }
+#myCRED-wrap .h2 input[type="text"] { line-height: inherit; }
 
 /* Accordion */
 #myCRED-wrap #accordion { margin: 24px 0; padding: 0; float: none; clear: both; }
@@ -46,7 +49,8 @@ body.mp6 #myCRED-wrap #accordion .ui-accordion-header { border-top: 1px solid #f
 #myCRED-wrap #accordion h4 .comments { background-position-y: -192px; }
 #myCRED-wrap #accordion h4 .link_click { background-position-y: -240px; }
 #myCRED-wrap #accordion h4 .video_view { background-position-y: -288px; }
-#myCRED-wrap #accordion h4 .core { background-position-y: -336px; }
+#myCRED-wrap #accordion h4 .remote { background-position-y: -336px; }
+#myCRED-wrap #accordion h4 .core { background-position-y: -384px; }
 
 #myCRED-wrap #accordion h4 .icon-active { background-position-x: -48px; }
 #myCRED-wrap #accordion h4 .icon-inactive { background-position-x: 0; }
