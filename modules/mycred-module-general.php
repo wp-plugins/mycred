@@ -141,6 +141,12 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			die( json_encode( array( 'status' => 'OK', 'string' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
 		}
 
+		/**
+		 * Generate Key Action
+		 * Generates a random key for the API.
+		 * @since 1.3
+		 * @version 1.0
+		 */
 		public function action_generate_key() {
 			check_ajax_referer( 'mycred-management-actions', 'token' );
 			

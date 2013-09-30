@@ -21,7 +21,7 @@ if ( !class_exists( 'myCRED_Remote' ) ) {
 		public $recipient;
 		public $reply = 'PROCESSING';
 
-		protected $core;
+		public $core;
 		public $key;
 
 		/**
