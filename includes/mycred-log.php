@@ -327,9 +327,9 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		/**
 		 * Get The Entry
 		 * Generated a single entry row depending on the columns used / requested.
-		 *
+		 * @filter mycred_log_date
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function get_the_entry( $log_entry, $wrap = 'td' ) {
 			$date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
@@ -351,7 +351,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 					break;
 					// Date & Time Column
 					case 'column-time' :
-						$content = date_i18n( $date_format, $log_entry->time );
+						$content = apply_filters( 'mycred_log_date', date_i18n( $date_format, $log_entry->time ), $log_entry->time );
 					break;
 					// Amount Column
 					case 'column-creds' :

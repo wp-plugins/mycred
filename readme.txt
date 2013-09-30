@@ -28,6 +28,8 @@ So we built an adaptive plugin which gives it’s users full control on how poin
 * Custom My Balance Widget
 * Custom Leader board Widget
 * Minimum CSS Styling
+* Built-in log and balance reset
+* Export of users balances to CSV files
 
 
 **Built-in Add-ons:**
@@ -162,6 +164,7 @@ Performance improvement, new Remote API, updated styling and bug fixes.
 * Added new constant MYCRED_LOG_TABLE to allow custom table names for the log.
 * Added new Management to settings page allowing to empty the log, reset all user points to zero or export all user balances to a CSV file.
 * Added myCRED Remote API to allow remote actions for sites.
+* Added new mycred_log_date filter allowing to customise the log dates.
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.
