@@ -113,9 +113,6 @@ if ( !class_exists( 'myCRED_General' ) ) {
 				case 'email' :
 					$SQL = "SELECT user_email AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
 				break;
-				case 'login' :
-					$SQL = "SELECT user_login AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
-				break;
 			}
 			
 			$query = $wpdb->get_results( $wpdb->prepare( $SQL, 'mycred_default' ) );
@@ -394,11 +391,10 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 					<select id="mycred-export-identify-by">
 						<?php
 			
-			$identify = apply_filters( 'mycred_export_by', array(
+			$identify = array(
 				'ID'    => __( 'User ID', 'mycred' ),
-				'email' => __( 'User Email', 'mycred' ),
-				'login' => __( 'User Login', 'mycred' )
-			) );
+				'email' => __( 'User Email', 'mycred' )
+			);
 			
 			foreach ( $identify as $id => $label ) {
 				echo '<option value="' . $id . '">' . $label . '</option>';
