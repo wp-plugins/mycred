@@ -113,6 +113,9 @@ if ( !class_exists( 'myCRED_General' ) ) {
 				case 'email' :
 					$SQL = "SELECT user_email AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
 				break;
+				case 'login' :
+					$SQL = "SELECT user_login AS user, meta_value AS balance FROM {$wpdb->usermeta} LEFT JOIN {$wpdb->users} ON {$wpdb->usermeta}.user_id = {$wpdb->users}.ID WHERE {$wpdb->usermeta}.meta_key = %s;";
+				break;
 			}
 			
 			$query = $wpdb->get_results( $wpdb->prepare( $SQL, 'mycred_default' ) );
@@ -138,12 +141,6 @@ if ( !class_exists( 'myCRED_General' ) ) {
 			die( json_encode( array( 'status' => 'OK', 'string' => admin_url( 'admin.php?page=myCRED_page_settings&do=export' ) ) ) );
 		}
 
-		/**
-		 * Generate Key Action
-		 * Generates a random key for the API.
-		 * @since 1.3
-		 * @version 1.0
-		 */
 		public function action_generate_key() {
 			check_ajax_referer( 'mycred-management-actions', 'token' );
 			
@@ -232,6 +229,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			} ?>
 
 		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
+		<pre><?php if ( current_user_can( 'export' ) ) echo 'has cap'; else echo 'does not have cap'; ?></pre>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
 
@@ -324,7 +322,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'frequency' => 'date' ) ); ?>"><?php _e( 'Date', 'mycred' ); ?></label>
-							<div class="h2"><input type="date" name="<?php echo $this->field_name( array( 'frequency' => 'date' ) ); ?>" id="<?php echo $this->field_id( array( 'frequency' => 'date' ) ); ?>" value="<?php echo $this->core->frequency['date'] ?>" class="medium" /></div>
+							<div class="h2"><input type="date" name="<?php echo $this->field_name( array( 'frequency' => 'date' ) ); ?>" id="<?php echo $this->field_id( array( 'frequency' => 'date' ) ); ?>" placeholder="YYYY-MM-DD" value="<?php echo $this->core->frequency['date'] ?>" class="medium" /></div>
 						</li>
 					</ol>
 					<?php do_action( 'mycred_core_prefs', $this ); ?>
@@ -391,10 +389,11 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 					<select id="mycred-export-identify-by">
 						<?php
 			
-			$identify = array(
+			$identify = apply_filters( 'mycred_export_by', array(
 				'ID'    => __( 'User ID', 'mycred' ),
-				'email' => __( 'User Email', 'mycred' )
-			);
+				'email' => __( 'User Email', 'mycred' ),
+				'login' => __( 'User Login', 'mycred' )
+			) );
 			
 			foreach ( $identify as $id => $label ) {
 				echo '<option value="' . $id . '">' . $label . '</option>';

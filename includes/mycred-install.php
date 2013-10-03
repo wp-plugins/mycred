@@ -5,18 +5,21 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Used when the plugin is activated/de-activated or deleted. Installs core settings and
  * base templates, checks compatibility and uninstalls.
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Install' ) ) {
 	class myCRED_Install {
 
+		public $core;
 		public $ver;
 
 		/**
 		 * Construct
 		 */
 		function __construct() {
-			$this->ver = get_option( 'mycred_version' );
+			$this->core = mycred_get_settings();
+			// Get main sites settings
+			$this->ver = get_blog_option( 1, 'mycred_version', false );
 		}
 
 		/**
@@ -54,60 +57,29 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		/**
 		 * First time activation
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		public function activate() {
 			// Add general settings
-			$general = array(
-				'cred_id'   => 'mycred_default',
-				'format'    => array(
-					'type'       => '',
-					'decimals'   => 0,
-					'separators' => array(
-						'decimal'   => '.',
-						'thousand'  => ','
-					)
-				),
-				'name'      => array(
-					'singular' => '',
-					'plural'   => ''
-				),
-				'before'    => '',
-				'after'     => '',
-				'caps'      => array(
-					'plugin'   => 'manage_options',
-					'creds'    => 'delete_users'
-				),
-				'exclude'   => array(
-					'plugin_editors' => false,
-					'cred_editors'   => false,
-					'list'           => ''
-				),
-				'frequency' => array(
-					'rate'     => 'always',
-					'date'     => ''
-				)
-			);
-			add_option( 'mycred_pref_core', $general );
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->core->defaults() );
 
 			// Add add-ons settings
-			$addons = array(
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_addons', array(
 				'installed' => array(),
 				'active'    => array()
-			);
-			add_option( 'mycred_pref_addons', $addons );
+			) );
 
 			// Add hooks settings
-			$hooks = array(
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_hooks', array(
 				'installed'  => array(),
 				'active'     => array(),
 				'hook_prefs' => array()
-			);
-			add_option( 'mycred_pref_hooks', $hooks );
+			) );
 
 			// Add version number making sure we never run this function again
-			add_option( 'mycred_version', myCRED_VERSION );
-			add_option( 'mycred_key',     wp_generate_password( 12, true, true ), '', 'no' );
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_version', myCRED_VERSION );
+			$key = wp_generate_password( 12, true, true );
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_key', $key );
 		}
 
 		/**
@@ -143,25 +115,25 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// Delete each option
 			foreach ( $installed as $option_id ) {
-				delete_option( $option_id );
+				delete_blog_option( $GLOBALS['blog_id'], $option_id );
 			}
 
 			// Delete flags
-			delete_option( 'mycred_setup_completed' );
-			delete_option( 'mycred_version' );
-			delete_option( 'mycred_version_db' );
-			delete_option( 'mycred_key' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_setup_completed' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_version' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_version_db' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_key' );
 
 			// Delete widget options
-			delete_option( 'widget_mycred_widget_balance' );
-			delete_option( 'widget_mycred_widget_list' );
-			delete_option( 'widget_mycred_widget_transfer' );
+			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_balance' );
+			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_list' );
+			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_transfer' );
 
-			delete_option( 'mycred_transients' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_transients' );
 
 			// Remove Add-on settings
-			delete_option( 'mycred_espresso_gateway_prefs' );
-			delete_option( 'mycred_eventsmanager_gateway_prefs' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_espresso_gateway_prefs' );
+			delete_blog_option( $GLOBALS['blog_id'], 'mycred_eventsmanager_gateway_prefs' );
 
 			// Clear Cron
 			wp_clear_scheduled_hook( 'mycred_reset_key' );
@@ -178,7 +150,12 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			if ( defined( 'MYCRED_LOG_TABLE' ) )
 				$table_name = MYCRED_LOG_TABLE;
 			else {
-				$table_name = $wpdb->base_prefix . 'myCRED_log';
+				global $wpdb;
+				
+				if ( mycred_centralize_log() )
+					$table_name = $wpdb->base_prefix . 'myCRED_log';
+				else
+					$table_name = $wpdb->prefix . 'myCRED_log';
 			}
 
 			$wpdb->query( "DROP TABLE IF EXISTS {$table_name};" );
@@ -271,7 +248,6 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			$screen = get_current_screen();
 			if ( $screen->id == 'plugins_page_myCRED-setup' ) return;
 
-			$image_url = plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS );
 			echo '
 			<div class="updated">
 				<p>' . __( 'myCRED needs your attention.', 'mycred' ) . ' <a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Run Setup', 'mycred' ) . '</a></p>
@@ -356,7 +332,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 					$settings['format']['type'] = 'bigint';
 
 				// Install database
-				$installation = $this->install_database( $settings['format']['decimals'] );
+				mycred_install_log( $settings['format']['decimals'], $this->log_table );
 
 				// Name
 				$settings['name']['singular'] = sanitize_text_field( $_POST['myCRED-name-singular'] );
@@ -374,7 +350,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			elseif ( $step == 3 ) {
 				// Capabilities
 				$settings['caps']['plugin'] = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? trim( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
-				$settings['caps']['creds'] = ( isset( $_POST['myCRED-cap-creds'] ) ) ? trim( $_POST['myCRED-cap-creds'] ) : 'delete_users';
+				$settings['caps']['creds'] = ( isset( $_POST['myCRED-cap-creds'] ) ) ? trim( $_POST['myCRED-cap-creds'] ) : 'export';
 
 				// Excludes
 				$settings['exclude']['plugin_editors'] = ( isset( $_POST['myCRED-exclude-plugin-editors'] ) ) ? true : false;
@@ -576,7 +552,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			
 			// Capabilities
 			$edit_plugin = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
-			$edit_creds = ( isset( $_POST['myCRED-cap-creds'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-creds'] ) : 'edit_users';
+			$edit_creds = ( isset( $_POST['myCRED-cap-creds'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-creds'] ) : 'export';
 
 			// Excludes
 			$exclude_plugin_editors = ( isset( $_POST['myCRED-exclude-plugin-editors'] ) ) ? 1 : 0;
@@ -633,7 +609,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 				<li class="empty">&nbsp;</li>
 				<li>
 					<label for="myCRED-freq-date"><?php _e( 'Date', 'mycred' ); ?></label>
-					<div class="h2"><input type="date" name="myCRED-freq-date" id="myCRED-freq-date" value="" class="medium" /></div>
+					<div class="h2"><input type="date" name="myCRED-freq-date" id="myCRED-freq-date" value="" class="medium" placeholder="YYYY-MM-DD" /></div>
 				</li>
 			</ol>
 
@@ -661,48 +637,6 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			<p class="action-row"><a href="<?php echo admin_url( '/admin.php?page=myCRED' ); ?>" class="button button-primary button-large"><?php _e( 'Install & Run', 'mycred' ); ?></a></p>
 		</form>
 <?php
-		}
-
-		/**
-		 * Install Database
-		 * @since 0.1
-		 * @version 1.2
-		 */
-		protected function install_database( $decimals = 0 ) {
-			// If DB is already installed bail pretending that everything is fine
-			if ( get_option( 'mycred_version_db' ) !== false ) return true;
-
-			// Format
-			if ( $decimals > 0 ) {
-				if ( $decimals > 4 )
-					$cred_format = "decimal(32,$decimals)";
-				else
-					$cred_format = "decimal(22,$decimals)";
-			}
-			else {
-				$cred_format = 'bigint(22)';
-			}
-
-			global $wpdb;
-
-			// Log structure
-			$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
-				ref VARCHAR(256) NOT NULL, 
-				ref_id int(11) DEFAULT NULL, 
-				user_id int(11) DEFAULT NULL, 
-				creds $cred_format DEFAULT NULL, 
-				ctype VARCHAR(64) DEFAULT 'mycred_default', 
-				time bigint(20) DEFAULT NULL, 
-				entry LONGTEXT DEFAULT NULL, 
-				data LONGTEXT DEFAULT NULL, 
-				PRIMARY KEY  (id), 
-				UNIQUE KEY id (id)"; 
-
-			// Insert table
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( "CREATE TABLE IF NOT EXISTS {$this->log_table} ( " . $sql . " );" );
-			add_option( 'mycred_version_db', '1.0', '', 'no' );
-			return true;
 		}
 	}
 }

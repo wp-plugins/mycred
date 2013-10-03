@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Addons class
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Addons' ) ) {
 	class myCRED_Addons extends myCRED_Module {
@@ -85,8 +85,12 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 
 				if ( !function_exists( 'update_option' ) )
 					include_once( ABSPATH . 'wp-includes/option.php' );
-				
-				update_option( 'mycred_pref_addons', $new_settings );
+
+				if ( mycred_override_settings() )
+					update_site_option( 1, 'mycred_pref_addons', $new_settings );
+				else
+					update_site_option( $GLOBALS['blog_id'], 'mycred_pref_addons', $new_settings );
+
 				$this->addons = $new_settings;
 				$this->installed = $installed;
 				$this->active = $active;

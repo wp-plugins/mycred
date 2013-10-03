@@ -17,10 +17,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * Construct
 		 */
 		function __construct() {
-			if ( mycred_overwrite() === false )
-				$this->core = get_option( 'mycred_pref_core' );
+			if ( mycred_override_settings() )
+				$this->core = get_blog_option( 1, 'mycred_pref_core', $this->defaults() );
 			else
-				$this->core = get_blog_option( 1, 'mycred_pref_core' );
+				$this->core = get_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->defaults() );
 
 			if ( $this->core !== false ) {
 				foreach ( (array) $this->core as $key => $value ) {
@@ -32,8 +32,50 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				$this->log_table = MYCRED_LOG_TABLE;
 			else {
 				global $wpdb;
-				$this->log_table = $wpdb->base_prefix . 'myCRED_log';
+				
+				if ( mycred_centralize_log() )
+					$this->log_table = $wpdb->base_prefix . 'myCRED_log';
+				else
+					$this->log_table = $wpdb->prefix . 'myCRED_log';
 			}
+		}
+		
+		/**
+		 * Default Settings
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function defaults() {
+			return array(
+				'cred_id'   => 'mycred_default',
+				'format'    => array(
+					'type'       => '',
+					'decimals'   => 0,
+					'separators' => array(
+						'decimal'   => '.',
+						'thousand'  => ','
+					)
+				),
+				'name'      => array(
+					'singular' => __( 'Point', 'mycred' ),
+					'plural'   => __( 'Points', 'mycred' )
+				),
+				'before'    => '',
+				'after'     => '',
+				'caps'      => array(
+					'plugin'   => 'manage_options',
+					'creds'    => 'export'
+				),
+				'exclude'   => array(
+					'plugin_editors' => 0,
+					'cred_editors'   => 0,
+					'list'           => ''
+				),
+				'frequency' => array(
+					'rate'     => 'always',
+					'date'     => ''
+				)
+			);
 		}
 
 		/**
@@ -962,35 +1004,48 @@ if ( !function_exists( 'mycred_get_settings_network' ) ) {
 	{
 		if ( !is_multisite() ) return false;
 
-		global $mycred_network;
+		$defaults = array(
+			'master'  => 0,
+			'central' => 0,
+			'block'   => ''
+		);
+		$settings = get_blog_option( 1, 'mycred_network', $defaults );
 
-		if ( !isset( $mycred_network ) ) {
-			$defaults = array(
-				'master' => 0,
-				'block'  => ''
-			);
-			$mycred_network = get_site_option( 'mycred_network', $defaults );
-		}
-
-		return $mycred_network;
+		return $settings;
 	}
 }
 
 /**
- * Overwrite
- * Checks if master template is used.
- * Requires Multisite
- *
+ * Override Settings
  * @since 0.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_overwrite' ) ) {
-	function mycred_overwrite() {
+if ( !function_exists( 'mycred_override_settings' ) ) {
+	function mycred_override_settings() {
 		// Not a multisite
-		if ( !is_multisite() ) return false;
+		if ( ! is_multisite() ) return false;
 
 		$mycred_network = mycred_get_settings_network();
-		return (bool) $mycred_network['master'];
+		if ( $mycred_network['master'] ) return true;
+		
+		return false;
+	}
+}
+
+/**
+ * Centralize Log
+ * @since 1.3
+ * @version 1.0
+ */
+if ( !function_exists( 'mycred_centralize_log' ) ) {
+	function mycred_centralize_log() {
+		// Not a multisite
+		if ( ! is_multisite() ) return true;
+
+		$mycred_network = mycred_get_settings_network();
+		if ( $mycred_network['central'] ) return true;
+		
+		return false;
 	}
 }
 
@@ -1392,5 +1447,110 @@ if ( !function_exists( 'mycred_get_remote' ) ) {
 		) );
 		return mycred_apply_defaults( $defaults, get_option( 'mycred_pref_remote', array() ) );
 	}
+}
+
+/**
+ * Is myCRED Ready
+ * @since 1.3
+ * @version 1.0
+ */
+function is_mycred_ready()
+{
+	global $mycred;
+	$mycred = new myCRED_Settings();
+
+	// By default we start with the main sites setup. If it is not a multisite installation
+	// get_blog_option() will default to get_option() for us.
+	$setup = get_blog_option( 1, 'mycred_setup_completed' );
+
+	// If it is a multisite and the master template is not used, check if this site has
+	// been installed
+	if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() )
+		$setup = get_blog_option( $GLOBALS['blog_id'], 'mycred_setup_completed' );
+
+	// Make sure that if we switch from central log to seperate logs, we install this
+	// log if it does not exists.
+	if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() ) {
+		mycred_install_log( $mycred->core['format']['decimals'], $mycred->log_table );
+	}
+
+	// If setup is set, we are ready
+	if ( $setup !== false ) return true;
+
+	// If we have come this far we need to load the setup
+	require_once( myCRED_INCLUDES_DIR . 'mycred-install.php' );
+	$setup = new myCRED_Setup();
+	return $setup->status();
+}
+
+/**
+ * Is myCRED Enabled
+ * @since 1.3
+ * @version 1.0
+ */
+function is_mycred_enabled()
+{
+	// Not a multisite = enabled
+	if ( !is_multisite() ) return true;
+
+	$prefs = mycred_get_settings_network();
+
+	// Disable list is empty = enabled
+	if ( empty( $prefs['block'] ) ) return true;
+
+	// Not in disable list = enabled
+	$blog_ids = explode( ',', $prefs['block'] );
+	if ( !in_array( $GLOBALS['blog_id'], $blog_ids ) ) return true;
+
+	// All else = disabled
+	return false;
+}
+
+/**
+ * Install Log
+ * Installs the log for a site.
+ * Requires Multisite
+ * @since 1.3
+ * @version 1.1
+ */
+function mycred_install_log( $decimals = 0, $table = NULL )
+{
+	if ( get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
+
+	global $wpdb;
+
+	if ( $table === NULL ) {
+		$mycred = mycred_get_settings();
+		$table = $mycred->log_table;
+	}
+
+	if ( $decimals > 0 ) {
+		if ( $decimals > 4 )
+			$cred_format = "decimal(32,$decimals)";
+		else
+			$cred_format = "decimal(22,$decimals)";
+	}
+	else {
+		$cred_format = 'bigint(22)';
+	}
+
+	// Log structure
+	$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
+		ref VARCHAR(256) NOT NULL, 
+		ref_id int(11) DEFAULT NULL, 
+		user_id int(11) DEFAULT NULL, 
+		creds $cred_format DEFAULT NULL, 
+		ctype VARCHAR(64) DEFAULT 'mycred_default', 
+		time bigint(20) DEFAULT NULL, 
+		entry LONGTEXT DEFAULT NULL, 
+		data LONGTEXT DEFAULT NULL, 
+		PRIMARY KEY  (id), 
+		UNIQUE KEY id (id)"; 
+
+	// Insert table
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " );" );
+	add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
+	return true;
 }
 ?>

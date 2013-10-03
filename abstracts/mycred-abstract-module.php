@@ -4,7 +4,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Module class
  * @see http://mycred.me/classes/mycred_module/
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 if ( !class_exists( 'myCRED_Module' ) ) {
 	abstract class myCRED_Module {
@@ -110,10 +110,10 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 						}
 						// Loop and grab
 						foreach ( $this->option_id as $option_id => $option_name ) {
-							if ( mycred_overwrite() === false )
-								$settings = get_option( $option_id );
-							else
+							if ( mycred_override_settings() )
 								$settings = get_blog_option( 1, $option_id );
+							else
+								$settings = get_blog_option( $GLOBALS['blog_id'], $option_id );
 
 							if ( $settings === false && array_key_exists( $option_id, $defaults ) )
 								$this->$module[$option_name] = $defaults[$option_id];
@@ -133,10 +133,10 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 						}
 						// Grab the requested option
 						else {
-							if ( mycred_overwrite() === false )
-								$this->$module = get_option( $this->option_id );
-							else
+							if ( mycred_override_settings() )
 								$this->$module = get_blog_option( 1, $this->option_id );
+							else
+								$this->$module = get_blog_option( $GLOBALS['blog_id'], $this->option_id );
 
 							if ( $this->$module === false && !empty( $defaults ) )
 								$this->$module = $defaults;
@@ -295,7 +295,7 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 		 */
 		function add_menu() {
 			// Network Setting for Multisites
-			if ( ( is_multisite() && mycred_overwrite() === true ) && ( $this->screen_id != 'myCRED' || $GLOBALS['blog_id'] != 1 ) ) return;
+			if ( mycred_override_settings() && $GLOBALS['blog_id'] > 1 && $this->screen_id != 'myCRED' ) return;
 
 			if ( !empty( $this->labels ) && !empty( $this->screen_id ) ) {
 				// Menu Label

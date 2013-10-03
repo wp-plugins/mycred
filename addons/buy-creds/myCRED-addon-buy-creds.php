@@ -408,7 +408,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			foreach ( $installed as $id => $gdata ) {
 				$data['gateway_prefs'][$id] = $this->call( 'sanitise_preferences', $installed[$id]['callback'], $data['gateway_prefs'][$id] );
 			}
-			update_option( 'gabe_testing', $data );
+
 			unset( $installed );
 			return $data;
 		}

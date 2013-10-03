@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Hooks class
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !class_exists( 'myCRED_Hooks' ) ) {
 	class myCRED_Hooks extends myCRED_Module {
@@ -129,7 +129,10 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 					'installed'  => $installed,
 					'hook_prefs' => $this->hook_prefs
 				);
-				update_option( 'mycred_pref_hooks', $new_data );
+				if ( mycred_override_settings() )
+					update_site_option( 1, 'mycred_pref_hooks', $new_data );
+				else
+					update_site_option( $GLOBALS['blog_id'], 'mycred_pref_hooks', $new_data );
 			}
 
 			$this->installed = $installed;

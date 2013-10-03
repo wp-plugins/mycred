@@ -13,10 +13,10 @@ class myCRED_Protect {
 	 * Construct
 	 */
 	public function __construct( $new_key = '' ) {
-		if ( mycred_overwrite() === false )
-			$skey = get_option( 'mycred_key' );
-		else
+		if ( mycred_override_settings() )
 			$skey = get_blog_option( 1, 'mycred_key' );
+		else
+			$skey = get_blog_option( $GLOBALS['blog_id'], 'mycred_key' );
 
 		if ( $skey === false || ( $new_key === true && function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) ) {
 			$skey = $this->reset_key();
