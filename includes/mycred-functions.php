@@ -1484,29 +1484,6 @@ function is_mycred_ready()
 }
 
 /**
- * Is myCRED Enabled
- * @since 1.3
- * @version 1.0
- */
-function is_mycred_enabled()
-{
-	// Not a multisite = enabled
-	if ( !is_multisite() ) return true;
-
-	$prefs = mycred_get_settings_network();
-
-	// Disable list is empty = enabled
-	if ( empty( $prefs['block'] ) ) return true;
-
-	// Not in disable list = enabled
-	$blog_ids = explode( ',', $prefs['block'] );
-	if ( !in_array( $GLOBALS['blog_id'], $blog_ids ) ) return true;
-
-	// All else = disabled
-	return false;
-}
-
-/**
  * Install Log
  * Installs the log for a site.
  * Requires Multisite

@@ -19,7 +19,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		function __construct() {
 			$this->core = mycred_get_settings();
 			// Get main sites settings
-			$this->ver = get_blog_option( 1, 'mycred_version', false );
+			$this->ver = get_option( 'mycred_version', false );
 		}
 
 		/**
