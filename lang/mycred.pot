@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-10-04 14:58+0100\n"
-"PO-Revision-Date: 2013-10-04 14:58+0100\n"
+"POT-Creation-Date: 2013-10-04 17:02+0100\n"
+"PO-Revision-Date: 2013-10-04 17:02+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -60,6 +60,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/mycred.php:476
 #: /Users/gabriel/Repositories/mycred/trunk/addons/email-notices/myCRED-addon-email-notices.php:624
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:415
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:476
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-install.php:408
 msgid "Setup"
@@ -2107,6 +2108,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:100
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:326
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:411
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:435
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:496
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:525
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:594
@@ -2137,12 +2139,14 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:411
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:341
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:495
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:556
 msgid "Messages"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:414
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:352
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:505
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:566
 msgid "Insufficient Funds"
 msgstr ""
@@ -2394,12 +2398,14 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:24
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:418
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:479
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:313
 msgid "Payments"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:25
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:35
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:31
 msgid "Pay Now"
 msgstr ""
@@ -2423,6 +2429,7 @@ msgid "Gateway Settings"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:376
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:408
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:466
 #, php-format
 msgid "How many %s is 1 %s worth?"
@@ -2433,6 +2440,7 @@ msgid "Gateways Settings Successfully Updated"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:390
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:471
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:532
 msgid "Labels"
 msgstr ""
@@ -2454,6 +2462,7 @@ msgid "Title to show on receipts and logs"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:403
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:488
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:549
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:349
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:541
@@ -2465,6 +2474,8 @@ msgid "Pay Button"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:408
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:131
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:134
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:290
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:293
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:340
@@ -2532,36 +2543,145 @@ msgstr ""
 msgid "Update Settings"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:29
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:25
 msgid "Payment for tickets to %link_with_title%"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:30
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:26
 msgid "Ticket refund for %link_with_title%"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:34
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:30
 msgid "Pay using your %_plural% balance"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:36
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:32
 msgid "Pay"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:39
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:35
 msgid "Thank you for your payment!"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:40
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:36
 msgid "I'm sorry but you can not pay for these tickets using %_plural%"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:128
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:287
 msgid "Ticket Type"
 msgstr ""
 
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:137
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:296
 msgid "Spaces"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:219
+msgid "You can not pay using this gateway."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:340
+msgid "Reject"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:344
+msgid "Delete"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:349
+msgid "Edit/View"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:420
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:481
+msgid "Disabled - Users CAN NOT pay for tickets using %plural%."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:421
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:482
+msgid "Single - Users can ONLY pay for tickets using %plural%."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:422
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:483
+msgid "Multi - Users can pay for tickets using other gateways or %plural%."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:426
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:452
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:487
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:513
+msgid "Refunds"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:429
+msgid ""
+"The percentage of the paid amount to refund if a user cancells their "
+"booking. Use zero for no refunds. No refunds are given to \"Rejected\" "
+"bookings!"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:442
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:503
+msgid "Log Templates"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:445
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:506
+msgid "Purchases"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:448
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:455
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:509
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:516
+msgid "Available template tags: General and Post related."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:474
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:535
+msgid "Payment Link Label"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:477
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:538
+msgid ""
+"The payment link shows / hides the payment form under \"My Bookings\". No "
+"HTML allowed."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:481
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:542
+msgid "Payment Header"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:484
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:545
+msgid "Shown on top of the payment form. No HTML allowed."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:491
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:552
+msgid "The button label for payments. No HTML allowed!"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:498
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:559
+msgid "Successful Payments"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:501
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:508
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:562
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:569
+msgid "No HTML allowed! Available template tags: General"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:365
@@ -2577,71 +2697,10 @@ msgstr ""
 msgid "%s Payments"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:481
-msgid "Disabled - Users CAN NOT pay for tickets using %plural%."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:482
-msgid "Single - Users can ONLY pay for tickets using %plural%."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:483
-msgid "Multi - Users can pay for tickets using other gateways or %plural%."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:487
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:513
-msgid "Refunds"
-msgstr ""
-
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:490
 msgid ""
 "The percentage of the paid amount to refund if a booking gets cancelled. Use "
 "zero for no refunds. No refunds are given to \"Rejected\" bookings."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:503
-msgid "Log Templates"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:506
-msgid "Purchases"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:509
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:516
-msgid "Available template tags: General and Post related."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:535
-msgid "Payment Link Label"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:538
-msgid ""
-"The payment link shows / hides the payment form under \"My Bookings\". No "
-"HTML allowed."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:542
-msgid "Payment Header"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:545
-msgid "Shown on top of the payment form. No HTML allowed."
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:552
-msgid "The button label for payments. No HTML allowed!"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:559
-msgid "Successful Payments"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:562
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:569
-msgid "No HTML allowed! Available template tags: General"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:12
