@@ -620,7 +620,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 /**
  * Hook for comments
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 	class myCRED_Hook_Comments extends myCRED_Hook {
@@ -638,15 +638,23 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					),
 					'approved' => array(
 						'creds'   => 1,
-						'log'     => '%plural% for Approved Comment'
+						'log'     => '%plural% for Approved Comment',
+						'author'  => 0
 					),
 					'spam'     => array(
 						'creds'   => '-5',
-						'log'     => '%plural% deduction for Comment marked as SPAM'
+						'log'     => '%plural% deduction for Comment marked as SPAM',
+						'author'  => 0
 					),
 					'trash'    => array(
 						'creds'   => '-1',
-						'log'     => '%plural% deduction for deleted / unapproved Comment'
+						'log'     => '%plural% deduction for deleted / unapproved Comment',
+						'author'  => 0
+					),
+					'author'   => array(
+						'creds'   => 1,
+						'log'     => '%plural% for Approved Comment on your post',
+						'author'  => 0
 					)
 				)
 			), $hook_prefs );
@@ -681,7 +689,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
@@ -704,17 +712,18 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			}
 
 			$reference = '';
+			$instance = 'approved';
 
 			// Approved comments
 			if ( $this->prefs['approved']['creds'] != 0 && $new_status == 'approved' ) {
 				// New approved comment
 				if ( $old_status == 'unapproved' || $old_status == 'hold' ) {
-					// Enforce limits
-					if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) ) return;
-
 					$reference = 'approved_comment';
-					$points = $this->prefs['approved']['creds'];
+					$points = $points_author = $this->prefs['approved']['creds'];
 					$log = $this->prefs['approved']['log'];
+					
+					if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) )
+						$points = 0;
 				}
 
 				// Marked as "Not Spam"
@@ -722,10 +731,14 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					$reference = 'approved_comment';
 
 					// Reverse points
-					if ( $this->prefs['spam']['creds'] < 0 )
+					if ( $this->prefs['spam']['creds'] < 0 ) {
 						$points = abs( $this->prefs['spam']['creds'] );
-					else
+						$points_author = abs( $this->prefs['spam']['author'] );
+					}
+					else {
 						$points = $this->prefs['spam']['creds'];
+						$points_author = $this->prefs['spam']['author'];
+					}
 
 					$log = $this->prefs['approved']['log'];
 				}
@@ -734,10 +747,14 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				elseif ( $this->prefs['trash']['creds'] != 0 && $old_status == 'trash' ) {
 					$reference = 'approved_comment';
 					// Reverse points
-					if ( $this->prefs['trash']['creds'] < 0 )
+					if ( $this->prefs['trash']['creds'] < 0 ) {
 						$points = abs( $this->prefs['trash']['creds'] );
-					else
+						$points_author = abs( $this->prefs['trash']['author'] );
+					}
+					else {
 						$points = $this->prefs['trash']['creds'];
+						$points_author = $this->prefs['trash']['author'];
+					}
 
 					$log = $this->prefs['approved']['log'];
 				}
@@ -746,40 +763,66 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			// Spam comments
 			elseif ( $this->prefs['spam'] != 0 && $new_status == 'spam' ) {
 				$reference = 'spam_comment';
-				$points = $this->prefs['spam']['creds'];
+				$points = $points_author = $this->prefs['spam']['creds'];
 				$log = $this->prefs['spam']['log'];
+				$instance = 'spam';
 			}
 
 			// Trashed comments
 			elseif ( $this->prefs['trash'] != 0 && $new_status == 'trash' ) {
 				$reference = 'deleted_comment';
-				$points = $this->prefs['trash']['creds'];
+				$points = $points_author = $this->prefs['trash']['creds'];
 				$log = $this->prefs['trash']['log'];
+				$instance = 'trash';
 			}
 
 			// Unapproved comments
 			elseif ( $new_status == 'unapproved' && $old_status == 'approved' ) {
 				$reference = 'deleted_comment';
 				// Reverse points
-				if ( $this->prefs['approved']['creds'] < 0 )
+				if ( $this->prefs['approved']['creds'] < 0 ) {
 					$points = abs( $this->prefs['approved']['creds'] );
-				else
+					$points_author = abs( $this->prefs['approved']['author'] );
+				}
+				else {
 					$points = $this->prefs['approved']['creds'];
+					$points_author = $this->prefs['approved']['author'];
+				}
 
 				$log = $this->prefs['trash']['log'];
+				$instance = 'trash';
 			}
 
-			if ( empty( $reference ) ) return;
-
 			// Execute
-			$this->core->add_creds(
-				$reference,
-				$comment->user_id,
-				$points,
-				$log,
-				$comment->comment_ID,
-				array( 'ref_type' => 'comment' )
-			);
+			if ( ! empty( $reference ) ) {
+				if ( $points != 0 ) {
+					$this->core->add_creds(
+						$reference,
+						$comment->user_id,
+						$points,
+						$log,
+						$comment->comment_ID,
+						array( 'ref_type' => 'comment' )
+					);
+				}
+			
+				// Content Author
+				if ( $points_author != 0 ) {
+					// Get post author
+					$post = get_post( (int) $comment->comment_post_ID );
+					// Make sure post still exists and author is not the commenter
+					if ( $post !== NULL && $comment->user_id != $post->post_author ) {
+						$this->core->add_creds(
+							$reference,
+							$comment->user_id,
+							$points_author,
+							$log,
+							$comment->comment_ID,
+							array( 'ref_type' => 'comment' )
+						);
+					}
+				}
+			}
 		}
 
 		/**
@@ -859,37 +902,52 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					'per_day'    => 0
 				); ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>"><?php _e( 'Approved Comment', 'mycred' ); ?></label>
-					<ol>
+					<label class="subheader"><?php _e( 'Approved Comment', 'mycred' ); ?></label>
+					<ol class="inline">
 						<li>
+							<label for="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['approved']['creds'] ); ?>" size="8" /></div>
 						</li>
-						<li class="empty">&nbsp;</li>
 						<li>
+							<label for="<?php echo $this->field_id( array( 'approved' => 'author' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['approved']['author'] ); ?>" size="8" /></div>
+						</li>
+						<li class="block empty">&nbsp;</li>
+						<li class="block">
 							<label for="<?php echo $this->field_id( array( 'approved' => 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'log' ) ); ?>" value="<?php echo $prefs['approved']['log']; ?>" class="long" /></div>
 							<span class="description"><?php _e( 'Available template tags: General, Comment', 'mycred' ); ?></span>
 						</li>
 					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>"><?php _e( 'Comment Marked SPAM', 'mycred' ); ?></label>
-					<ol>
+					<label class="subheader"><?php _e( 'Comment Marked SPAM', 'mycred' ); ?></label>
+					<ol class="inline">
 						<li>
+							<label for="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['spam']['creds'] ); ?>" size="8" /></div>
 						</li>
-						<li class="empty">&nbsp;</li>
 						<li>
+							<label for="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['spam']['author'] ); ?>" size="8" /></div>
+						</li>
+						<li class="block empty">&nbsp;</li>
+						<li class="block">
 							<label for="<?php echo $this->field_id( array( 'spam' => 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'log' ) ); ?>" value="<?php echo $prefs['spam']['log']; ?>" class="long" /></div>
 							<span class="description"><?php _e( 'Available template tags: General, Comment', 'mycred' ); ?></span>
 						</li>
 					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>"><?php _e( 'Trashed / Unapproved Comments', 'mycred' ); ?></label>
-					<ol>
+					<label class="subheader"><?php _e( 'Trashed / Unapproved Comments', 'mycred' ); ?></label>
+					<ol class="inline">
 						<li>
+							<label for="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['trash']['creds'] ); ?>" size="8" /></div>
 						</li>
-						<li class="empty">&nbsp;</li>
 						<li>
+							<label for="<?php echo $this->field_id( array( 'trash' => 'author' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['trash']['author'] ); ?>" size="8" /></div>
+						</li>
+						<li class="block empty">&nbsp;</li>
+						<li class="block">
 							<label for="<?php echo $this->field_id( array( 'trash' => 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'log' ) ); ?>" value="<?php echo $prefs['trash']['log']; ?>" class="long" /></div>
 							<span class="description"><?php _e( 'Available template tags: General, Comment', 'mycred' ); ?></span>

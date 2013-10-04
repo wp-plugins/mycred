@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-10-04 18:25+0100\n"
-"PO-Revision-Date: 2013-10-04 18:25+0100\n"
+"POT-Creation-Date: 2013-10-04 19:04+0100\n"
+"PO-Revision-Date: 2013-10-04 19:04+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +87,7 @@ msgid "This Hook has no settings"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-hook.php:133
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:980
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1038
 msgid "No limit"
 msgstr ""
 
@@ -296,8 +296,8 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:135
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:337
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:440
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1137
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1407
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1195
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1465
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:110
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:112
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:121
@@ -352,7 +352,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:227
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/services/mycred-bank-service-payouts.php:240
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1422
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1480
 msgid "Interval"
 msgstr ""
 
@@ -431,7 +431,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:429
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:450
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:444
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1411
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1469
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-gd-star-rating.php:109
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-gd-star-rating.php:122
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-invite-anyone.php:144
@@ -646,9 +646,9 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:546
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:559
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:594
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:869
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:881
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:893
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:917
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:934
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:951
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-badgeOS.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:414
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:427
@@ -3706,8 +3706,8 @@ msgid "Log template for receiving"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:199
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:898
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1144
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:956
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1202
 msgid "Limits"
 msgstr ""
 
@@ -4720,117 +4720,129 @@ msgstr ""
 msgid "%plural% for %s"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:862
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:905
 msgid "Approved Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:871
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:883
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:895
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:908
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:925
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:942
+msgid "Comment Author"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:912
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:929
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:946
+msgid "Content Author"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:919
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:936
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:953
 msgid "Available template tags: General, Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:874
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:922
 msgid "Comment Marked SPAM"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:886
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:939
 msgid "Trashed / Unapproved Comments"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:901
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:959
 msgid "Limit per post"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:903
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:961
 msgid ""
 "The number of comments per post that grants %_plural%. Use zero for "
 "unlimited."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:907
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:965
 msgid "Limit per day"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:909
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:967
 msgid ""
 "Number of comments per day that grants %_plural%. Use zero for unlimited."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:914
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:972
 msgid ""
 "%plural% is to be awarded even when comment authors reply to their own "
 "comment."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:981
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1039
 msgid "Once for each unique URL"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:982
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1040
 msgid "Once for each unique link id"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1134
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1192
 msgid ""
 "The default amount to award for clicking on links. You can override this in "
 "the shortcode."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1141
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1199
 msgid ""
 "Available template tags: General and custom tags: %url%, %title% or %id%."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1152
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1210
 msgid "Remember!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1152
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1210
 msgid ""
 "If you select to limit by id and you do not include the id attribute in the "
 "shortcode, no %_plural% will be awarded!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1404
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1462
 msgid "Amount to award for viewing videos."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1414
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1472
 msgid "Award Logic"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1416
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1474
 msgid "Select when %_plural% should be awarded or deducted."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1417
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1475
 msgid "Play - As soon as video starts playing."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1418
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1476
 msgid "Full - First when the entire video has played."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1419
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1477
 msgid "Interval - For each x number of seconds watched."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1424
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1482
 msgid "Number of seconds"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1431
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1489
 msgid "Leniency"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1433
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1491
 msgid ""
 "The maximum percentage a users view of a movie can differ from the actual "
 "length."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1436
+#: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1494
 msgid ""
 "Do not set this value to zero! A lot of thing can happen while a user "
 "watches a movie and sometimes a few seconds can drop of the counter due to "
