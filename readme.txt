@@ -167,6 +167,7 @@ Performance improvement, new Remote API, updated styling and bug fixes.
 * Rewritten myCRED Network for Multisite installations.
 * Updated the mycred_my_balance shortcode to allow stripping off html wrappers.
 * Added new mycred_log_date filter allowing to customise the log dates.
+* Added daily limit for points for profile updates (Activities) in Buddypress
 * Fixed Bug #52 - Notifications add-on does not parse post related template tags.
 * Fixed Bug #53 - General template tags are not parsed in sell content templates.
 * Fixed Bug #54 - mycred_link shortcode does not support target attribute.

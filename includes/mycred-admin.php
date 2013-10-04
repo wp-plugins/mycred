@@ -144,18 +144,18 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Sort by Points
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function sort_by_points( $query ) {
 			if ( !is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
 			$screen = get_current_screen();
 			if ( $screen->id != 'users' ) return;
 
-			$orderby = $query->get( 'orderby' );
-			if ( 'mycred' == $orderby ) {
+			if ( isset( $query->query_vars['orderby'] ) && isset( $query->query_vars['order'] ) && $query->query_vars['orderby'] == 'mycred' ) {
 				global $wpdb;
+
 				$cred_id = $this->core->get_cred_id();
-				$order = $query->get( 'order' );
+				$order = $query->query_vars['order'];
 				$query->query_from .= " LEFT JOIN {$wpdb->usermeta} ON ({$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->usermeta}.meta_key = '$cred_id')";
 				$query->query_orderby = "ORDER BY {$wpdb->usermeta}.meta_value+0 $order ";
 			}
