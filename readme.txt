@@ -159,7 +159,7 @@ Performance improvement, new Remote API, updated styling and bug fixes.
 * Adjusted styling for MP6 users.
 * Added %title% as new template tag for mycred_link.
 * Added class attribute to mycred_buy shortcode.
-* Added support for profit sharing to Supported Shopping Carts.
+* Added support for profit sharing to Supported Shopping Carts and Event Booking plugins.
 * Added support for WP E-Commerce Shopping cart.
 * Added new constant MYCRED_LOG_TABLE to allow custom table names for the log.
 * Added new Management to settings page allowing to empty the log, reset all user points to zero or export all user balances to a CSV file.

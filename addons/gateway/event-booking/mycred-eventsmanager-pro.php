@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Events Manager Pro Gateway
  * @since 1.3
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 	class EM_Gateway_myCRED extends EM_Gateway {
@@ -25,6 +25,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			$defaults = array(
 				'setup'    => 'off',
 				'rate'     => 100,
+				'share'    => 0,
 				'log'      => array(
 					'purchase' => __( 'Payment for tickets to %link_with_title%', 'mycred' ),
 					'refund'   => __( 'Ticket refund for %link_with_title%', 'mycred' )
@@ -247,6 +248,22 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 						$transaction_id = time() . $EM_Booking->person->ID;
 						$EM_Booking->booking_meta[ $this->gateway ] = array( 'txn_id' => $transaction_id, 'amount' => $price );
 						$this->record_transaction( $EM_Booking, $EM_Booking->get_price( false, false, true ), get_option( 'dbem_bookings_currency' ), current_time( 'mysql' ), $transaction_id, 'Completed', '' );
+						
+						// Profit sharing
+						if ( $this->prefs['share'] != 0 ) {
+							$event_post = get_post( (int) $EM_Booking->event->post_id );
+							if ( $event_post === NULL ) {
+								$share = ( $this->prefs['share']/100 ) * $price;
+								$this->core->add_creds(
+									'ticket_sale',
+									$event_post->post_author,
+									$share,
+									$this->prefs['log']['purchase'],
+									$event_post->ID,
+									array( 'ref_type' => 'post', 'bid' => $EM_Booking->booking_id )
+								);
+							}
+						}
 					}
 					// Something went horribly wrong
 					else {
@@ -393,7 +410,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		/**
 		 * Getway Settings
 		 * @since 1.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function mysettings() {
 			global $page, $action;
@@ -427,6 +444,13 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 							<td>
 								<input name="mycred_gateway[refund]" type="text" id="mycred-gateway-log-refund" value="<?php echo $this->prefs['refund']; ?>" size="5" /> %<br />
 								<span class="description"><?php _e( 'The percentage of the paid amount to refund if a user cancells their booking. Use zero for no refunds. No refunds are given to "Rejected" bookings!', 'mycred' ); ?></span>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php _e( 'Profit Sharing', 'mycred' ); ?></th>
+							<td>
+								<input name="mycred_gateway[share]" type="text" id="mycred-gateway-profit-sharing" value="<?php echo $this->prefs['share']; ?>" size="5" /> %<br />
+								<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
 							</td>
 						</tr>
 					</table>
@@ -515,7 +539,7 @@ jQuery(function($){
 		/**
 		 * Update Getway Settings
 		 * @since 1.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function update() {
 			parent::update();
@@ -528,6 +552,7 @@ jQuery(function($){
 			// Setup
 			$new_settings['setup'] = $data['setup'];
 			$new_settings['refund'] = abs( $data['refund'] );
+			$new_settings['share'] = abs( $data['share'] );
 
 			// Logs
 			$new_settings['log']['purchase'] = trim( stripslashes( $data['log']['purchase'] ) );

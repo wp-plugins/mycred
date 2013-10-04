@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Events Manager
  * @since 1.2
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' ) ) {
 	class myCRED_Events_Manager_Gateway {
@@ -21,6 +21,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			$defaults = array(
 				'setup'    => 'off',
 				'rate'     => 100,
+				'share'    => 0,
 				'log'      => array(
 					'purchase' => __( 'Payment for tickets to %link_with_title%', 'mycred' ),
 					'refund'   => __( 'Ticket refund for %link_with_title%', 'mycred' )
@@ -179,7 +180,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		 */
 		public function process_payment() {
 			// Security
-			//check_ajax_referer( 'mycred-pay-em-booking', 'token' );
+			check_ajax_referer( 'mycred-pay-em-booking', 'token' );
 			
 			// Requirements
 			if ( !isset( $_POST['booking_id'] ) || !is_user_logged_in() ) die( 'ERROR_1' );
@@ -227,6 +228,22 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 
 				// Let others play
 				do_action( 'mycred_em_booking_paid', $booking, $this );
+				
+				// Profit sharing
+				if ( $this->prefs['share'] != 0 ) {
+					$event_post = get_post( (int) $booking->event->post_id );
+					if ( $event_post === NULL ) {
+						$share = ( $this->prefs['share']/100 ) * $price;
+						$this->core->add_creds(
+							'ticket_sale',
+							$event_post->post_author,
+							$share,
+							$this->prefs['log']['purchase'],
+							$event_post->ID,
+							array( 'ref_type' => 'post', 'bid' => $booking_id )
+						);
+					}
+				}
 			}
 			else {
 				$message = '';
@@ -454,7 +471,7 @@ jQuery(function($) {
 		/**
 		 * Gateway Settings
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function settings_page() {
 			if ( $this->prefs['setup'] == 'multi' )
@@ -488,6 +505,13 @@ jQuery(function($) {
 							<td>
 								<input name="mycred_gateway[refund]" type="text" id="mycred-gateway-log-refund" value="<?php echo $this->prefs['refund']; ?>" size="5" /> %<br />
 								<span class="description"><?php _e( 'The percentage of the paid amount to refund if a booking gets cancelled. Use zero for no refunds. No refunds are given to "Rejected" bookings.', 'mycred' ); ?></span>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php _e( 'Profit Sharing', 'mycred' ); ?></th>
+							<td>
+								<input name="mycred_gateway[share]" type="text" id="mycred-gateway-profit-sharing" value="<?php echo $this->prefs['share']; ?>" size="5" /> %<br />
+								<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
 							</td>
 						</tr>
 					</table>
@@ -580,7 +604,7 @@ jQuery(function($){
 		/**
 		 * Save Settings
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function save_settings() {
 			if ( !isset( $_POST['mycred_gateway'] ) || !is_array( $_POST['mycred_gateway'] ) ) return;
@@ -592,6 +616,7 @@ jQuery(function($){
 			// Setup
 			$new_settings['setup'] = $data['setup'];
 			$new_settings['refund'] = abs( $data['refund'] );
+			$new_settings['share'] = abs( $data['share'] );
 
 			// Logs
 			$new_settings['log']['purchase'] = trim( stripslashes( $data['log']['purchase'] ) );
