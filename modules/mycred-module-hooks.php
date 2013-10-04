@@ -650,11 +650,6 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 						'creds'   => '-1',
 						'log'     => '%plural% deduction for deleted / unapproved Comment',
 						'author'  => 0
-					),
-					'author'   => array(
-						'creds'   => 1,
-						'log'     => '%plural% for Approved Comment on your post',
-						'author'  => 0
 					)
 				)
 			), $hook_prefs );
