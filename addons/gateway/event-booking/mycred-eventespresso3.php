@@ -485,7 +485,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Update Settings
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function update_settings() {
 			// Apply Whitelabeling
@@ -507,6 +507,9 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 
 			// Exchange Rate
 			$new_settings['rate'] = sanitize_text_field( $post['rate'] );
+			
+			// Profit Share
+			$new_settings['share'] = abs( $post['share'] );
 			
 			// Log
 			$new_settings['log'] = sanitize_text_field( $post['log'] );
