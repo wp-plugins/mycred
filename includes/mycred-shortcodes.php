@@ -4,8 +4,9 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED Shortcode: my_balance
  * Returns the current users balance.
  * @see http://mycred.me/shortcodes/mycred_my_balance/
+ * @contributor Ian Tasker
  * @since 1.0.9
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 	function mycred_render_shortcode_my_balance( $atts, $content = NULL )
@@ -15,35 +16,62 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 			'title'      => '',
 			'title_el'   => 'h1',
 			'balance_el' => 'div',
+			'wrapper'    => 1,
 			'type'       => ''
 		), $atts ) );
 
+		$output = '';
+
 		// Not logged in
 		if ( !is_user_logged_in() ) {
-			if ( $login != NULL )
-				return '<div class="mycred-not-logged-in">' . $login . '</div>';
-
+			if ( $login != NULL ) {
+				if ( $wrapper )
+					$output .= '<div class="mycred-not-logged-in">';
+				
+				$output .= $login;
+				
+				if ( $wrapper )
+					$output .= '</div>';
+				
+				return $output;
+			}
 			return;
 		}
 
 		$user_id = get_current_user_id();
 		$mycred = mycred_get_settings();
+		// Check for exclusion
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
 		if ( !empty( $type ) )
 			$mycred->cred_id = $type;
 	
-		$output = '<div class="mycred-my-balance-wrapper">';
+		if ( $wrapper )
+			$output .= '<div class="mycred-my-balance-wrapper">';
 
 		// Title
 		if ( !empty( $title ) ) {
-			$output .= '<' . $title_el . '>' . $title . '</' . $title_el . '>';
+			if ( ! empty( $title_el ) )
+				$output .= '<' . $title_el . '>';
+			
+			$output .= $title;
+			
+			if ( ! empty( $title_el ) )
+				$output .= '</' . $title_el . '>';
 		}
 
 		// Balance
+		if ( ! empty( $balance_el ) )
+			$output .= '<' . $balance_el . '>';
+		
 		$balance = $mycred->get_users_cred( $user_id );
-		$output .= '<' . $balance_el . '>' . $mycred->format_creds( $balance ) . '</' . $balance_el . '>';
-		$output .= '</div>';
+		$output .= $mycred->format_creds( $balance );
+		
+		if ( ! empty( $balance_el ) )
+			$output .= '</' . $balance_el . '>';
+		
+		if ( $wrapper )
+			$output .= '</div>';
 
 		return $output;
 	}
