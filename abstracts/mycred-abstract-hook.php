@@ -44,7 +44,7 @@ if ( !class_exists( 'myCRED_Hook' ) ) {
 
 			// Apply default settings if needed
 			if ( !empty( $this->defaults ) )
-				$this->prefs = wp_parse_args( $this->prefs, $this->defaults );
+				$this->prefs = mycred_apply_defaults( $this->defaults, $this->prefs );
 		}
 
 		/**

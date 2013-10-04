@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  *
  * Creds for profile updates
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 	class myCRED_BuddyPress_Profile extends myCRED_Hook {
@@ -19,7 +19,8 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 				'defaults' => array(
 					'update'         => array(
 						'creds'         => 1,
-						'log'           => '%plural% for updating profile'
+						'log'           => '%plural% for updating profile',
+						'daily_limit'   => 2
 					),
 					'avatar'         => array(
 						'creds'         => 1,
@@ -87,11 +88,23 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 		/**
 		 * New Profile Update
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function new_update( $content, $user_id, $activity_id ) {
 			// Check if user is excluded
 			if ( $this->core->exclude_user( $user_id ) ) return;
+
+			// Limit
+			if ( isset( $this->prefs['update']['daily_limit'] ) )
+				$max = $this->prefs['update']['daily_limit'];
+			else
+				$max = 2;
+			
+			if ( $max > 0 ) {
+				$max_earning = $this->core->format_number( $max*$this->prefs['update']['creds'] );
+				$earned = mycred_get_total_by_time( 'today', 'now', 'new_profile_update', $user_id );
+				if ( $earned >= $max_earning ) return;
+			}
 
 			// Make sure this is unique event
 			if ( $this->core->has_entry( 'new_profile_update', $activity_id, $user_id ) ) return;
@@ -312,6 +325,11 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'update', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['update']['creds'] ); ?>" size="8" /></div>
+						</li>
+						<li>
+							<label for="<?php echo $this->field_id( array( 'update', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update', 'daily_limit' ) ); ?>" id="<?php echo $this->field_id( array( 'update', 'daily_limit' ) ); ?>" value="<?php echo abs( $prefs['update']['daily_limit'] ); ?>" size="8" /></div>
+							<span class="description"><?php _e( 'Daily limit. User zero for unlimited.', 'mycred' ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

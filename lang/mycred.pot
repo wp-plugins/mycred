@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-10-04 17:41+0100\n"
-"PO-Revision-Date: 2013-10-04 17:41+0100\n"
+"POT-Creation-Date: 2013-10-04 18:13+0100\n"
+"PO-Revision-Date: 2013-10-04 18:13+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -423,12 +423,12 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:188
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:201
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:214
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:320
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:333
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:372
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:385
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:398
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:411
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:338
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:351
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:390
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:403
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:416
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:429
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:450
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:444
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1411
@@ -634,14 +634,14 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:186
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:199
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-links.php:212
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:318
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:331
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:344
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:357
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:370
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:383
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:396
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:409
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:336
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:349
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:362
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:375
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:388
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:401
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:414
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:427
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:303
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:546
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:559
@@ -740,43 +740,53 @@ msgstr ""
 msgid "%plural% for Deleting Links"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:311
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:324
 msgid "%plural% for Profile Updates"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:324
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:330
+#: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:477
+#: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:501
+msgid "Daily Limit"
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:332
+msgid "Daily limit. User zero for unlimited."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:342
 msgid "%plural% for New Avatar"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:337
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:355
 msgid "%plural% for New Friendships"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:346
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:359
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:364
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:377
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:189
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:196
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:307
 msgid "Available template tags: General, User"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:350
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:368
 msgid "%plural% for Leaving Friendship"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:363
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:381
 msgid "%plural% for New Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:376
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:394
 msgid "%plural% for Deleting Comment"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:389
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:407
 msgid "%plural% for New Messages"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:402
+#: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:420
 msgid "%plural% for Sending Gift"
 msgstr ""
 
@@ -4933,11 +4943,6 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:464
 msgid "%plural% for Favorited Topic"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:477
-#: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:501
-msgid "Daily Limit"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-bbPress.php:479
