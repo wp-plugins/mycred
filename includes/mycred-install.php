@@ -61,25 +61,25 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		 */
 		public function activate() {
 			// Add general settings
-			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->core->defaults() );
+			add_option( 'mycred_pref_core', $this->core->defaults() );
 
 			// Add add-ons settings
-			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_addons', array(
+			add_option( 'mycred_pref_addons', array(
 				'installed' => array(),
 				'active'    => array()
 			) );
 
 			// Add hooks settings
-			add_blog_option( $GLOBALS['blog_id'], 'mycred_pref_hooks', array(
+			add_option( 'mycred_pref_hooks', array(
 				'installed'  => array(),
 				'active'     => array(),
 				'hook_prefs' => array()
 			) );
 
 			// Add version number making sure we never run this function again
-			add_blog_option( $GLOBALS['blog_id'], 'mycred_version', myCRED_VERSION );
+			add_option( 'mycred_version', myCRED_VERSION );
 			$key = wp_generate_password( 12, true, true );
-			add_blog_option( $GLOBALS['blog_id'], 'mycred_key', $key );
+			add_option( 'mycred_key', $key );
 		}
 
 		/**
@@ -115,25 +115,25 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// Delete each option
 			foreach ( $installed as $option_id ) {
-				delete_blog_option( $GLOBALS['blog_id'], $option_id );
+				delete_option( $GLOBALS['blog_id'], $option_id );
 			}
 
 			// Delete flags
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_setup_completed' );
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_version' );
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_version_db' );
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_key' );
+			delete_option( 'mycred_setup_completed' );
+			delete_option( 'mycred_version' );
+			delete_option( 'mycred_version_db' );
+			delete_option( 'mycred_key' );
 
 			// Delete widget options
-			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_balance' );
-			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_list' );
-			delete_blog_option( $GLOBALS['blog_id'], 'widget_mycred_widget_transfer' );
+			delete_option( 'widget_mycred_widget_balance' );
+			delete_option( 'widget_mycred_widget_list' );
+			delete_option( 'widget_mycred_widget_transfer' );
 
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_transients' );
+			delete_option( 'mycred_transients' );
 
 			// Remove Add-on settings
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_espresso_gateway_prefs' );
-			delete_blog_option( $GLOBALS['blog_id'], 'mycred_eventsmanager_gateway_prefs' );
+			delete_option( 'mycred_espresso_gateway_prefs' );
+			delete_option( 'mycred_eventsmanager_gateway_prefs' );
 
 			// Clear Cron
 			wp_clear_scheduled_hook( 'mycred_reset_key' );

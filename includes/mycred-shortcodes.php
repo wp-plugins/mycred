@@ -23,8 +23,8 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 		$output = '';
 
 		// Not logged in
-		if ( !is_user_logged_in() ) {
-			if ( $login != NULL ) {
+		if ( ! is_user_logged_in() ) {
+			if ( $login !== NULL ) {
 				if ( $wrapper )
 					$output .= '<div class="mycred-not-logged-in">';
 				
@@ -43,14 +43,14 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 		// Check for exclusion
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
-		if ( !empty( $type ) )
+		if ( ! empty( $type ) )
 			$mycred->cred_id = $type;
 	
 		if ( $wrapper )
 			$output .= '<div class="mycred-my-balance-wrapper">';
 
 		// Title
-		if ( !empty( $title ) ) {
+		if ( ! empty( $title ) ) {
 			if ( ! empty( $title_el ) )
 				$output .= '<' . $title_el . '>';
 			

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-10-04 00:38+0100\n"
-"PO-Revision-Date: 2013-10-04 00:38+0100\n"
+"POT-Creation-Date: 2013-10-04 14:58+0100\n"
+"PO-Revision-Date: 2013-10-04 14:58+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:837
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:276
 #: /Users/gabriel/Repositories/mycred/trunk/addons/transfer/myCRED-addon-transfer.php:136
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:363
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:391
 msgid "Processing..."
 msgstr ""
 
@@ -123,12 +123,12 @@ msgstr ""
 msgid "myCRED_Module() Error. A Module ID is required!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:303
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:311
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:313
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:321
 msgid "Surprise"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:368
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:378
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:154
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:180
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:103
@@ -136,7 +136,7 @@ msgstr ""
 msgid "click to close"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:369
+#: /Users/gabriel/Repositories/mycred/trunk/abstracts/mycred-abstract-module.php:379
 #: /Users/gabriel/Repositories/mycred/trunk/addons/banking/myCRED-addon-banking.php:155
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/myCRED-addon-buy-creds.php:181
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-network.php:104
@@ -3313,12 +3313,12 @@ msgid "No users found with this rank"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/includes/mycred-rank-shortcodes.php:62
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:195
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:198
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:257
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:306
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:310
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:314
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:223
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:226
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:285
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:334
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:338
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:342
 msgid "error"
 msgstr ""
 
@@ -3828,35 +3828,35 @@ msgstr ""
 msgid "Update Balance"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:60
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:65
 msgid "Point"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:61
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:66
 msgid "Points"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:377
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:388
 msgid "Deleted"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:512
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:523
 msgid "Deleted Item"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1293
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1304
 msgid "ref empty"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1301
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1312
 msgid "incorrect user id format"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1314
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1325
 msgid "incorrect unix timestamp (from):"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1323
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-functions.php:1334
 msgid "incorrect unix timestamp (to):"
 msgstr ""
 
@@ -4192,37 +4192,37 @@ msgid ""
 "about your setup!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:118
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:146
 msgid "Leaderboard is empty."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:195
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:306
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:223
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:334
 msgid "Amount missing!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:198
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:314
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:226
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:342
 msgid "Log Template Missing!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:257
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:285
 msgid "Anchor missing URL!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:310
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:338
 msgid "User ID missing for recipient."
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:364
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:392
 msgid "Sent"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:365
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:393
 msgid "Error - Try Again"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:460
+#: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-shortcodes.php:488
 msgid "A video ID is required for this shortcode"
 msgstr ""
 

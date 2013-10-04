@@ -17,11 +17,16 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * Construct
 		 */
 		function __construct() {
-			if ( mycred_override_settings() )
-				$this->core = get_blog_option( 1, 'mycred_pref_core', $this->defaults() );
-			else
-				$this->core = get_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->defaults() );
-
+			if ( is_multisite() ) {
+				if ( mycred_override_settings() )
+					$this->core = get_blog_option( 1, 'mycred_pref_core', $this->defaults() );
+				else
+					$this->core = get_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->defaults() );
+			}
+			else {
+				$this->core = get_option( 'mycred_pref_core', $this->defaults() );
+			}
+			
 			if ( $this->core !== false ) {
 				foreach ( (array) $this->core as $key => $value ) {
 					$this->$key = $value;
@@ -84,7 +89,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @version 1.0
 		 */
 		public function singular() {
-			return $this->name['singular'];
+			if ( ! isset( $this->core['name']['singular'] ) )
+				return $this->name['singular'];
+			else
+				return $this->core['name']['singular'];
 		}
 
 		/**
@@ -93,7 +101,10 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @version 1.0
 		 */
 		public function plural() {
-			return $this->name['plural'];
+			if ( ! isset( $this->core['name']['plural'] ) )
+				return $this->name['plural'];
+			else
+				return $this->core['name']['plural'];
 		}
 		
 		/**
@@ -1461,7 +1472,10 @@ function is_mycred_ready()
 
 	// By default we start with the main sites setup. If it is not a multisite installation
 	// get_blog_option() will default to get_option() for us.
-	$setup = get_blog_option( 1, 'mycred_setup_completed' );
+	if ( is_multisite() )
+		$setup = get_blog_option( 1, 'mycred_setup_completed' );
+	else
+		$setup = get_option( 'mycred_setup_completed' );
 
 	// If it is a multisite and the master template is not used, check if this site has
 	// been installed
@@ -1492,7 +1506,8 @@ function is_mycred_ready()
  */
 function mycred_install_log( $decimals = 0, $table = NULL )
 {
-	if ( get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
+	if ( is_multisite() && get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
+	elseif ( ! is_multisite() && get_option( 'mycred_version_db', false ) !== false ) return true;
 
 	global $wpdb;
 
@@ -1527,7 +1542,11 @@ function mycred_install_log( $decimals = 0, $table = NULL )
 	// Insert table
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " );" );
-	add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
+	if ( is_multisite() )
+		add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
+	else
+		add_option( 'mycred_version_db', '1.0' );
+
 	return true;
 }
 ?>

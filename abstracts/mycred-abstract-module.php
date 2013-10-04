@@ -110,10 +110,15 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 						}
 						// Loop and grab
 						foreach ( $this->option_id as $option_id => $option_name ) {
-							if ( mycred_override_settings() )
-								$settings = get_blog_option( 1, $option_id );
-							else
-								$settings = get_blog_option( $GLOBALS['blog_id'], $option_id );
+							if ( is_multisite() ) {
+								if ( mycred_override_settings() )
+									$settings = get_blog_option( 1, $option_id );
+								else
+									$settings = get_blog_option( $GLOBALS['blog_id'], $option_id );
+							}
+							else {
+								$settings = get_option( $option_id );
+							}
 
 							if ( $settings === false && array_key_exists( $option_id, $defaults ) )
 								$this->$module[$option_name] = $defaults[$option_id];
@@ -133,10 +138,15 @@ if ( !class_exists( 'myCRED_Module' ) ) {
 						}
 						// Grab the requested option
 						else {
-							if ( mycred_override_settings() )
-								$this->$module = get_blog_option( 1, $this->option_id );
-							else
-								$this->$module = get_blog_option( $GLOBALS['blog_id'], $this->option_id );
+							if ( is_multisite() ) {
+								if ( mycred_override_settings() )
+									$this->$module = get_blog_option( 1, $this->option_id );
+								else
+									$this->$module = get_blog_option( $GLOBALS['blog_id'], $this->option_id );
+							}
+							else {
+								$this->$module = get_option( $this->option_id );
+							}
 
 							if ( $this->$module === false && !empty( $defaults ) )
 								$this->$module = $defaults;
