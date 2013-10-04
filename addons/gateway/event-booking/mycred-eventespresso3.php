@@ -25,6 +25,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 					'button'   => __( 'Pay Now', 'mycred' )
 				),
 				'rate'     => 100,
+				'share'    => 0,
 				'log'      => __( 'Payment for Event Registration', 'mycred' ),
 				'messages' => array(
 					'solvent'   => 'Click "Pay Now" to pay using your %plural%.',
@@ -193,6 +194,22 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 
 			// Let others play
 			do_action( 'mycred_espresso_processed', $payment_data, $this->prefs, $this->core );
+
+			// Profit sharing
+			if ( $this->prefs['share'] != 0 ) {
+				$event_post = get_post( (int) $payment_data['event_id'] );
+				if ( $event_post !== NULL ) {
+					$share = ( $this->prefs['share']/100 ) * $price;
+					$this->core->add_creds(
+						'event_sale',
+						$event_post->post_author,
+						$share,
+						$this->prefs['log'],
+						$payment_data['event_id'],
+						$payment_data['registration_id']
+					);
+				}
+			}
 
 			return $payment_data;
 		}
@@ -418,6 +435,11 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 							<li><?php _e( 'You can disable purchases using this gateway by adding a custom Event Meta: <code>mycred_no_sale</code>', 'mycred' ); ?></li>
 							<li><?php _e( 'Users must be logged in to use this gateway!', 'mycred' ); ?></li>
 						</ol>
+					</li>
+					<li id="mycred-event-profit-sharing">
+						<label for="mycred-prefs-price-x-rate"><?php _e( 'Profit Sharing', 'mycred' ); ?></label>
+						<input type="text" name="mycred_prefs[share]" id="mycred-prefs-profit-share" size="5" value="<?php echo $this->prefs['share']; ?>" /> %<br />
+						<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
 					</li>
 				</ul>
 				<h4><?php _e( 'Log', 'mycred' ); ?></h4>

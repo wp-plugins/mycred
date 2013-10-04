@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
-"POT-Creation-Date: 2013-10-04 17:25+0100\n"
-"PO-Revision-Date: 2013-10-04 17:25+0100\n"
+"POT-Creation-Date: 2013-10-04 17:36+0100\n"
+"PO-Revision-Date: 2013-10-04 17:36+0100\n"
 "Last-Translator: Gabriel Sebastian Merovingi <support@mycred.me>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "MIME-Version: 1.0\n"
@@ -429,7 +429,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:385
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:398
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buddypress/hooks/bp-profile.php:411
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:428
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:450
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:444
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-hooks.php:1411
 #: /Users/gabriel/Repositories/mycred/trunk/plugins/mycred-hook-gd-star-rating.php:109
@@ -1393,7 +1393,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/paypal-standard.php:332
 #: /Users/gabriel/Repositories/mycred/trunk/addons/buy-creds/gateways/skrill.php:401
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:416
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:433
 msgid "Important!"
 msgstr ""
 
@@ -1970,8 +1970,8 @@ msgid ""
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:143
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:254
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:278
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:271
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:295
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:374
 #: /Users/gabriel/Repositories/mycred/trunk/includes/mycred-admin.php:345
 msgid "Current Balance"
@@ -1979,15 +1979,15 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:147
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:113
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:258
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:282
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:275
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:299
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:378
 msgid "Total Cost"
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:151
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:262
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:286
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:279
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:303
 msgid "Balance After Purchase"
 msgstr ""
 
@@ -2107,7 +2107,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:385
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:100
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:326
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:411
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:428
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:459
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:520
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:525
@@ -2119,6 +2119,7 @@ msgstr ""
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:394
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-woocommerce.php:128
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:330
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:440
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:450
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:511
 msgid "Profit Sharing"
@@ -2164,7 +2165,7 @@ msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-marketpress.php:422
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/carts/mycred-wpecommerce.php:348
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:446
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:468
 msgid "Visitors"
 msgstr ""
 
@@ -2412,58 +2413,58 @@ msgstr ""
 msgid "Pay Now"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:28
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:29
 msgid "Payment for Event Registration"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:320
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:337
 #, php-format
 msgid "Activate %s"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:328
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:345
 #, php-format
 msgid "Deactivate %s"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:344
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:361
 msgid "Gateway Settings"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:376
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:393
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:425
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:483
 #, php-format
 msgid "How many %s is 1 %s worth?"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:382
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:399
 msgid "Gateways Settings Successfully Updated"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:390
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:407
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:495
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:556
 msgid "Labels"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:393
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:410
 msgid "Gateway Title"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:395
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:412
 msgid "Title to show on Payment page"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:398
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:415
 msgid "Payment Type"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:400
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:417
 msgid "Title to show on receipts and logs"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:403
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:420
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:512
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:573
 #: /Users/gabriel/Repositories/mycred/trunk/addons/sell-content/myCRED-addon-sell-content.php:349
@@ -2471,11 +2472,11 @@ msgstr ""
 msgid "Button Label"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:405
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:422
 msgid "Pay Button"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:408
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:425
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:132
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:135
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:307
@@ -2485,23 +2486,31 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:418
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:435
 msgid ""
 "You can disable purchases using this gateway by adding a custom Event Meta: "
 "<code>mycred_no_sale</code>"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:419
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:436
 msgid "Users must be logged in to use this gateway!"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:423
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:442
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:453
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:514
+msgid ""
+"Option to share sales with the event owner (post author). Use zero to "
+"disable."
+msgstr ""
+
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:445
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:22
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-log.php:23
 msgid "Log"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:426
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:448
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:549
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:623
 #: /Users/gabriel/Repositories/mycred/trunk/addons/import/myCRED-addon-import.php:681
@@ -2509,38 +2518,38 @@ msgstr ""
 msgid "Log Entry"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:433
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:455
 #: /Users/gabriel/Repositories/mycred/trunk/addons/ranks/myCRED-addon-ranks.php:898
 msgid "Templates"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:436
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:458
 msgid "Solvent users"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:438
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:460
 msgid ""
 "Message to show users on the payment page before they are charged. Leave "
 "empty to hide.<br />Available template tags: General"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:441
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:463
 msgid "Insolvent users"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:443
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:465
 msgid ""
 "Message to show users who do not have enough points to pay.<br />Available "
 "template tags: General"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:448
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:470
 msgid ""
 "Message to show visitors (users not logged in) on the payment page.<br /"
 ">Available template tags: General"
 msgstr ""
 
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:458
+#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventespresso3.php:480
 #: /Users/gabriel/Repositories/mycred/trunk/modules/mycred-module-general.php:380
 msgid "Update Settings"
 msgstr ""
@@ -2628,13 +2637,6 @@ msgid ""
 "The percentage of the paid amount to refund if a user cancells their "
 "booking. Use zero for no refunds. No refunds are given to \"Rejected\" "
 "bookings!"
-msgstr ""
-
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:453
-#: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager.php:514
-msgid ""
-"Option to share sales with the event owner (post author). Use zero to "
-"disable."
 msgstr ""
 
 #: /Users/gabriel/Repositories/mycred/trunk/addons/gateway/event-booking/mycred-eventsmanager-pro.php:466

@@ -252,7 +252,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 						// Profit sharing
 						if ( $this->prefs['share'] != 0 ) {
 							$event_post = get_post( (int) $EM_Booking->event->post_id );
-							if ( $event_post === NULL ) {
+							if ( $event_post !== NULL ) {
 								$share = ( $this->prefs['share']/100 ) * $price;
 								$this->core->add_creds(
 									'ticket_sale',
