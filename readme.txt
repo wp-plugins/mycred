@@ -30,6 +30,7 @@ So we built an adaptive plugin which gives it’s users full control on how poin
 * Minimum CSS Styling
 * Built-in log and balance reset
 * Export of users balances to CSV files
+* Setup points to be used as a virtual currency or store credit
 
 
 **Built-in Add-ons:**
@@ -53,13 +54,17 @@ Your myCRED installation comes packed with optional add-ons, adding further feat
 **my**CRED supports Multisite installations and offers you the following features:
 
 * *Master Template* - Force your main sites **my**CRED installation upon all other sites. Each site will have it's own log but have no access to any settings, hooks or add-ons.
+* *Centralized Log* - All sites uses your main sites log instead of individual logs for each site.
 * *Block List* - Allows you to block specific sites from using **my**CRED.
+
+**Important!** The above features requires you to enable **my**CRED network wide!
 
 **Supported Third-party Plugins:**
 
 The following third party plugins are supported by default:
 
-* [Contact Form 7](http://wordpress.org/extend/plugins/contact-form-7/) - Award users points for submitting forms.
+* [BuddyPress](http://buddypress.org)
+* [Contact Form 7](http://wordpress.org/plugins/contact-form-7/) - Award users points for submitting forms.
 * [Invite Anyone Plugin](http://wordpress.org/extend/plugins/invite-anyone/) - Award users for sending invitations and for each time an invited user accepts and signs up.
 * [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribe using the email saved in their profile.
 * [BadgeOS](http://wordpress.org/extend/plugins/badgeos/) - Award points for any BadgeOS achievement type.
@@ -91,6 +96,8 @@ The following third party plugins are supported by default:
 
 For a comprehensive guide on how to install myCRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
 
+**Single Site**
+
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Run the myCRED Setup which will allow you to configure your **my**CRED installation
@@ -98,6 +105,26 @@ For a comprehensive guide on how to install myCRED or how this plugin works, con
 5. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
 6. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
 
+**Multisite with one myCRED installation on all sites**
+
+1. Upload `mycred` to the `/wp-content/plugins/` directory
+2. Enable myCRED Network Wide though your WordPress Network page
+3. While in your Network area, visit the new myCRED menu and select your setup and save.
+4. Visit your main sites admin area
+5. Run the myCRED Setup which will allow you to configure your **my**CRED installation
+6. Activate the Add-ons you wish to use under the 'myCRED' menu in WordPress
+7. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
+8. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
+
+**Multisite with individual myCRED installation for each site**
+
+1. Upload `mycred` to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Run the myCRED Setup which will allow you to configure your **my**CRED installation
+4. Activate the Add-ons you wish to use under the 'myCRED' menu in WordPress
+5. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
+6. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
+7. Repeat the process on each site you want to run myCRED
 
 == Frequently Asked Questions ==
 
