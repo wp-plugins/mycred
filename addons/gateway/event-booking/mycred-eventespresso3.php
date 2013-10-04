@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Event Espresso Payment Gateway
  * @since 1.2
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 	class myCRED_Espresso_Gateway {
@@ -148,7 +148,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Process Payment
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function process_payment( $payment_data ) {
 			if ( !is_user_logged_in() ) return $payment_data;
@@ -384,7 +384,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		 * Gateway Settings
 		 * Included first when the gateway is activated.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function gateway_settings() {
 			global $org_options;
@@ -437,7 +437,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 						</ol>
 					</li>
 					<li id="mycred-event-profit-sharing">
-						<label for="mycred-prefs-price-x-rate"><?php _e( 'Profit Sharing', 'mycred' ); ?></label>
+						<label for="mycred-prefs-profit-share"><?php _e( 'Profit Sharing', 'mycred' ); ?></label>
 						<input type="text" name="mycred_prefs[share]" id="mycred-prefs-profit-share" size="5" value="<?php echo $this->prefs['share']; ?>" /> %<br />
 						<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
 					</li>
