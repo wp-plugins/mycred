@@ -71,7 +71,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 			}
 
 			do_action_ref_array( 'mycred_before_notifications', array( &$notices ) );
-			foreach ( $notices as $notice ) {
+			foreach ( (array) $notices as $notice ) {
 				$notice = $this->core->template_tags_general( $notice );
 				$notice = str_replace( array( "\r", "\n", "\t" ), '', $notice );
 				echo '<script type="text/javascript">(function(jQuery){jQuery.noticeAdd({ text: "' . $notice . '",stay: ' . $stay . '});})(jQuery);</script>';
