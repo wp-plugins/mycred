@@ -714,7 +714,8 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				// New approved comment
 				if ( $old_status == 'unapproved' || $old_status == 'hold' ) {
 					$reference = 'approved_comment';
-					$points = $points_author = $this->prefs['approved']['creds'];
+					$points = $this->prefs['approved']['creds'];
+					$points_author = $this->prefs['approved']['author'];
 					$log = $this->prefs['approved']['log'];
 					
 					if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) )
@@ -758,7 +759,8 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			// Spam comments
 			elseif ( $this->prefs['spam'] != 0 && $new_status == 'spam' ) {
 				$reference = 'spam_comment';
-				$points = $points_author = $this->prefs['spam']['creds'];
+				$points = $this->prefs['spam']['creds'];
+				$points_author = $this->prefs['spam']['author'];
 				$log = $this->prefs['spam']['log'];
 				$instance = 'spam';
 			}
@@ -766,7 +768,8 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			// Trashed comments
 			elseif ( $this->prefs['trash'] != 0 && $new_status == 'trash' ) {
 				$reference = 'deleted_comment';
-				$points = $points_author = $this->prefs['trash']['creds'];
+				$points = $this->prefs['trash']['creds'];
+				$points_author = $this->prefs['trash']['author'];
 				$log = $this->prefs['trash']['log'];
 				$instance = 'trash';
 			}
