@@ -54,7 +54,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 0.1
 	 * @version 1.2
 	 */
-	if ( !class_exists( 'myCRED_bbPress' ) ) {
+	if ( !class_exists( 'myCRED_bbPress' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_bbPress extends myCRED_Hook {
 			/**
 			 * Construct
@@ -384,7 +384,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences
 			 * @since 0.1
-			 * @version 1.1
+			 * @version 1.1.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs;
@@ -407,7 +407,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Forum', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_forum']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_forum']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -420,7 +420,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Forum Deletion', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['delete_forum']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_forum']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -433,7 +433,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Topic', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -451,7 +451,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['delete_topic']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_topic']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -464,7 +464,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Favorited Topic', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['fav_topic']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -475,7 +475,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['fav_topic']['limit'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['limit'] ); ?>" size="8" /></div>
 							<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
 						</li>
 					</ol>
@@ -483,7 +483,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Reply', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_reply']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -499,7 +499,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_reply']['limit'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['limit'] ); ?>" size="8" /></div>
 							<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>

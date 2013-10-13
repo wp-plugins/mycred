@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.0.5
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_Jetpack' ) ) {
+	if ( !class_exists( 'myCRED_Hook_Jetpack' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_Jetpack extends myCRED_Hook {
 
 			/**
@@ -481,7 +481,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences
 			 * @since 1.0.5
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs; ?>
@@ -490,7 +490,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" class="subheader"><?php _e( 'Site Subscriptions', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['subscribe_site']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_site']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -503,7 +503,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" class="subheader"><?php _e( 'Comment Subscriptions', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['subscribe_comment']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_comment']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

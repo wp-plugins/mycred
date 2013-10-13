@@ -6,7 +6,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Custom Payment Gateway for WooCommerce.
  * @see http://docs.woothemes.com/document/payment-gateway-api/
  * @since 0.1
- * @version 1.2
+ * @version 1.2.1
  */
 if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 	/**
@@ -14,7 +14,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 	 * @since 0.1
 	 * @version 1.0
 	 */
-	add_action( 'plugins_loaded', 'mycred_init_woo_gateway' );
+	add_action( 'after_setup_theme', 'mycred_init_woo_gateway' );
 	function mycred_init_woo_gateway()
 	{
 		if ( !class_exists( 'WC_Payment_Gateway' ) ) return;

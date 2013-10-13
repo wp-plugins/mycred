@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 0.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Contact_Form7' ) ) {
+	if ( !class_exists( 'myCRED_Contact_Form7' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Contact_Form7 extends myCRED_Hook {
 			/**
 			 * Construct
@@ -97,7 +97,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences for Commenting Hook
 			 * @since 0.1
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs;
@@ -129,7 +129,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( $form_id, 'creds' ) ); ?>" class="subheader"><?php echo $form_title; ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $form_id, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $form_id, 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs[$form_id]['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $form_id, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $form_id, 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs[$form_id]['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

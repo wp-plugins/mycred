@@ -6,7 +6,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Custom Payment Gateway for WP E-Commerce.
  * @see http://getshopped.org/resources/docs/get-involved/writing-a-new-payment-gateway/
  * @since 1.3
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 	/**
@@ -14,7 +14,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 	 * @since 1.3
 	 * @version 1.0
 	 */
-	add_action( 'plugins_loaded', 'mycred_init_wpecom_construct_gateway' );
+	add_action( 'after_setup_theme', 'mycred_init_wpecom_construct_gateway' );
 	function mycred_init_wpecom_construct_gateway()
 	{
 		if ( !class_exists( 'wpsc_merchant' ) ) return;

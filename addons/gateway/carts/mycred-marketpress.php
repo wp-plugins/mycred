@@ -3,10 +3,10 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * MarketPress Payment Gateway
  * @since 1.1
- * @version 1.1
+ * @version 1.1.1
  */
 if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
-	add_action( 'plugins_loaded', 'mycred_init_marketpress_gateway', 5 );
+	add_action( 'after_setup_theme', 'mycred_init_marketpress_gateway', 5 );
 	function mycred_init_marketpress_gateway()
 	{
 		if ( !function_exists( 'is_plugin_active' ) )

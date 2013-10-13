@@ -34,7 +34,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		 * Run Addons
 		 * Catches all add-on activations and deactivations and loads addons
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function module_ready() {
 			$addons = $this->addons;
@@ -89,7 +89,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 				if ( mycred_override_settings() )
 					update_site_option( 1, 'mycred_pref_addons', $new_settings );
 				else
-					update_site_option( $GLOBALS['blog_id'], 'mycred_pref_addons', $new_settings );
+					update_option( 'mycred_pref_addons', $new_settings );
 
 				$this->addons = $new_settings;
 				$this->installed = $installed;

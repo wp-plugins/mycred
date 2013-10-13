@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_Events_Manager' ) ) {
+	if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_Events_Manager extends myCRED_Hook {
 			/**
 			 * Construct
@@ -53,7 +53,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			public function run() {
 				if ( $this->prefs['attend']['creds'] != 0 && get_option( 'dbem_bookings_approval' ) != 0 )
-					add_filter( 'em_bookings_add',       array( $this, 'new_booking' ), 10, 2 );
+					add_filter( 'em_bookings_add',   array( $this, 'new_booking' ), 10, 2 );
 
 				add_filter( 'em_booking_set_status', array( $this, 'adjust_booking' ), 10, 2 );
 			}
@@ -132,7 +132,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences for Events Manager
 			 * @since 1.1
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs; ?>
@@ -140,7 +140,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>"><?php _e( 'Attending Event', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['attend']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['attend']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
@@ -153,7 +153,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>"><?php _e( 'Cancelling Attendance', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['cancel']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['cancel']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>

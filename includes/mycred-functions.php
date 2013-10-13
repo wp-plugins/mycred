@@ -131,7 +131,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $number (int|float) the initial number
 		 * @returns the given number formated either as an integer or float
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function number( $number = '' ) {
 			if ( $number === '' ) return $number;
@@ -142,7 +142,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				$decimals = (int) $this->format['decimals'];
 
 			if ( $decimals > 0 ) {
-				return (float) number_format( (float) $number, $decimals, '.', '' );
+				return number_format( (float) $number, $decimals, '.', '' );
 			}
 			else {
 				return (int) $number;
@@ -768,6 +768,9 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this, $user_id, $type );
 
 			return $this->number( $balance );
+		}
+		public function get_users_balance( $user_id = '', $type = '' ) {
+			return $this->get_users_cred( $user_id, $type );
 		}
 
 		/**

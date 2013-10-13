@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 0.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Invite_Anyone' ) ) {
+	if ( !class_exists( 'myCRED_Invite_Anyone' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Invite_Anyone extends myCRED_Hook {
 			/**
 			 * Construct
@@ -126,7 +126,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences
 			 * @since 0.1
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs; ?>
@@ -135,7 +135,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'send_invite', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Sending An Invite', 'mycred' ) ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'send_invite', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'send_invite', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['send_invite']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'send_invite', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'send_invite', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['send_invite']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -155,7 +155,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( 'accept_invite', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Accepting An Invite', 'mycred' ) ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'accept_invite', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'accept_invite', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['accept_invite']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'accept_invite', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'accept_invite', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['accept_invite']['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( '%plural% for each invited user that accepts an invitation.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>

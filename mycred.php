@@ -3,7 +3,7 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.3
+ * Version: 1.3.1
  * Tags: points, tokens, credit, management, reward, charge
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -15,7 +15,7 @@
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
-define( 'myCRED_VERSION',      '1.3' );
+define( 'myCRED_VERSION',      '1.3.1' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -29,25 +29,62 @@ define( 'myCRED_LANG_DIR',      myCRED_ROOT_DIR . 'lang/' );
 define( 'myCRED_MODULES_DIR',   myCRED_ROOT_DIR . 'modules/' );
 define( 'myCRED_PLUGINS_DIR',   myCRED_ROOT_DIR . 'plugins/' );
 
-/**
- * Required
- * @since 1.3
- * @version 1.0
- */
 require_once( myCRED_INCLUDES_DIR . 'mycred-functions.php' );
 
 require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
 require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
 
-require_once( myCRED_INCLUDES_DIR . 'mycred-remote.php' );
-require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
-require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
-require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
-require_once( myCRED_INCLUDES_DIR . 'mycred-widgets.php' );
-require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
+/**
+ * myCRED_Core Class
+ * Removed in 1.3 but defined since some customizations
+ * use this to check that myCRED exists or is installed.
+ * @since 1.3
+ * @version 1.0
+ */
+if ( !class_exists( 'myCRED_Core' ) ) {
+	final class myCRED_Core {
 
-require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
-require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
+		public $plug;
+
+		/**
+		 * Construct
+		 */
+		function __construct() {
+			$this->plug = plugin_basename( myCRED_THIS );
+			// no longer used
+		}
+	}
+}
+
+/**
+ * Required
+ * @since 1.3
+ * @version 1.1
+ */
+function mycred_load() {
+	require_once( myCRED_INCLUDES_DIR . 'mycred-remote.php' );
+	require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
+	require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
+	
+	// Bail now if the setup needs to run
+	if ( is_mycred_ready() === false ) return;
+	
+	require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
+	require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
+	require_once( myCRED_INCLUDES_DIR . 'mycred-widgets.php' );
+	
+	// Add-ons
+	require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
+	$addons = new myCRED_Addons();
+	$addons->load();
+	
+	do_action( 'mycred_ready' );
+	
+	add_action( 'init',         'mycred_init' );
+	add_action( 'widgets_init', 'mycred_widgets_init' );
+	add_action( 'admin_init',   'mycred_admin_init' );
+}
+mycred_load();
 
 /**
  * Plugin Activation
@@ -123,7 +160,7 @@ function mycred_plugin_uninstall()
  * @since 1.3
  * @version 1.0
  */
-add_action( 'plugins_loaded', 'mycred_plugin_start_up' );
+add_action( 'plugins_loaded', 'mycred_plugin_start_up', 999 );
 function mycred_plugin_start_up()
 {
 	global $mycred;
@@ -145,13 +182,6 @@ function mycred_plugin_start_up()
 			$network->load();
 		}
 	}
-
-	// Bail now if the setup needs to run
-	if ( is_mycred_ready() === false ) return;
-
-	// Add-ons
-	$addons = new myCRED_Addons();
-	$addons->load();
 
 	// Load only hooks that we have use of
 	if ( defined( 'JETPACK__PLUGIN_DIR' ) ) 
@@ -181,7 +211,13 @@ function mycred_plugin_start_up()
 	if ( defined( 'STARRATING_DEBUG' ) )
 		require_once( myCRED_PLUGINS_DIR . 'mycred-hook-gd-star-rating.php' );
 
+	// Load Settings
+	require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
+	$settings = new myCRED_General();
+	$settings->load();
+
 	// Load hooks
+	require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
 	$hooks = new myCRED_Hooks();
 	$hooks->load();
 
@@ -189,20 +225,8 @@ function mycred_plugin_start_up()
 	require_once( myCRED_MODULES_DIR . 'mycred-module-log.php' );
 	$log = new myCRED_Log();
 	$log->load();
-
-	// Load Settings
-	require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
-	$settings = new myCRED_General();
-	$settings->load();
-
-	do_action( 'mycred_pre_init' );
-
-	// Hook into rest of WordPress
-	add_action( 'init',         'mycred_init' );
-	add_action( 'widgets_init', 'mycred_widgets_init' );
-	add_action( 'admin_init',   'mycred_admin_init' );
 	
-	do_action( 'mycred_ready' );
+	do_action( 'mycred_pre_init' );
 }
 
 /**
@@ -270,7 +294,7 @@ function mycred_admin_init()
 /**
  * Adjust the Tool Bar
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
 function mycred_hook_into_toolbar( $wp_admin_bar )
 {
@@ -282,7 +306,6 @@ function mycred_hook_into_toolbar( $wp_admin_bar )
 	if ( $mycred->exclude_user( $user_id ) ) return;
 
 	$cred = $mycred->get_users_cred( $user_id );
-	$creds_formated = $mycred->format_creds( $cred );
 
 	$wp_admin_bar->add_group( array(
 		'parent' => 'my-account',
@@ -294,10 +317,11 @@ function mycred_hook_into_toolbar( $wp_admin_bar )
 	else
 		$url = 'profile.php?page=mycred_my_history';
 
+	$my_balance = apply_filters( 'mycred_label_my_balance', __( 'My Balance: %cred_f%', 'mycred' ), $user_id, $mycred );
 	$wp_admin_bar->add_menu( array(
 		'parent' => 'mycred-actions',
 		'id'     => 'user-creds',
-		'title'  => __( 'My Balance: ', 'mycred' ) . $creds_formated,
+		'title'  => $mycred->template_tags_amount( $my_balance, $cred ),
 		'href'   => add_query_arg( array( 'page' => 'mycred_my_history' ), get_edit_profile_url( $user_id ) )
 	) );
 
@@ -467,7 +491,7 @@ function mycred_reset_key()
 /**
  * myCRED Plugin Links
  * @since 1.3
- * @version 1.0
+ * @version 1.0.1
  */
 function mycred_plugin_links( $actions, $plugin_file, $plugin_data, $context )
 {
@@ -478,7 +502,7 @@ function mycred_plugin_links( $actions, $plugin_file, $plugin_data, $context )
 	}
 
 	$actions['tutorials'] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
-	$actions['docs'] = '<a href="http://mycred.me/support/codex/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
+	$actions['docs'] = '<a href="http://codex.mycred.me/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
 	$actions['store'] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';
 
 	return $actions;

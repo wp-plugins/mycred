@@ -36,7 +36,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.0.8
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_BadgeOS' ) ) {
+	if ( !class_exists( 'myCRED_Hook_BadgeOS' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_BadgeOS extends myCRED_Hook {
 			/**
 			 * Construct
@@ -104,7 +104,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			<p><strong><?php echo $mycred->template_tags_general( __( '%plural% to Award', 'mycred' ) ); ?></strong></p>
 			<p>
 				<label class="screen-reader-text" for="mycred-values-creds"><?php echo $mycred->template_tags_general( __( '%plural% to Award', 'mycred' ) ); ?></label>
-				<input type="text" name="mycred_values[creds]" id="mycred-values-creds" value="<?php echo $achievement_data['creds']; ?>" size="8" />
+				<input type="text" name="mycred_values[creds]" id="mycred-values-creds" value="<?php echo $mycred->number( $achievement_data['creds'] ); ?>" size="8" />
 				<span class="description"><?php _e( 'Use zero to disable', 'mycred' ); ?></span>
 			</p>
 			<p><strong><?php _e( 'Log Template', 'mycred' ); ?></strong></p>
@@ -148,9 +148,9 @@ if ( defined( 'myCRED_VERSION' ) ) {
 
 				// Creds
 				if ( !empty( $_POST['mycred_values']['creds'] ) && $_POST['mycred_values']['creds'] != $this->prefs[$post_type]['creds'] )
-					$data['creds'] = $this->core->format_number( $_POST['mycred_values']['creds'] );
+					$data['creds'] = $this->core->number( $_POST['mycred_values']['creds'] );
 				else
-					$data['creds'] = $this->core->format_number( $this->prefs[$post_type]['creds'] );
+					$data['creds'] = $this->core->number( $this->prefs[$post_type]['creds'] );
 
 				// Log template
 				if ( !empty( $_POST['mycred_values']['log'] ) && $_POST['mycred_values']['log'] != $this->prefs[$post_type]['log'] )
@@ -258,7 +258,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label for="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" class="subheader"><?php echo $title; ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs[$post_type]['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type, 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type, 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs[$post_type]['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'Use zero to disable users gaining %_plural%', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>

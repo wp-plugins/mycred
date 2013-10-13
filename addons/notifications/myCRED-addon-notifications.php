@@ -128,7 +128,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		/**
 		 * Get Notices
 		 * @since 1.2.3
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function get_notices() {
 			$user_id = get_current_user_id();
@@ -150,7 +150,7 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 			);
 			
 			foreach ( $data as $notice ) {
-				add_filter( 'mycred_notifications', create_function( '$query', '$query[]="' . $notice . '"; return $query;' ) );
+				add_filter( 'mycred_notifications', create_function( '$query', '$query[]=\'' . $notice . '\'; return $query;' ) );
 			}
 			
 			delete_transient( 'mycred_notice_' . $user_id );

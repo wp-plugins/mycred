@@ -72,7 +72,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			add_action( 'em_booking_form_tickets_col_mycred', array( $this, 'ticket_col' ), 10, 2     );
 
 			// Add Pay Button
-			add_filter( 'em_my_bookings_booking_actions', array( $this, 'add_pay_button' ), 10, 2 );
+			add_filter( 'em_my_bookings_booking_actions', array( $this, 'add_pay_button' ), 1, 2 );
 			add_action( 'em_my_bookings_booking_loop',    array( $this, 'payment_box' )           );
 			add_action( 'em_template_my_bookings_footer', array( $this, 'insert_scripting' )      );
 
@@ -144,7 +144,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			if ( $EM_Event->is_free() ) return false;
 
 			// Only pending events can be paid for
-			if ( $EM_Booking->booking_status == 0 && get_option( 'dbem_bookings_user_cancellation' ) && $EM_Event->get_bookings()->has_open_time() ) {
+			if ( $EM_Booking->booking_status == 0 && $EM_Event->get_bookings()->has_open_time() ) {
 				$balance = $this->core->get_users_cred( $EM_Booking->person->ID );
 				if ( $balance <= 0 ) return false;
 
@@ -166,21 +166,31 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		 * Has Paid
 		 * Checks if the user has paid for booking
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function has_paid( $EM_Booking ) {
-			if ( $this->core->has_entry( 'ticket_purchase', $EM_Booking->event->post_id, $EM_Booking->person->ID, 's:3:"bid";i:' . $EM_Booking->booking_id . ';' ) ) return true;
+			if ( $this->core->has_entry(
+				'ticket_purchase',
+				$EM_Booking->event->post_id,
+				$EM_Booking->person->ID,
+				array(
+					'ref_type' => 'post',
+					'bid'      => (int) $EM_Booking->booking_id
+				)
+			) )
+				return true;
+
 			return false;
 		}
 
 		/**
 		 * AJAX: Process Payment
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function process_payment() {
 			// Security
-			check_ajax_referer( 'mycred-pay-em-booking', 'token' );
+			check_ajax_referer( 'mycred-pay-booking', 'token' );
 			
 			// Requirements
 			if ( !isset( $_POST['booking_id'] ) || !is_user_logged_in() ) die( 'ERROR_1' );
@@ -216,7 +226,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 					0-$price,
 					$this->prefs['log']['purchase'],
 					$booking->event->post_id,
-					array( 'ref_type' => 'post', 'bid' => $booking_id )
+					array( 'ref_type' => 'post', 'bid' => (int) $booking_id )
 				);
 
 				// Update Booking if approval is required (with option to disable this feature)
@@ -240,7 +250,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 							$share,
 							$this->prefs['log']['purchase'],
 							$event_post->ID,
-							array( 'ref_type' => 'post', 'bid' => $booking_id )
+							array( 'ref_type' => 'post', 'bid' => (int) $booking_id )
 						);
 					}
 				}
@@ -256,34 +266,39 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		/**
 		 * Refunds
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function refunds( $result, $EM_Booking ) {
+			update_option( 'catch_refunds', array(
+				'new_status' => $EM_Booking->booking_status,
+				'prev_status' => $EM_Booking->previous_status
+			) );
 			// Cancellation
 			if ( $EM_Booking->booking_status == 3 && $EM_Booking->previous_status != 3 ) {
-				$refund = $this->prefs['refund'];
-				
+
 				// Make sure user has paid for this to refund
 				if ( $this->has_paid( $EM_Booking ) ) {
+
 					// Price
-					$price = $EM_Booking->booking_price;
 					if ( $this->single_currency() )
-						$price = $this->core->number( $price );
-					else {
-						$exchange_rate = $this->prefs['rate'];
-						$price = $this->core->number( $exchange_rate*$price );
-					}
+						$price = $this->core->number( $EM_Booking->booking_price );
+					else
+						$price = $this->core->number( $this->prefs['rate']*$EM_Booking->booking_price );
 					
-					$event_id = $EM_Booking->get_event();
+					// Refund
+					if ( $this->prefs['refund'] != 100 )
+						$refund = ( $this->prefs['refund'] / 100 ) * $price;
+					else
+						$refund = $price;
 				
 					// Charge
 					$this->core->add_creds(
 						'ticket_purchase_refund',
 						$EM_Booking->person->ID,
-						$price,
+						$refund,
 						$this->prefs['log']['refund'],
 						$EM_Booking->event->post_id,
-						array( 'ref_type' => 'post', 'bid' => $booking_id )
+						array( 'ref_type' => 'post', 'bid' => (int) $booking_id )
 					);
 				}
 			}
@@ -334,12 +349,13 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 
 		/**
 		 * Add Pay Action
+		 * @used by em_my_bookings_booking_actions
 		 * @since 1.2
 		 * @version 1.0
 		 */
-		public function add_pay_button( $cancel_link, $EM_Booking ) {
-			if ( $this->can_pay( $EM_Booking ) && !$this->has_paid( $EM_Booking ) ) {
-				if ( !empty( $cancel_link ) )
+		public function add_pay_button( $cancel_link = '', $EM_Booking ) {
+			if ( $this->can_pay( $EM_Booking ) && ! $this->has_paid( $EM_Booking ) ) {
+				if ( ! empty( $cancel_link ) )
 					$cancel_link .= ' &bull; ';
 
 				$cancel_link .= '<a href="javascript:void(0)" class="mycred-show-pay" data-booking="' . $EM_Booking->booking_id . '">' . $this->prefs['labels']['link'] . '</a>';
@@ -657,8 +673,5 @@ jQuery(function($){
 			do_action( 'mycred_em_save_settings', $this );
 		}
 	}
-
-	$events = new myCRED_Events_Manager_Gateway();
-	$events->load();
 }
 ?>

@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_WPFavorite' ) ) {
+	if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_WPFavorite extends myCRED_Hook {
 			/**
 			 * Construct
@@ -124,7 +124,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>"><?php _e( 'Adding Content to Favorites', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['add']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['add']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
@@ -137,7 +137,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>"><?php _e( 'Removing Content from Favorites', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['remove']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['remove']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>

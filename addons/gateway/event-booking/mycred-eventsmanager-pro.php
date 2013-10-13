@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * Events Manager Pro Gateway
  * @since 1.3
- * @version 1.0.1
+ * @version 1.0.2
  */
 if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 	class EM_Gateway_myCRED extends EM_Gateway {
@@ -241,7 +241,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 							0-$price,
 							$this->prefs['log']['purchase'],
 							$EM_Booking->event->post_id,
-							array( 'ref_type' => 'post', 'bid' => $EM_Booking->booking_id )
+							array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id )
 						);
 						
 						// Log transaction with EM
@@ -260,7 +260,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 									$share,
 									$this->prefs['log']['purchase'],
 									$event_post->ID,
-									array( 'ref_type' => 'post', 'bid' => $EM_Booking->booking_id )
+									array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id )
 								);
 							}
 						}
@@ -310,13 +310,15 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		/**
 		 * Refunds
 		 * @since 1.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function refunds( $result, $EM_Booking ) {
 			// Cancellation = refund
 			if ( $EM_Booking->booking_status == 3 && $EM_Booking->previous_status == 1 && $this->prefs['refund'] > 0 ) {
+
 				// Make sure user has paid for this to refund
 				if ( $this->has_paid( $EM_Booking ) ) {
+
 					// Price
 					if ( $this->single_currency() )
 						$price = $this->core->number( $EM_Booking->booking_price );
@@ -325,7 +327,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 					
 					// Refund
 					if ( $this->prefs['refund'] != 100 )
-						$refund = $price * ( $this->prefs['refund'] / 100 );
+						$refund = ( $this->prefs['refund'] / 100 ) * $price;
 					else
 						$refund = $price;
 				
@@ -336,7 +338,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 						$refund,
 						$this->prefs['log']['refund'],
 						$EM_Booking->event->post_id,
-						array( 'ref_type' => 'post', 'bid' => $booking_id )
+						array( 'ref_type' => 'post', 'bid' => (int) $booking_id )
 					);
 				}
 			}
@@ -352,8 +354,8 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			if ( $EM_Booking->booking_status == 1 && $this->uses_gateway( $EM_Booking ) ) {
 				return array(
 					'reject'    => '<a class="em-bookings-reject" href="' . em_add_get_params( $url, array(
-						'action'             => 'bookings_reject',
-						'booking_id'         => $EM_Booking->booking_id
+						'action'     => 'bookings_reject',
+						'booking_id' => $EM_Booking->booking_id
 					) ) . '">' . __( 'Reject', 'mycred' ) . '</a>',
 					'delete'    => '<span class="trash"><a class="em-bookings-delete" href="' . em_add_get_params( $url, array(
 						'action'     => 'bookings_delete',
@@ -374,7 +376,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * Can Pay Check
 		 * Checks if the user can pay for their booking.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function can_pay( $EM_Booking ) {
 			$EM_Event = $EM_Booking->get_event();
@@ -382,16 +384,16 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			if ( $EM_Event->is_free() ) return false;
 
 			$balance = $this->core->get_users_cred( $EM_Booking->person->ID );
-			if ( $balance <= 0 ) return false;
+			if ( $balance <= $this->core->zero() ) return false;
 
 			$price = $this->core->number( $EM_Booking->booking_price );
-			if ( $price == 0 ) return true;
+			if ( $price == $this->core->zero() ) return true;
 			if ( !$this->single_currency() ) {
 				$exchange_rate = $this->prefs['rate'];
 				$price = $this->core->number( $exchange_rate*$price );
 			}
 
-			if ( $balance-$price < 0 ) return false;
+			if ( $balance-$price < $this->core->zero() ) return false;
 
 			return true;
 		}
@@ -400,10 +402,20 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * Has Paid
 		 * Checks if the user has paid for booking
 		 * @since 1.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function has_paid( $EM_Booking ) {
-			if ( $this->core->has_entry( 'ticket_purchase', $EM_Booking->event->post_id, $EM_Booking->person->ID, 's:3:"bid";i:' . $EM_Booking->booking_id . ';' ) ) return true;
+			if ( $this->core->has_entry(
+				'ticket_purchase',
+				$EM_Booking->event->post_id,
+				$EM_Booking->person->ID,
+				array(
+					'ref_type' => 'post',
+					'bid'      => (int) $EM_Booking->booking_id
+				)
+			) )
+				return true;
+
 			return false;
 		}
 		

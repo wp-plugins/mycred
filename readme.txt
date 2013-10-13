@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
 Requires at least: 3.1
 Tested up to: 3.6.1
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -160,8 +160,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3 =
-Performance improvement, new Remote API, updated styling and bug fixes.
+= 1.3.1 =
+Important bug fixes for 1.3 users
 
 
 == Other Notes ==
@@ -176,6 +176,23 @@ Performance improvement, new Remote API, updated styling and bug fixes.
 
 
 == Changelog ==
+
+= 1.3.1 =
+* Fixed Bug #58 - Some hooks fire to late due to hooks being loaded to late.
+* Fixed Bug #59 - Shopping cart settings are inaccessible due to to late hook registration.
+* Fixed Bug #60 - Notifications lack support for ' or " signs causing an error which prevents notices to load.
+* Fixed Bug #61 - myCRED_Query_Log can not return a single result, requires minimum 2 to be returned or it will default to all.
+* Fixed Bug #62 - Commenter is awarded points instead of post author due to incorrect user id being passed on.
+* Fixed Bug #63 - The removal of myCRED_Core causes customisations depending on this class to fail causing a site wide error.
+* Fixed Bug #64 - Points over 999 with a non-empty thousands separator will cause hooks to award to low points.
+* Fixed Bug #65 - The use of update_blog_option() on non multi sites will cause a php notice.
+* Fixed Bug #66 - Points History page link still visible in tool bar even if history page is disabled.
+* Fixed Bug #67 - Duplicate Gateways when using Events Manager (free version).
+* Fixed Bug #68 - Users are not refunded when cancelling their event attendance in Events Manager (free & pro)
+* Added logout redirect to BP when users logout from the points history page to prevent 404 errors.
+* Added new mycred_label_my_balance filter for adjustments of the tool bar "My Balance" item.
+* Re-wrote the Points for commenting.
+
 
 = 1.3 =
 * Improved myCRED's module management lowering memory usage.

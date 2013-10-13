@@ -76,7 +76,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 		/**
 		 * Get Hooks
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function get( $save = false ) {
 			$installed = array();
@@ -132,7 +132,7 @@ if ( !class_exists( 'myCRED_Hooks' ) ) {
 				if ( mycred_override_settings() )
 					update_site_option( 1, 'mycred_pref_hooks', $new_data );
 				else
-					update_site_option( $GLOBALS['blog_id'], 'mycred_pref_hooks', $new_data );
+					update_option( 'mycred_pref_hooks', $new_data );
 			}
 
 			$this->installed = $installed;
@@ -289,7 +289,7 @@ if ( !class_exists( 'myCRED_Hook_Registration' ) ) {
 		/**
 		 * Preference for Registration Hook
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -297,7 +297,7 @@ if ( !class_exists( 'myCRED_Hook_Registration' ) ) {
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->format_number( $prefs['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log template', 'mycred' ); ?></label>
@@ -426,7 +426,7 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 		/**
 		 * Preference for Login Hook
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -434,7 +434,7 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->format_number( $prefs['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log Template', 'mycred' ); ?></label>
@@ -532,7 +532,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 		/**
 		 * Preference for Publish Content Hook
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -540,7 +540,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 					<label class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Posts', 'mycred' ) ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'post' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'post' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['post']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'post' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'post' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['post']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log template', 'mycred' ); ?></label>
@@ -553,7 +553,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 					<label class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Pages', 'mycred' ) ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'page' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'page' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['page']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'page' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'page' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['page']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log template', 'mycred' ); ?></label>
@@ -588,7 +588,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 					<label class="subheader"><?php echo sprintf( $this->core->template_tags_general( __( '%plural% for %s', 'mycred' ) ),  $post_type->labels->name ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type->name => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type->name => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $_creds ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( $post_type->name => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( $post_type->name => 'creds' ) ); ?>" value="<?php echo $this->core->number( $_creds ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log template', 'mycred' ); ?></label>
@@ -620,7 +620,7 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 /**
  * Hook for comments
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 	class myCRED_Hook_Comments extends myCRED_Hook {
@@ -670,21 +670,21 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		 * If comments are approved without moderation, we apply the corresponding method
 		 * or else we will wait till the appropriate instance.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2.1
 		 */
 		public function new_comment( $comment_id, $comment_status ) {
 			// Marked SPAM
-			if ( $comment_status === 'spam' && $this->prefs['spam'] != 0 )
+			if ( $comment_status === 'spam' )
 				$this->comment_transitions( 'spam', 'unapproved', $comment_id );
 			// Approved comment
-			elseif ( $comment_status == '1' && $this->prefs['approved'] != 0 )
+			elseif ( $comment_status == '1' )
 				$this->comment_transitions( 'approved', 'unapproved', $comment_id );
 		}
 
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
@@ -692,134 +692,125 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				$comment = get_comment( $comment );
 
 			// Ignore Pingbacks or Trackbacks
-			if ( !empty( $comment->comment_type ) ) return;
+			if ( ! empty( $comment->comment_type ) ) return;
 
 			// Logged out users miss out
 			if ( $comment->user_id == 0 ) return;
 
-			// Check if user should be excluded
-			if ( $this->core->exclude_user( $comment->user_id ) === true ) return;
-
-			// Check if we are allowed to comment our own comment
-			if ( $this->prefs['limits']['self_reply'] != 0 && $comment->comment_parent != 0 ) {
-				$parent = get_comment( $comment->comment_parent );
-				if ( $parent->user_id == $comment->user_id ) return;
-			}
-
-			$reference = '';
-			$instance = 'approved';
-
-			// Approved comments
-			if ( $this->prefs['approved']['creds'] != 0 && $new_status == 'approved' ) {
-				// New approved comment
-				if ( $old_status == 'unapproved' || $old_status == 'hold' ) {
-					$reference = 'approved_comment';
-					$points = $this->prefs['approved']['creds'];
-					$points_author = $this->prefs['approved']['author'];
-					$log = $this->prefs['approved']['log'];
-					
-					if ( $this->user_exceeds_limit( $comment->user_id, $comment->comment_post_ID ) )
-						$points = 0;
-				}
-
-				// Marked as "Not Spam"
-				elseif ( $this->prefs['spam']['creds'] != 0 && $old_status == 'spam' ) {
-					$reference = 'approved_comment';
-
-					// Reverse points
-					if ( $this->prefs['spam']['creds'] < 0 ) {
-						$points = abs( $this->prefs['spam']['creds'] );
-						$points_author = abs( $this->prefs['spam']['author'] );
-					}
-					else {
-						$points = $this->prefs['spam']['creds'];
-						$points_author = $this->prefs['spam']['author'];
-					}
-
-					$log = $this->prefs['approved']['log'];
-				}
-
-				// Returned comment from trash
-				elseif ( $this->prefs['trash']['creds'] != 0 && $old_status == 'trash' ) {
-					$reference = 'approved_comment';
-					// Reverse points
-					if ( $this->prefs['trash']['creds'] < 0 ) {
-						$points = abs( $this->prefs['trash']['creds'] );
-						$points_author = abs( $this->prefs['trash']['author'] );
-					}
-					else {
-						$points = $this->prefs['trash']['creds'];
-						$points_author = $this->prefs['trash']['author'];
-					}
-
-					$log = $this->prefs['approved']['log'];
-				}
-			}
-
-			// Spam comments
-			elseif ( $this->prefs['spam'] != 0 && $new_status == 'spam' ) {
-				$reference = 'spam_comment';
-				$points = $this->prefs['spam']['creds'];
-				$points_author = $this->prefs['spam']['author'];
-				$log = $this->prefs['spam']['log'];
-				$instance = 'spam';
-			}
-
-			// Trashed comments
-			elseif ( $this->prefs['trash'] != 0 && $new_status == 'trash' ) {
-				$reference = 'deleted_comment';
-				$points = $this->prefs['trash']['creds'];
-				$points_author = $this->prefs['trash']['author'];
-				$log = $this->prefs['trash']['log'];
-				$instance = 'trash';
-			}
-
-			// Unapproved comments
-			elseif ( $new_status == 'unapproved' && $old_status == 'approved' ) {
-				$reference = 'deleted_comment';
-				// Reverse points
-				if ( $this->prefs['approved']['creds'] < 0 ) {
-					$points = abs( $this->prefs['approved']['creds'] );
-					$points_author = abs( $this->prefs['approved']['author'] );
-				}
-				else {
-					$points = $this->prefs['approved']['creds'];
-					$points_author = $this->prefs['approved']['author'];
-				}
-
-				$log = $this->prefs['trash']['log'];
-				$instance = 'trash';
-			}
-
-			// Execute
-			if ( ! empty( $reference ) ) {
-				if ( $points != 0 ) {
-					$this->core->add_creds(
-						$reference,
-						$comment->user_id,
-						$points,
-						$log,
-						$comment->comment_ID,
-						array( 'ref_type' => 'comment' )
-					);
-				}
+			// Start with awarding points to the content author
+			$comment_author = $comment->user_id;
+			$post = get_post( (int) $comment->comment_post_ID );
+			$content_author = $post->post_author;
 			
-				// Content Author
-				if ( $points_author != 0 ) {
-					// Get post author
-					$post = get_post( (int) $comment->comment_post_ID );
-					// Make sure post still exists and author is not the commenter
-					if ( $post !== NULL && $comment->user_id != $post->post_author ) {
+			$comment_author_points = $this->core->zero();
+			$content_author_points = $this->core->zero();
+			
+			$reference = '';
+			$log = '';
+			
+			// Approved Comments
+			if ( $new_status == 'approved' ) {
+				$reference = 'approved_comment';
+				$log = $this->prefs['approved']['log'];
+
+				// From unapproved / hold
+				if ( in_array( $old_status, array( 'unapproved', 'hold' ) ) ) {
+					// Comment author
+					if ( ! $this->user_exceeds_limit( $comment_author, $comment->comment_post_ID ) )
+						$comment_author_points = $this->prefs['approved']['creds'];
+					
+					// Content author
+					$content_author_points = $this->prefs['approved']['author'];
+				}
+				// From being marked as spam
+				elseif ( $old_status == 'spam' ) {
+					$comment_author_points = abs( $this->prefs['spam']['creds'] );
+					$content_author_points = abs( $this->prefs['spam']['author'] );
+				}
+				// From being in trash
+				elseif ( $old_status == 'trash' ) {
+					$comment_author_points = abs( $this->prefs['trash']['creds'] );
+					$content_author_points = abs( $this->prefs['trash']['author'] );
+				}
+			}
+			
+			// Unapproved Comments
+			elseif ( $new_status == 'unapproved' && $old_status == 'approved' ) {
+				$reference = 'unapproved_comment';
+				$log = $this->prefs['trash']['log'];
+
+				// If we deducted points for approved comments we want to add them back
+				if ( $this->prefs['approved']['creds'] < $this->core->zero() ) {
+					$comment_author_points = abs( $this->prefs['approved']['creds'] );
+					$content_author_points = abs( $this->prefs['approved']['author'] );
+				}
+				// Else use what we have set
+				else {
+					$comment_author_points = $this->prefs['approved']['creds'];
+					$content_author_points = $this->prefs['approved']['author'];
+				}
+			}
+			
+			// Marked as SPAM
+			elseif ( $new_status == 'spam' ) {
+				$reference = 'spam_comment';
+				$log = $this->prefs['spam']['log'];
+
+				$comment_author_points = $this->prefs['spam']['creds'];
+				$content_author_points = $this->prefs['spam']['author'];
+			}
+			
+			// Trashed Comments
+			elseif ( $new_status == 'trash' ) {
+				$reference = 'deleted_comment';
+				$log = $this->prefs['trash']['log'];
+
+				$comment_author_points = $this->prefs['trash']['creds'];
+				$content_author_points = $this->prefs['trash']['author'];
+			}
+			
+			// Comment Author
+			if ( ! $this->core->exclude_user( $comment_author ) && $comment_author_points != $this->core->zero() ) {
+
+				// Check if we are allowed to comment our own comment and are doing it
+				if ( $this->prefs['limits']['self_reply'] != 0 && $comment->comment_parent != 0 ) {
+					$parent = get_comment( $comment->comment_parent );
+					// Comment author is not replying to their own comments
+					if ( $parent->user_id != $comment_author ) {
 						$this->core->add_creds(
 							$reference,
-							$comment->user_id,
-							$points_author,
+							$comment_author,
+							$comment_author_points,
 							$log,
 							$comment->comment_ID,
 							array( 'ref_type' => 'comment' )
 						);
 					}
 				}
+				// Else
+				else {
+					$this->core->add_creds(
+						$reference,
+						$comment_author,
+						$comment_author_points,
+						$log,
+						$comment->comment_ID,
+						array( 'ref_type' => 'comment' )
+					);
+				}
+
+			}
+			
+			// Content Author
+			if ( ! $this->core->exclude_user( $content_author ) && $content_author_points != $this->core->zero() ) {
+				$this->core->add_creds(
+					$reference,
+					$content_author,
+					$content_author_points,
+					$log,
+					$comment->comment_ID,
+					array( 'ref_type' => 'comment' )
+				);
 			}
 		}
 
@@ -888,7 +879,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Preferences for Commenting Hook
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function preferences() {
 			$prefs = $this->prefs;
@@ -904,11 +895,11 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					<ol class="inline">
 						<li>
 							<label for="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['approved']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['approved']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'approved' => 'author' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['approved']['author'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'approved' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'approved' => 'author' ) ); ?>" value="<?php echo $this->core->number( $prefs['approved']['author'] ); ?>" size="8" /></div>
 						</li>
 						<li class="block empty">&nbsp;</li>
 						<li class="block">
@@ -921,11 +912,11 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					<ol class="inline">
 						<li>
 							<label for="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['spam']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['spam']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'spam' => 'creds' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['spam']['author'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'spam' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'spam' => 'author' ) ); ?>" value="<?php echo $this->core->number( $prefs['spam']['author'] ); ?>" size="8" /></div>
 						</li>
 						<li class="block empty">&nbsp;</li>
 						<li class="block">
@@ -938,11 +929,11 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 					<ol class="inline">
 						<li>
 							<label for="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>"><?php _e( 'Comment Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['trash']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['trash']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'trash' => 'author' ) ); ?>"><?php _e( 'Content Author', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'author' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['trash']['author'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'trash' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'trash' => 'author' ) ); ?>" value="<?php echo $this->core->number( $prefs['trash']['author'] ); ?>" size="8" /></div>
 						</li>
 						<li class="block empty">&nbsp;</li>
 						<li class="block">
@@ -956,7 +947,7 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 						<li>
 							<label for="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>"><?php _e( 'Limit per post', 'mycred' ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'limits' => 'per_post' ) ); ?>" id="<?php echo $this->field_id( array( 'limits' => 'per_post' ) ); ?>" value="<?php echo $prefs['limits']['per_post']; ?>" size="8" /></div>
-							<span class="description"><?php echo $this->core->template_tags_general( __( 'The number of comments per post that grants %_plural%. Use zero for unlimited.', 'mycred' ) ); ?></span>
+							<span class="description"><?php echo $this->core->template_tags_general( __( 'The number of comments per post that grants %_plural% to the comment author. Use zero for unlimited.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -1087,7 +1078,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 					'myCREDgive',
 					array(
 						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-						'token' => wp_create_nonce( 'mycred-link-points' )
+						'token'   => wp_create_nonce( 'mycred-link-points' )
 					)
 				);
 				wp_enqueue_script( 'mycred-link-points' );
@@ -1139,7 +1130,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			if ( $_POST['amount'] == 0 )
 				$amount = $this->prefs['creds'];
 			else
-				$amount = $this->core->format_number( $_POST['amount'] );
+				$amount = $this->core->number( $_POST['amount'] );
 
 			// Limits
 			if ( $this->prefs['limit_by'] == 'url' ) {
@@ -1186,7 +1177,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->format_number( $prefs['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php _e( 'The default amount to award for clicking on links. You can override this in the shortcode.', 'mycred' ); ?></span>
 						</li>
 					</ol>
@@ -1456,7 +1447,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->format_number( $prefs['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php _e( 'Amount to award for viewing videos.', 'mycred' ); ?></span>
 						</li>
 					</ol>

@@ -178,7 +178,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				// Limits
 				if ( $this->args['number'] == '-1' )
 					$limits = '';
-				elseif ( $this->args['number'] > 1 )
+				elseif ( $this->args['number'] > 0 )
 					$limits = 'LIMIT 0,' . absint( $this->args['number'] );
 
 				// Filter

@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Protect class
  * @since 0.1
- * @version 1.0
+ * @version 1.0.1
  */
 class myCRED_Protect {
 
@@ -16,7 +16,7 @@ class myCRED_Protect {
 		if ( mycred_override_settings() )
 			$skey = get_blog_option( 1, 'mycred_key' );
 		else
-			$skey = get_blog_option( $GLOBALS['blog_id'], 'mycred_key' );
+			$skey = get_option( 'mycred_key' );
 
 		if ( $skey === false || ( $new_key === true && function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) ) {
 			$skey = $this->reset_key();

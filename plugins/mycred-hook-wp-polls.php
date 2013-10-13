@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_WPPolls' ) ) {
+	if ( !class_exists( 'myCRED_Hook_WPPolls' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_WPPolls extends myCRED_Hook {
 			/**
 			 * Construct
@@ -126,7 +126,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader"><?php echo $this->core->plural(); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->format_number( $prefs['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Log Template', 'mycred' ); ?></label>

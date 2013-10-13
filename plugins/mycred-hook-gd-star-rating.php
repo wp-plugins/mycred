@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.2
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) ) {
+	if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_GD_Star_Rating extends myCRED_Hook {
 			/**
 			 * Construct
@@ -91,7 +91,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences for GD Star Rating
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function preferences() {
 				$prefs = $this->prefs; ?>
@@ -99,7 +99,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>"><?php _e( 'Rating', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['star_rating']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['star_rating']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
@@ -112,7 +112,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>"><?php _e( 'Up / Down Vote', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['up_down']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['up_down']['creds'] ); ?>" size="8" /></div>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>

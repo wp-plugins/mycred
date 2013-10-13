@@ -2,7 +2,7 @@
 /**
  * Addon: BuddyPress
  * Addon URI: http://mycred.me/add-ons/buddypress/
- * Version: 1.0
+ * Version: 1.1
  * Description: The BuddyPress add-on extends <strong>my</strong>CRED to work with BuddyPress allowing you to hook into most BuddyPress related actions.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -73,8 +73,9 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 * @version 1.1
 		 */
 		public function module_init() {
-			add_filter( 'mycred_setup_hooks',                array( $this, 'register_hooks' ) );
-			add_action( 'admin_bar_menu',                    array( $this, 'adjust_admin_bar' ), 110 );
+			add_filter( 'mycred_setup_hooks', array( $this, 'register_hooks' ) );
+			add_action( 'admin_bar_menu',     array( $this, 'adjust_admin_bar' ), 110 );
+			add_filter( 'logout_url',         array( $this, 'adjust_logout' ), 99, 2 );
 			
 			if ( $this->buddypress['balance_location'] == 'top' || $this->buddypress['balance_location'] == 'both' )
 				add_action( 'bp_before_member_header_meta',  array( $this, 'show_balance' ) );
@@ -86,7 +87,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * Adjust Admin Bar
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function adjust_admin_bar() {
 			// Bail if this is an ajax request
@@ -94,7 +95,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				return;
 
 			// Only add menu for logged in user
-			if ( is_user_logged_in() ) {
+			if ( is_user_logged_in() && $this->buddypress['visibility']['history'] ) {
 				global $bp, $wp_admin_bar;
 				
 				// Add secondary parent item for all BuddyPress components
@@ -106,7 +107,25 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				) );
 			}
 		}
-		
+
+		/**
+		 * Adjust Logout Link
+		 * If we are logging out from the points history page, we want to make
+		 * sure we are redirected away from this page when we log out. All else
+		 * the default logout link is used.
+		 * @since 1.3.1
+		 * @version 1.0
+		 */
+		public function adjust_logout( $logouturl, $redirect ) {
+			if ( preg_match( '/(' . $this->buddypress['history_url'] . ')/', $redirect, $match ) ) {
+				global $bp;
+				
+				$url = remove_query_arg( 'redirect_to', $logouturl );
+				return add_query_arg( array( 'redirect_to' => urlencode( $bp->displayed_user->domain ) ), $url );
+			}
+			return $logouturl;
+		}
+
 		/**
 		 * Show Balance in Profile
 		 * @since 0.1
