@@ -345,11 +345,11 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Email Notice Check
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function email_check( $reply, $request, $mycred ) {
 			// Override - something has already determaned that this should not be executed
-			if ( $reply === false || $reply === 'done' ) return $reply;
+			if ( $reply === false || $reply == 'done' || $request['amount'] == $mycred->zero() ) return $reply;
 			
 			// Construct events
 			$event = array( 'all' );

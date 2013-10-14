@@ -160,8 +160,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3.1 =
-Important bug fixes for 1.3 users
+= 1.3.2 =
 
 
 == Other Notes ==
@@ -176,6 +175,10 @@ Important bug fixes for 1.3 users
 
 
 == Changelog ==
+
+= 1.3.2 =
+* Improved the Ranks add-on and added new management settings allowing to delete all ranks and re-assigning roles to users.
+* Fixed Bug #69 - Email Notice is sent when user gains zero points.
 
 = 1.3.1 =
 * Fixed Bug #58 - Some hooks fire to late due to hooks being loaded to late.
