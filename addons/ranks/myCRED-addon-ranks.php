@@ -67,8 +67,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 					'page-attributes' => 0,
 					'custom-fields'   => 0
 				);
-			
-			add_action( 'mycred_help',               array( $this, 'help' ), 10, 2 );
+
 			add_action( 'mycred_parse_tags_user',    array( $this, 'parse_rank' ), 10, 3 );
 			add_action( 'mycred_post_type_excludes', array( $this, 'exclude_ranks' ) );
 		}
@@ -76,9 +75,11 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * Hook into Init
 		 * @since 1.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function module_init() {
+			global $mycred_ranks;
+
 			$this->register_post_type();
 			$this->add_default_rank();
 
@@ -104,6 +105,8 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			add_shortcode( 'mycred_users_of_rank',      'mycred_render_users_of_rank' );
 			add_shortcode( 'mycred_users_of_all_ranks', 'mycred_render_users_of_all_ranks' );
 			add_shortcode( 'mycred_list_ranks',         'mycred_render_rank_list' );
+			
+			add_action( 'mycred_management_prefs', array( $this, 'rank_management' ) );
 
 			add_action( 'wp_ajax_mycred-calc-totals', array( $this, 'calculate_totals' ) );
 		}
@@ -114,6 +117,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 * @version 1.1
 		 */
 		public function module_admin_init() {
+			add_action( 'admin_print_styles-edit-mycred_rank', array( $this, 'ranks_page_header' ) );
 			add_filter( 'manage_mycred_rank_posts_columns',       array( $this, 'adjust_column_headers' )        );
 			add_action( 'manage_mycred_rank_posts_custom_column', array( $this, 'adjust_column_content' ), 10, 2 );
 
@@ -127,6 +131,59 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			add_action( 'add_meta_boxes_mycred_rank', array( $this, 'add_meta_boxes' )        );
 			add_action( 'save_post',                  array( $this, 'save_rank_settings' )    );
+			
+			add_action( 'wp_ajax_mycred-action-delete-ranks', array( $this, 'action_delete_ranks' ) );
+			add_action( 'wp_ajax_mycred-action-assign-ranks', array( $this, 'action_assign_ranks' ) );
+		}
+		
+		/**
+		 * Delete Ranks
+		 * @since 1.3.2
+		 * @version 1.0
+		 */
+		public function action_delete_ranks() {
+			check_ajax_referer( 'mycred-management-actions-roles', 'token' );
+
+			global $wpdb;
+
+			// First get the ids of all existing ranks
+			$rank_ids = $wpdb->get_col( "
+				SELECT ID 
+				FROM {$wpdb->posts} 
+				WHERE post_type = 'mycred_rank';" );
+
+			// Delete all ranks
+			$wpdb->query( "
+				DELETE FROM {$wpdb->posts} 
+				WHERE post_type = 'mycred_rank';" );
+
+			// Delete rank post meta
+			if ( $rank_ids ) {
+				$ids = implode( ',', $rank_ids );
+				$wpdb->query( "
+					DELETE FROM {$wpdb->postmeta} 
+					WHERE post_id IN ({$ids});" );
+			}
+
+			// Confirm that ranks are gone
+			$rows = $wpdb->get_var( "
+				SELECT COUNT(*) 
+				FROM {$wpdb->posts} 
+				WHERE post_type = 'mycred_rank';" );
+
+			die( json_encode( array( 'status' => 'OK', 'rows' => $rows ) ) );
+		}
+		
+		/**
+		 * Assign Ranks
+		 * @since 1.3.2
+		 * @version 1.0
+		 */
+		public function action_assign_ranks() {
+			check_ajax_referer( 'mycred-management-actions-roles', 'token' );
+
+			$adjustments = mycred_assign_ranks();
+			die( json_encode( array( 'status' => 'OK', 'rows' => $adjustments ) ) );
 		}
 
 		/**
@@ -142,17 +199,50 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * Enqueue Scripts & Styles
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function enqueue_scripts() {
 			$screen = get_current_screen();
-			// Commonly used
+
+			// Ranks List Page
 			if ( $screen->id == 'edit-mycred_rank' ) {
 				wp_enqueue_style( 'mycred-admin' );
+				wp_enqueue_style( 'mycred-admin' ); 
 			}
-			elseif ( $screen->id == 'mycred_rank' ) {
+
+			// Edit Rank Page
+			if ( $screen->id == 'mycred_rank' ) {
 				wp_enqueue_style( 'mycred-admin' );
 				wp_dequeue_script( 'autosave' );
+			}
+
+			// Insert management script
+			if ( $screen->id == 'mycred_page_myCRED_page_settings' ) {
+				wp_register_script(
+					'mycred-rank-management',
+					plugins_url( 'js/management.js', myCRED_RANKS ),
+					array( 'jquery' ),
+					myCRED_VERSION . '.1'
+				);
+				wp_localize_script(
+					'mycred-rank-management',
+					'myCRED_Ranks',
+					array(
+						'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+						'token'          => wp_create_nonce( 'mycred-management-actions-roles' ),
+						'working'        => __( 'Processing...', 'mycred' ),
+						'confirm_del'    => __( 'Warning! All ranks will be deleted! This can not be undone!', 'mycred' ),
+						'confirm_assign' => __( 'Are you sure you want to re-assign user ranks?', 'mycred' )
+					)
+				);
+				wp_enqueue_script( 'mycred-rank-management' );
+			}
+
+			if ( in_array( $screen->id, array( 'edit-mycred_rank', 'mycred_rank' ) ) ) { ?>
+<style type="text/css">
+#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
+</style>
+<?php
 			}
 		}
 
@@ -220,16 +310,13 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			global $wpdb;
 
-			$sql = "
-SELECT 
-  user_id AS ID, 
-  SUM(CASE WHEN creds > 0 THEN creds ELSE 0 END) as positives_sum,
-  SUM(CASE WHEN creds < 0 THEN creds ELSE 0 END) as negatives_sum
-FROM 
-  {$this->core->log_table} 
-GROUP BY
-  user_id;";
-			$users = $wpdb->get_results( $sql );
+			$users = $wpdb->get_results( "
+				SELECT user_id AS ID, 
+				SUM(CASE WHEN creds > 0 THEN creds ELSE 0 END) as positives_sum,
+				SUM(CASE WHEN creds < 0 THEN creds ELSE 0 END) as negatives_sum
+				FROM {$this->core->log_table} 
+				GROUP BY user_id;" );
+
 			$count = 0;
 			if ( $users ) {
 				foreach ( $users as $user ) {
@@ -284,56 +371,22 @@ GROUP BY
 		 * Publishing Content
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.2.1
 		 */
 		public function post_status_change( $new_status, $old_status, $post ) {
+			global $mycred_ranks;
+
 			// Only ranks please
 			if ( $post->post_type != 'mycred_rank' ) return;
 
 			// Publishing rank
-			$status = apply_filters( 'mycred_publish_hook_old', array( 'new', 'auto-draft', 'draft', 'private', 'pending', 'scheduled' ) );
-			if ( in_array( $old_status, $status ) && $new_status == 'publish' ) {
-				$this->assign_ranks();
+			if ( $new_status == 'publish' && $old_status != 'publish' ) {
+				mycred_assign_ranks();
 			}
 
 			// Trashing of rank
-			elseif ( $old_status == 'publish' && $new_status == 'trash' ) {
-				$this->assign_ranks();
-			}
-			
-			// Delete transient
-			delete_transient( 'mycred_ranks' );
-		}
-
-		/**
-		 * Assign Ranks
-		 * Runs though all registered members and assigns ranks
-		 * @since 1.1.1
-		 * @version 1.1
-		 */
-		public function assign_ranks() {
-			// Run though all users and find their rank
-			$mycred = mycred_get_settings();
-			$args = array();
-
-			// In case we have an exclude list
-			if ( isset( $mycred->exclude['list'] ) && !empty( $mycred->exclude['list'] ) )
-				$args['exclude'] = explode( ',', $mycred->exclude['list'] );
-
-			$users = get_users( $args );
-			$rank_users = array();
-			if ( $users ) {
-				foreach ( $users as $user ) {
-					// The above exclude list will not take into account
-					// if admins are excluded. For this reason we need to run
-					// this check again to avoid including them in this list.
-					if ( $mycred->exclude_user( $user->ID ) ) continue;
-					// Find users rank
-					if ( $this->rank['base'] == 'total' )
-						mycred_find_users_rank( $user->ID, true, 0, $this->core->cred_id . '_total' );
-					else
-						mycred_find_users_rank( $user->ID, true );
-				}
+			elseif ( $new_status == 'trash' && $old_status != 'trash' ) {
+				mycred_assign_ranks();
 			}
 		}
 
@@ -433,26 +486,25 @@ GROUP BY
 		 * @version 1.0.1
 		 */
 		public function add_default_rank() {
-			if ( mycred_have_ranks() ) return;
-			$rank = array();
-			$rank['post_title'] = __( 'Newbie', 'mycred' );
-			$rank['post_type'] = 'mycred_rank';
-			$rank['post_status'] = 'publish';
+			global $mycred_ranks;
 
-			$rank_id = wp_insert_post( $rank );
+			// If there are no ranks at all
+			if ( ! mycred_have_ranks() ) {
+				// Construct a new post
+				$rank = array();
+				$rank['post_title'] = __( 'Newbie', 'mycred' );
+				$rank['post_type'] = 'mycred_rank';
+				$rank['post_status'] = 'publish';
 
-			update_post_meta( $rank_id, 'mycred_rank_min', 0 );
-			update_post_meta( $rank_id, 'mycred_rank_max', 9999999 );
+				// Insert new rank post
+				$rank_id = wp_insert_post( $rank );
 
-			$args = array();
-			if ( isset( $this->core->exclude['list'] ) && !empty( $this->core->exclude['list'] ) )
-				$args['exclude'] = explode( ',', $this->core->exclude['list'] );
+				// Update min and max values
+				update_post_meta( $rank_id, 'mycred_rank_min', 0 );
+				update_post_meta( $rank_id, 'mycred_rank_max', 9999999 );
 
-			$users = get_users( $args );
-			if ( $users ) {
-				foreach ( $users as $user ) {
-					update_user_meta( $user->ID, 'mycred_rank', $rank_id );
-				}
+				$mycred_ranks = 1;
+				mycred_assign_ranks();
 			}
 		}
 
@@ -684,7 +736,7 @@ GROUP BY
 			update_post_meta( $post_id, 'mycred_rank_max', $max );
 
 			if ( get_post_status( $post_id ) == 'publish' )
-				$this->assign_ranks();
+				mycred_assign_ranks();
 		}
 
 		/**
@@ -882,28 +934,33 @@ jQuery(function($){
 		}
 
 		/**
-		 * Help
-		 * @since 1.1
+		 * Management
+		 * @since 1.3.2
 		 * @version 1.0
 		 */
-		public function help( $screen_id, $screen ) {
-			if ( $screen_id == 'mycred_page_myCRED_page_settings' ) {
-				$screen->add_help_tab( array(
-					'id'		=> 'mycred-rank',
-					'title'		=> __( 'Ranks', 'mycred' ),
-					'content'	=> '
-<p>' . __( 'You can create ranks according to the amount of points a user has. By default, ranks are only visible in widgets and shortcodes however it is possible for you to also create archive pages in your theme for all ranks or specific ones.', 'mycred' ) . '</p>
-<p><strong>' . __( 'Rank Basis', 'mycred' ) . '</strong></p>
-<p>' . $this->core->template_tags_general( __( 'As of version 1.2, you can select to rank users according to their current balance or the total amount of %_plural% they have accumulated. This is recommended if you do not want users to get demoted if they use their %_plural% to pay for items in your store or event tickets.', 'mycred' ) ) . '</p>
-<p><strong>' . __( 'Templates', 'mycred' ) . '</strong></p>
-<p>' . __( 'Ranks are just another custom post type which means that you can, if you select to make Ranks Public, create custom template files for ranks in your theme folder.', 'mycred' ) . '</p>
-<p>' . sprintf( __( 'For more information on Templates for Custom Post Types visit the <a href="%s">WordPress Codex</a>.', 'mycred' ), 'http://codex.wordpress.org/Post_Types#Custom_Post_Types' ) . '</p>
-<p><strong>' . __( 'Changing URL Slug', 'mycred' ) . '</strong></p>
-<p>' . __( 'You can change the URL slug used for ranks to any URL friendly value.', 'mycred' ) . '</p>
-<p>' . __( 'If you are using a custom permalink structure and you make ranks public or change the slug, you will need to visit your permalink settings page and click "Save Changes" to flush your re-write rules! Otherwise you will get a 404 error message when trying to view a rank archive page.', 'mycred' ) . '</span></p>'
-				) );
-			}
+		public function rank_management() {
+			$data = mycred_get_published_ranks();
 			
+			$reset_block = false;
+			if ( $data == 0 || $data === false )
+				$reset_block = true; ?>
+
+		<label class="subheader"><?php _e( 'Ranks', 'mycred' ); ?></label>
+		<ol id="myCRED-rank-actions" class="inline">
+			<li>
+				<label><?php _e( 'Rank Post Type', 'mycred' ); ?></label>
+				<div class="h2"><input type="text" id="mycred-rank-post-type" disabled="disabled" value="mycred_rank" class="readonly" /></div>
+			</li>
+			<li>
+				<label><?php _e( 'No. of ranks', 'mycred' ); ?></label>
+				<div class="h2"><input type="text" id="mycred-ranks-no-of-ranks" disabled="disabled" value="<?php echo $data; ?>" class="readonly short" /></div>
+			</li>
+			<li>
+				<label><?php _e( 'Actions', 'mycred' ); ?></label>
+				<div class="h2"><input type="button" id="mycred-manage-action-reset-ranks" value="<?php _e( 'Remove All Ranks', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="mycred-manage-action-assign-ranks" value="<?php _e( 'Assign Ranks to Users', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; ?>" /></div>
+			</li>
+		</ol>
+<?php
 		}
 	}
 	$rank = new myCRED_Ranks();
