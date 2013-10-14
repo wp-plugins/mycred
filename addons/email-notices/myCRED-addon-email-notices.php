@@ -356,16 +356,16 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			$amount = $request['amount'];
 
 			// Event: Account gains or loses amount
-			if ( $amount < 0 )
+			if ( $amount < $this->core->zero() )
 				$event[] = 'negative';
 			else
 				$event[] = 'positive';
 
 			// Event: Account reaches zero or goes minus
 			$balance = $mycred->get_users_cred( $request['user_id'] );
-			if ( $amount < 0 && $balance-$amount < 0 )
+			if ( $amount < $mycred->zero() && $balance-$amount < $mycred->zero() )
 				$event[] = 'minus';
-			elseif ( $balance-$amount == 0 )
+			elseif ( $balance-$amount == $mycred->zero() )
 				$event[] = 'zero';
 
 			// Do Ranks first
