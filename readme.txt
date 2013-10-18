@@ -180,6 +180,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 * Improved the Ranks add-on and added new management settings allowing to delete all ranks and re-assigning roles to users.
 * Fixed Bug #69 - Email Notice is sent when user gains zero points.
 * Fixed Bug #70 - Widget checkbox settings are not updated.
+* Fixed Bug #71 - Zero point awards are logged.
 
 = 1.3.1 =
 * Fixed Bug #58 - Some hooks fire to late due to hooks being loaded to late.

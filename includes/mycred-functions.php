@@ -888,12 +888,13 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $ref_id (array), optional array of reference IDs allowing the use of content specific keywords in the log entry
 		 * @param $data (object|array|string|int), optional extra data to save in the log. Note that arrays gets serialized!
 		 * @returns boolean true on success or false on fail
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function add_to_log( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
 			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 			if ( !preg_match( '/mycred_/', $type ) ) return false;
+			if ( $this->number( $amount ) == $this->zero() ) return false;
 
 			global $wpdb;
 
