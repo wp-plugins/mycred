@@ -10,69 +10,30 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
+ 
+I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
-We feel that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
+So I built an adaptive plugin which gives it’s users full control on how points are awarded, used, traded, managed, logged and presented. Built on the "opt-in" principle, it is up to you what features you want to use and how. If your WordPress installation does not support a feature it is hidden from you to keep things clean and simple.
 
-So we built an adaptive plugin which gives it’s users full control on how points are awarded, used, traded, managed, logged and presented.
+**my**CRED comes packed with features along with built-in support for some of the most popular WordPress plugins out there. But of course **my**CRED does not support everything out of the box so I have documented as much as possible in the **my**CRED codex and you can find several tutorials that can help you better acquaint yourself with **my**CRED.
 
-**my**CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
+I am here to help where ever I can but please remember that right now this is a one man show and I do need an occasional coffee break.
 
-**Core Features:**
+You are welcome to post your issues or questions under the "Support" tab but remember that  **my**CRED has it's own online forum along with [F.A.Q.](http://mycred.me/about/faq/) page and [Known Issues](http://mycred.me/download/known-issues/).
 
-* Logging of all events
-* Log entry templates and template tags
-* Easy User Points editing
-* Easy to manage Hooks for each instance where users gain/loose points
-* Supports any point format
-* Ranking
-* Custom My Balance Widget
-* Custom Leader board Widget
-* Minimum CSS Styling
-* Built-in log and balance reset
-* Export of users balances to CSV files
-* Setup points to be used as a virtual currency or store credit
+**Hooks**
+
+**my**CRED hooks are instances where you award or deduct points from a user. By default you can award point for: registrations, logins, content publishing, commenting, clicking on links and viewing YouTube videos. You can find more information on built-in hooks [here](http://mycred.me/about/hooks/).
 
 
-**Built-in Add-ons:**
+**Add-ons**
 
-Your myCRED installation comes packed with optional add-ons, adding further features and third-party plugin support.
-
-* *Email Notices* - Setup email notices for your users and/or admins when a users points balance changes or on specific events, for example when they purchase content set for sale.
-* *Transfer* - Allows your users to send points to other members with an option to impose a daily-, weekly- or monthly transfer limit.
-* *Import* - Import points from a CSV-file, Cubepoints or points stored under any custom user meta key.
-* *Sell Content* - Sell access to entire contents or parts of it with the option to share a percentage of the sale with the content author.
-* *Buy Creds* - Let your users buy points via PayPal, Skrill, Zombaio or NETbilling.
-* *Ranks* - Allows you to setup ranks based on your users points balance.
-* *Gateway* - Allow your users to pay for items in their WooCommerce or MarketPress shopping cart using their point balance.
-* *BuddyPress* - Extend **my**CRED to support [BuddyPress](http://wordpress.org/extend/plugins/buddypress/), [BuddyPress Gifts](http://wordpress.org/extend/plugins/buddypress-gifts/), [BuddyPress Links](http://wordpress.org/extend/plugins/buddypress-links/), [BP Album+](http://wordpress.org/extend/plugins/bp-gallery/) and [BP Gallery](http://buddydev.com/plugins/bp-gallery/).
-* *Banking* - Charge or payout interest on users balances on a regular basis or setup recurring payouts. Added support for websites with large (2k+) user base.
-* *Notifications* - Let your users know when they have earned or lost points on your website though jQuery popups.
+**my**CRED add-ons allows you to enable more complex features that is not just about awarding / deducting points. Features include: Sell Content with points, Buy points for real money, transfer points between users, award ranks according to points balances and expand **my**CRED to work with BuddyPress. You can find a complete list of built-in and premium add-ons [here](http://mycred.me/add-ons/).
 
 
-**Multisites**
+**The Codex**
 
-**my**CRED supports Multisite installations and offers you the following features:
-
-* *Master Template* - Force your main sites **my**CRED installation upon all other sites. Each site will have it's own log but have no access to any settings, hooks or add-ons.
-* *Centralized Log* - All sites uses your main sites log instead of individual logs for each site.
-* *Block List* - Allows you to block specific sites from using **my**CRED.
-
-**Important!** The above features requires you to enable **my**CRED network wide!
-
-**Supported Third-party Plugins:**
-
-The following third party plugins are supported by default:
-
-* [BuddyPress](http://buddypress.org)
-* [Contact Form 7](http://wordpress.org/plugins/contact-form-7/) - Award users points for submitting forms.
-* [Invite Anyone Plugin](http://wordpress.org/extend/plugins/invite-anyone/) - Award users for sending invitations and for each time an invited user accepts and signs up.
-* [Jetpack](http://wordpress.org/extend/plugins/jetpack/) - Award users for subscribing to comments or your site. Requires users to be logged in or subscribe using the email saved in their profile.
-* [BadgeOS](http://wordpress.org/extend/plugins/badgeos/) - Award points for any BadgeOS achievement type.
-* [WP-Polls](http://wordpress.org/plugins/wp-polls/) - Award points for users voting in polls.
-* [WP Favorite Posts](http://wordpress.org/plugins/wp-favorite-posts/) - Award points for users adding posts to their favorites or deduct points if they remove posts.
-* [Events Manager](http://wordpress.org/plugins/events-manager/) - Award points for users attending events with the option to deduct points if attendance is cancelled.
-* [bbPress](http://wordpress.org/extend/plugins/bbpress/) - Award points for new forums, topics, replies and for topics getting added to "Favorites".
-* [GD Star Rating](http://wordpress.org/plugins/gd-star-rating/) - Award points for users rating content.
+If you are comfortable with PHP or have some experience with customising your WordPress installation, I have documented as much as possible of **my**CRED in the [Codex](http://codex.mycred.me/).
 
 
 **Further Details**
@@ -83,7 +44,8 @@ The following third party plugins are supported by default:
 * [Add-ons](http://mycred.me/add-ons/)
 * [Tutorials](http://mycred.me/support/tutorials/)
 * [Known Issues](http://mycred.me/download/known-issues/)
-* [Codex](http://mycred.me/support/codex/)
+* [Codex](http://codex.mycred.me/support/)
+
 
 **Contact**
 
@@ -94,13 +56,13 @@ The following third party plugins are supported by default:
 
 == Installation ==
 
-For a comprehensive guide on how to install myCRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
+For a comprehensive guide on how to install **my**CRED or how this plugin works, consider visiting our [Online Tutorial](http://mycred.me/support/tutorials/how-to-install-and-setup-mycred/).
 
 **Single Site**
 
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Run the myCRED Setup which will allow you to configure your **my**CRED installation
+3. Run the **my**CRED Setup which will allow you to configure your **my**CRED installation
 4. Activate the Add-ons you wish to use under the 'myCRED' menu in WordPress
 5. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
 6. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
@@ -108,10 +70,10 @@ For a comprehensive guide on how to install myCRED or how this plugin works, con
 **Multisite with one myCRED installation on all sites**
 
 1. Upload `mycred` to the `/wp-content/plugins/` directory
-2. Enable myCRED Network Wide though your WordPress Network page
+2. Enable **my**CRED Network Wide though your WordPress Network page
 3. While in your Network area, visit the new myCRED menu and select your setup and save.
 4. Visit your main sites admin area
-5. Run the myCRED Setup which will allow you to configure your **my**CRED installation
+5. Run the **my**CRED Setup which will allow you to configure your **my**CRED installation
 6. Activate the Add-ons you wish to use under the 'myCRED' menu in WordPress
 7. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
 8. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
@@ -120,11 +82,11 @@ For a comprehensive guide on how to install myCRED or how this plugin works, con
 
 1. Upload `mycred` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Run the myCRED Setup which will allow you to configure your **my**CRED installation
+3. Run the **my**CRED Setup which will allow you to configure your **my**CRED installation
 4. Activate the Add-ons you wish to use under the 'myCRED' menu in WordPress
 5. Configure and Enable the hooks you wish to use though the 'Hooks' sub menu in WordPress
 6. Configure any other Add-on settings you might be using i.e. BuddyPress though the 'Settings' sub menu in WordPress
-7. Repeat the process on each site you want to run myCRED
+7. Repeat the process on each site you want to run **my**CRED
 
 == Frequently Asked Questions ==
 
