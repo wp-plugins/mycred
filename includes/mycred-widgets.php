@@ -156,14 +156,14 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'My Balance', 'mycred' );
 			$cred_format = isset( $instance['cred_format'] ) ? esc_attr( $instance['cred_format'] ) : '%cred_f%';
 
-			$show_history = isset( $instance['show_history'] ) ? 1 : 0;
+			$show_history = isset( $instance['show_history'] ) ? $instance['show_history'] : 0;
 			$history_title = isset( $instance['history_title'] ) ? $instance['history_title'] : __( '%plural% History', 'mycred' );
 			$history_entry = isset( $instance['history_format'] ) ? esc_attr( $instance['history_format'] ) : '%entry% <span class="creds">%cred_f%</span>';
 			$history_length = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
 
-			$show_rank = isset( $instance['show_rank'] ) ? 1 : 0;
+			$show_rank = isset( $instance['show_rank'] ) ? $instance['show_rank'] : 0;
 			$rank_format = isset( $instance['rank_format'] ) ? $instance['rank_format'] : '#%ranking%';
-			$show_visitors = isset( $instance['show_visitors'] ) ? 1 : 0;
+			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
 			$message = isset( $instance['message'] ) ? esc_attr( $instance['message'] ) : __( '<a href="%login_url_here%">Login</a> to view your balance.', 'mycred' );
 
 			// CSS to help with show/hide
@@ -194,7 +194,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 		</p>
 		<!-- Ranking -->
 		<p class="myCRED-widget-field">
-			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_rank' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>" value="1"<?php checked( $show_rank, true ); ?> class="checkbox" /> 
+			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_rank' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>" value="1"<?php checked( $show_rank, 1 ); ?> class="checkbox" /> 
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>"><?php _e( 'Include users ranking', 'mycred' ); ?></label><br />
 			<span class="mycred-hidden<?php echo $rank_format_class; ?>">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>"><?php _e( 'Format', 'mycred' ); ?>:</label>
@@ -204,7 +204,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 		</p>
 		<!-- History -->
 		<p class="myCRED-widget-field">
-			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_history' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_history' ) ); ?>" value="1"<?php checked( $show_history, true ); ?> class="checkbox" /> 
+			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_history' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_history' ) ); ?>" value="1"<?php checked( $show_history, 1 ); ?> class="checkbox" /> 
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_history' ) ); ?>"><?php _e( 'Include history', 'mycred' ); ?></label><br />
 			<span class="mycred-hidden<?php echo $history_option_class; ?>">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'history_title' ) ); ?>"><?php _e( 'History Title', 'mycred' ); ?>:</label>
@@ -218,7 +218,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 		</p>
 		<!-- Show to Visitors -->
 		<p class="myCRED-widget-field">
-			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_visitors' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>" value="1"<?php checked( $show_visitors, true ); ?> class="checkbox" /> 
+			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_visitors' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>" value="1"<?php checked( $show_visitors, 1 ); ?> class="checkbox" /> 
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>"><?php _e( 'Show message when not logged in', 'mycred' ); ?></label><br />
 			<span class="mycred-hidden<?php echo $visitor_option_class; ?>">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'message' ) ); ?>"><?php _e( 'Message', 'mycred' ); ?>:</label><br />

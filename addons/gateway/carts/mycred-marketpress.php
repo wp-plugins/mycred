@@ -3,24 +3,13 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * MarketPress Payment Gateway
  * @since 1.1
- * @version 1.1.1
+ * @version 1.2
  */
 if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
-	add_action( 'after_setup_theme', 'mycred_init_marketpress_gateway', 5 );
+	add_action( 'mp_load_gateway_plugins', 'mycred_init_marketpress_gateway' );
 	function mycred_init_marketpress_gateway()
 	{
-		if ( !function_exists( 'is_plugin_active' ) )
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-		$file = '/marketpress-includes/marketpress-gateways.php';
-		// Pro
-		if ( is_plugin_active( 'marketpress/marketpress.php' ) )
-			include_once( WP_PLUGIN_DIR . '/marketpress' . $file );
-		// Light
-		elseif ( is_plugin_active( 'wordpress-ecommerce/marketpress.php' ) )
-			include_once( WP_PLUGIN_DIR . '/wordpress-ecommerce' . $file );
-		else
-			return;
+		if ( ! class_exists( 'MP_Gateway_API' ) ) return;
 		
 		class MP_Gateway_myCRED extends MP_Gateway_API {
 
@@ -195,7 +184,7 @@ if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
 			 * @param array $cart. Contains the cart contents for the current blog, global cart if $mp->global_cart is true
 			 * @param array $shipping_info. Contains shipping info and email in case you need it
 			 * @since 1.1
-			 * @version 1.2
+			 * @version 1.2.1
 			 */
 			function process_payment( $cart, $shipping_info ) {
 				global $mp;
@@ -222,7 +211,7 @@ if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
 				$total = $this->get_cart_total( $cart );
 			
 				// Low balance or Insolvent
-				if ( $balance <= 0 || $balance-$total < 0 ) {
+				if ( $balance <= $this->mycred->zero() || $balance-$total < $this->mycred->zero() ) {
 					$mp->cart_checkout_error(
 						$insolvent . ' ' . sprintf( __( '<a href="%s">Go Back</a>', 'mycred' ), mp_checkout_step_url( 'checkout' ) )
 					);

@@ -2,7 +2,7 @@
 /**
  * Addon: Gateway
  * Addon URI: http://mycred.me/add-ons/gateway/
- * Version: 1.3
+ * Version: 1.3.1
  * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager. Supported Membership Plugins: WPMU DEV Membership
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -27,6 +27,7 @@ define( 'myCRED_GATE_MEMBER_DIR', myCRED_GATE_DIR . 'membership/' );
  */
 require_once( myCRED_GATE_CART_DIR . 'mycred-woocommerce.php' );
 require_once( myCRED_GATE_CART_DIR . 'mycred-marketpress.php' );
+require_once( myCRED_GATE_CART_DIR . 'mycred-wpecommerce.php' );
 
 /**
  * Event Espresso
@@ -48,7 +49,7 @@ function mycred_load_events_manager() {
 	if ( !defined( 'EM_VERSION' ) ) return;
 	
 	// Pro
-	if ( defined( 'EMP_VERSION' ) ) {
+	if ( class_exists( 'EM_Pro' ) ) {
 		require_once( myCRED_GATE_EVENT_DIR . 'mycred-eventsmanager-pro.php' );
 		EM_Gateways::register_gateway( 'mycred', 'EM_Gateway_myCRED' );
 	}

@@ -174,7 +174,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 			/**
 			 * Process Payment
 			 * @since 0.1
-			 * @version 1.1
+			 * @version 1.1.1
 			 */
 			function process_payment( $order_id ) {
 				global $woocommerce;
@@ -240,7 +240,7 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 						$this->mycred->add_creds(
 							'store_sale',
 							$product->post_author,
-							$this->mycred->format_number( $share ),
+							$this->mycred->number( $share ),
 							$this->profit_sharing_log,
 							$product->ID,
 							array( 'ref_type' => 'post' )

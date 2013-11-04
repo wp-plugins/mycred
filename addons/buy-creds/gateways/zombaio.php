@@ -225,7 +225,7 @@ if ( !class_exists( 'myCRED_Zombaio' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['site_id'] ) || empty( $this->prefs['site_id'] ) )
@@ -236,14 +236,6 @@ if ( !class_exists( 'myCRED_Zombaio' ) ) {
 			
 			// Construct location
 			$location = 'https://secure.zombaio.com/?' . $this->prefs['site_id'] . '.' . $this->prefs['pricing_id'] . '.' . $this->prefs['lang'];
-			
-			// Finance
-			$amount = $this->core->number( $_REQUEST['amount'] );
-			// Enforce minimum
-			if ( $amount < $this->core->buy_creds['minimum'] )
-				$amount = $this->core->buy_creds['minimum'];
-			// No negative amounts please
-			$amount = abs( $amount );
 			
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();

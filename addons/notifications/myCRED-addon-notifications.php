@@ -107,10 +107,10 @@ if ( !class_exists( 'myCRED_Notifications' ) ) {
 		/**
 		 * myCRED Add
 		 * @since 1.2.3
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function mycred_add( $reply, $request, $mycred ) {
-			if ( $reply !== true ) return $reply;
+			if ( $reply === false ) return $reply;
 
 			$template = $this->notifications['template'];
 			$template = str_replace( '%entry%', $request['entry'], $template );

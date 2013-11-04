@@ -1,7 +1,7 @@
 <?php
 /**
  * Addon: Ranks
- * Addon URI: http://mycred.me/add-ons/email-notices/
+ * Addon URI: http://mycred.me/add-ons/ranks/
  * Version: 1.1
  * Description: Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank. 
  * Author: Gabriel S Merovingi

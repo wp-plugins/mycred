@@ -232,7 +232,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
@@ -248,17 +248,12 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			else
 				$location = 'https://www.paypal.com/cgi-bin/webscr';
 
-			// Finance
+			// Amount
 			$amount = $this->core->number( $_REQUEST['amount'] );
-			// Enforce minimum
-			if ( $amount < $this->core->buy_creds['minimum'] )
-				$amount = $this->core->buy_creds['minimum'];
-			// No negative amounts please
 			$amount = abs( $amount );
-			// Calculate cost here so we can use any exchange rate
-			$cost = $amount*$this->prefs['exchange'];
-			// Return a properly formated cost so PayPal is happy
-			$cost = number_format( $cost, 2, '.', '' );
+
+			// Get Cost
+			$cost = $this->get_cost( $amount );
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();

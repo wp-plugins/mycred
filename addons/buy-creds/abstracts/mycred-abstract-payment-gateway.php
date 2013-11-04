@@ -478,6 +478,29 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		}
 
 		/**
+		 * Get Cost
+		 * @since 1.3.2
+		 * @version 1.0
+		 */
+		public function get_cost( $amount = 0, $raw = false ) {
+			// Apply minimum
+			if ( $amount < $this->core->buy_creds['minimum'] )
+				$amount = $this->core->buy_creds['minimum'];
+
+			// Calculate cost here so we can use any exchange rate
+			if ( isset( $this->prefs['exchange'] ) && $this->prefs['exchange'] <> 1 )
+				$cost = $amount*$this->prefs['exchange'];
+			else
+				$cost = $amount;
+
+			// Return a properly formated cost so PayPal is happy
+			if ( ! $raw )
+				$cost = number_format( $cost, 2, '.', '' );
+			
+			return apply_filters( 'mycred_buycred_get_cost', $cost, $amount, $this->prefs, $this->core->buy_creds );
+		}
+
+		/**
 		 * Currencies Dropdown
 		 * @since 0.1
 		 * @version 1.0

@@ -6,7 +6,7 @@
  * @requires jQuery UI
  * @requires jQuery Autocomplete
  * @since 0.1
- * @version 1.0.21
+ * @version 1.1
  */
 jQuery(function($){
 	// Transfer function
@@ -74,7 +74,9 @@ jQuery(function($){
 				// Transfer Completed.
 				else if ( data == 'ok' ) {
 					alert( myCRED.completed );
-					location.reload();
+					
+					if ( myCRED.reload == '1' )
+						location.reload();
 				}
 			},
 			// Error (sent to console)
@@ -101,7 +103,6 @@ jQuery(function($){
 			
 			var send = {
 				action : "mycred-autocomplete",
-				me     : myCRED.user_id,
 				token  : myCRED.atoken,
 				string : request
 			};

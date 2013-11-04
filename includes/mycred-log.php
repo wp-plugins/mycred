@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Query Log
  * @see http://mycred.me/classes/mycred_query_log/ 
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 if ( !class_exists( 'myCRED_Query_Log' ) ) {
 	class myCRED_Query_Log {
@@ -78,33 +78,66 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 
 				// Reference
 				if ( $this->args['ref'] !== NULL ) {
-					$wheres[] = 'ref = %s';
-					$prep[] = sanitize_text_field( $this->args['ref'] );
+					$refs = explode( ',', $this->args['ref'] );
+					$ref_count = count( $refs );
+					if ( $ref_count > 1 ) {
+						$ref_count = $ref_count-1;
+						$wheres[] = 'ref IN (%s' . str_repeat( ',%s', $ref_count ) . ')';
+						foreach ( $refs as $ref )
+							$prep[] = sanitize_text_field( $ref );
+					}
+					else {
+						$wheres[] = 'ref = %s';
+						$prep[] = sanitize_text_field( $refs[0] );
+					}
 				}
 
 				// Reference ID
 				if ( $this->args['ref_id'] !== NULL ) {
-					$wheres[] = 'ref_id = %d';
-					$prep[] = sanitize_text_field( $this->args['ref_id'] );
+					$ref_ids = explode( ',', $this->args['ref_id'] );
+					$ref_id_count = count( $ref_ids );
+					if ( $ref_id_count > 1 ) {
+						$ref_id_count = $ref_id_count-1;
+						$wheres[] = 'ref_id IN (%d' . str_repeat( ',%d', $ref_id_count ) . ')';
+						foreach ( $ref_ids as $ref_id )
+							$prep[] = sanitize_text_field( $ref_id );
+					}
+					else {
+						$wheres[] = 'ref_id = %d';
+						$prep[] = sanitize_text_field( $ref_ids[0] );
+					}
 				}
 
 				// Amount
 				if ( $this->args['amount'] !== NULL ) {
-					// Range
-					if ( is_array( $this->args['amount'] ) && array_key_exists( 'start', $this->args['amount'] ) && array_key_exists( 'end', $this->args['amount'] ) ) {
-						$wheres[] = 'creds BETWEEN ' . $format . ' AND ' . $format;
-						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['start'] ) );
-						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['end'] ) );
+					// Advanced query
+					if ( is_array( $this->args['amount'] ) ) {
+						// Range
+						if ( isset( $this->args['amount']['start'] ) && isset( $this->args['amount']['end'] ) ) {
+							$wheres[] = 'creds BETWEEN ' . $format . ' AND ' . $format;
+							$prep[] = $this->core->number( sanitize_text_field( $this->args['amount']['start'] ) );
+							$prep[] = $this->core->number( sanitize_text_field( $this->args['amount']['end'] ) );
+						}
+						// Compare
+						elseif ( isset( $this->args['amount']['num'] ) && isset( $this->args['amount']['compare'] ) ) {
+							$wheres[] = 'creds' . trim( $this->args['amount']['compare'] ) . ' ' . $format;
+							$prep[] = $this->core->number( sanitize_text_field( $this->args['amount']['num'] ) );
+						}
 					}
-					// Compare
-					elseif ( is_array( $this->args['amount'] ) && array_key_exists( 'num', $this->args['amount'] ) && array_key_exists( 'compare', $this->args['amount'] ) ) {
-						$wheres[] = 'creds' . sanitize_text_field( $this->args['amount']['compare'] ) . ' ' . $format;
-						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount']['num'] ) );
-					}
-					// Specific amount
+					// Specific amount(s)
 					else {
-						$wheres[] = 'creds = ' . $format;
-						$prep[] = $this->core->format_number( sanitize_text_field( $this->args['amount'] ) );
+						$amounts = explode( ',', $this->args['amount'] );
+						$amount_count = count( $amounts );
+						if ( $amount_count > 1 ) {
+							$amount_count = $amount_count-1;
+							$wheres[] = 'amount IN (' . $format . str_repeat( ',' . $format, $ref_id_count ) . ')';
+							foreach ( $amount_count as $amount )
+								$prep[] = $this->core->number( sanitize_text_field( $amount ) );
+						}
+						else {
+							$wheres[] = 'creds = ' . $format;
+							$prep[] = $this->core->number( sanitize_text_field( $amounts[0] ) );
+						}
 					}
 				}
 

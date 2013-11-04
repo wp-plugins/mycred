@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_General class
  * @since 0.1
- * @version 1.1
+ * @version 1.1.1
  */
 if ( !class_exists( 'myCRED_General' ) ) {
 	class myCRED_General extends myCRED_Module {
@@ -228,8 +228,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				echo '<div class="updated settings-error"><p>' . __( 'Settings Updated', 'mycred' ) . '</p></div>';
 			} ?>
 
-		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/b/102981932999764129220/102981932999764129220/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
-		<pre><?php if ( current_user_can( 'export' ) ) echo 'has cap'; else echo 'does not have cap'; ?></pre>
+		<p><?php echo __( 'Adjust your core or add-on settings. Follow us on:', 'mycred' ) . ' '; ?><a href="https://www.facebook.com/myCRED" class="facebook" target="_blank"><?php _e( 'Facebook', 'mycred' ); ?></a>, <a href="https://plus.google.com/+MycredMe/posts" class="googleplus" target="_blank"><?php _e( 'Google Plus', 'mycred' ); ?></a></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-general' ); ?>
 
@@ -282,6 +281,11 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 							<label for="<?php echo $this->field_id( array( 'caps' => 'creds' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Edit Users %plural%', 'mycred' ) ); ?></label>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'caps' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'caps' => 'creds' ) ); ?>" value="<?php echo $this->core->caps['creds']; ?>" /></div>
 							<div class="description"><?php _e( 'Capability to check for.', 'mycred' ); ?></div>
+						</li>
+						<li class="block"><?php if ( ! isset( $this->core->max ) ) $this->core->max(); ?>
+							<label for="<?php echo $this->field_id( 'max' ); ?>"><?php echo $this->core->template_tags_general( __( 'Maximum %plural% payouts', 'mycred' ) ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'max' ); ?>" id="<?php echo $this->field_id( 'max' ); ?>" value="<?php echo $this->core->max; ?>" size="8" /></div>
+							<div class="description"><?php _e( 'As an added security, you can set the maximum amount a user can gain or loose in a single instance. If used, make sure this is the maximum amount a user would be able to transfer, buy, or spend in your store. Use zero to disable.', 'mycred' ); ?></div>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Excludes', 'mycred' ); ?></label>
@@ -434,7 +438,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 * Sanititze Settings
 		 * @filter 'mycred_save_core_prefs'
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function sanitize_settings( $post ) {
 			$new_data = array();
@@ -461,6 +465,9 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				'plugin' => sanitize_text_field( $post['caps']['plugin'] ),
 				'creds'  => sanitize_text_field( $post['caps']['creds'] )
 			);
+
+			// Max
+			$new_data['max'] = $this->core->number( $post['max'] );
 
 			// Make sure multisites uses capabilities that exists
 			if ( in_array( $new_data['caps']['creds'], array( 'create_users', 'delete_themes', 'edit_plugins', 'edit_themes', 'edit_users' ) ) && is_multisite() )

@@ -218,7 +218,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function buy() {
 			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
@@ -235,13 +235,13 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 
 			// Finance
 			$currency = $this->prefs['currency'];
-			$exchange = $this->prefs['exchange'];
 
+			// Amount
 			$amount =  $this->core->number( $amount );
 			$amount = abs( $amount );
 
-			$cost = $amount*$exchange;
-			$cost = $this->core->number( $cost );
+			// Get Cost
+			$cost = $this->get_cost( $amount );
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();

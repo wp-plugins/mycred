@@ -411,8 +411,10 @@ if ( !class_exists( 'myCRED_NETbilling' ) ) {
 
 			// Amount & Cost
 			$amount = $_REQUEST['amount'];
-			$exchange = $this->prefs['exchange'];
-			$cost = $amount*$exchange;
+			$amount = abs( $amount );
+
+			// Get Cost
+			$cost = $this->get_cost( $amount );
 
 			// Set
 			$bill_name1 = $bill_name2 = $bill_street = $bill_city = $bill_state = $bill_zip = $bill_country = $cust_phone = $card_number = $card_expire_month = $card_expire_year = $card_cvv2 = $ach_routing = $ach_account = '';

@@ -144,12 +144,12 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Sort by Points
 		 * @since 1.2
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function sort_by_points( $query ) {
-			if ( !is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
+			if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
 			$screen = get_current_screen();
-			if ( $screen->id != 'users' ) return;
+			if ( $screen === NULL || $screen->id != 'users' ) return;
 
 			if ( isset( $query->query_vars['orderby'] ) && isset( $query->query_vars['order'] ) && $query->query_vars['orderby'] == 'mycred' ) {
 				global $wpdb;
@@ -289,7 +289,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Save Manual Adjustments
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function adjust_points_manually( $user_id ) {
 			global $mycred_errors;
@@ -304,13 +304,16 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 				// meta to avoid them showing up in the leaderboard or other db queries.
 				$balance = get_user_meta( $user_id, 'mycred_default', true );
 				if ( !empty( $balance ) )
-					delete_user_meta( $user_id, 'mycred_balance' );
+					delete_user_meta( $user_id, 'mycred_default' );
 				
 				return false;
 			}
 			
 			// Add new creds
 			$cred = $_POST['myCRED-manual-add-points'];
+			$cred = $this->core->number( $cred );
+			if ( $cred == $this->core->zero() ) return;
+
 			$entry = $_POST['myCRED-manual-add-description'];
 			$data = apply_filters( 'mycred_manual_change', array( 'ref_type' => 'user' ), $this );
 			

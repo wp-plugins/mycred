@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Used when the plugin is activated/de-activated or deleted. Installs core settings and
  * base templates, checks compatibility and uninstalls.
  * @since 0.1
- * @version 1.1
+ * @version 1.1.1
  */
 if ( !class_exists( 'myCRED_Install' ) ) {
 	class myCRED_Install {
@@ -57,7 +57,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		/**
 		 * First time activation
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function activate() {
 			// Add general settings
@@ -80,12 +80,19 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			add_option( 'mycred_version', myCRED_VERSION );
 			$key = wp_generate_password( 12, true, true );
 			add_option( 'mycred_key', $key );
+
+			do_action( 'mycred_activation' );
+
+			if ( isset( $_GET['activate-multi'] ) )
+				return;
+
+			set_transient( '_mycred_activation_redirect', true, 30 );
 		}
 
 		/**
 		 * Re-activation
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function reactivate() {
 			// Update rankings on re-activation
@@ -98,6 +105,11 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 			unset( $ranking );
 
 			do_action( 'mycred_reactivation' );
+
+			if ( isset( $_GET['activate-multi'] ) )
+				return;
+
+			set_transient( '_mycred_activation_redirect', true, 30 );
 		}
 
 		/**
@@ -351,6 +363,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 				// Capabilities
 				$settings['caps']['plugin'] = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? trim( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
 				$settings['caps']['creds'] = ( isset( $_POST['myCRED-cap-creds'] ) ) ? trim( $_POST['myCRED-cap-creds'] ) : 'export';
+				$settings['max'] = ( isset( $_POST['myCRED-max'] ) ) ? trim( $_POST['myCRED-max'] ) : 0;
 
 				// Excludes
 				$settings['exclude']['plugin_editors'] = ( isset( $_POST['myCRED-exclude-plugin-editors'] ) ) ? true : false;
@@ -544,7 +557,7 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 		 * the website.
 		 *
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.2
 		 */
 		protected function setup_step2() {
 			if ( !$this->step ) return;
@@ -553,6 +566,9 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 			// Capabilities
 			$edit_plugin = ( isset( $_POST['myCRED-cap-plugin'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-plugin'] ) : 'manage_options';
 			$edit_creds = ( isset( $_POST['myCRED-cap-creds'] ) ) ? sanitize_text_field( $_POST['myCRED-cap-creds'] ) : 'export';
+
+			// Max
+			$max = ( isset( $_POST['myCRED-max'] ) ) ? $mycred->number( $_POST['myCRED-max'] ) : $mycred->number( 0 );
 
 			// Excludes
 			$exclude_plugin_editors = ( isset( $_POST['myCRED-exclude-plugin-editors'] ) ) ? 1 : 0;
@@ -571,6 +587,11 @@ if ( !class_exists( 'myCRED_Setup' ) ) {
 				<li>
 					<label for="myCRED-cap-creds"><?php echo $mycred->template_tags_general( __( 'Edit Users %plural% Capability', 'mycred' ) ); ?></label>
 					<h2><input type="text" name="myCRED-cap-creds" id="myCRED-cap-creds" value="<?php echo $edit_creds; ?>" /></h2>
+				</li>
+				<li class="block">
+					<label for="myCRED-max"><?php echo $mycred->template_tags_general( __( 'Maximum %plural% payouts', 'mycred' ) ); ?></label>
+					<div class="h2"><input type="text" name="myCRED-max" id="myCRED-max" value="<?php echo $max; ?>" size="8" /></div>
+					<div class="description"><?php _e( 'As an added security, you can set the maximum amount a user can gain or loose in a single instance. If used, make sure this is the maximum amount a user would be able to transfer, buy, or spend in your store. Use zero to disable.', 'mycred' ); ?></div>
 				</li>
 			</ol>
 			<h2><?php _e( 'Excludes', 'mycred' ); ?></h2>

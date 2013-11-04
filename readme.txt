@@ -2,8 +2,8 @@
 Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
 Requires at least: 3.1
-Tested up to: 3.6.1
-Stable tag: 1.3.1
+Tested up to: 3.7.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,9 +122,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3.1 =
-Important bug fixes for 1.3 users
-
+= 1.3.2 =
+Bug fixes, rank improvement, transfer improvement and security fixes
 
 == Other Notes ==
 
@@ -138,6 +137,22 @@ Important bug fixes for 1.3 users
 
 
 == Changelog ==
+
+= 1.3.2 =
+* Improved the Ranks add-on and added new management settings allowing to delete all ranks and re-assigning roles to users.
+* Removed stray debug function in the general module.
+* Added Maximum Point Payout to set a roof of the maximum amount of points that can be awarded / deducted / transferred or used.
+* Added option to autofill transfer recipients by either username or user email. Also added custom hooks allowing customisation of this feature.
+* Added option to filter the points purchase cost in buyCRED add-on via the new mycred_buycred_get_cost filter.
+* Adjusted the MarketPress payment gateway.
+* Fixed Bug #69 - Email Notice is sent when user gains zero points.
+* Fixed Bug #70 - Widget checkbox settings are not updated.
+* Fixed Bug #71 - Zero point awards are logged.
+* Fixed Bug #72 - Points for clicking on links sometimes does not award points when no target attribute is set.
+* Fixed Bug #73 - Users can manipulate the amount of points they gain when clicking on the mycred_link shortcode.
+* Fixed Bug #74 - Email Notifications causes Notifications not to show up.
+* Fixed Bug #75 - Custom Post Type Hook is not displaying saved settings.
+
 
 = 1.3.1 =
 * Fixed Bug #58 - Some hooks fire to late due to hooks being loaded to late.

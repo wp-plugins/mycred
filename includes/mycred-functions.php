@@ -43,6 +43,8 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 				else
 					$this->log_table = $wpdb->prefix . 'myCRED_log';
 			}
+
+			do_action_ref_array( 'mycred_settings', array( &$this ) );
 		}
 		
 		/**
@@ -71,6 +73,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 					'plugin'   => 'manage_options',
 					'creds'    => 'export'
 				),
+				'max'       => 0,
 				'exclude'   => array(
 					'plugin_editors' => 0,
 					'cred_editors'   => 0,
@@ -748,6 +751,18 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		}
 
 		/**
+		 * Get Max
+		 * @since 1.3
+		 * @version 1.0
+		 */
+		public function max() {
+			if ( ! isset( $this->max ) )
+				$this->max = 0;
+
+			return $this->max;
+		}
+
+		/**
 		 * Get users creds
 		 * Returns the users creds unformated.
 		 *
@@ -781,11 +796,18 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $amount (int|float), amount to add/deduct from users balance. This value must be pre-formated.
 		 * @returns the new balance.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function update_users_balance( $user_id = NULL, $amount = NULL ) {
 			if ( $user_id === NULL || $amount === NULL ) return $amount;
 			if ( empty( $this->cred_id ) ) $this->cred_id = $this->get_cred_id();
+
+			// Enforce max
+			if ( $this->max() > $this->zero() && $amount > $this->max() ) {
+				$amount = $this->number( $this->max() );
+
+				do_action( 'mycred_max_enforced', $user_id, $_amount, $this->max() );
+			}
 
 			// Adjust creds
 			$current_balance = $this->get_users_cred( $user_id );
@@ -818,7 +840,7 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function add_creds( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
@@ -828,6 +850,14 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 
 			// Format creds
 			$amount = $this->number( $amount );
+			if ( $amount == $this->zero() || $amount == 0 ) return false;
+
+			// Enforce max
+			if ( $this->max() > $this->zero() && $amount > $this->max() ) {
+				$amount = $this->number( $this->max() );
+
+				do_action( 'mycred_max_enforced', $user_id, $_amount, $this->max() );
+			}
 
 			// Execution Override
 			// Let others play before awarding points.
@@ -888,17 +918,23 @@ if ( !class_exists( 'myCRED_Settings' ) ) {
 		 * @param $ref_id (array), optional array of reference IDs allowing the use of content specific keywords in the log entry
 		 * @param $data (object|array|string|int), optional extra data to save in the log. Note that arrays gets serialized!
 		 * @returns boolean true on success or false on fail
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function add_to_log( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
 			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 			if ( !preg_match( '/mycred_/', $type ) ) return false;
+			if ( $amount == $this->zero() || $amount == 0 ) return false;
 
 			global $wpdb;
 
 			// Strip HTML from log entry
 			$entry = $this->allowed_tags( $entry );
+
+			// Enforce max
+			if ( $this->max() > $this->zero() && $amount > $this->max() ) {
+				$amount = $this->number( $this->max() );
+			}
 
 			// Type
 			if ( empty( $type ) ) $type = $this->get_cred_id();
@@ -1505,7 +1541,7 @@ function is_mycred_ready()
  * Installs the log for a site.
  * Requires Multisite
  * @since 1.3
- * @version 1.1
+ * @version 1.2
  */
 function mycred_install_log( $decimals = 0, $table = NULL )
 {
@@ -1529,6 +1565,16 @@ function mycred_install_log( $decimals = 0, $table = NULL )
 		$cred_format = 'bigint(22)';
 	}
 
+	$wpdb->hide_errors();
+
+	$collate = '';
+	if ( $wpdb->has_cap( 'collation' ) ) {
+		if ( ! empty( $wpdb->charset ) )
+			$collate .= "DEFAULT CHARACTER SET {$wpdb->charset}";
+		if ( ! empty( $wpdb->collate ) )
+			$collate .= " COLLATE {$wpdb->collate}";
+	}
+
 	// Log structure
 	$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
 		ref VARCHAR(256) NOT NULL, 
@@ -1544,7 +1590,7 @@ function mycred_install_log( $decimals = 0, $table = NULL )
 
 	// Insert table
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " );" );
+	dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " ) $collate;" );
 	if ( is_multisite() )
 		add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
 	else

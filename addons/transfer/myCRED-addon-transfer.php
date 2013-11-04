@@ -2,7 +2,7 @@
 /**
  * Addon: Transfer
  * Addon URI: http://mycred.me/add-ons/transfer/
- * Version: 1.0
+ * Version: 1.1
  * Description: Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -23,7 +23,7 @@ define( 'myCRED_TRANSFER_VERSION', myCRED_VERSION . '.1' );
  * Manages this add-on by hooking into myCRED where needed. Regsiters our custom shortcode and widget
  * along with scripts and styles needed. Also adds settings to the myCRED settings page.
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 	class myCRED_Transfer_Creds extends myCRED_Module {
@@ -49,6 +49,8 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 						'limit'     => 'Your current %limit% transfer limit is %left%',
 						'button'    => __( 'Transfer', 'mycred' )
 					),
+					'autofill'   => 'user_login',
+					'reload'     => 1,
 					'limit'      => array(
 						'amount'    => 1000,
 						'limit'     => 'none'
@@ -58,7 +60,6 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				'add_to_core' => true
 			) );
 
-			add_action( 'mycred_help',              array( $this, 'help' ), 10, 2          );
 			add_filter( 'mycred_email_before_send', array( $this, 'email_notices' ), 10, 2 );
 		}
 
@@ -120,7 +121,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		 * Front Footer
 		 * @filter 'mycred_transfer_messages'
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function front_footer() {
 			global $mycred_load;
@@ -135,7 +136,8 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				'user_id'   => get_current_user_id(),
 				'working'   => __( 'Processing...', 'mycred' ),
 				'token'     => wp_create_nonce( 'mycred-transfer-creds' ),
-				'atoken'    => wp_create_nonce( 'mycred-autocomplete' )
+				'atoken'    => wp_create_nonce( 'mycred-autocomplete' ),
+				'reload'    => $this->transfers['reload']
 			);
 
 			// Messages
@@ -162,7 +164,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * Settings Page
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function after_general_settings() {
 			// Settings
@@ -178,7 +180,15 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				'daily'  => __( 'Impose daily limit.', 'mycred' ),
 				'weekly' => __( 'Impose weekly limit.', 'mycred' )
 			);
-			$available_limits = apply_filters( 'mycred_transfer_limits', $limits, $settings ); ?>
+			$available_limits = apply_filters( 'mycred_transfer_limits', $limits, $settings );
+
+			// Autofill by
+			$autofill = $settings['autofill'];
+			$autofills = array(
+				'user_login'   => __( 'User Login (user_login)', 'mycred' ),
+				'user_email'   => __( 'User Email (user_email)', 'mycred' )
+			);
+			$available_autofill = apply_filters( 'mycred_transfer_autofill_by', $autofills, $settings ); ?>
 
 				<h4><div class="icon icon-active"></div><?php echo $this->core->template_tags_general( __( 'Transfer %plural%', 'mycred' ) ); ?></h4>
 				<div class="body" style="display:none;">
@@ -194,6 +204,24 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 						<li>
 							<div class="h2"><input type="text" name="mycred_pref_core[transfers][logs][receiving]" id="myCRED-transfer-log-receiver" value="<?php echo $settings['logs']['receiving']; ?>" class="long" /></div>
 							<span class="description"><?php _e( 'Available template tags: General, User', 'mycred' ); ?></span>
+						</li>
+					</ol>
+					<label class="subheader"><?php _e( 'Autofill Recipient', 'mycred' ); ?></label>
+					<ol id="myCRED-transfer-autofill-by">
+						<li>
+							<select name="mycred_pref_core[transfers][autofill]" id="myCRED-transfer-autofill"><?php
+			foreach ( $available_autofill as $key => $label ) {
+				echo '<option value="' . $key . '"';
+				if ( $settings['autofill'] == $key ) echo ' selected="selected"';
+				echo '>' . $label . '</option>';
+			} ?></select><br />
+							<span class="description"><?php _e( 'Select what user details recipients should be autofilled by.', 'mycred' ); ?></span>
+						</li>
+					</ol>
+					<label class="subheader"><?php _e( 'Reload', 'mycred' ); ?></label>
+					<ol id="myCRED-transfer-logging-receive">
+						<li>
+							<input type="checkbox" name="mycred_pref_core[transfers][reload]" id="myCRED-transfer-reload" <?php checked( $settings['reload'], 1 ); ?> value="1" /> <label for="myCRED-transfer-reload"><?php _e( 'Reload page on successful transfers.', 'mycred' ); ?></label>
 						</li>
 					</ol>
 					<label class="subheader"><?php _e( 'Limits', 'mycred' ); ?></label>
@@ -265,12 +293,18 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * Sanitize & Save Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_extra_settings( $new_data, $data, $general ) {
 			// Log
 			$new_data['transfers']['logs']['sending'] = sanitize_text_field( $data['transfers']['logs']['sending'] );
 			$new_data['transfers']['logs']['receiving'] = sanitize_text_field( $data['transfers']['logs']['receiving'] );
+
+			// Autofill
+			$new_data['transfers']['autofill'] = sanitize_text_field( $data['transfers']['autofill'] );
+
+			// Reload
+			$new_data['transfers']['reload'] = ( isset( $data['transfers']['reload'] ) ) ? 1 : 0;
 
 			// Form Templates
 			$new_data['transfers']['templates']['login'] = sanitize_text_field( $data['transfers']['templates']['login'] );
@@ -296,8 +330,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		 */
 		public function ajax_call_transfer() {
 			// Security
-			//check_ajax_referer( 'mycred-transfer-creds', 'token' );
-			if ( !isset( $_POST['token'] ) || ( isset( $_POST['token'] ) && !wp_verify_nonce( $_POST['token'], 'mycred-transfer-creds' ) ) )
+			if ( ! check_ajax_referer( 'mycred-transfer-creds', 'token', false ) )
 				die( json_encode( 'error_1' ) );
 
 			// Required
@@ -318,10 +351,9 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				die( json_encode( 'error_6' ) );
 
 			// Get Recipient
-			$ruser = get_user_by( 'login', $to );
-			if ( $ruser === false ) die( json_encode( 'error_3' ) );
-			if ( $this->core->exclude_user( $ruser->ID ) ) die( json_encode( 'error_4' ) );
-			$recipient_id = $ruser->ID;
+			$recipient_id = $this->get_recipient( $to );
+			if ( $recipient_id === false ) die( json_encode( 'error_3' ) );
+			if ( $this->core->exclude_user( $recipient_id ) ) die( json_encode( 'error_4' ) );
 
 			// Prevent transfers to ourselves
 			if ( $recipient_id == $from )
@@ -434,29 +466,64 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		}
 
 		/**
+		 * Get Recipient
+		 * @since 1.3.2
+		 * @version 1.0
+		 */
+		public function get_recipient( $to = '' ) {
+			if ( empty( $to ) ) return false;
+
+			switch ( $this->transfers['autofill'] ) {
+				case 'user_login' :
+					$user = get_user_by( 'login', $to );
+					if ( $user === false ) return false;
+					$user_id = $user->ID;
+				break;
+				case 'user_email' :
+					$user = get_user_by( 'email', $to );
+					if ( $user === false ) return false;
+					$user_id = $user->ID;
+				break;
+				default :
+					$user_id = apply_filters( 'mycred_transfer_autofill_get', false );
+					if ( $user === false ) return false;
+				break;
+			}
+			return $user_id;
+		}
+
+		/**
 		 * AJAX Autocomplete
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function ajax_call_autocomplete() {
-			$results = array();
-
 			// Security
-			if ( isset( $_REQUEST['token'] ) && wp_verify_nonce( $_REQUEST['token'], 'mycred-autocomplete' ) ) {
-				global $wpdb;
+			check_ajax_referer( 'mycred-autocomplete' , 'token' );
 
-				// prep query
-				$sql = "SELECT user_login, ID FROM {$wpdb->users} WHERE ID != %d AND user_login LIKE %s;";
-				$search = $_REQUEST['string']['term'];
-				$me = $_REQUEST['me'];
+			if ( ! is_user_logged_in() ) die;
 
-				// Query
-				$blog_users = $wpdb->get_results( $wpdb->prepare( $sql, $me, $search . '%' ) , 'ARRAY_N' );
-				if ( $wpdb->num_rows > 0 ) {
-					foreach ( $blog_users as $hit ) {
-						if ( $this->core->exclude_user( $hit[1] ) ) continue;
-						$results[] = $hit[0];
-					}
+			$results = array();
+			$user_id = get_current_user_id();
+			$prefs = $this->transfers;
+
+			// Let other play
+			do_action( 'mycred_transfer_autofill_find', $prefs, $this->core );
+
+			global $wpdb;
+
+			// Query
+			$select = $prefs['autofill'];
+			$blog_users = $wpdb->get_results( $wpdb->prepare(
+				"SELECT {$select}, ID FROM {$wpdb->users} WHERE ID != %d AND {$select} LIKE %s;",
+				$user_id,
+				'%' . $_REQUEST['string']['term'] . '%'
+			), 'ARRAY_N' );
+
+			if ( $wpdb->num_rows > 0 ) {
+				foreach ( $blog_users as $hit ) {
+					if ( $this->core->exclude_user( $hit[1] ) ) continue;
+					$results[] = $hit[0];
 				}
 			}
 
@@ -477,26 +544,6 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 					$data['message'] = $this->core->template_tags_user( $message, $data['request']['ref_id'] );
 			}
 			return $data;
-		}
-
-		/**
-		 * Contextual Help
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function help( $screen_id, $screen ) {
-			if ( $screen_id != 'mycred_page_myCRED_page_settings' ) return;
-
-			$screen->add_help_tab( array(
-				'id'		=> 'mycred-transfer',
-				'title'		=> __( 'Transfer', 'mycred' ),
-				'content'	=> '
-<p>' . $this->core->template_tags_general( __( 'This add-on lets your users transfer %_plural% to each other. Members who are set to be excluded can neither send or receive %_plural%.', 'mycred' ) ) . '</p>
-<p><strong>' . __( 'Transfer Limit', 'mycred' ) . '</strong></p>
-<p>' . __( 'You can impose a daily-, weekly- or monthly transfer limit for each user. Note, that this transfer limit is imposed on everyone who are not excluded from using myCRED.', 'mycred' ) . '</p>
-<p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
-<p>' . __( 'Transfers can be made by either using the <code>mycred_transfer</code> shortcode or via the myCRED Transfer Widget.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_transfer/" target="_blank">myCRED Codex</a>.</p>'
-			) );
 		}
 	}
 	$transfer = new myCRED_Transfer_Creds();
@@ -632,7 +679,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
  * @attribute $show_balance (bool) set to true to show current users balance, defaults to true
  * @attribute $show_limit (bool) set to true to show current users limit. If limit is set to 'none' and $show_limit is set to true nothing will be returned
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_transfer_render' ) ) {
 	function mycred_transfer_render( $atts, $content = NULL )
@@ -697,16 +744,26 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		$mycred_load = true;
 
 		// If pay to is set
+		if ( $pref['autofill'] == 'user_login' )
+			$pln = __( 'username', 'mycred' );
+		elseif ( $pref['autofill'] == 'user_email' )
+			$pln = __( 'email', 'mycred' );
+		else
+			$pln = '';
+
+		$placeholder = apply_filters( 'mycred_transfer_to_placeholder', __( 'recipients %s', 'mycred' ), $pref, $mycred );
+		$placeholder = sprintf( $placeholder, $pln );
+		$to_input = '<input type="text" name="mycred-transfer-to" value="" class="mycred-autofill" placeholder="' . $placeholder . '" />';
 		if ( $pay_to !== NULL ) {
 			$user = get_user_by( 'id', $pay_to );
-			if ( $user !== false )
-				$to_input = '<input type="text" name="mycred-transfer-to" value="' . $user->user_login . '" readonly="readonly" />';
-			else
-				$to_input = '<input type="text" name="mycred-transfer-to" value="" class="mycred-autofill" />';
-			
-			unset( $user );
+			if ( $user !== false ) {
+				$value = $user->user_login;
+				if ( isset( $user->$pref['autofill'] ) )
+					$value = $user->$pref['autofill'];
+
+				$to_input = '<input type="text" name="mycred-transfer-to" value="' . $value . '" readonly="readonly" />';
+			}
 		}
-		else $to_input = '<input type="text" name="mycred-transfer-to" value="" class="mycred-autofill" />';
 
 		// If content is passed on.
 		if ( $content !== NULL && !empty( $content ) )

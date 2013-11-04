@@ -198,13 +198,13 @@ if ( !function_exists( 'mycred_render_my_ranking' ) ) {
 
 /**
  * myCRED Shortcode: mycred_give
- * This shortcode allows you to award or deduct points from the current user
+ * This shortcode allows you to award or deduct points from a given user or the current user
  * when this shortcode is executed. You can insert this in page/post content
  * or in a template file. Note that users are awarded/deducted points each time
  * this shortcode exectutes!
  * @see 
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 	function mycred_render_shortcode_give( $atts, $content )
@@ -212,11 +212,12 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 		if ( !is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
-			'amount' => NULL,
-			'log'    => '',
-			'ref'    => 'gift',
-			'limit'  => 0,
-			'type'   => 'mycred_default'
+			'amount'  => NULL,
+			'user_id' => '',
+			'log'     => '',
+			'ref'     => 'gift',
+			'limit'   => 0,
+			'type'    => 'mycred_default'
 		), $atts ) );
 		
 		if ( $amount === NULL )
@@ -226,7 +227,9 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
 		
 		$mycred = mycred_get_settings();
-		$user_id = get_current_user_id();
+		
+		if ( empty( $user_id ) )
+			$user_id = get_current_user_id();
 		
 		// Check for exclusion
 		if ( $mycred->exclude_user( $user_id ) ) return;
@@ -259,7 +262,7 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
  *
  * @see http://mycred.me/shortcodes/mycred_link/
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
 	function mycred_render_shortcode_link( $atts, $content )
@@ -290,6 +293,13 @@ if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
 		else
 			$atts['class'] = 'mycred-points-link ' . $atts['class'];
 
+		// If no id exists, make one
+		if ( empty( $atts['id'] ) ) {
+			$id = str_replace( array( 'http://', 'https://', 'http%3A%2F%2F', 'https%3A%2F%2F' ), 'hs', $atts['href'] );
+			$id = str_replace( array( '/', '-', '_', ':', '.', '?', '=', '+', '\\', '%2F' ), '', $id );
+			$atts['id'] = $id;
+		}
+
 		// Construct anchor attributes
 		$attr = array();
 		foreach ( $atts as $attribute => $value ) {
@@ -297,8 +307,13 @@ if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
 				$attr[] = $attribute . '="' . $value . '"';
 			}
 		}
-		// Add amount
-		$attr[] = 'data-amount="' . $atts['amount'] . '"';
+
+		// Add key
+		require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
+		$protect = new myCRED_Protect();
+		$data = $atts['amount'] . ':' . $atts['id'];
+		$key = $protect->do_encode( $data );
+		$attr[] = 'data-key="' . $key . '"';
 
 		// Make sure jQuery script is called
 		$mycred_link_points = true;

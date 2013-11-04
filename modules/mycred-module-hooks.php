@@ -459,7 +459,7 @@ if ( !class_exists( 'myCRED_Hook_Logging_In' ) ) {
 /**
  * Hook for publishing content
  * @since 0.1
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 	class myCRED_Hook_Publishing_Content extends myCRED_Hook {
@@ -467,18 +467,32 @@ if ( !class_exists( 'myCRED_Hook_Publishing_Content' ) ) {
 		 * Construct
 		 */
 		function __construct( $hook_prefs ) {
+			$defaults = array(
+				'post'    => array(
+					'creds'  => 1,
+					'log'    => '%plural% for new Post'
+				),
+				'page'    => array(
+					'creds'  => 1,
+					'log'    => '%plural% for new Page'
+				)
+			);
+
+			$post_type_args = array(
+				'public'   => true,
+				'_builtin' => false
+			);
+			$post_types = get_post_types( $post_type_args, 'objects', 'and' ); 
+			foreach ( $post_types as $post_type ) {
+				$defaults[ $post_type->name ] = array(
+					'creds' => 0,
+					'log'   => ''
+				);
+			}
+
 			parent::__construct( array(
 				'id'       => 'publishing_content',
-				'defaults' => array(
-					'post'    => array(
-						'creds'  => 1,
-						'log'    => '%plural% for new Post'
-					),
-					'page'    => array(
-						'creds'  => 1,
-						'log'    => '%plural% for new Page'
-					)
-				)
+				'defaults' => $defaults
 			), $hook_prefs );
 		}
 
@@ -684,12 +698,15 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
-			if ( !is_object( $comment ) )
+			if ( ! is_object( $comment ) )
 				$comment = get_comment( $comment );
+			
+			// No comment object so lets bail
+			if ( $comment === NULL ) return;
 
 			// Ignore Pingbacks or Trackbacks
 			if ( ! empty( $comment->comment_type ) ) return;
@@ -697,10 +714,15 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 			// Logged out users miss out
 			if ( $comment->user_id == 0 ) return;
 
-			// Start with awarding points to the content author
+			// Get comment author
 			$comment_author = $comment->user_id;
-			$post = get_post( (int) $comment->comment_post_ID );
-			$content_author = $post->post_author;
+			
+			// Get content author
+			$content_author = NULL;
+			if ( isset( $comment->comment_post_ID ) || ! empty( $comment->comment_post_ID ) ) {
+				$post = get_post( (int) $comment->comment_post_ID );
+				$content_author = $post->post_author;
+			}
 			
 			$comment_author_points = $this->core->zero();
 			$content_author_points = $this->core->zero();
@@ -800,7 +822,9 @@ if ( !class_exists( 'myCRED_Hook_Comments' ) ) {
 				}
 
 			}
-			
+
+			if ( $content_author === NULL ) return;
+
 			// Content Author
 			if ( ! $this->core->exclude_user( $content_author ) && $content_author_points != $this->core->zero() ) {
 				$this->core->add_creds(
@@ -1033,10 +1057,10 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Parse Custom Tags in Log
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function parse_custom_tags( $content, $log_entry ) {
-			$data = unserialize( $log_entry->data );
+			$data = maybe_unserialize( $log_entry->data );
 			$content = str_replace( '%url%', $data['link_url'], $content );
 			$content = str_replace( '%id%',  $data['link_id'], $content );
 			if ( isset( $data['link_title'] ) )
@@ -1088,12 +1112,13 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Custom Has Entry Check
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function has_entry( $action = '', $reference = '', $user_id = '', $data = '' ) {
 			global $wpdb;
 
 			if ( $this->prefs['limit_by'] == 'url' ) {
+				$reference = urldecode( $reference );
 				$string = '%s:8:"link_url";s:' . strlen( $reference ) . ':"' . $reference . '";%';
 			}
 			elseif ( $this->prefs['limit_by'] == 'id' ) {
@@ -1111,11 +1136,11 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.2
+		 * @version 1.3.1
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
-			if ( !is_user_logged_in() ) die();
+			if ( !is_user_logged_in() ) die( json_encode( 100 ) );
 
 			// Security
 			check_ajax_referer( 'mycred-link-points', 'token' );
@@ -1124,27 +1149,38 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			$user_id = get_current_user_id();
 
 			// Check if user should be excluded
-			if ( $this->core->exclude_user( $user_id ) ) return;
+			if ( $this->core->exclude_user( $user_id ) ) die( json_encode( 200 ) );
 
-			// If amount is not set we default
-			if ( $_POST['amount'] == 0 )
+			// Key
+			if ( ! isset( $_POST['key'] ) ) die( json_encode( 300 ) );
+			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
+			$protect = new myCRED_Protect();
+			$key = explode( ':', $protect->do_decode( $_POST['key'] ) );
+			if ( count( $key ) != 2 ) die( json_encode( $key ) );
+			
+			$amount = trim( $key[0] );
+			$id = trim( $key[1] );
+
+			// Amount
+			if ( $amount == 0 )
 				$amount = $this->prefs['creds'];
 			else
-				$amount = $this->core->number( $_POST['amount'] );
+				$amount = $this->core->number( $amount );
+			
+			if ( $amount == 0 || $amount == $this->core->zero() ) die( json_encode( 400 ) );
 
 			// Limits
 			if ( $this->prefs['limit_by'] == 'url' ) {
-				if ( !isset( $_POST['url'] ) || empty( $_POST['url'] ) ) die();
-				if ( $this->has_entry( 'link_click', $_POST['url'], $user_id ) ) die();
+				if ( !isset( $_POST['url'] ) || empty( $_POST['url'] ) ) die( json_encode( 500 ) );
+				if ( $this->has_entry( 'link_click', $_POST['url'], $user_id ) ) die( json_encode( 600 ) );
 				$ref = $_POST['url'];
 			}
 			elseif ( $this->prefs['limit_by'] == 'id' ) {
-				if ( !isset( $_POST['eid'] ) || empty( $_POST['eid'] ) ) die();
-				if ( $this->has_entry( 'link_click', $_POST['eid'], $user_id ) ) die();
-				$ref = $_POST['eid'];
+				if ( $this->has_entry( 'link_click', $id, $user_id ) ) die( json_encode( 700 ) );
+				$ref = $id;
 			}
 			else {
-				$ref = '';
+				$ref = $id;
 			}
 
 			// Execute
@@ -1153,11 +1189,11 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 				$user_id,
 				$amount,
 				$this->prefs['log'],
-				$ref,
+				'',
 				array(
 					'ref_type'   => 'link',
-					'link_url'   => ( isset( $_POST['url'] ) ) ? $_POST['url'] : '',
-					'link_id'    => ( isset( $_POST['eid'] ) ) ? $_POST['eid'] : '',
+					'link_url'   => $_POST['url'],
+					'link_id'    => $id,
 					'link_title' => ( isset( $_POST['etitle'] ) ) ? $_POST['etitle'] : ''
 				)
 			);
@@ -1169,7 +1205,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * Preference for Link Click Hook
 		 * @since 1.1
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function preferences() {
 			$prefs = $this->prefs; ?>
@@ -1196,7 +1232,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			$this->impose_limits_dropdown( 'limit_by', false ); ?>
 
 						</li>
-						<li><strong><?php _e( 'Remember!', 'mycred' ); ?></strong> <?php echo $this->core->template_tags_general( __( 'If you select to limit by id and you do not include the id attribute in the shortcode, no %_plural% will be awarded!', 'mycred' ) ); ?></li>
+						<li><strong><?php _e( 'Note!', 'mycred' ); ?></strong> <?php echo $this->core->template_tags_general( __( 'If no ID is set when using the mycred_link shortcode, the shortcode will generate one automatically based on the value set under href. If you are using this feature for "sharing" content, it is recommended that you limit by ID.', 'mycred' ) ); ?></li>
 					</ol>
 <?php		unset( $this );
 		}

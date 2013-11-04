@@ -217,7 +217,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			 * Charges the user for the purchase and if profit sharing is enabled
 			 * each product owner.
 			 * @since 1.3
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			function submit() {
 				// Since the wpsc_pre_submit_gateway action could change these values, we need to check
@@ -261,7 +261,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 							$this->core->add_creds(
 								'store_sale',
 								$product->post_author,
-								$this->core->format_number( $share ),
+								$this->core->number( $share ),
 								$this->prefs['share_log'],
 								$product->ID,
 								array( 'ref_type' => 'post' )
