@@ -1435,18 +1435,17 @@ if ( !function_exists( 'mycred_get_users_total' ) ) {
  * @param $mycred (myCRED_Settings object), required myCRED settings object
  * @returns zero if user id is not set or if no total were found, else returns total
  * @since 1.2
- * @version 1.0
+ * @version 1.0.1
  */
 if ( !function_exists( 'mycred_update_users_total' ) ) {
 	function mycred_update_users_total( $type = '', $request = NULL, $mycred = NULL ) {
 		if ( $request === NULL || !is_object( $mycred ) || !isset( $request['user_id'] ) || !isset( $request['amount'] ) ) return false;
-		if ( $request['amount'])
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
 		
 		do_action( 'mycred_update_users_total', $request, $type, $mycred );
 		
 		$amount = $mycred->number( $request['amount'] );
-		if ( $amount < 0 || $amount == 0 ) return;
+		if ( $amount < 0 || $amount == 0 ) return 0;
 		
 		$user_id = $request['user_id'];
 		$users_total = mycred_get_users_total( $user_id, $type );
