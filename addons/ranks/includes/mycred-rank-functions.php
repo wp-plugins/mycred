@@ -148,7 +148,7 @@ if ( ! function_exists( 'mycred_get_rank' ) ) {
  * @uses get_the_title()
  * @returns (string) rank object item requested or - if no ranks exists
  * @since 1.1
- * @version 1.0.1
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_users_rank' ) ) {
 	function mycred_get_users_rank( $user_id = NULL, $return = 'post_title', $logo_size = 'post-thumbnail', $attr = NULL ) {
@@ -158,12 +158,13 @@ if ( ! function_exists( 'mycred_get_users_rank' ) ) {
 			$rank = mycred_find_users_rank( $user_id, true );
 			$rank_id = mycred_get_rank_id_from_title( $rank );
 		}
+		if ( empty( $rank_id ) ) return ( mycred_is_admin() ) ? __( 'no rank', 'mycred' ) : '';
 		
 		if ( $return == 'logo' )
 			return mycred_get_rank_logo( $rank_id, $logo_size, $attr );
 
 		$rank = get_post( $rank_id );
-		if ( $rank === NULL )
+		if ( ! isset( $rank->$return ) )
 			return '-';
 		else
 			return $rank->$return;
