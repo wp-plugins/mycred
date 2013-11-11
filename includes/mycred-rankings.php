@@ -43,7 +43,7 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 		 * Get Rankings
 		 * Queries the DB for all users in order of their point balance.
 		 * @since 1.1.2
-		 * @version 1.0.1
+		 * @version 1.0.2
 		 */
 		public function get_rankings() {
 			global $wpdb;
@@ -87,11 +87,11 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 			$selects[] = "{$wpdb->usermeta}.meta_value AS cred";
 			
 			$select = implode( ', ', $selects );
-			$SQL = "SELECT {$select} 
+			$SQL = apply_filters( 'mycred_ranking_sql', "SELECT {$select} 
 					FROM {$wpdb->users} 
 					LEFT JOIN {$wpdb->usermeta} 
 					ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->usermeta}.meta_key = %s 
-					ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};";
+					ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};", $this->args, $wpdb );
 			
 			$this->result = $wpdb->get_results( $wpdb->prepare( $SQL, $key ), 'ARRAY_A' );
 			$this->count = $wpdb->num_rows;
@@ -260,7 +260,7 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 		/**
 		 * Leaderboard Loop
 		 * @since 1.1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function loop( $wrap = '' ) {
 			// Default template
@@ -279,6 +279,8 @@ if ( !class_exists( 'myCRED_Rankings' ) ) {
 
 				if ( $position % 2 != 0 )
 					$class[] = 'alt';
+				
+				$class = apply_filters( 'mycred_ranking_classes', $class );
 
 				// Template Tags
 				if ( !function_exists( 'mycred_get_users_rank' ) )
