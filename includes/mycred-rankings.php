@@ -23,6 +23,7 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 				'order'       => 'DESC',
 				'user_fields' => 'user_login,display_name,user_email,user_nicename,user_url',
 				'offset'      => 0,
+				'zero'        => 1
 				'type'        => 'mycred_default'
 			), $args );
 		}
@@ -86,12 +87,20 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 			}
 			$selects[] = "{$wpdb->usermeta}.meta_value AS cred";
 			
+			// WHERE
+			$where = '';
+			if ( $this->args['zero'] )
+				$where = "{$wpdb->usermeta}.meta_value > 0";
+			
 			$select = implode( ', ', $selects );
-			$SQL = apply_filters( 'mycred_ranking_sql', "SELECT {$select} 
-					FROM {$wpdb->users} 
-					LEFT JOIN {$wpdb->usermeta} 
-					ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id AND {$wpdb->usermeta}.meta_key = %s 
-					ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};", $this->args, $wpdb );
+			$SQL = apply_filters( 'mycred_ranking_sql', "
+SELECT {$select} 
+FROM {$wpdb->users} 
+LEFT JOIN {$wpdb->usermeta} 
+	ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id 
+		AND {$wpdb->usermeta}.meta_key = %s 
+{$where}
+ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};", $this->args, $wpdb );
 			
 			$this->result = $wpdb->get_results( $wpdb->prepare( $SQL, $key ), 'ARRAY_A' );
 			$this->count = $wpdb->num_rows;
