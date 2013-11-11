@@ -23,7 +23,7 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 				'order'       => 'DESC',
 				'user_fields' => 'user_login,display_name,user_email,user_nicename,user_url',
 				'offset'      => 0,
-				'zero'        => 1
+				'zero'        => 1,
 				'type'        => 'mycred_default'
 			), $args );
 		}

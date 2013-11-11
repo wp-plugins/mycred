@@ -14,6 +14,11 @@
  * Domain Path: /lang
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * SSL Compatible: yes
+ * bbPress® Compatible: yes
+ * WordPress® Compatible: yes
+ * BuddyPress® Compatible: yes
+ * Forum URI: http://mycred.me/support/forums/
  */
 define( 'myCRED_VERSION',      '1.3.3' );
 define( 'myCRED_SLUG',         'mycred' );
