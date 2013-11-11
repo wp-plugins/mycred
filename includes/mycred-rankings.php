@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED Query Rankings Class
  * @see http://mycred.me/features/mycred_query_rankings/
  * @since 1.1.2
- * @version 1.0
+ * @version 1.1
  */
 if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 	class myCRED_Query_Rankings {
@@ -75,10 +75,6 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 			$user_fields = str_replace( ' ', '', $user_fields );
 			$user_fields = explode( ',', $user_fields );
 			
-			// Start constructing query
-			
-			$prep = array();
-			
 			// SELECT
 			$selects = array( "{$wpdb->users}.ID" );
 			foreach ( $user_fields as $field ) {
@@ -86,13 +82,13 @@ if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
 				$selects[] = "{$wpdb->users}." . $field;
 			}
 			$selects[] = "{$wpdb->usermeta}.meta_value AS cred";
-			
+			$select = implode( ', ', $selects );
+
 			// WHERE
 			$where = '';
 			if ( $this->args['zero'] )
 				$where = "{$wpdb->usermeta}.meta_value > 0";
-			
-			$select = implode( ', ', $selects );
+
 			$SQL = apply_filters( 'mycred_ranking_sql', "
 SELECT {$select} 
 FROM {$wpdb->users} 
@@ -101,7 +97,7 @@ LEFT JOIN {$wpdb->usermeta}
 		AND {$wpdb->usermeta}.meta_key = %s 
 {$where}
 ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};", $this->args, $wpdb );
-			
+
 			$this->result = $wpdb->get_results( $wpdb->prepare( $SQL, $key ), 'ARRAY_A' );
 			$this->count = $wpdb->num_rows;
 		}
