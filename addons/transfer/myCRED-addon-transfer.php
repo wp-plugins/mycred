@@ -533,13 +533,13 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * Support for Email Notices
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function email_notices( $data ) {
 			if ( $data['request']['ref'] == 'transfer' ) {
 				$message = $data['message'];
 				if ( $data['request']['ref_id'] == get_current_user_id() )
-					$data['message'] = $this->core->template_tags_user( $message, false, wp_current_user_id() );
+					$data['message'] = $this->core->template_tags_user( $message, false, get_current_user_id() );
 				else
 					$data['message'] = $this->core->template_tags_user( $message, $data['request']['ref_id'] );
 			}
