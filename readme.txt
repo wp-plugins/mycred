@@ -122,8 +122,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3.2 =
-Bug fixes, rank improvement, transfer improvement and security fixes
+= 1.3.3 =
+Bug fixes, email notice improvements, myCRED Overview Dashboard Widget
 
 == Other Notes ==
 
@@ -137,6 +137,9 @@ Bug fixes, rank improvement, transfer improvement and security fixes
 
 
 == Changelog ==
+
+= 1.3.3 =
+* Fixed Bug #76 - Transfer Add-ons email notice connection is using an incorrect function.
 
 = 1.3.2 =
 * Improved the Ranks add-on and added new management settings allowing to delete all ranks and re-assigning roles to users.
