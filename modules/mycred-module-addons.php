@@ -1,11 +1,12 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Addons class
  * @since 0.1
  * @version 1.1
  */
-if ( !class_exists( 'myCRED_Addons' ) ) {
+if ( ! class_exists( 'myCRED_Addons' ) ) {
 	class myCRED_Addons extends myCRED_Module {
 
 		/**
@@ -43,7 +44,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			$num = 0;
 
 			// Make sure each active add-on still exists. If not delete.
-			if ( !empty( $active ) ) {
+			if ( ! empty( $active ) ) {
 				$active = array_unique( $active );
 				$_active = array();
 				foreach ( $active as $pos => $active_id ) {
@@ -83,7 +84,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 					'active'      => $active
 				);
 
-				if ( !function_exists( 'update_option' ) )
+				if ( ! function_exists( 'update_option' ) )
 					include_once( ABSPATH . 'wp-includes/option.php' );
 
 				if ( mycred_override_settings() )
@@ -144,10 +145,10 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			$installed = array();
 			// Search for addons. should be in addons/*/myCRED-addon-*.php
 			$addon_search = glob( $addon_location . "*/$prefix*.php" );
-			if ( !empty( $addon_search ) && $addon_search !== false ) {
+			if ( ! empty( $addon_search ) && $addon_search !== false ) {
 				foreach ( $addon_search as $filename ) {
 					// Handle windows and WP Stage support by clariner
-					if ( !defined( 'WP_STAGE' ) ) {
+					if ( ! defined( 'WP_STAGE' ) ) {
 						$abspath = str_replace( '/', '', ABSPATH );
 						// Remove ABSPATH to prevent long string addresses. Everything starts with wp-content
 						$sub_file = str_replace( array( $abspath, ABSPATH ), '', $filename );
@@ -161,11 +162,11 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 					// Get Addon Information
 					$addon_info = $this->get_addon_info( $filename, $matches[1], $sub_file_name );
 					// Check if addon has a requirement to prevent errors due to calls to non existing functions
-					if ( isset( $addon_info['requires'] ) && !empty( $addon_info['requires'] ) && !function_exists( $addon_info['requires'] ) ) {
+					if ( isset( $addon_info['requires'] ) && !empty( $addon_info['requires'] ) && ! function_exists( $addon_info['requires'] ) ) {
 						continue;
 					}
 					// Prevent Duplicates
-					if ( !array_key_exists( $sub_file_name, $installed ) ) {
+					if ( ! array_key_exists( $sub_file_name, $installed ) ) {
 						$installed[$this->make_id( $sub_file_name )] = $addon_info;
 					}
 				}
@@ -203,7 +204,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		 * @version 1.1
 		 */
 		public function get_addon_info( $file = false, $folder = false, $sub = '' ) {
-			if ( !$file ) return;
+			if ( ! $file ) return;
 			// Details we want
 			$addon_details = array(
 				'name'        => 'Addon',
@@ -235,7 +236,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 			if ( array_key_exists( $key, $installed ) ) {
 				$file = $installed[$key]['file'];
 				// WP Stage Support by clariner
-				if ( !defined( 'WP_STAGE' ) )
+				if ( ! defined( 'WP_STAGE' ) )
 					return ABSPATH . $installed[$key]['folder'] . $file;
 				else
 					return $installed[$key]['folder'] . $file;
@@ -250,14 +251,14 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		 */
 		public function admin_page() {
 			// Security
-			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
+			if ( ! $this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied' ) );
 
 			// Get installed
 			$installed = $this->get( true ); ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Add-ons', 'mycred' ); ?></h2>
+		<h2><?php echo sprintf( __( '%s Add-ons', 'mycred' ), mycred_label() ); ?></h2>
 		<?php
 			// Message
 			if ( isset( $_GET['addon_action'] ) ) {
@@ -271,7 +272,7 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		<div class="list-items expandable-li" id="accordion">
 <?php
 			// Loop though installed
-			if ( !empty( $installed ) ) {
+			if ( ! empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
 			<h4><div class="icon icon-<?php if ( $this->is_active( $key ) ) echo 'active'; else echo 'inactive'; echo ' ' . $key; ?>"></div><label><?php _e( $this->core->template_tags_general( $data['name'] ), 'mycred' ); ?></label></h4>
@@ -325,21 +326,21 @@ if ( !class_exists( 'myCRED_Addons' ) ) {
 		 * @version 1.0.1
 		 */
 		public function addon_links( $key ) {
-			$data = $this->installed[$key];
+			$data = $this->installed[ $key ];
 
 			// Add-on Details
 			$info = array();
 			if ( isset( $data['version'] ) )
 				$info[] = __( 'Version', 'mycred' ) . ' ' . $data['version'];
 
-			if ( isset( $data['author_uri'] ) && !empty( $data['author_uri'] ) && isset( $data['author'] ) && !empty( $data['author'] ) )
+			if ( isset( $data['author_uri'] ) && ! empty( $data['author_uri'] ) && isset( $data['author'] ) && ! empty( $data['author'] ) )
 				$info[] = __( 'By', 'mycred' ) . ' <a href="' . $data['author_uri'] . '" target="_blank">' . $data['author'] . '</a>';
 
-			if ( isset( $data['addon_uri'] ) && !empty( $data['addon_uri'] ) )
+			if ( isset( $data['addon_uri'] ) && ! empty( $data['addon_uri'] ) )
 				$info[] = ' <a href="' . $data['addon_uri'] . '" target="_blank">' . __( 'Documentation', 'mycred' ) . '</a>';
 
 			unset( $data );
-			if ( !empty( $info ) )
+			if ( ! empty( $info ) )
 				return implode( ' | ', $info );
 			else
 				return $info;

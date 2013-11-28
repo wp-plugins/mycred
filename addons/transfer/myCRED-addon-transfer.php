@@ -2,7 +2,7 @@
 /**
  * Addon: Transfer
  * Addon URI: http://mycred.me/add-ons/transfer/
- * Version: 1.1
+ * Version: 1.2
  * Description: Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -13,19 +13,20 @@ $mycred_addon_header_translate = array(
 	__( 'Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.', 'mycred' )
 );
 
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_TRANSFER',         __FILE__ );
 define( 'myCRED_TRANSFER_VERSION', myCRED_VERSION . '.1' );
+
 /**
  * myCRED_Transfer_Creds class
  *
  * Manages this add-on by hooking into myCRED where needed. Regsiters our custom shortcode and widget
  * along with scripts and styles needed. Also adds settings to the myCRED settings page.
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
-if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
+if ( ! class_exists( 'myCRED_Transfer_Creds' ) ) {
 	class myCRED_Transfer_Creds extends myCRED_Module {
 
 		/**
@@ -126,7 +127,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		public function front_footer() {
 			global $mycred_load;
 
-			if ( !isset( $mycred_load ) || $mycred_load === false ) return;
+			if ( ! isset( $mycred_load ) || $mycred_load === false ) return;
 
 			wp_enqueue_style( 'mycred-transfer-front' );
 			wp_enqueue_script( 'mycred-transfer-ajax' );
@@ -150,8 +151,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				'error_5'   => __( 'Incorrect amount. Please try again.', 'mycred' ),
 				'error_6'   => __( 'This myCRED Add-on has not yet been setup! No transfers are allowed until this has been done!', 'mycred' ),
 				'error_7'   => __( 'Insufficient funds. Please enter a lower amount.', 'mycred' ),
-				'error_8'   => __( 'Transfer Limit exceeded.', 'mycred' ),
-				'error_9'   => __( 'The request amount will exceed your transfer limit. Please try again with a lower amount!', 'mycred' )
+				'error_8'   => __( 'Transfer Limit exceeded.', 'mycred' )
 			) );
 
 			wp_localize_script(
@@ -228,7 +228,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 					<ol id="myCRED-transfer-limits">
 <?php
 			// Loop though limits
-			if ( !empty( $limits ) ) {
+			if ( ! empty( $limits ) ) {
 				foreach ( $limits as $key => $description ) { ?>
 
 						<li>
@@ -326,7 +326,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * AJAX Transfer Creds
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function ajax_call_transfer() {
 			// Security
@@ -334,7 +334,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 				die( json_encode( 'error_1' ) );
 
 			// Required
-			if ( !isset( $_POST['recipient'] ) || !isset( $_POST['sender'] ) || !isset( $_POST['amount'] ) )
+			if ( ! isset( $_POST['recipient'] ) || ! isset( $_POST['sender'] ) || ! isset( $_POST['amount'] ) )
 				die( json_encode( 'error_2' ) );
 
 			// Prep
@@ -343,11 +343,11 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$amount = abs( $_POST['amount'] );
 
 			// Add-on has not been installed
-			if ( !isset( $this->transfers ) )
+			if ( ! isset( $this->transfers ) )
 				die( json_encode( 'error_6' ) );
 
 			$prefs = $this->transfers;
-			if ( !isset( $prefs['limit']['limit'] ) || !isset( $prefs['logs']['sending'] ) )
+			if ( ! isset( $prefs['limit']['limit'] ) || ! isset( $prefs['logs']['sending'] ) )
 				die( json_encode( 'error_6' ) );
 
 			// Get Recipient
@@ -363,66 +363,17 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			$amount = $this->core->number( $amount );
 			if ( $amount == $this->core->zero() ) die( json_encode( 'error_5' ) );
 
-			// Check funds
-			if ( mycred_user_can_transfer( $from, $amount ) === 'low' ) die( json_encode( 'error_7' ) );
-
-			$today = date_i18n( 'd' );
-			$this_week = date_i18n( 'W' );
-			$set_limit = $prefs['limit']['limit'];
-
-			// Check limits
-			if ( $prefs['limit']['limit'] != 'none' ) {
-				// Prep
-				$max = $this->core->number( $prefs['limit']['amount'] );
-
-				// Get users "limit log"
-				$history = get_user_meta( $from, 'mycred_transactions', true );
-				if ( empty( $history ) ) {
-					// Add new defaults
-					$history = array(
-						'frame'  => ( $prefs['limit']['limit'] == 'daily' ) ? $today : $this_week,
-						'amount' => $this->core->zero()
-					);
-					update_user_meta( $from, 'mycred_transactions', $history );
-				}
-
-				// Total amount so far
-				$current = $this->core->number( $history['amount'] );
-
-				// Daily limit
-				if ( $prefs['limit']['limit'] == 'daily' ) {
-					// New day, new limits
-					if ( $today != $history['frame'] ) {
-						$history = array(
-							'frame'  => $today,
-							'amount' => $this->core->zero()
-						);
-						update_user_meta( $from, 'mycred_transactions', $history );
-					}
-
-					// Make sure user has not reached or exceeded the transfer limit.
-					if ( $current >= $max ) die( json_encode( 'error_8' ) );
-				}
-
-				// Weekly limit
-				elseif ( $prefs['limit']['limit'] == 'weekly' ) {
-					// New week, new limits
-					if ( $this_week != $history['frame'] ) {
-						$history = array(
-							'frame'  => $this_week,
-							'amount' => $this->core->zero()
-						);
-						update_user_meta( $from, 'mycred_transactions', $history );
-					}
-
-					// Make sure user has not reached or exceeded the transfer limit.
-					if ( $current >= $max ) die( json_encode( 'error_8' ) );
-				}
-
-				// Make sure the requested amount will not take us over the limit.
-				$after_transfer = $amount+$current;
-				if ( $after_transfer > $max ) die( json_encode( 'error_9' ) );
-			}
+			// Check if user can transfer
+			$transfer = mycred_user_can_transfer( $from, $amount );
+			
+			// Insufficient funds
+			if ( $transfer == 'low' ) die( json_encode( 'error_7' ) );
+			
+			// Transfer limit reached
+			elseif ( $transfer == 'limit' ) die( json_encode( 'error_8' ) );
+			
+			// All good
+			$after_transfer = $transfer;
 
 			// Let others play before we execute the transfer
 			do_action( 'mycred_transfer_ready', $prefs, $this->core );
@@ -442,8 +393,10 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 
 			// Update history if limits are imposed
 			if ( $prefs['limit']['limit'] != 'none' ) {
-				$history['amount'] = $after_transfer;
-				update_user_meta( $from, 'mycred_transactions', $history );
+				$history = mycred_get_users_transfer_history( $from );
+				mycred_update_users_transfer_history( $from, array(
+					'amount' => $this->core->number( $amount+$history['amount'] )
+				) );
 			}
 
 			// Then add the amount to the receipient
@@ -459,9 +412,7 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 			// Let others play once transaction is completed
 			do_action( 'mycred_transfer_completed', $prefs, $this->core );
 
-			// Clean up and die
-			unset( $this );
-			unset( $ruser );
+			// Return the good news
 			die( json_encode( 'ok' ) );
 		}
 
@@ -514,11 +465,11 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 
 			// Query
 			$select = $prefs['autofill'];
-			$blog_users = $wpdb->get_results( $wpdb->prepare(
-				"SELECT {$select}, ID FROM {$wpdb->users} WHERE ID != %d AND {$select} LIKE %s;",
-				$user_id,
-				'%' . $_REQUEST['string']['term'] . '%'
-			), 'ARRAY_N' );
+			$blog_users = $wpdb->get_results( $wpdb->prepare( "
+SELECT {$select}, ID 
+FROM {$wpdb->users} 
+WHERE ID != %d 
+	AND {$select} LIKE %s;", $user_id, '%' . $_REQUEST['string']['term'] . '%' ), 'ARRAY_N' );
 
 			if ( $wpdb->num_rows > 0 ) {
 				foreach ( $blog_users as $hit ) {
@@ -533,13 +484,13 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 		/**
 		 * Support for Email Notices
 		 * @since 1.1
-		 * @version 1.1.1
+		 * @version 1.1
 		 */
 		public function email_notices( $data ) {
 			if ( $data['request']['ref'] == 'transfer' ) {
 				$message = $data['message'];
 				if ( $data['request']['ref_id'] == get_current_user_id() )
-					$data['message'] = $this->core->template_tags_user( $message, false, get_current_user_id() );
+					$data['message'] = $this->core->template_tags_user( $message, false, wp_get_current_user() );
 				else
 					$data['message'] = $this->core->template_tags_user( $message, $data['request']['ref_id'] );
 			}
@@ -553,9 +504,9 @@ if ( !class_exists( 'myCRED_Transfer_Creds' ) ) {
 /**
  * Widget: myCRED Transfer
  * @since 0.1
- * @version 1.1
+ * @version 1.1.1
  */
-if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
+if ( ! class_exists( 'myCRED_Widget_Transfer' ) ) {
 	class myCRED_Widget_Transfer extends WP_Widget {
 
 		/**
@@ -567,7 +518,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 				'classname'   => 'widget-my-cred-transfer',
 				'description' => __( 'Allow transfers between users.', 'mycred' )
 			);
-			$this->WP_Widget( 'mycred_widget_transfer', sprintf( __( '%s Transfer', 'mycred' ), apply_filters( 'mycred_label', myCRED_NAME ) ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_transfer', sprintf( __( '(%s) Transfer', 'mycred' ), mycred_label( true ) ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_transfer';
 		}
 
@@ -580,12 +531,13 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			// Prep
 			$title = $instance['title'];
 			$mycred = mycred_get_settings();
-			if ( !isset( $mycred->transfers ) )
+			if ( ! isset( $mycred->transfers ) )
 				return '<p>' . __( 'The myCRED Transfer add-on has not yet been setup!', 'mycred' ) . '</p>';
 
 			$pref = $mycred->transfers;
 
 			global $mycred_load;
+
 			// Members
 			if ( is_user_logged_in() ) {
 				// Excluded users
@@ -594,7 +546,7 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 
 				echo $before_widget;
 				// Title
-				if ( !empty( $title ) ) {
+				if ( ! empty( $title ) ) {
 					echo $before_title;
 					echo $mycred->template_tags_general( $title );
 					echo $after_title;
@@ -614,9 +566,9 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			else {
 				$mycred_load = false;
 				// If login message is set
-				if ( !empty( $pref['templates']['login'] ) ) {
+				if ( ! empty( $pref['templates']['login'] ) ) {
 					echo $before_widget;
-					if ( !empty( $instance['title'] ) ) {
+					if ( ! empty( $instance['title'] ) ) {
 						echo $before_title;
 						echo $mycred->template_tags_general( $title );
 						echo $after_title;
@@ -636,8 +588,8 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 		function form( $instance ) {
 			// Defaults
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Transfer %plural%', 'mycred' );
-			$show_balance = isset( $instance['show_balance'] ) ? 1 : 0;
-			$show_limit = isset( $instance['show_limit'] ) ? 1 : 0; ?>
+			$show_balance = isset( $instance['show_balance'] ) ? $instance['show_balance'] : 0;
+			$show_limit = isset( $instance['show_limit'] ) ? $instance['show_balance'] : 0; ?>
 
 		<!-- Widget Options -->
 		<p class="myCRED-widget-field">
@@ -662,8 +614,8 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
 			$instance = $old_instance;
 			$instance['title'] = trim( $new_instance['title'] );
 
-			$instance['show_balance'] = ( isset( $new_instance['show_balance'] ) ) ? 1 : 0;
-			$instance['show_limit'] = ( isset( $new_instance['show_limit'] ) ) ? 1 : 0;
+			$instance['show_balance'] = ( isset( $new_instance['show_balance'] ) ) ? $new_instance['show_balance'] : 0;
+			$instance['show_limit'] = ( isset( $new_instance['show_limit'] ) ) ? $new_instance['show_balance'] : 0;
 
 			mycred_flush_widget_cache( 'mycred_widget_transfer' );
 			return $instance;
@@ -679,9 +631,9 @@ if ( !class_exists( 'myCRED_Widget_Transfer' ) ) {
  * @attribute $show_balance (bool) set to true to show current users balance, defaults to true
  * @attribute $show_limit (bool) set to true to show current users limit. If limit is set to 'none' and $show_limit is set to true nothing will be returned
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
-if ( !function_exists( 'mycred_transfer_render' ) ) {
+if ( ! function_exists( 'mycred_transfer_render' ) ) {
 	function mycred_transfer_render( $atts, $content = NULL )
 	{
 		global $mycred_load;
@@ -691,7 +643,8 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 			'charge_from'  => NULL,
 			'pay_to'       => NULL,
 			'show_balance' => 0,
-			'show_limit'   => 0
+			'show_limit'   => 0,
+			'placeholder'  => ''
 		), $atts ) );
 
 		// Settings
@@ -702,8 +655,8 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		$mycred_load = false;
 
 		// If we are not logged in
-		if ( !is_user_logged_in() ) {
-			if ( isset( $pref['templates']['login'] ) && !empty( $pref['templates']['login'] ) )
+		if ( ! is_user_logged_in() ) {
+			if ( isset( $pref['templates']['login'] ) && ! empty( $pref['templates']['login'] ) )
 				$output .= '<p class="mycred-transfer-login">' . $mycred->template_tags_general( $pref['templates']['login'] ) . '</p>';
 			
 			return $output;
@@ -720,7 +673,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 		// Error. Not enough creds
 		if ( $status === 'low' ) {
-			if ( isset( $pref['errors']['low'] )  && !empty( $pref['errors']['low'] ) ) {
+			if ( isset( $pref['errors']['low'] )  && ! empty( $pref['errors']['low'] ) ) {
 				$no_cred = str_replace( '%limit%', $pref['limit']['limit'], $pref['errors']['low'] );
 				$no_cred = str_replace( '%Limit%', ucwords( $pref['limit']['limit'] ), $no_cred );
 				$no_cred = str_replace( '%left%',  $mycred->format_creds( $status ), $no_cred );
@@ -731,7 +684,7 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 
 		// Error. Over limit
 		if ( $status === 'limit' ) {
-			if ( isset( $pref['errors']['over'] ) && !empty( $pref['errors']['over'] ) ) {
+			if ( isset( $pref['errors']['over'] ) && ! empty( $pref['errors']['over'] ) ) {
 				$no_cred = str_replace( '%limit%', $pref['limit']['limit'], $pref['errors']['over'] );
 				$no_cred = str_replace( '%Limit%', ucwords( $pref['limit']['limit'] ), $no_cred );
 				$no_cred = str_replace( '%left%',  $mycred->format_creds( $status ), $no_cred );
@@ -743,17 +696,19 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 		// Flag for scripts & styles
 		$mycred_load = true;
 
-		// If pay to is set
+		// Placeholder
 		if ( $pref['autofill'] == 'user_login' )
 			$pln = __( 'username', 'mycred' );
 		elseif ( $pref['autofill'] == 'user_email' )
 			$pln = __( 'email', 'mycred' );
-		else
-			$pln = '';
 
 		$placeholder = apply_filters( 'mycred_transfer_to_placeholder', __( 'recipients %s', 'mycred' ), $pref, $mycred );
 		$placeholder = sprintf( $placeholder, $pln );
+
+		// Recipient Input field
 		$to_input = '<input type="text" name="mycred-transfer-to" value="" class="mycred-autofill" placeholder="' . $placeholder . '" />';
+
+		// If recipient is set, pre-populate it with the recipients details
 		if ( $pay_to !== NULL ) {
 			$user = get_user_by( 'id', $pay_to );
 			if ( $user !== false ) {
@@ -765,65 +720,66 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
 			}
 		}
 
-		// If content is passed on.
-		if ( $content !== NULL && !empty( $content ) )
-			$output .= $content;
-
-		if ( !empty( $mycred->before ) )
+		if ( ! empty( $mycred->before ) )
 			$before = $mycred->before . ' ';
 		else
 			$before = '';
 		
-		if ( !empty( $mycred->after ) )
+		if ( ! empty( $mycred->after ) )
 			$after = ' ' . $mycred->after;
 		else
 			$after = '';
 
-		// Main output
-		$output .= '
-	<ol>
-		<li class="mycred-send-to">
-			<label>' . __( 'To:', 'mycred' ) . '</label>
-			<div class="transfer-to">' . $to_input . '</div>
-		</li>
-		<li class="mycred-send-amount">
-			<label>' . __( 'Amount:', 'mycred' ) . '</label>
-			<div>' . $before . '<input type="text" class="short" name="mycred-transfer-amount" value="' . $mycred->zero() . '" size="8" />' . $after . '</div> 
-			<input type="button" class="button large button-large mycred-click" value="' . $pref['templates']['button'] . '" />
-		</li>
-		';
-
 		$extras = array();
 
 		// Show Balance 
-		if ( (bool) $show_balance === true && !empty( $pref['templates']['balance'] ) ) {
+		if ( (bool) $show_balance === true && ! empty( $pref['templates']['balance'] ) ) {
 			$balance_text = str_replace( '%balance%', $mycred->format_creds( $my_balance ), $pref['templates']['balance'] );
 			$extras[] = $mycred->template_tags_general( $balance_text );
 		}
 
 		// Show Limits
-		if ( (bool) $show_limit === true && !empty( $pref['templates']['limit'] ) && $pref['limit']['limit'] != 'none' ) {
+		if ( (bool) $show_limit === true && ! empty( $pref['templates']['limit'] ) && $pref['limit']['limit'] != 'none' ) {
 			$limit_text = str_replace( '%_limit%', $pref['limit']['limit'], $pref['templates']['limit'] );
 			$limit_text = str_replace( '%limit%',  ucwords( $pref['limit']['limit'] ), $limit_text );
 			$limit_text = str_replace( '%left%',   $mycred->format_creds( $status ), $limit_text );
 			$extras[] = $mycred->template_tags_general( $limit_text );
 		}
 
-		// No need to include this if extras is empty
-		if ( !empty( $extras ) ) {
-			$output .= '<li class="mycred-transfer-info"><p>' . implode( '</p><p>', $extras ) . '</p></li>';
-		}
+		// Main output
+		ob_start(); ?>
 
-		$output .= '
-	</ol>' . "\n";
+<div class="mycred-transfer-cred-wrapper">
+	<ol>
+		<li class="mycred-send-to">
+			<label><?php _e( 'To:', 'mycred' ); ?></label>
+			<div class="transfer-to"><?php echo $to_input; ?></div>
+			<?php do_action( 'mycred_transfer_form_to', $atts, $pref ); ?>
 
-		// Return result
-		$result = '<div class="mycred-transfer-cred-wrapper">' . $output . '</div>';
-		$result = apply_filters( 'mycred_transfer_render', $result, $atts, $mycred );
+		</li>
+		<li class="mycred-send-amount">
+			<label><?php _e( 'Amount:', 'mycred' ); ?></label>
+			<div class="transfer-amount"><?php echo $before; ?><input type="text" class="short" name="mycred-transfer-amount" value="<?php echo $mycred->zero(); ?>" size="8" /><?php echo $after; ?></div> 
+			<input type="button" class="button large button-large mycred-click" value="<?php echo $pref['templates']['button']; ?>" />
+			<?php do_action( 'mycred_transfer_form_amount', $atts, $pref ); ?>
 
-		unset( $mycred );
-		unset( $output );
-		return do_shortcode( $result );
+		</li>
+<?php	if ( ! empty( $extras ) ) { ?>
+
+		<li class="mycred-transfer-info">
+			<p><?php echo implode( '</p><p>', $extras ); ?></p>
+			<?php do_action( 'mycred_transfer_form_extra', $atts, $pref ); ?>
+
+		</li>
+<?php	} ?>
+
+	</ol>
+</div>
+<?php
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return do_shortcode( apply_filters( 'mycred_transfer_render', $output, $atts, $mycred ) );
 	}
 }
 
@@ -834,11 +790,12 @@ if ( !function_exists( 'mycred_transfer_render' ) ) {
  * @param $amount (int) optional amount to check against balance
  * @returns true if no limit is set, 'limit' (string) if user is over limit else the amount of creds left
  * @filter 'mycred_user_can_transfer'
+ * @filter 'mycred_transfer_limit'
  * @filter 'mycred_transfer_acc_limit'
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
-if ( !function_exists( 'mycred_user_can_transfer' ) ) {
+if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
 	function mycred_user_can_transfer( $user_id = NULL, $amount = NULL )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
@@ -846,22 +803,29 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		// Grab Settings
 		$mycred = mycred_get_settings();
 		$pref = $mycred->transfers;
-		$set_limit = $pref['limit']['limit'];
+		$zero = $mycred->zero();
+		
+		// Get users balance
 		$balance = $mycred->get_users_cred( $user_id );
 
-		// To low balance
-		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
-		if ( !is_numeric( $account_limit ) )
-			$account_limit = 0;
+		// Get Transfer Max
+		$max = apply_filters( 'mycred_transfer_limit', $mycred->number( $pref['limit']['amount'] ), $user_id, $amount, $pref, $mycred );
 
-		if ( $amount !== NULL ) {
-			if ( $balance-$amount < $account_limit ) return 'low';
-		} else {
-			if ( $balance <= $account_limit ) return 'low';
-		}
+		// If an amount is given, deduct this amount to see if the transaction
+		// brings us over the account limit
+		if ( $amount !== NULL )
+			$balance = $mycred->number( $balance-$amount );
 
-		// No limits imposed
-		if ( $set_limit == 'none' ) return true;
+		// Account Limit
+		// The lowest amount a user can have on their account. By default, this
+		// is zero. But you can override this via the mycred_transfer_acc_limit hook.
+		$account_limit = $mycred->number( apply_filters( 'mycred_transfer_acc_limit', $zero ) );
+
+		// Check if users balance is below the account limit
+		if ( $balance <= $account_limit ) return 'low';
+
+		// If there are no limits, return the current balance
+		if ( $pref['limit']['limit'] == 'none' ) return $balance;
 
 		// Else we have a limit to impose
 		$today = date_i18n( 'd' );
@@ -869,35 +833,20 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		$max = $mycred->number( $pref['limit']['amount'] );
 
 		// Get users "limit log"
-		$history = get_user_meta( $user_id, 'mycred_transactions', true );
-		if ( empty( $history ) ) {
-			// Apply defaults if not set
-			$history = array(
-				'frame'  => '',
-				'amount' => $mycred->zero()
-			);
-		}
+		$history = mycred_get_users_transfer_history( $user_id );
+
+		// Get Current amount
+		$current = $mycred->number( $history['amount'] );
 
 		// Daily limit
 		if ( $pref['limit']['limit'] == 'daily' ) {
 			// New day, new limits
 			if ( $today != $history['frame'] ) {
-				$new_data = array(
-					'frame' => $today,
+				mycred_update_users_transfer_history( $user_id, array(
+					'frame'  => $today,
 					'amount' => $mycred->zero()
-				);
-				update_user_meta( $user_id, 'mycred_transactions', $new_data );
-				$current = $new_data['amount'];
-			}
-			// Same day, check limit
-			else {
-				$current = $mycred->number( $history['amount'] );
-			}
-
-			if ( $current >= $max ) return 'limit';
-			else {
-				$remaining = $max-$current;
-				return $mycred->number( $remaining );
+				) );
+				$current = $zero;
 			}
 		}
 
@@ -905,29 +854,67 @@ if ( !function_exists( 'mycred_user_can_transfer' ) ) {
 		elseif ( $pref['limit']['limit'] == 'weekly' ) {
 			// New week, new limits
 			if ( $this_week != $history['frame'] ) {
-				$new_data = array(
-					'frame' => $this_week,
+				mycred_update_users_transfer_history( $user_id, array(
+					'frame'  => $this_week,
 					'amount' => $mycred->zero()
-				);
-				update_user_meta( $user_id, 'mycred_transactions', $new_data );
-				$current = $new_data['amount'];
-			}
-			// Same week, check limit
-			else {
-				$current = $mycred->number( $history['amount'] );
-			}
-
-			if ( $current >= $max ) return 'limit';
-			else {
-				$remaining = $max-$current;
-				return $mycred->number( $remaining );
+				) );
+				$current = $zero;
 			}
 		}
 
-		// others limits
+		// Custom limits will need to return the result
+		// here and now. Accepted answers are 'limit', 'low' or the amount left on limit.
 		else {
-			return apply_filters( 'mycred_user_can_transfer', $mycred->number( $pref['limit']['amount'] ), $user_id, $balance, $history, $mycred );
+			return apply_filters( 'mycred_user_can_transfer', 'limit', $user_id, $amount, $prefs, $mycred );
 		}
+
+		// Transfer limit reached
+		if ( $current >= $max ) return 'limit';
+
+		// Return whats remaining of limit
+		$remaining = $max-$current;
+		return $mycred->number( $remaining );
+	}
+}
+
+/**
+ * Get Users Transfer History
+ * @since 1.3.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_users_transfer_history' ) ) {
+	function mycred_get_users_transfer_history( $user_id )
+	{
+		$default = array(
+			'frame'  => '',
+			'amount' => 0
+		);
+		return mycred_apply_defaults( $default, get_user_meta( $user_id, 'mycred_transactions', true ) );
+	}
+}
+
+/**
+ * Update Users Transfer History
+ * @since 1.3.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_update_users_transfer_history' ) ) {
+	function mycred_update_users_transfer_history( $user_id, $history )
+	{
+		// Get current history
+		$current = mycred_get_users_transfer_history( $user_id );
+
+		// Reset
+		if ( $history === true )
+			$new_history = array(
+				'frame'  => '',
+				'amount' => 0
+			);
+
+		// Update
+		else $new_history = mycred_apply_defaults( $current, $history );
+
+		update_user_meta( $user_id, 'mycred_transactions', $new_history );
 	}
 }
 ?>

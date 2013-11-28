@@ -6,7 +6,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * Custom Payment Gateway for WooCommerce.
  * @see http://docs.woothemes.com/document/payment-gateway-api/
  * @since 0.1
- * @version 1.2.1
+ * @version 1.2.2
  */
 if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 	/**
@@ -45,12 +45,18 @@ if ( !function_exists( 'mycred_init_woo_gateway' ) ) {
 					$exchange_rate = (float) $this->get_option( 'exchange_rate' );
 				else
 					$exchange_rate = 1;
-				
+
 				if ( !is_numeric( $exchange_rate ) )
 					$exchange_rate = 1;
-				
+
 				$this->exchange_rate = $exchange_rate;
 				$this->log_template  = $this->get_option( 'log_template' );
+
+				$this->show_total = $this->get_option( 'show_total' );
+				$this->total_label = $this->get_option( 'total_label' );
+
+				$this->profit_sharing_percent = $this->get_option( 'profit_sharing_percent' );
+				$this->profit_sharing_log = $this->get_option( 'profit_sharing_log' );
 
 				// Actions
 				add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );

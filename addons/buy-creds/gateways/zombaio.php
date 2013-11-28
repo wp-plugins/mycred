@@ -14,7 +14,6 @@ if ( !class_exists( 'myCRED_Zombaio' ) ) {
 		 * Construct
 		 */
 		function __construct( $gateway_prefs ) {
-			$name = apply_filters( 'mycred_label', myCRED_NAME );
 			parent::__construct( array(
 				'id'       => 'zombaio',
 				'defaults' => array(

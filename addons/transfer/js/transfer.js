@@ -67,14 +67,15 @@ jQuery(function($){
 				else if ( data == 'error_8' ) {
 					alert( myCRED.error_8 );
 				}
-				// Requested Amount will exceed limit.
-				else if ( data == 'error_9' ) {
-					alert( myCRED.error_9 );
-				}
 				// Transfer Completed.
 				else if ( data == 'ok' ) {
 					alert( myCRED.completed );
-					
+
+					if ( myCRED.reload == '1' )
+						location.reload();
+				}
+				else {
+					$('.mycred-click').attr( 'value', data );
 					if ( myCRED.reload == '1' )
 						location.reload();
 				}

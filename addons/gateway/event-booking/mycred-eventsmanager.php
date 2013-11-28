@@ -1,11 +1,12 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * Events Manager
  * @since 1.2
- * @version 1.0.1
+ * @version 1.1
  */
-if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' ) ) {
+if ( ! class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' ) ) {
 	class myCRED_Events_Manager_Gateway {
 
 		public $label = '';
@@ -46,7 +47,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			$this->core = mycred_get_settings();
 			
 			// Apply Whitelabeling
-			$this->label = apply_filters( 'mycred_label', myCRED_NAME );
+			$this->label = mycred_label();
 		}
 
 		/**
@@ -60,7 +61,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			add_action( 'em_options_save',                 array( $this, 'save_settings' ) );
 
 			// In case gateway has not yet been enabled bail here.
-			if ( !$this->use_gateway() ) return;
+			if ( ! $this->use_gateway() ) return;
 
 			// Currency
 			add_filter( 'em_get_currencies',               array( $this, 'add_currency' ) );
@@ -90,11 +91,11 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		 */
 		public function add_currency( $currencies ) {
 			$currencies->names['XMY'] = $this->core->plural();
-			if ( empty( $this->core->before ) && !empty( $this->core->after ) ) {
+			if ( empty( $this->core->before ) && ! empty( $this->core->after ) ) {
 				$currencies->symbols['XMY'] = $this->core->after;
 				$currencies->symbols['XMY'] = $this->core->after;
 			}
-			elseif ( !empty( $this->core->before ) && empty( $this->core->after ) ) {
+			elseif ( ! empty( $this->core->before ) && empty( $this->core->after ) ) {
 				$currencies->true_symbols['XMY'] = $this->core->before;
 				$currencies->true_symbols['XMY'] = $this->core->after;
 			}
@@ -105,10 +106,13 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		/**
 		 * Format Price
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function format_price( $formatted_price, $price, $currency, $format ) {
-			return $this->core->format_creds( $price );
+			if ( $currency == 'XMY' )
+				return $this->core->format_creds( $price );
+			
+			return $formatted_price;
 		}
 
 		/**
@@ -136,7 +140,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		 * Can Pay Check
 		 * Checks if the user can pay for their booking.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function can_pay( $EM_Booking ) {
 			$EM_Event = $EM_Booking->get_event();
@@ -144,7 +148,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			if ( $EM_Event->is_free() ) return false;
 
 			// Only pending events can be paid for
-			if ( $EM_Booking->booking_status == 0 && $EM_Event->get_bookings()->has_open_time() ) {
+			if ( $EM_Event->get_bookings()->has_open_time() ) {
 				$balance = $this->core->get_users_cred( $EM_Booking->person->ID );
 				if ( $balance <= 0 ) return false;
 
@@ -193,7 +197,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			check_ajax_referer( 'mycred-pay-booking', 'token' );
 			
 			// Requirements
-			if ( !isset( $_POST['booking_id'] ) || !is_user_logged_in() ) die( 'ERROR_1' );
+			if ( ! isset( $_POST['booking_id'] ) || ! is_user_logged_in() ) die( 'ERROR_1' );
 			
 			// Get Booking
 			$booking_id = $_POST['booking_id'];
@@ -203,7 +207,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 			if ( $this->core->exclude_user( $booking->person->ID ) ) die( 'ERROR_2' );
 			
 			// User can not pay for this
-			if ( !$this->can_pay( $booking ) ) {
+			if ( ! $this->can_pay( $booking ) ) {
 				$message = $this->prefs['messages']['error'];
 				$status = 'ERROR';
 				
@@ -211,7 +215,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 				do_action( 'mycred_em_booking_cantpay', $booking, $this );
 			}
 			// User has not yet paid
-			elseif ( !$this->has_paid( $booking ) ) {
+			elseif ( ! $this->has_paid( $booking ) ) {
 				// Price
 				$price = $this->core->number( $booking->booking_price );
 				if ( !$this->single_currency() ) {
@@ -311,7 +315,7 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		 * @version 1.0
 		 */
 		public function ticket_columns( $columns, $EM_Event ) {
-			if ( !$EM_Event->is_free() ) {
+			if ( ! $EM_Event->is_free() ) {
 				unset( $columns['price'] );
 				unset( $columns['type'] );
 				unset( $columns['spaces'] );
@@ -366,19 +370,21 @@ if ( !class_exists( 'myCRED_Events_Manager_Gateway' ) && defined( 'EM_VERSION' )
 		/**
 		 * Payment Box
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function payment_box( $EM_Booking ) {
-			if ( $EM_Booking->booking_status == 0 ) {
+			if ( $EM_Event->get_bookings()->has_open_time() && ! $EM_Event->is_free() ) {
 				$balance = $this->core->get_users_cred( $EM_Booking->person->ID );
 				if ( $balance <= 0 ) return;
 
 				$price = $EM_Booking->booking_price;
 				if ( $price == 0 ) return;
-				if ( !$this->single_currency() ) {
+				if ( ! $this->single_currency() ) {
 					$exchange_rate = $this->prefs['rate'];
 					$price = $this->core->number( $exchange_rate*$price );
-				} ?>
+				}
+				if ( $balance-$price < 0 ) return;
+?>
 
 								<tr id="mycred-payment-<?php echo $EM_Booking->booking_id; ?>" style="display: none;">
 									<td colspan="5">
@@ -623,7 +629,7 @@ jQuery(function($){
 		 * @version 1.1
 		 */
 		public function save_settings() {
-			if ( !isset( $_POST['mycred_gateway'] ) || !is_array( $_POST['mycred_gateway'] ) ) return;
+			if ( ! isset( $_POST['mycred_gateway'] ) || ! is_array( $_POST['mycred_gateway'] ) ) return;
 
 			// Prep
 			$data = $_POST['mycred_gateway'];

@@ -1,24 +1,26 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * Widget: myCRED Balance
  * @since 0.1
  * @version 1.3
  */
-if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
+if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 	class myCRED_Widget_Balance extends WP_Widget {
 
 		/**
 		 * Construct
 		 */
 		function myCRED_Widget_Balance() {
-			$name = apply_filters( 'mycred_label', myCRED_NAME );
+			$name = mycred_label( true );
+
 			// Basic details about our widget
 			$widget_ops = array( 
 				'classname'   => 'widget-my-cred',
-				'description' => sprintf( __( 'Show the current users %s balance', 'mycred' ), strip_tags( $name ) )
+				'description' => sprintf( __( 'Show the current users %s balance', 'mycred' ), $name )
 			);
-			$this->WP_Widget( 'mycred_widget_balance', sprintf( __( '%s Balance', 'mycred' ), $name ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_balance', sprintf( __( '(%s) My Balance', 'mycred' ), $name ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_balance';
 		}
 
@@ -43,7 +45,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 				echo $before_widget;
 
 				// Title
-				if ( !empty( $instance['title'] ) ) {
+				if ( ! empty( $instance['title'] ) ) {
 					echo $before_title;
 					echo $mycred->template_tags_general( $instance['title'] );
 					echo $after_title;
@@ -259,7 +261,7 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
 			$instance['show_rank'] = ( isset( $new_instance['show_rank'] ) ) ? 1 : 0;
 			$rank_format = trim( $new_instance['rank_format'] );
 
-			if ( !function_exists( 'mycred_get_users_rank' ) ) 
+			if ( ! function_exists( 'mycred_get_users_rank' ) ) 
 				$instance['rank_format'] = str_replace( '%rank%', '%ranking%', $rank_format );
 			else
 				$instance['rank_format'] = $rank_format;
@@ -283,20 +285,21 @@ if ( !class_exists( 'myCRED_Widget_Balance' ) ) {
  * @since 0.1
  * @version 1.1
  */
-if ( !class_exists( 'myCRED_Widget_List' ) ) {
+if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 	class myCRED_Widget_List extends WP_Widget {
 
 		/**
 		 * Construct
 		 */
 		function myCRED_Widget_List() {
-			$name = apply_filters( 'mycred_label', myCRED_NAME );
+			$name = mycred_label( true );
+
 			// Basic details about our widget
 			$widget_ops = array( 
 				'classname'   => 'widget-mycred-list',
-				'description' => sprintf( __( 'Show a list of users sorted by their %s balance', 'mycred' ), strip_tags( $name ) )
+				'description' => sprintf( __( 'Show a list of users sorted by their %s balance', 'mycred' ), $name )
 			);
-			$this->WP_Widget( 'mycred_widget_list', sprintf( __( '%s List', 'mycred' ), $name ), $widget_ops );
+			$this->WP_Widget( 'mycred_widget_list', sprintf( __( '(%s) Leaderboard', 'mycred' ), $name ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_list';
 		}
 
@@ -307,7 +310,7 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 			extract( $args, EXTR_SKIP );
 
 			// Check if we want to show this to visitors
-			if ( !$instance['show_visitors'] && !is_user_logged_in() ) return;
+			if ( ! $instance['show_visitors'] && ! is_user_logged_in() ) return;
 
 			// Get Rankings
 			$args = array(
@@ -330,7 +333,7 @@ if ( !class_exists( 'myCRED_Widget_List' ) ) {
 				echo $before_widget;
 
 				// Title
-				if ( !empty( $instance['title'] ) ) {
+				if ( ! empty( $instance['title'] ) ) {
 					echo $before_title;
 					echo $mycred->template_tags_general( $instance['title'] );
 					echo $after_title;

@@ -50,7 +50,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			$this->core = mycred_get_settings();
 			
 			// Apply Whitelabeling
-			$this->label = apply_filters( 'mycred_label', myCRED_NAME );
+			$this->label = mycred_label();
 			$this->title = strip_tags( $this->label );
 			$this->status_txt = 'Paid using ' . strip_tags( $this->label );
 
@@ -183,7 +183,10 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 <?php } else { ?>
 			<input type="submit" class="em-booking-submit em-gateway-button" id="em-gateway-button-<?php echo $this->gateway; ?>" value="<?php echo $button; ?>" />
 <?php		}
-			return ob_get_clean();
+			$output = ob_get_contents();
+			ob_end_clean();
+			
+			return $output;
 		}
 		
 		/**

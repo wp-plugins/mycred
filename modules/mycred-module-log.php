@@ -253,7 +253,7 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 			else
 				$search_for = '';
 
-			echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . $title . ' ' . $link . $search_for;
+			echo mycred_label() . ' ' . $title . ' ' . $link . $search_for;
 		}
 
 		/**

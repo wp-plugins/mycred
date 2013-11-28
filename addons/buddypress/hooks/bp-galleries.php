@@ -72,7 +72,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Gallery' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_gallery', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Gallery', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_gallery', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_gallery', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_gallery']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_gallery', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_gallery', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_gallery']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

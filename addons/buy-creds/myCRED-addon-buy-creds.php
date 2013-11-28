@@ -2,7 +2,7 @@
 /**
  * Addon: buyCRED
  * Addon URI: http://mycred.me/add-ons/buycred/
- * Version: 1.0
+ * Version: 1.1
  * Description: The <strong>buy</strong>CRED Add-on allows your users to buy points using PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can also let your users buy points for other members.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -398,10 +398,11 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		/**
 		 * Sanititze Settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitize_settings( $data ) {
-			
+			$data = apply_filters( 'mycred_buycred_save_prefs', $data );
+
 			$installed = $this->get();
 			if ( empty( $installed ) ) return $data;
 			

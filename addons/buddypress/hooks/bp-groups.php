@@ -419,13 +419,13 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'create', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Creating Groups', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'create', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'create', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['create']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'create', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'create', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['create']['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'If you use a negative value and the user does not have enough %_plural% the "Create Group" button will be disabled.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
 							<label for=""><?php echo $this->core->template_tags_general( __( 'Number of members before awarding %_plural%', 'mycred' ) ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'create', 'min' ) ); ?>" id="<?php echo $this->field_id( array( 'create', 'min' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['create']['min'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'create', 'min' ) ); ?>" id="<?php echo $this->field_id( array( 'create', 'min' ) ); ?>" value="<?php echo $this->core->number( $prefs['create']['min'] ); ?>" size="8" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'Use zero to award %_plural% when group is created.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
@@ -439,7 +439,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'delete', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Deleting Groups', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['delete']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -452,7 +452,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Forum Topic', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -465,7 +465,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'edit_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Editing Forum Topic', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'edit_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'edit_topic', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['edit_topic']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'edit_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'edit_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['edit_topic']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -478,7 +478,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_post', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Forum Post', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_post', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_post', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_post']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_post', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_post', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_post']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -491,7 +491,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'edit_post', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Editing Forum Post', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'edit_post', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'edit_post', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['edit_post']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'edit_post', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'edit_post', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['edit_post']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -504,7 +504,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'join', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Joining Groups', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'join', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'join', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['join']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'join', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'join', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['join']['creds'] ); ?>" size="8" /></div>
 							<span class="description"><?php echo $this->core->template_tags_general( __( 'If you use a negative value and the user does not have enough %_plural% the "Join Group" button will be disabled.', 'mycred' ) ); ?></span>
 						</li>
 						<li class="empty">&nbsp;</li>
@@ -518,7 +518,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'leave', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Leaving Groups', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'leave', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'leave', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['leave']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'leave', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'leave', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['leave']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -531,7 +531,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Group Avatar', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'avatar', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['avatar']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'avatar', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['avatar']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -544,7 +544,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Groups' ) ) {
 					<label for="<?php echo $this->field_id( array( 'comments', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Group Comment', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'comments', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'comments', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['comments']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'comments', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'comments', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['comments']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

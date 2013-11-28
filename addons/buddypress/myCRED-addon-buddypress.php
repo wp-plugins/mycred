@@ -14,11 +14,12 @@ $mycred_addon_header_translate = array(
 	__( 'The BuddyPress add-on extends <strong>my</strong>CRED to work with BuddyPress allowing you to hook into most BuddyPress related actions.', 'mycred' )
 );
 
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_BP',           __FILE__ );
 define( 'myCRED_BP_DIR',       myCRED_ADDONS_DIR . 'buddypress/' );
 define( 'myCRED_BP_HOOKS_DIR', myCRED_BP_DIR . 'hooks/' );
+
 /**
  * BuddyPress specific hooks grouped together
  */
@@ -26,15 +27,16 @@ require_once( myCRED_BP_HOOKS_DIR . 'bp-groups.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-profile.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-links.php' );
 require_once( myCRED_BP_HOOKS_DIR . 'bp-galleries.php' );
+
 /**
  * myCRED_BuddyPress class
  *
  * @since 0.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_BuddyPress' ) ) {
+if ( ! class_exists( 'myCRED_BuddyPress' ) ) {
 	class myCRED_BuddyPress extends myCRED_Module {
-		
+
 		protected $hooks;
 		protected $settings;
 
@@ -63,10 +65,10 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				'register'    => false,
 				'add_to_core' => true
 			) );
-			if ( !is_admin() )
+			if ( ! is_admin() )
 				add_action( 'bp_setup_nav', array( $this, 'setup_nav' ) );
 		}
-		
+
 		/**
 		 * Init
 		 * @since 0.1
@@ -76,14 +78,14 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			add_filter( 'mycred_setup_hooks', array( $this, 'register_hooks' ) );
 			add_action( 'admin_bar_menu',     array( $this, 'adjust_admin_bar' ), 110 );
 			add_filter( 'logout_url',         array( $this, 'adjust_logout' ), 99, 2 );
-			
+
 			if ( $this->buddypress['balance_location'] == 'top' || $this->buddypress['balance_location'] == 'both' )
 				add_action( 'bp_before_member_header_meta',  array( $this, 'show_balance' ) );
  
  			if ( $this->buddypress['balance_location'] == 'profile_tab' || $this->buddypress['balance_location'] == 'both' )
 				add_action( 'bp_after_profile_loop_content', array( $this, 'show_balance_profile' ) );
 		}
-		
+
 		/**
 		 * Adjust Admin Bar
 		 * @since 0.1
@@ -91,13 +93,13 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 */
 		public function adjust_admin_bar() {
 			// Bail if this is an ajax request
-			if ( !bp_use_wp_admin_bar() || defined( 'DOING_AJAX' ) || $this->core->exclude_user( get_current_user_id() ) )
+			if ( ! bp_use_wp_admin_bar() || defined( 'DOING_AJAX' ) || $this->core->exclude_user( get_current_user_id() ) )
 				return;
 
 			// Only add menu for logged in user
 			if ( is_user_logged_in() && $this->buddypress['visibility']['history'] ) {
 				global $bp, $wp_admin_bar;
-				
+
 				// Add secondary parent item for all BuddyPress components
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'my-account-xprofile',
@@ -119,7 +121,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		public function adjust_logout( $logouturl, $redirect ) {
 			if ( preg_match( '/(' . $this->buddypress['history_url'] . ')/', $redirect, $match ) ) {
 				global $bp;
-				
+
 				$url = remove_query_arg( 'redirect_to', $logouturl );
 				return add_query_arg( array( 'redirect_to' => urlencode( $bp->displayed_user->domain ) ), $url );
 			}
@@ -133,21 +135,23 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 */
 		public function show_balance_profile() {
 			$user_id = bp_displayed_user_id();
+			if ( ! is_user_logged_in() ) return;
 			if ( $this->core->exclude_user( $user_id ) ) return;
-			
-			$balance = $this->core->get_users_cred( $user_id ); ?>
+			if ( bp_is_my_profile() || ( ! bp_is_my_profile() && $this->buddypress['visibility']['balance'] ) || mycred_is_admin() ) {
+
+				$balance = $this->core->get_users_cred( $user_id ); ?>
 
 <div class="bp-widget mycred-field">
 	<table class="profile-fields">
 		<tr id="mycred-users-balance">
-			<td class="label"><?php
+			<td class="profile-td-label"><?php
 
-			// Balance label
-			$template = $this->buddypress['balance_template'];
-			$template = str_replace( '%number%', '', $template );
-			$template = str_replace( '%creds%', '', $template );
-			$template = str_replace( '%rank%', '', $template );
-			echo $this->core->template_tags_general( trim( $template ) ); ?></td>
+				// Balance label
+				$template = $this->buddypress['balance_template'];
+				$template = str_replace( '%number%', '', $template );
+				$template = str_replace( '%creds%', '', $template );
+				$template = str_replace( '%rank%', '', $template );
+				echo $this->core->template_tags_general( trim( $template ) ); ?></td>
 			<td class="data">
 			<?php echo $this->core->format_creds( $balance ); ?>
 
@@ -156,23 +160,26 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 	</table>
 </div>
 <?php
+			}
 		}
-		
+
 		/**
 		 * Show Balance in Header
 		 * @since 0.1
 		 * @version 1.2
 		 */
 		public function show_balance( $table_row = false ) {
-			if ( bp_is_my_profile() || ( !bp_is_my_profile() && $this->buddypress['visibility']['balance'] ) || mycred_is_admin() ) {
+			if ( bp_is_my_profile() || ( ! bp_is_my_profile() && $this->buddypress['visibility']['balance'] ) || mycred_is_admin() ) {
 				$user_id = bp_displayed_user_id();
 				if ( $this->core->exclude_user( $user_id ) ) return;
-				
+
 				$balance = $this->core->get_users_cred( $user_id );
-				
+
 				$template = $this->buddypress['balance_template'];
 				$template = str_replace( '%number%', $balance, $template );
 				$template = str_replace( '%creds%', $this->core->format_creds( $balance ), $template );
+
+				// Rank
 				if ( function_exists( 'mycred_get_users_rank' ) ) {
 					$rank_name = mycred_get_users_rank( $user_id );
 					$template = str_replace( '%rank%', $rank_name, $template );
@@ -182,57 +189,51 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				else {
 					$template = str_replace( array( '%ranking%', '%rank%' ), mycred_rankings_position( $user_id ), $template );
 				}
-			
+
 				echo '<div id="mycred-my-balance">' . $this->core->template_tags_general( $template ) . '</div>';
 			}
 		}
-		
+
 		/**
 		 * Setup Navigation
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function setup_nav() {
 			global $bp;
-			
+
 			$user_id = bp_displayed_user_id();
-			
+
 			// User is excluded
 			if ( $this->core->exclude_user( $user_id ) ) return;
-			
-			if ( is_user_logged_in() ) {
-				$current = get_current_user_id();
-				// Admins alway see points history
-				if ( !$this->core->can_edit_plugin() ) {
-					// If history is not shown in profile
-					if ( $this->buddypress['history_location'] != 'top' ) return;
-				
-					// Allow users to see each others history?
-					if ( !$this->buddypress['visibility']['history'] && $user_id != $current ) return;
-				}
-			}
-			else {
-				if ( !$this->buddypress['visibility']['history'] ) return;
-			}
-			
-			// Settings for bp menu
-			if ( $this->buddypress['visibility']['history'] || $this->core->can_edit_plugin() )
-				$show_for_displayed_user = true;
+
+			// If visibility is not set for visitors
+			if ( ! is_user_logged_in() && ! $this->buddypress['visibility']['history'] ) return;
+
+			// Admins always see the token history
+			if ( ! $this->core->can_edit_plugin() && $this->buddypress['history_location'] != 'top' ) return;
+
+			// Show admins
+			if ( $this->core->can_edit_plugin() )
+				$show = true;
 			else
-				$show_for_displayed_user = false;
-			
+				$show = $this->buddypress['visibility']['history'];
+
 			// Top Level Nav Item
-			$top_name = bp_word_or_name( $this->buddypress['history_menu_title']['me'], $this->buddypress['history_menu_title']['others'], false, false );
+			$top_name = bp_word_or_name(
+				$this->buddypress['history_menu_title']['me'], 
+				$this->buddypress['history_menu_title']['others'], false, false );
+
 			bp_core_new_nav_item( array(
 				'name'                    => $this->core->template_tags_general( $top_name ),
 				'slug'                    => $this->buddypress['history_url'],
 				'parent_url'              => $bp->displayed_user->domain,
 				'default_subnav_slug'     => $this->buddypress['history_url'],
 				'screen_function'         => array( $this, 'my_history' ),
-				'show_for_displayed_user' => $show_for_displayed_user,
+				'show_for_displayed_user' => $show,
 				'position'                => $this->buddypress['history_menu_pos']
 			) );
-			
+
 			// Date Sorting
 			$date_sorting = apply_filters( 'mycred_sort_by_time', array(
 				''          => __( 'All', 'mycred' ),
@@ -241,32 +242,32 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				'thisweek'  => __( 'This Week', 'mycred' ),
 				'thismonth' => __( 'This Month', 'mycred' )
 			) );
+
 			// "All" is default
 			bp_core_new_subnav_item( array(
-				'name'                    => __( 'All', 'mycred' ),
-				'slug'                    => $this->buddypress['history_url'],
-				'parent_url'              => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
-				'parent_slug'             => $this->buddypress['history_url'],
-				'screen_function'         => array( $this, 'my_history' ),
-				'show_for_displayed_user' => $show_for_displayed_user
+				'name'            => __( 'All', 'mycred' ),
+				'slug'            => $this->buddypress['history_url'],
+				'parent_url'      => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
+				'parent_slug'     => $this->buddypress['history_url'],
+				'screen_function' => array( $this, 'my_history' )
 			) );
+
 			// Loop though and add each filter option as a sub menu item
 			if ( !empty( $date_sorting ) ) {
 				foreach ( $date_sorting as $sorting_id => $sorting_name ) {
 					if ( empty( $sorting_id ) ) continue;
-					
+
 					bp_core_new_subnav_item( array(
-						'name'                    => $sorting_name,
-						'slug'                    => $sorting_id,
-						'parent_url'              => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
-						'parent_slug'             => $this->buddypress['history_url'],
-						'screen_function'         => array( $this, 'my_history' ),
-						'show_for_displayed_user' => $show_for_displayed_user
+						'name'            => $sorting_name,
+						'slug'            => $sorting_id,
+						'parent_url'      => $bp->displayed_user->domain . $this->buddypress['history_url'] . '/',
+						'parent_slug'     => $this->buddypress['history_url'],
+						'screen_function' => array( $this, 'my_history' )
 					) );
 				}
 			}
 		}
-		
+
 		/**
 		 * Construct My History Page
 		 * @since 0.1
@@ -278,7 +279,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			add_filter( 'mycred_log_column_headers', array( $this, 'columns' ) );
 			bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 		}
-		
+
 		/**
 		 * Adjust Log Columns
 		 * @since 0.1
@@ -288,17 +289,20 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 			unset( $columns['column-username'] );
 			return $columns;
 		}
-		
+
 		/**
 		 * My History Title
 		 * @since 0.1
 		 * @version 1.0
 		 */
 		public function my_history_title() {
-			$title = bp_word_or_name( $this->buddypress['history_menu_title']['me'], $this->buddypress['history_menu_title']['others'], false, false );
+			$title = bp_word_or_name(
+				$this->buddypress['history_menu_title']['me'],
+				$this->buddypress['history_menu_title']['others'], false, false );
+
 			echo $this->core->template_tags_general( $title );
 		}
-		
+
 		/**
 		 * My History Content
 		 * @since 0.1
@@ -306,15 +310,15 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		 */
 		public function my_history_screen() {
 			global $bp;
-			
+
 			$args = array(
 				'user_id' => bp_displayed_user_id(),
 				'number'  => apply_filters( 'mycred_bp_history_num_to_show', $this->buddypress['history_num'] )
 			);
-			
+
 			if ( isset( $bp->canonical_stack['action'] ) && $bp->canonical_stack['action'] != $this->buddypress['history_url'] )
 				$args['time'] = $bp->canonical_stack['action'];
-			
+
 			$log = new myCRED_Query_Log( $args );
 			unset( $log->headers['column-username'] ); ?>
 
@@ -327,7 +331,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 <?php
 			$log->reset_query();
 		}
-		
+
 		/**
 		 * Register Hooks
 		 * @since 0.1
@@ -368,7 +372,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 
 			return $installed;
 		}
-		
+
 		/**
 		 * After General Settings
 		 * @since 0.1
@@ -377,21 +381,21 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 		public function after_general_settings() {
 			// Settings
 			global $bp;
-			
+
 			$settings = $this->buddypress;
-			
+
 			$balance_locations = array(
 				''            => __( 'Do not show.', 'mycred' ),
 				'top'         => __( 'Include in Profile Header.', 'mycred' ),
 				'profile_tab' => __( 'Include under the "Profile" tab', 'mycred' ),
 				'both'        => __( 'Include under the "Profile" tab and Profile Header.', 'mycred' )
 			);
-			
+
 			$history_locations = array(
 				''    => __( 'Do not show.', 'mycred' ),
 				'top' => __( 'Show in Profile', 'mycred' )
 			);
-			
+
 			$bp_nav_positions = array();
 			if ( isset( $bp->bp_nav ) ) {
 				foreach ( $bp->bp_nav as $pos => $data ) {
@@ -399,7 +403,7 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 					$bp_nav_positions[] = ucwords( $data['slug'] ) . ' = ' . $pos;
 				}
 			}?>
-			
+
 				<h4><div class="icon icon-hook icon-active"></div><label><?php _e( 'BuddyPress', 'mycred' ); ?></label></h4>
 				<div class="body" style="display:none;">
 					<label class="subheader" for="<?php echo $this->field_id( 'balance_location' ); ?>"><?php echo $this->core->template_tags_general( __( '%singular% Balance', 'mycred' ) ); ?></label>
@@ -484,30 +488,29 @@ if ( !class_exists( 'myCRED_BuddyPress' ) ) {
 				</div>
 <?php
 		}
-		
+
 		/**
 		 * Sanitize Core Settings
 		 * @since 0.1
 		 * @version 1.1
 		 */
 		public function sanitize_extra_settings( $new_data, $data, $core ) {
-			
 			$new_data['buddypress']['balance_location'] = sanitize_text_field( $data['buddypress']['balance_location'] );
 			$new_data['buddypress']['visibility']['balance'] = ( isset( $data['buddypress']['visibility']['balance'] ) ) ? true : false;
-			
+
 			$new_data['buddypress']['history_location'] = sanitize_text_field( $data['buddypress']['history_location'] );
 			$new_data['buddypress']['balance_template'] = sanitize_text_field( $data['buddypress']['balance_template'] );
-			
+
 			$new_data['buddypress']['history_menu_title']['me'] = sanitize_text_field( $data['buddypress']['history_menu_title']['me'] );
 			$new_data['buddypress']['history_menu_title']['others'] = sanitize_text_field( $data['buddypress']['history_menu_title']['others'] );
 			$new_data['buddypress']['history_menu_pos'] = abs( $data['buddypress']['history_menu_pos'] );
-			
+
 			$url = sanitize_text_field( $data['buddypress']['history_url'] );
 			$new_data['buddypress']['history_url'] = urlencode( $url );
 			$new_data['buddypress']['history_num'] = abs( $data['buddypress']['history_num'] );
-			
+
 			$new_data['buddypress']['visibility']['history'] = ( isset( $data['buddypress']['visibility']['history'] ) ) ? true : false;
-			
+
 			return $new_data;
 		}
 	}

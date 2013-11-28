@@ -8,7 +8,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.0.9
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 	function mycred_render_shortcode_my_balance( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -84,7 +84,7 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
  * @since 1.0.9
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
 	function mycred_render_shortcode_history( $atts ) {
 		extract( shortcode_atts( array(
 			'user_id'   => NULL,
@@ -97,7 +97,7 @@ if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
 		), $atts ) );
 
 		// If we are not logged in
-		if ( !is_user_logged_in() && !empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
+		if ( ! is_user_logged_in() && ! empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
 
 		if ( $user_id === NULL )
 			$user_id = get_current_user_id();
@@ -133,7 +133,7 @@ if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_render_leaderboard' ) ) {
+if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
 	{
 		$attr = shortcode_atts( array(
@@ -167,7 +167,7 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 		}
 
 		// No result template is set
-		if ( !empty( $attr['nothing'] ) )
+		if ( ! empty( $attr['nothing'] ) )
 			return '<p class="mycred-leaderboard-none">' . $attr['nothing'] . '</p>';
 	}
 }
@@ -177,7 +177,7 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
  * @since 0.1
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_my_ranking' ) ) {
+if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 	function mycred_render_my_ranking( $atts, $content )
 	{
 		extract( shortcode_atts( array(
@@ -187,7 +187,7 @@ if ( !function_exists( 'mycred_render_my_ranking' ) ) {
 		// If no id is given
 		if ( $user_id === NULL ) {
 			// Current user must be logged in for this shortcode to work
-			if ( !is_user_logged_in() ) return;
+			if ( ! is_user_logged_in() ) return;
 			// Get current user id
 			$user_id = get_current_user_id();
 		}
@@ -209,7 +209,7 @@ if ( !function_exists( 'mycred_render_my_ranking' ) ) {
 if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 	function mycred_render_shortcode_give( $atts, $content )
 	{
-		if ( !is_user_logged_in() ) return;
+		if ( ! is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount'  => NULL,
@@ -221,10 +221,10 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 		), $atts ) );
 		
 		if ( $amount === NULL )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
 
 		if ( empty( $log ) )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
 		
 		$mycred = mycred_get_settings();
 		
@@ -264,7 +264,7 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
  * @since 1.1
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
 	function mycred_render_shortcode_link( $atts, $content )
 	{
 		global $mycred_link_points;
@@ -285,7 +285,7 @@ if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
 
 		// HREF is required
 		if ( empty( $atts['href'] ) )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Anchor missing URL!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Anchor missing URL!', 'mycred' );
 
 		// All links must contain the 'mycred-points-link' class
 		if ( empty( $atts['class'] ) )
@@ -331,10 +331,10 @@ if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
  * @since 1.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
 	function mycred_render_shortcode_send( $atts, $content )
 	{
-		if ( !is_user_logged_in() ) return;
+		if ( ! is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount' => NULL,
@@ -346,15 +346,15 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
 		
 		// Amount is required
 		if ( $amount === NULL )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
 
 		// Recipient is required
 		if ( empty( $to ) )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'User ID missing for recipient.', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'User ID missing for recipient.', 'mycred' );
 		
 		// Log template is required
 		if ( empty( $log ) )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
 		
 		if ( $to == 'author' ) {
 			// You can not use this outside the loop
@@ -390,7 +390,7 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
+if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
 	add_action( 'wp_footer', 'mycred_send_shortcode_footer' );
 	function mycred_send_shortcode_footer() {
 		global $mycred_sending_points;
@@ -422,11 +422,11 @@ if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
+if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 	add_action( 'wp_ajax_mycred-send-points', 'mycred_shortcode_send_points_ajax' );
 	function mycred_shortcode_send_points_ajax() {
 		// We must be logged in
-		if ( !is_user_logged_in() ) die();
+		if ( ! is_user_logged_in() ) die();
 
 		// Security
 		check_ajax_referer( 'mycred-send-points', 'token' );
@@ -485,72 +485,78 @@ if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
  * @since 1.2
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_shortcode_video' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
 	function mycred_render_shortcode_video( $atts, $content )
 	{
 		global $mycred_video_points;
 
+		$hooks = get_option( 'mycred_pref_hooks' );
+		$prefs = $hooks['hook_prefs']['video_view'];
+
 		extract( shortcode_atts( array(
-			'id'     => NULL,
-			'width'  => 0,
-			'height' => 0,
-			'amount' => 'def',
-			'logic'  => 'def',
-			'interval' => 'def'
+			'id'       => NULL,
+			'width'    => 560,
+			'height'   => 315,
+			'amount'   => $prefs['creds'],
+			'logic'    => $prefs['logic'],
+			'interval' => $prefs['interval'],
+			'notice'   => 1
 		), $atts ) );
 
 		// ID is required
 		if ( $id === NULL ) return __( 'A video ID is required for this shortcode', 'mycred' );
 
-		// Width
-		if ( $width == 0 )
-			$width = 560;
-
-		// Height
-		if ( $height == 0 )
-			$height = 315;
-
-		// Prep Interval by converting it to Miliseconds
-		if ( $interval != 'def' )
-			$interval = $interval*1000;
+		// Interval
+		if ( strlen( $interval ) < 3 )
+			$interval = abs( $interval * 1000 );
 
 		// Video ID
 		$video_id = str_replace( '-', '__', $id );
-		
+
+		// Create key
+		$protect = mycred_protect();
+		$key = $protect->do_encode( 'youtube:' . $video_id . ':' . $amount . ':' . $logic . ':' . $interval );
+
+		if ( ! isset( $mycred_video_points ) || ! is_array( $mycred_video_points ) )
+			$mycred_video_points = array();
+
 		// Construct YouTube Query
-		$query = apply_filters( 'mycred_video_query', array(
+		$query = apply_filters( 'mycred_video_query_youtube', array(
 			'enablejsapi' => 1,
 			'version'     => 3,
-			'playerapiid' => $video_id,
+			'playerapiid' => 'mycred_vvideo_v' . $video_id,
 			'rel'         => 0,
 			'controls'    => 1,
-			'showinfo'    => 0
+			'showinfo'    => 0,
+			'origin'      => home_url()
 		), $atts, $video_id );
-		
-		// Construct Youtube Query Address
-		$url = 'http://www.youtube.com/v/' . $id;
-		$url = add_query_arg( $query, $url );
-		
-		// Construct Flash Embed
-		$embed_args = apply_filters( 'mycred_video_embed_args', array(
-			'"' . $url . '"', '"' . $video_id . '"', '"' . $width . '"', '"' . $height . '"', '"9.0.0"', 'null', 'null', '{ allowScriptAccess: "always", wmode: "transparent" }', 'null'
-		), $atts );
 
-		// Output
-		return apply_filters( 'mycred_video_output', '
-<div class="mycred-video-wrapper">
-<script type="text/javascript">
-swfobject.embedSWF(' . implode( ', ', $embed_args ) . ');
-</script>
-	<div id="' . $video_id . '_container">
-		<div id="' . $video_id . '"></div>
-	</div>
-<script type="text/javascript">
-function mycred_video_' . $video_id . '(state) {
-	mycred_youtube_state( "' . $video_id . '", state, "' . $amount . '", "' . $logic . '", "' . $interval . '" );
+		// Construct Youtube Query Address
+		$url = 'http://www.youtube.com/embed/' . $id;
+		$url = add_query_arg( $query, $url );
+
+		$mycred_video_points[] = 'youtube';
+
+		// Make sure video source ids are unique
+		$mycred_video_points = array_unique( $mycred_video_points );
+
+		ob_start(); ?>
+
+<div class="mycred-video-wrapper youtube-video">
+	<iframe id="mycred_vvideo_v<?php echo $video_id; ?>" class="mycred-video mycred-youtube-video" data-vid="<?php echo $video_id; ?>" src="<?php echo $url; ?>" width="<?php echo $width; ?>" height="<?php echo $height; ?>" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	<script type="text/javascript">
+function mycred_vvideo_v<?php echo $video_id; ?>( state ) {
+	mycred_view_video( "<?php echo $video_id; ?>", state.data, "<?php echo $logic; ?>", "<?php echo $interval; ?>", "<?php echo $key; ?>" );
 }
-</script>
-</div>' . "\n", $atts, $embed_args, $video_id );
+	</script>
+	<?php if ( $notice ) { ?><div class="mycred-video-update-box" id="mycred_vvideo_v<?php echo $video_id; ?>_box"></div><?php } ?>
+</div>
+<?php
+		$output = ob_get_contents();
+		ob_end_clean();
+		
+		// Return the shortcode output
+		return apply_filters( 'mycred_video_output', $output, $atts );
 	}
 }
 ?>

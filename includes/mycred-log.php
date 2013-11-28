@@ -298,7 +298,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 		 */
 		public function get_display() {
 			$output = '
-<table class="wp-list-table widefat fixed log-entries" cellspacing="0">
+<table class="table wp-list-table widefat mycred-table log-entries" cellspacing="0">
 	<thead>
 		<tr>';
 

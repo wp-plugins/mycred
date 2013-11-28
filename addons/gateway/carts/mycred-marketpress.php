@@ -31,7 +31,7 @@ if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
 
 				//set names here to be able to translate
 				$this->admin_name = 'myCRED';
-				$this->public_name = ( !empty( $settings['gateways']['mycred']['name'] ) ) ? $settings['gateways']['mycred']['name'] : apply_filters( 'mycred_label', myCRED_NAME );
+				$this->public_name = ( !empty( $settings['gateways']['mycred']['name'] ) ) ? $settings['gateways']['mycred']['name'] :  mycred_label( true );
 				$this->method_img_url = plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS );
 				$this->method_button_img_url = $settings['gateways']['mycred']['name'];
 				$this->mycred = mycred_get_settings();
@@ -323,9 +323,9 @@ if ( !function_exists( 'mycred_init_marketpress_gateway' ) ) {
 				$settings = get_option( 'mp_settings' );
 				$mycred = mycred_get_settings();
 			
-				$name = apply_filters( 'mycred_label', myCRED_NAME );
+				$name = mycred_label( true );
 				$settings['gateways']['mycred'] = shortcode_atts( array(
-					'name'                 => strip_tags( $name ) . ' ' . $mycred->template_tags_general( __( '%_singular% Balance', 'mycred' ) ),
+					'name'                 => $name . ' ' . $mycred->template_tags_general( __( '%_singular% Balance', 'mycred' ) ),
 					'logo'                 => $this->method_button_img_url,
 					'log_template'         => __( 'Payment for Order: #%order_id%', 'mycred' ),
 					'exchange'             => 1,

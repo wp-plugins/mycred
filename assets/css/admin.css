@@ -107,7 +107,10 @@ body.mp6 #myCRED-wrap #accordion .ui-accordion-content { border-top: 1px solid #
 #myCRED-wrap form.setup ul li label { display: inline-block; width: 200px; max-width: 30%; font-weight: bold; }
 #myCRED-wrap form.setup ul li input { margin-right: 12px; vertical-align: middle; }
 
+.mp6 #accordion pre { background-color: #ddd; color: #333; padding: 6px; }
 .mycred-badge { border-radius: 5px; height: 192px; width: 173px; margin: 0 -5px; background: url('../images/about/badge.png') center center no-repeat; }
 .about-wrap .mycred-badge { position: absolute; top: 0; right: 0; }
 body.rtl .about-wrap .mycred-badge { right: auto; left: 0; }
 .mycred-actions { margin-bottom: 2em; }
+
+#mycred-about-wrap .feature-section .col-2:before, #mycred-about-wrap .feature-section .col-2:after, #mycred-about-wrap .feature-section.two-col p:before, #mycred-credit-wrap .feature-section .col-2:before, #mycred-credit-wrap .feature-section .col-2:after, #mycred-credit-wrap .feature-section.two-col p:before { content: ''; }

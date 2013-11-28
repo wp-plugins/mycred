@@ -14,6 +14,11 @@
  * Domain Path: /lang
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * SSL Compatible: yes
+ * bbPress® Compatible: yes
+ * WordPress® Compatible: yes
+ * BuddyPress® Compatible: yes
+ * Forum URI: http://mycred.me/support/forums/
  */
 define( 'myCRED_VERSION',      '1.3.3' );
 define( 'myCRED_SLUG',         'mycred' );
@@ -30,6 +35,7 @@ define( 'myCRED_MODULES_DIR',   myCRED_ROOT_DIR . 'modules/' );
 define( 'myCRED_PLUGINS_DIR',   myCRED_ROOT_DIR . 'plugins/' );
 
 require_once( myCRED_INCLUDES_DIR . 'mycred-functions.php' );
+require_once( myCRED_INCLUDES_DIR . 'mycred-about.php' );
 
 require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-hook.php' );
 require_once( myCRED_ABSTRACTS_DIR . 'mycred-abstract-module.php' );
@@ -65,21 +71,20 @@ function mycred_load() {
 	require_once( myCRED_INCLUDES_DIR . 'mycred-remote.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
-	
+
 	// Bail now if the setup needs to run
 	if ( is_mycred_ready() === false ) return;
-	
+
 	require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
-	require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-widgets.php' );
-	
+
 	// Add-ons
 	require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
 	$addons = new myCRED_Addons();
 	$addons->load();
-	
+
 	do_action( 'mycred_ready' );
-	
+
 	add_action( 'init',         'mycred_init' );
 	add_action( 'widgets_init', 'mycred_widgets_init' );
 	add_action( 'admin_init',   'mycred_admin_init' );
@@ -165,7 +170,9 @@ function mycred_plugin_start_up()
 {
 	global $mycred;
 	$mycred = new myCRED_Settings();
-	
+
+	require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
+
 	// Load Translation
 	load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
@@ -211,6 +218,9 @@ function mycred_plugin_start_up()
 	if ( defined( 'STARRATING_DEBUG' ) )
 		require_once( myCRED_PLUGINS_DIR . 'mycred-hook-gd-star-rating.php' );
 
+	if ( defined( 'SFTOPICS' ) )
+		require_once( myCRED_PLUGINS_DIR . 'mycred-hook-simplepress.php' );
+
 	// Load Settings
 	require_once( myCRED_MODULES_DIR . 'mycred-module-general.php' );
 	$settings = new myCRED_General();
@@ -232,7 +242,7 @@ function mycred_plugin_start_up()
 /**
  * Init
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
 function mycred_init()
 {
@@ -240,6 +250,7 @@ function mycred_init()
 	add_action( 'wp_enqueue_scripts',    'mycred_enqueue_front' );
 	add_action( 'admin_enqueue_scripts', 'mycred_enqueue_admin' );
 
+	add_action( 'admin_head',     'mycred_admin_head', 999 );
 	// Admin Menu
 	add_action( 'admin_menu',     'mycred_admin_menu', 9 );
 
@@ -278,7 +289,7 @@ function mycred_widgets_init()
 /**
  * Admin Init
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
 function mycred_admin_init()
 {
@@ -287,8 +298,30 @@ function mycred_admin_init()
 	$admin = new myCRED_Admin();
 	$admin->load();
 
+	require_once( myCRED_INCLUDES_DIR . 'mycred-overview.php' );
+
 	// Let others play
 	do_action( 'mycred_admin_init' );
+
+	if ( get_transient( '_mycred_activation_redirect' ) === apply_filters( 'mycred_active_redirect', false ) )
+		return;
+
+	delete_transient( '_mycred_activation_redirect' );
+
+	$url = add_query_arg( array( 'page' => 'mycred' ), admin_url( 'index.php' ) );
+	wp_safe_redirect( $url );
+	die;
+}
+
+/**
+ * Remove About Page
+ * @since 1.3.2
+ * @version 1.0
+ */
+function mycred_admin_head()
+{
+	remove_submenu_page( 'index.php', 'mycred' );
+	remove_submenu_page( 'index.php', 'mycred-credit' );
 }
 
 /**
@@ -333,13 +366,15 @@ function mycred_hook_into_toolbar( $wp_admin_bar )
  * Add myCRED Admin Menu
  * @uses add_menu_page()
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
 function mycred_admin_menu()
 {
 	$mycred = mycred_get_settings();
-	$name = apply_filters( 'mycred_label', myCRED_NAME );
-	$page = add_menu_page(
+	$name = mycred_label( true );
+
+	$pages = array();
+	$pages[] = add_menu_page(
 		$name,
 		$name,
 		$mycred->edit_creds_cap(),
@@ -347,7 +382,27 @@ function mycred_admin_menu()
 		'',
 		''
 	);
-	add_action( 'admin_print_styles-' . $page, 'mycred_admin_page_styles' );
+
+	$about_label = sprintf( __( 'About %s', 'mycred' ), $name );
+	$pages[] = add_dashboard_page(
+		$about_label,
+		$about_label,
+		$mycred->edit_creds_cap(),
+		'mycred',
+		'mycred_about_page'
+	);
+
+	$cred_label = __( 'Awesome People', 'mycred' );
+	$pages[] = add_dashboard_page(
+		$cred_label,
+		$cred_label,
+		$mycred->edit_creds_cap(),
+		'mycred-credit',
+		'mycred_about_credit_page'
+	);
+
+	foreach ( $pages as $page )
+		add_action( 'admin_print_styles-' . $page, 'mycred_admin_page_styles' );
 
 	// Let others play
 	do_action( 'mycred_add_menu', $mycred );
@@ -391,7 +446,7 @@ function mycred_enqueue_front()
 /**
  * Enqueue Admin
  * @since 1.3
- * @version 1.2
+ * @version 1.2.1
  */
 function mycred_enqueue_admin()
 {
@@ -460,6 +515,13 @@ function mycred_enqueue_admin()
 		myCRED_VERSION . '.1',
 		'all'
 	);
+	wp_register_style(
+		'mycred-dashboard-overview',
+		plugins_url( 'assets/css/overview.css', myCRED_THIS ),
+		false,
+		myCRED_VERSION . '.1',
+		'all'
+	);
 
 	// Let others play
 	do_action( 'mycred_admin_enqueue' );
@@ -491,7 +553,7 @@ function mycred_reset_key()
 /**
  * myCRED Plugin Links
  * @since 1.3
- * @version 1.0.1
+ * @version 1.0.2
  */
 function mycred_plugin_links( $actions, $plugin_file, $plugin_data, $context )
 {
@@ -501,6 +563,7 @@ function mycred_plugin_links( $actions, $plugin_file, $plugin_data, $context )
 		return $actions;
 	}
 
+	$actions['about'] = '<a href="' . admin_url( 'index.php?page=mycred' ) . '" >' . __( 'About', 'mycred' ) . '</a>';
 	$actions['tutorials'] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
 	$actions['docs'] = '<a href="http://codex.mycred.me/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
 	$actions['store'] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';

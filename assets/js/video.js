@@ -1,143 +1,60 @@
 /**
- * myCRED Points for Viewing Videos
- * @since 1.2
+ * Viewing Videos Core
+ * @since 1.0
  * @version 1.0
  */
 var timer = 0;
 
-var duration = {};
-var interval = {};
 var actions = {};
 var seconds = {};
-var amount = {};
 var logic = {};
+var interval = {};
+var duration = {};
+	
 var done = {};
 
 /**
- * onYouTubePlayerReady
- * For the YouTube API hooking into onStateChange and to get the durration of a video.
- * @since 1.2
+ * View Handler
+ * @since 1.0
  * @version 1.0
  */
-function onYouTubePlayerReady( id ) {
-	// Define Player
-	var player = document.getElementById( id );
+function mycred_view_video( id, state, custom_logic, custom_interval, key ) {
 
-	// Duration
-	duration[ id ] = player.getDuration();
-
-	// Listen in on state changes
-	player.addEventListener( 'onStateChange', 'mycred_video_'+id );
-}
-
-/**
- * Ajax Call
- * Calls home to report video views and award points
- * @since 1.2
- * @version 1.0
- */
-function mycred_video_points( id, state, length, watched, uactions, eamount, elogic, einterval ) {
-	if ( myCREDvideo.user_id == 0 ) return false;
-	// Make sure we are not done
-	if ( done[ id ] === undefined ) {
-		// Debug
-		//console.log( 'Received ID: '+id );
-
-		// Ajax
-		jQuery.ajax({
-			type : "POST",
-			data : {
-				action       : 'mycred-video-points',
-				token        : myCREDvideo.token,
-				amount       : eamount,
-				logic        : elogic,
-				interval     : einterval,
-
-				video_id     : id,
-				video_state  : state,
-				video_length : length,
-
-				user_id      : myCREDvideo.user_id,
-				user_watched : watched,
-				user_actions : uactions
-			},
-			dataType : "JSON",
-			url : myCREDvideo.ajaxurl,
-			// Before we start
-			beforeSend : function() {},
-			// On Successful Communication
-			success    : function( data ) {
-				console.log( data );
-				// If maxed out, add this id to done[] so prevent further calls
-				// at least until the page is re-loaded.
-				if ( data.status === 'max' ) {
-					done[ data.video_id ] = data.amount;
-				}
-			},
-			// Error (sent to console)
-			error      : function( jqXHR, textStatus, errorThrown ) {
-				console.log( jqXHR+':'+textStatus+':'+errorThrown );
-			}
-		});
-	}
-}
-
-/**
- * Handle YouTube States
- * @see https://developers.google.com/youtube/js_api_reference
- * @since 1.2
- * @version 1.0
- */
-function mycred_youtube_state( id, state, custom_amount, custom_logic, custom_interval )
-{
 	var videoid = id;
+
 	var videostate = state;
 
-	if ( actions[ id ] === undefined ) {
+	if ( actions[ id ] === undefined )
 		actions[ id ] = '';
-	}
-	if ( seconds[ id ] === undefined ) {
-		seconds[ id ] = 0;
-	}
 
-	// Amount override
-	if ( custom_amount == 'def' ) {
-		amount[ id ] = myCREDvideo.amount;
-	}
-	else {
-		amount[ id ] = parseInt( custom_amount, 10 );
-	}
+	if ( seconds[ id ] === undefined )
+		seconds[ id ] = 0;
 
 	// Logic override
-	if ( custom_logic == 'def' ) {
-		logic[ id ] = myCREDvideo.logic;
-	}
-	else {
-		logic[ id ] = custom_logic.toString();
-	}
+	if ( custom_logic == '0' )
+		logic[ id ] = myCRED_Video.default_logic;
+	else
+		logic[ id ] = custom_logic;
 
 	// Interval override
-	if ( custom_interval == 'def' ) {
-		interval[ id ] = parseInt( myCREDvideo.interval, 10 );
-	}
-	else {
+	if ( custom_interval == '0' )
+		interval[ id ] = parseInt( myCRED_Video.default_interval, 10 );
+	else
 		interval[ id ] = parseInt( custom_interval, 10 );
-	}
 
 	// Ready
-	if ( state != '-1' ) {
+	if ( videostate != '-1' ) {
 
 		// Points when video starts
 		if ( logic[ id ] == 'play' ) {
 			// As soon as we start playing we award points
-			if ( state == 1 ) {
-				mycred_video_points( videoid, videostate, duration[ videoid ], '', '', amount[ id ], logic[ id ], '' );
-			}
+			if ( videostate == 1 && done[ id ] === undefined )
+				mycred_video_call( videoid, key, videostate, '', '' );
 		}
 
 		// Points first when video has ended
 		else if ( logic[ id ] == 'full' ) {
-
+	
 			actions[ id ] = actions[ id ]+state.toString();
 
 			// Play
@@ -154,7 +71,7 @@ function mycred_youtube_state( id, state, custom_amount, custom_logic, custom_in
 				clearInterval( timer );
 
 				// Notify myCRED
-				mycred_video_points( videoid, videostate, duration[ videoid ], seconds[ videoid ], actions[ videoid ], amount[ id ], logic[ id ], '' );
+				mycred_video_call( videoid, key, videostate, actions[ videoid ], seconds[ videoid ] );
 
 				// Reset
 				seconds[ id ] = 0;
@@ -179,14 +96,15 @@ function mycred_youtube_state( id, state, custom_amount, custom_logic, custom_in
 				timer = window.setInterval( function() {
 					var laps = parseInt( interval[ id ] / 1000, 10 );
 					seconds[ id ] = seconds[ id ] + laps;
-					mycred_video_points( videoid, videostate, duration[ videoid ], seconds[ videoid ], actions[ videoid ], amount[ id ], logic[ id ], interval[ id ] );
+					// key, state, id, actions, seconds, duration
+					mycred_video_call( videoid, key, videostate, actions[ videoid ], seconds[ videoid ] );
 				}, interval[ id ] );
 			}
 
 			// Video has ended
 			else if ( state == 0 ) {
 				clearInterval( timer );
-				mycred_video_points( videoid, videostate, duration[ videoid ], seconds[ videoid ], actions[ videoid ], amount[ id ], logic[ id ], interval[ id ] );
+				mycred_video_call( videoid, key, videostate, actions[ videoid ], seconds[ videoid ] );
 
 				seconds[ id ] = 0;
 				actions[ id ] = '';
@@ -198,8 +116,67 @@ function mycred_youtube_state( id, state, custom_amount, custom_logic, custom_in
 				clearInterval( timer );
 			}	
 		}
+		else {
+			//console.log( 'Unknown logic request: ' + logic[ id ] );
+		}
 	}
+	else {
+		//console.log( 'State: ' + videostate );
+	}
+}
+
+/**
+ * AJAX call handler
+ * @since 1.0
+ * @version 1.0
+ */
+function mycred_video_call( id, key, state, actions, seconds ) {
 	
-	// Debug
-	//console.log( 'Video ID: ' + id + ' Actions: ' + actions[ videoid ] + ' Seconds: ' + seconds[ videoid ] + ' Logic: ' + logic[ id ] );
+	//console.log( 'Incoming AJAX request' );
+	
+	if ( done[ id ] === undefined ) {
+		//console.log( 'Connecting' );
+
+		if ( duration[ id ] === undefined )
+			duration[ id ] = 0;
+
+		jQuery.ajax({
+			type       : "POST",
+			data       : {
+				action   : 'mycred-viewing-videos',
+				token    : myCRED_Video.token,
+				setup    : key,
+				video_a  : actions,
+				video_b  : seconds,
+				video_c  : duration[ id ],
+				video_d  : state
+			},
+			dataType   : "JSON",
+			url        : myCRED_Video.ajaxurl,
+			// Before we start
+			beforeSend : function() {},
+			// On Successful Communication
+			success    : function( data ) {
+				console.log( data );
+
+				// Add to done list
+				if ( data.status === 'added' ) {
+					var box = document.getElementById( 'mycred_vvideo_v' + id + '_box' );
+					box.innerHTML = '';
+					var template = myCRED_Video.template;
+					
+					box.innerHTML = template.replace( '##', data.amount );
+				}
+				else
+					done[ id ] = data.amount;
+			},
+			// Error (sent to console)
+			error      : function( jqXHR, textStatus, errorThrown ) {
+				console.log( jqXHR+':'+textStatus+':'+errorThrown );
+			}
+		});
+	}
+	else {
+		//console.log( 'Video marked as done!' );
+	}
 }

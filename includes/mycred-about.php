@@ -1,5 +1,5 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 /**
  * myCRED About Page Header
@@ -71,7 +71,8 @@ function mycred_about_footer() { ?>
  * @version 1.0
  */
 function mycred_about_page() {
-	$name = apply_filters( 'mycred_label', myCRED_NAME );
+	$name = mycred_label();
+	$mycred = mycred_get_settings();
 	$settings_url = esc_url( add_query_arg( array( 'page' => 'myCRED_page_settings' ), admin_url( 'admin.php' ) ) ); ?>
 
 <div class="wrap about-wrap" id="mycred-about-wrap">
@@ -79,45 +80,45 @@ function mycred_about_page() {
 	<?php mycred_about_header( $name ); ?>
 
 	<div class="changelog">
-		<h3><?php _e( 'Ranks Add-on', 'mycred' ); ?></h3>
-		<div class="feature-section col two-col">
-			<img src="<?php echo plugins_url( 'assets/images/about/ranks-management.png', myCRED_THIS ); ?>" alt="Ranks Management" />
-			<div>
-				<h4><?php _e( 'Ranks Management', 'mycred' ); ?></h4>
-				<p><?php _e( 'You can now select to delete all ranks or if you feel your users have the incorrect rank, re-assign ranks with a click of a button.', 'mycred' ) ?></p>
-			</div>
-			<div class="last-feature">
-				<h4><?php _e( 'Improvements', 'mycred' ); ?></h4>
-				<p><?php _e( 'Several rank functions have been re-written to search and assign ranks much faster and at a lower memory cost.', 'mycred' ) ?></p>
-			</div>
-		</div>
-		<h3><?php _e( 'Improved Security', 'mycred' ); ?></h3>
+		<h3><?php _e( 'New Features', 'mycred' ); ?></h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4><?php _e( 'Failsafe', 'mycred' ); ?></h4>
-				<p><?php _e( 'As of version 1.3.2 you can now set a maximum number that can be given or taken from a user in a single instance. So if someone decides to cheat, this would be the maximum amount they could gain.', 'mycred' ) ?></p>
-				<p><?php printf( __( 'You can find this setting on the %s <a href="%s">settings</a> page under "Security" in the "Core" menu.', 'mycred' ), $name, $settings_url ); ?></p>
+				<h4><?php printf( __( '%s Right Now', 'mycred' ), $name ); ?></h4>
+				<p><?php echo $mycred->template_tags_general( __( 'This new Dashboard widget gives you an overview of %_plural% gained or lost by your users along with a few other summaries based on your logs content.', 'mycred' ) ); ?></p>
 			</div>
 			<div class="last-feature">
-				<img src="<?php echo plugins_url( 'assets/images/about/failsafe.png', myCRED_THIS ); ?>" alt="Failsafe" style="width: 100%; height: auto;" />
+				<h4><?php _e( 'YouTube Iframe API', 'mycred' ); ?></h4>
+				<p><?php echo $mycred->template_tags_general( __( 'The "%plural% for watching videos" hook has been updated to use the YouTube Iframe API which allows you to embed videos that can also be viewed on mobile devices.', 'mycred' ) ); ?></p>
 			</div>
 		</div>
-		<h3><?php _e( 'Under the hood', 'mycred' ); ?></h3>
+		<h3><?php _e( 'Added Support', 'mycred' ); ?></h3>
+		<div class="feature-section col two-col">
+			<div>
+				<h4><a href="http://simple-press.com/" target="_blank"><?php _e( 'SimplePress', 'mycred' ); ?></a></h4>
+				<p><?php printf( __( 'As of 1.3.3, %s has a built in support for SimplePress!', 'mycred' ), $name ); ?> <?php echo $mycred->template_tags_general( __( 'Once you have installed SimplePress, you will find the "SimplePress" hook on your Hooks page. You can award or deduct %_plural% for new topics and topic posts.', 'mycred' ) ); ?></p>
+			</div>
+			<div class="last-feature">
+				<h4><a href="http://www.timersys.com/plugins-wordpress/wordpress-social-invitations/" target="_blank">WP Social Invitations</a></h4>
+				<p><?php _e( 'With WordPress Social Invitations aka WSI you can enhance your site by letting your users to invite their social network friends. This plugin works perfectly with Buddypress and also hooks into Invite Anyone Plugin.', 'mycred' ); ?></p>
+				<p><?php _e( 'Please consult the plugins website for information on how to install and setup this plugin.', 'mycred' ); ?></p>
+			</div>
+		</div>
+		<h3><?php _e( 'Improvements', 'mycred' ); ?></h3>
 		<div class="feature-section col three-col">
 			<div>
-				<h4><?php _e( 'The myCRED_Query_Log Class', 'mycred' ); ?></h4>
-				<p><?php _e( 'Added support for querying multiple references, reference ids or amounts through a comma separated list.', 'mycred' ); ?></p>
+				<h4><?php _e( 'Transfer Add-on', 'mycred' ); ?></h4>
+				<p><?php _e( 'The transfer add-on has received several improvements which gives you must better control of customizing your setup.', 'mycred' ); ?></p>
 			</div>
 			<div>
-				<h4><?php _e( 'Autofill Transfer Recipient', 'mycred' ); ?></h4>
-				<p><?php _e( 'You can now select what user detail users are searched by. By default you can search by username or email but several filters have been added allowing you to customize this further.', 'mycred' ); ?></p>
+				<h4><?php _e( 'Ranks Add-on', 'mycred' ); ?></h4>
+				<p><?php _e( 'The ranks add-on has received several bug fixes, especially if you are assigning ranks according to your users total accumilated points and not their current balance.', 'mycred' ); ?></p>
+				<p><em><?php _e( 'If you have been experiencing issues with users not getting the correct rank, please make sure you "Calculate Totals" to fix the issue!', 'mycred' ); ?></em></p>
 			</div>
 			<div class="last-feature">
-				<h4><?php _e( 'Points for clicking on links', 'mycred' ); ?></h4>
-				<p><?php _e( 'Fixed a security flaw where users can award themselves any point amount when clicking on a link.', 'mycred' ); ?></p>
+				<h4><?php _e( 'Events Management', 'mycred' ); ?></h4>
+				<p><?php _e( 'Fixed the issue with users not being able to pay for events in the free version, if attendance is pre-approved.', 'mycred' ); ?></p>
 			</div>
 		</div>
-		<div><em><?php _e( 'Oh and as you might have noticed, I have added this new splash page for all future updates!', 'mycred' ); ?></em></div>
 	</div>
 	<?php mycred_about_footer(); ?>
 
@@ -131,7 +132,7 @@ function mycred_about_page() {
  * @version 1.0
  */
 function mycred_about_credit_page() {
-	$name = apply_filters( 'mycred_label', myCRED_NAME ); ?>
+	$name = mycred_label(); ?>
 
 <div class="wrap about-wrap" id="mycred-credit-wrap">
 	<h1><?php _e( 'Awesome People', 'mycred' ); ?></h1>
@@ -144,10 +145,8 @@ function mycred_about_credit_page() {
 				<h4><?php _e( 'Bug Finders', 'mycred' ); ?></h4>
 				<p><?php _e( 'Users who have taken the time to report bugs helping me improve this plugin.', 'mycred' ); ?></p>
 				<ul>
-					<li><a href="http://mycred.me/members/jaykdoe/">jaykdoe</a></li>
-					<li><a href="http://mycred.me/members/enk/">enk</a></li>
-					<li><a href="http://mycred.me/members/specopkirbs/">specopkirbs</a></li>
-					<li><a href="http://mycred.me/members/Christopher/">Christopher</a></li>
+					<li><a href="http://mycred.me/members/douglas-dupuis-9_o8jr2b/">Douglas</a></li>
+					<li><a href="http://mycred.me/members/joebethepro-com/">joe</a></li>
 				</ul>
 			</div>
 			<div class="last-feature">

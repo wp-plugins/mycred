@@ -1,5 +1,6 @@
 <?php
 if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * Have Ranks
  * Checks if there are any rank posts.
@@ -12,22 +13,27 @@ if ( ! function_exists( 'mycred_have_ranks' ) ) {
 		global $mycred_ranks, $wpdb;
 		$mycred_ranks = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'mycred_rank';" );
 		
-		if ( $mycred_ranks > 0 ) return true;
-		return false;
+		$return = false;
+		if ( $mycred_ranks > 0 )
+			$return = true;
+
+		return apply_filters( 'mycred_have_ranks', $return, $mycred_ranks );
 	}
 }
 
 /**
  * Have Published Ranks
  * Checks if there are any published rank posts.
- * @returns (bool) true or false
+ * @returns (int) the number of published ranks found.
  * @since 1.3.2
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_published_ranks' ) ) {
 	function mycred_get_published_ranks() {
 		global $wpdb;
-		return $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'mycred_rank' AND post_status = 'publish';" );
+		$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'mycred_rank' AND post_status = 'publish';" );
+
+		return apply_filters( 'mycred_get_published_ranks', $count );
 	}
 }
 
@@ -37,11 +43,21 @@ if ( ! function_exists( 'mycred_get_published_ranks' ) ) {
  * appropriate ranks.
  * @returns (int) number of users effected by rank change or -1 if all users were effected.
  * @since 1.3.2
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_assign_ranks' ) ) {
 	function mycred_assign_ranks() {
 		global $mycred_ranks, $wpdb;
+
+		$mycred = mycred_get_settings();
+
+		// Get key
+		if ( $mycred->rank['base'] == 'total' )
+			$key = $mycred->get_cred_id() . '_total';
+		else
+			$key = $mycred->get_cred_id();
+
+		do_action( 'mycred_assign_ranks_start' );
 
 		// Check for published ranks
 		$published_ranks = mycred_get_published_ranks();
@@ -73,10 +89,10 @@ if ( ! function_exists( 'mycred_assign_ranks' ) ) {
 					)
 				);
 			*/
-			$users = $wpdb->get_results( "
-				SELECT user_id AS ID, meta_value AS balance 
-				FROM {$wpdb->usermeta} 
-				WHERE meta_key = 'mycred_default';", 'ARRAY_A' );
+			$users = $wpdb->get_results( $wpdb->prepare( "
+SELECT user_id AS ID, meta_value AS balance 
+FROM {$wpdb->usermeta} 
+WHERE meta_key = %s;", $key ), 'ARRAY_A' );
 
 			/*
 				Get rank ids with each ranks min and max values
@@ -89,11 +105,14 @@ if ( ! function_exists( 'mycred_assign_ranks' ) ) {
 				);
 			*/
 			$ranks = $wpdb->get_results( "
-				SELECT rank.ID AS ID, min.meta_value AS min, max.meta_value AS max 
-				FROM {$wpdb->posts} rank 
-				INNER JOIN {$wpdb->postmeta} min ON ( min.post_id = rank.ID AND min.meta_key = 'mycred_rank_min' )
-				INNER JOIN {$wpdb->postmeta} max ON ( max.post_id = rank.ID AND max.meta_key = 'mycred_rank_max' )
-				WHERE rank.post_type = 'mycred_rank' AND rank.post_status = 'publish';", 'ARRAY_A' );
+SELECT rank.ID AS ID, min.meta_value AS min, max.meta_value AS max 
+FROM {$wpdb->posts} rank 
+	INNER JOIN {$wpdb->postmeta} min 
+		ON ( min.post_id = rank.ID AND min.meta_key = 'mycred_rank_min' )
+	INNER JOIN {$wpdb->postmeta} max 
+		ON ( max.post_id = rank.ID AND max.meta_key = 'mycred_rank_max' )
+WHERE rank.post_type = 'mycred_rank' 
+	AND rank.post_status = 'publish';", 'ARRAY_A' );
 
 			$count = 0;
 			foreach ( $users as $user ) {
@@ -117,6 +136,8 @@ if ( ! function_exists( 'mycred_assign_ranks' ) ) {
 			// nothing to do when there are no ranks
 			return 0;
 		}
+
+		do_action( 'mycred_assign_ranks_end' );
 	}
 }
 
@@ -128,14 +149,17 @@ if ( ! function_exists( 'mycred_assign_ranks' ) ) {
  * @uses get_page_by_title()
  * @returns empty string if title is missing, NULL if rank is not found else the output type
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_rank' ) ) {
 	function mycred_get_rank( $rank_title = '', $format = 'OBJECT' ) {
 		if ( empty( $rank_title ) ) return $rank_title;
-		return get_page_by_title( $rank_title, $format, 'mycred_rank' );
+		$rank = get_page_by_title( $rank_title, $format, 'mycred_rank' );
+
+		return apply_filters( 'mycred_get_rank', $rank, $rank_title, $object );
 	}
 }
+
 /**
  * Get Users Rank
  * Retreaves the users current saved rank or if rank is missing
@@ -152,24 +176,44 @@ if ( ! function_exists( 'mycred_get_rank' ) ) {
  */
 if ( ! function_exists( 'mycred_get_users_rank' ) ) {
 	function mycred_get_users_rank( $user_id = NULL, $return = 'post_title', $logo_size = 'post-thumbnail', $attr = NULL ) {
-		if ( $user_id === NULL ) return '';
+		// User ID is required
+		if ( $user_id === NULL )
+			return __( 'mycred_get_users_rank() : Missing required user id', 'mycred' );
+
+		// Get users rank
 		$rank_id = get_user_meta( $user_id, 'mycred_rank', true );
-		if ( empty( $rank ) ) {
+
+		// If empty, get the users rank now and save it
+		if ( empty( $rank_id ) ) {
 			$rank = mycred_find_users_rank( $user_id, true );
 			$rank_id = mycred_get_rank_id_from_title( $rank );
 		}
-		if ( empty( $rank_id ) ) return ( mycred_is_admin() ) ? __( 'no rank', 'mycred' ) : '';
-		
-		if ( $return == 'logo' )
-			return mycred_get_rank_logo( $rank_id, $logo_size, $attr );
 
-		$rank = get_post( $rank_id );
-		if ( ! isset( $rank->$return ) )
-			return '-';
-		else
-			return $rank->$return;
+		$reply = __( 'no rank', 'mycred' );
+
+		// Have rank
+		if ( ! empty( $rank_id ) ) {
+
+			// If we want to see the logo
+			if ( $return == 'logo' )
+				$reply = mycred_get_rank_logo( (int) $rank_id, $logo_size, $attr );
+			
+			// Else get the post object
+			else {
+				// Get rank post object
+				$rank = get_post( (int) $rank_id );
+
+				// If the requested detail exists, return it
+				if ( isset( $rank->$return ) )
+					$reply = $rank->$return;
+			}
+
+		}
+
+		return apply_filters( 'mycred_get_users_rank', $reply, $user_id, $return, $logo_size );
 	}
 }
+
 /**
  * Find Users Rank
  * Compares the given users points balance with existing ranks to determain
@@ -192,11 +236,30 @@ if ( ! function_exists( 'mycred_find_users_rank' ) ) {
 		// Check for exclusion
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
-		// Get users balance
+		// In case user id is not set
 		if ( $user_id === NULL )
-			$balance = $mycred->get_users_cred( get_current_user_id(), $type );
-		else
-			$balance = $mycred->get_users_cred( $user_id, $type );
+			$user_id = get_current_user_id();
+
+		// In case the type is not set
+		if ( empty( $type ) ) {
+			switch ( $mycred->rank['base'] ) {
+				case 'total' :
+					$type = $mycred->get_cred_id() . '_total';
+				break;
+				
+				default :
+					$type = $mycred->get_cred_id();
+				break;
+			}
+		}
+
+		// Get the balance as get_user_meta() will return the previous value if it was just
+		// changed.
+		$balance = $wpdb->get_var( $wpdb->prepare( "
+SELECT meta_value 
+FROM {$wpdb->usermeta} 
+WHERE user_id = %d 
+	AND meta_key = %s;", $user_id, $type ) );
 
 		// The new balance before it is saved
 		$balance = $mycred->number( $balance+$amount );
@@ -211,9 +274,10 @@ if ( ! function_exists( 'mycred_find_users_rank' ) ) {
 		if ( $mycred_ranks == 1 ) {
 			// Get this rank
 			$rank = $wpdb->get_row( "
-				SELECT ID, post_title 
-				FROM {$wpdb->posts} 
-				WHERE post_type = 'mycred_rank' AND post_status = 'publish';" );
+SELECT ID, post_title 
+FROM {$wpdb->posts} 
+WHERE post_type = 'mycred_rank' 
+	AND post_status = 'publish';" );
 			
 			$rank_id = $rank->ID;
 			$rank_title = $rank->post_title;
@@ -233,16 +297,22 @@ if ( ! function_exists( 'mycred_find_users_rank' ) ) {
 				);
 			*/
 			$ranks = $wpdb->get_results( "
-				SELECT rank.ID AS ID, rank.post_title AS title, min.meta_value AS min, max.meta_value AS max 
-				FROM {$wpdb->posts} rank
-				INNER JOIN {$wpdb->postmeta} min ON ( min.post_id = rank.ID AND min.meta_key = 'mycred_rank_min' )
-				INNER JOIN {$wpdb->postmeta} max ON ( max.post_id = rank.ID AND max.meta_key = 'mycred_rank_max' )
-				WHERE post_type = 'mycred_rank' AND post_status = 'publish';", 'ARRAY_A' );
+SELECT rank.ID AS ID, rank.post_title AS title, min.meta_value AS min, max.meta_value AS max 
+FROM {$wpdb->posts} rank
+	INNER JOIN {$wpdb->postmeta} min 
+		ON ( min.post_id = rank.ID AND min.meta_key = 'mycred_rank_min' )
+	INNER JOIN {$wpdb->postmeta} max 
+		ON ( max.post_id = rank.ID AND max.meta_key = 'mycred_rank_max' )
+WHERE post_type = 'mycred_rank' 
+	AND post_status = 'publish'
+ORDER BY ID;", 'ARRAY_A' );
 			
+			arsort( $ranks );
+
 			// Loop though each rank
 			foreach ( $ranks as $rank ) {
 				// If balance fits break with this ranks details
-				if ( $mycred->number( $rank['min'] ) <= $balance && $mycred->number( $rank['max'] ) >= $balance ) {
+				if ( $balance >= $mycred->number( $rank['min'] ) ) {
 					$rank_id = $rank['ID'];
 					$rank_title = $rank['title'];
 					break;
@@ -250,17 +320,28 @@ if ( ! function_exists( 'mycred_find_users_rank' ) ) {
 			}
 			unset( $ranks );
 		}
+		$wpdb->flush();
+
+		// Let others play
+		if ( $rank_id != 0 ) {
+			if ( mycred_user_got_demoted( $user_id, $rank_id ) )
+				do_action( 'mycred_user_got_demoted', $user_id, $rank_id );
+
+			elseif ( mycred_user_got_promoted( $user_id, $rank_id ) )
+				do_action( 'mycred_user_got_promoted', $user_id, $rank_id );
 		
+			else
+				do_action( 'mycred_find_users_rank', $user_id, $rank_id );
+		}
+
 		// Save if requested
 		if ( $save && $rank_id != 0 )
 			update_user_meta( $user_id, 'mycred_rank', $rank_id );
 
-		// Let others play
-		do_action( 'mycred_find_users_rank', $user_id, $rank_id );
-
-		return $rank_title;
+		return apply_filters( 'mycred_find_users_rank', $rank_title, $rank_id, $user_id, $save, $amount, $type );
 	}
 }
+
 /**
  * Get Rank ID from Title
  * Used to get the rank object based on the ranks title.
@@ -268,15 +349,20 @@ if ( ! function_exists( 'mycred_find_users_rank' ) ) {
  * @uses mycred_get_rank()
  * @returns empty (string) if title is missing, NULL if rank is not found else (string) the rank.
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_rank_id_from_title' ) ) {
 	function mycred_get_rank_id_from_title( $title ) {
 		$rank = mycred_get_rank( $title );
-		if ( $rank === NULL || empty( $rank ) ) return '';
-		return $rank->ID;
+		if ( ! isset( $rank->ID ) )
+			$return = '';
+		else
+			$return = $rank->ID;
+
+		return apply_filters( 'mycred_get_rank_id_from_title', $return, $title );
 	}
 }
+
 /**
  * Get My Rank
  * Returns the current users rank
@@ -288,6 +374,7 @@ if ( ! function_exists( 'mycred_get_my_rank' ) ) {
 		return mycred_get_users_rank( get_current_user_id() );
 	}
 }
+
 /**
  * Get Ranks
  * Returns an associative array of ranks with the given status.
@@ -297,31 +384,44 @@ if ( ! function_exists( 'mycred_get_my_rank' ) ) {
  * @uses WP_Query()
  * @returns (array) empty if no ranks are found or associative array with post ID as key and title as value
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_ranks' ) ) {
 	function mycred_get_ranks( $status = 'publish', $number = '-1', $order = 'DESC' ) {
-		$args = array(
-			'post_type'      => 'mycred_rank',
-			'post_status'    => $status,
-			'posts_per_page' => $number,
-			'orderby'        => 'meta_value_num',
-			'meta_key'       => 'mycred_rank_min',
-			'order'          => $order
-		);
-		$ranks = new WP_Query( $args );
-		$all_ranks = array();
-		if ( $ranks->have_posts() ) {
-			while ( $ranks->have_posts() ) {
-				$ranks->the_post();
-				$all_ranks[get_the_ID()] = $ranks->post;
-			}
+		global $wpdb;
+
+		// Order
+		if ( ! in_array( $order, array( 'ASC', 'DESC' ) ) )
+			$order = 'DESC';
+
+		// Limit
+		if ( $number != '-1' )
+			$limit = ' 0,' . absint( $number );
+		else
+			$limit = '';
+
+		// Get ranks
+		$all_ranks = $wpdb->get_results( $wpdb->prepare( "
+SELECT * 
+FROM {$wpdb->posts} 
+WHERE post_type = %s 
+	AND post_status = %s 
+{$order}{$limit};", 'mycred_rank', $status ) );
+		$wpdb->flush();
+
+		// Sort
+		$ranks = array();
+		if ( ! empty( $all_ranks ) ) {
+
+			foreach ( $all_ranks as $rank )
+				$ranks[ $rank->ID ] = $rank;
+
 		}
-		
-		wp_reset_postdata();
-		return $all_ranks;
+
+		return apply_filters( 'mycred_get_ranks', $ranks, $status, $number, $order );
 	}
 }
+
 /**
  * Get Users of Rank
  * Returns an associative array of user IDs and display names of users for a given
@@ -334,20 +434,22 @@ if ( ! function_exists( 'mycred_get_ranks' ) ) {
  */
 if ( ! function_exists( 'mycred_get_users_of_rank' ) ) {
 	function mycred_get_users_of_rank( $rank_id, $number = NULL, $order = 'DESC' ) {
-		if ( !is_numeric( $rank_id ) )
+		if ( ! is_numeric( $rank_id ) )
 			$rank_id = mycred_get_rank_id_from_title( $rank_id );
-		
+
 		if ( $rank_id === NULL ) return '';
 
 		global $wpdb;
 
 		$sql = "
-			SELECT rank.user_id 
-			FROM {$wpdb->usermeta} rank 
-			INNER JOIN {$wpdb->usermeta} balance ON ( rank.user_id = balance.user_id AND balance.meta_key = 'mycred_default' )
-			WHERE rank.meta_key = 'mycred_rank' AND rank.meta_value = %d
-			ORDER BY balance.meta_value+0";
-		
+SELECT rank.user_id 
+FROM {$wpdb->usermeta} rank 
+	INNER JOIN {$wpdb->usermeta} balance 
+		ON ( rank.user_id = balance.user_id AND balance.meta_key = 'mycred_default' )
+WHERE rank.meta_key = 'mycred_rank' 
+	AND rank.meta_value = %d
+ORDER BY balance.meta_value+0";
+
 		// Order
 		if ( $order == 'ASC' )
 			$sql .= ' ASC';
@@ -364,9 +466,10 @@ if ( ! function_exists( 'mycred_get_users_of_rank' ) ) {
 		$users = $wpdb->get_results( $wpdb->prepare( $sql, $rank_id ), 'ARRAY_A' );
 		$wpdb->flush();
 
-		return $users;
+		return apply_filters( 'mycred_get_users_of_rank', $users, $rank_id, $number, $order );
 	}
 }
+
 /**
  * Rank Has Logo
  * Checks if a given rank has a logo.
@@ -375,17 +478,21 @@ if ( ! function_exists( 'mycred_get_users_of_rank' ) ) {
  * @uses has_post_thumbnail()
  * @returns (bool) true or false
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_rank_has_logo' ) ) {
 	function mycred_rank_has_logo( $rank_id ) {
-		if ( !is_numeric( $rank_id ) )
+		if ( ! is_numeric( $rank_id ) )
 			$rank_id = mycred_get_rank_id_from_title( $rank_id );
 
-		if ( has_post_thumbnail( $rank_id ) ) return true;
-		return false;
+		$return = false;
+		if ( has_post_thumbnail( $rank_id ) )
+			$return = true;
+
+		return apply_filters( 'mycred_rank_has_logo', $return, $rank_id );
 	}
 }
+
 /**
  * Get Rank Logo
  * Returns the given ranks logo.
@@ -397,19 +504,62 @@ if ( ! function_exists( 'mycred_rank_has_logo' ) ) {
  * @uses get_the_post_thumbnail()
  * @returns empty string if rank does not that logo or the HTML IMG element with given size and attribute
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_rank_logo' ) ) {
 	function mycred_get_rank_logo( $rank_id, $size = 'post-thumbnail', $attr = NULL ) {
-		if ( !is_numeric( $rank_id ) )
+		if ( ! is_numeric( $rank_id ) )
 			$rank_id = mycred_get_rank_id_from_title( $rank_id );
 
-		if ( !mycred_rank_has_logo( $rank_id ) ) return '';
-		
+		if ( ! mycred_rank_has_logo( $rank_id ) ) return '';
+
 		if ( is_numeric( $size ) )
 			$size = array( $size, $size );
 
-		return get_the_post_thumbnail( $rank_id, $size, $attr );
+		$logo = get_the_post_thumbnail( $rank_id, $size, $attr );
+		return apply_filters( 'mycred_get_rank_logo', $logo, $rank_id, $size, $attr );
+	}
+}
+
+/**
+ * User Got Demoted
+ * Checks if a user got demoted.
+ * @since 1.3.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_user_got_demoted' ) ) {
+	function mycred_user_got_demoted( $user_id = NULL, $rank_id = NULL ) {
+		$current_rank_id = get_user_meta( $user_id, 'mycred_rank', true );
+		if ( $current_rank_id == $rank_id ) return false;
+		if ( empty( $current_rank_id ) && ! empty( $rank_id ) ) return true;
+
+		$current_min = get_post_meta( $current_rank_id, 'mycred_rank_min', true );
+		$new_min = get_post_meta( $rank_id, 'mycred_rank_min', true );
+		
+		if ( $new_min < $current_min ) return true;
+		
+		return false;
+	}
+}
+
+/**
+ * User Got Promoted
+ * Checks if a user got promoted.
+ * @since 1.3.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_user_got_promoted' ) ) {
+	function mycred_user_got_promoted( $user_id = NULL, $rank_id = NULL ) {
+		$current_rank_id = get_user_meta( $user_id, 'mycred_rank', true );
+		if ( $current_rank_id == $rank_id ) return false;
+		if ( empty( $current_rank_id ) && ! empty( $rank_id ) ) return true;
+		
+		$current_min = get_post_meta( $current_rank_id, 'mycred_rank_min', true );
+		$new_min = get_post_meta( $rank_id, 'mycred_rank_min', true );
+		
+		if ( $new_min > $current_min ) return true;
+		
+		return false;
 	}
 }
 ?>

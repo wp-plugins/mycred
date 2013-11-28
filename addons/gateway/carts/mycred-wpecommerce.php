@@ -21,7 +21,6 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 
 		global $nzshpcrt_gateways, $mycred_wpecom_settings;
 
-		$name = apply_filters( 'mycred_label', myCRED_NAME );
 		$mycred_wpecom_settings = shortcode_atts( array(
 			'log'       => __( 'Payment for Order: #%order_id%', 'mycred' ),
 			'share'     => 0,
@@ -35,7 +34,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 		// Add gateway
 		$nzshpcrt_gateways[] = array(
 			'id'                     => 'mycred',
-			'name'                   => strip_tags( $name ),
+			'name'                   => mycred_label( true ),
 			'has_recurring_billing'  => false,
 			'wp_admin_cannot_cancel' => false,
 			'requirements'           => array( 'php_version' => '5.2.4' ),
@@ -155,7 +154,6 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			 */
 			function __construct( $purchase_id = NULL, $is_receiving = false, $prefs = NULL, $mycred = NULL ) {
 				parent::__construct( $purchase_id, $is_receiving );
-				$name = apply_filters( 'mycred_label', myCRED_NAME );
 				$this->prefs = $prefs;
 				$this->core = $mycred;
 			}

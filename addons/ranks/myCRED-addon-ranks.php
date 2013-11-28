@@ -148,28 +148,28 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			// First get the ids of all existing ranks
 			$rank_ids = $wpdb->get_col( "
-				SELECT ID 
-				FROM {$wpdb->posts} 
-				WHERE post_type = 'mycred_rank';" );
+SELECT ID 
+FROM {$wpdb->posts} 
+WHERE post_type = 'mycred_rank';" );
 
 			// Delete all ranks
 			$wpdb->query( "
-				DELETE FROM {$wpdb->posts} 
-				WHERE post_type = 'mycred_rank';" );
+DELETE FROM {$wpdb->posts} 
+WHERE post_type = 'mycred_rank';" );
 
 			// Delete rank post meta
 			if ( $rank_ids ) {
 				$ids = implode( ',', $rank_ids );
 				$wpdb->query( "
-					DELETE FROM {$wpdb->postmeta} 
-					WHERE post_id IN ({$ids});" );
+DELETE FROM {$wpdb->postmeta} 
+WHERE post_id IN ({$ids});" );
 			}
 
 			// Confirm that ranks are gone
 			$rows = $wpdb->get_var( "
-				SELECT COUNT(*) 
-				FROM {$wpdb->posts} 
-				WHERE post_type = 'mycred_rank';" );
+SELECT COUNT(*) 
+FROM {$wpdb->posts} 
+WHERE post_type = 'mycred_rank';" );
 
 			die( json_encode( array( 'status' => 'OK', 'rows' => $rows ) ) );
 		}
@@ -302,7 +302,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		/**
 		 * AJAX: Calculate Totals
 		 * @since 1.2
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function calculate_totals() {
 			// Security
@@ -310,17 +310,19 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			global $wpdb;
 
-			$users = $wpdb->get_results( "
-				SELECT user_id AS ID, 
-				SUM(CASE WHEN creds > 0 THEN creds ELSE 0 END) as positives_sum,
-				SUM(CASE WHEN creds < 0 THEN creds ELSE 0 END) as negatives_sum
-				FROM {$this->core->log_table} 
-				GROUP BY user_id;" );
+			$users = $wpdb->get_results( $wpdb->prepare( "
+SELECT user_id AS ID, SUM( CASE WHEN creds > 0 OR ( creds < 0 AND ref = %s ) THEN creds ELSE 0 END ) as total
+FROM {$this->core->log_table} 
+	GROUP BY user_id;", 'manual' ) );
 
 			$count = 0;
 			if ( $users ) {
 				foreach ( $users as $user ) {
-					update_user_meta( $user->ID, $this->core->get_cred_id() . '_total', $user->positives_sum );
+					if ( $user->total == 0 ) continue;
+
+					update_user_meta( $user->ID, $this->core->get_cred_id() . '_total', $user->total );
+					mycred_find_users_rank( $user->ID, true, 0, $this->core->get_cred_id() . '_total' );
+
 					$count = $count+1;
 				}
 			}
@@ -348,20 +350,32 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 * @version 1.1
 		 */
 		public function update_balance( $reply, $request, $mycred ) {
-			// Ranks are based on current balance
-			if ( $this->rank['base'] == 'current' ) {
-				mycred_find_users_rank( $request['user_id'], true, $request['amount'] );
-			}
+			if ( $reply === false ) return $reply;
 
-			// Ranks are based on total
-			else {
-				// Update total
-				$new_total = mycred_update_users_total( $request, $mycred );
-				// Get total before update
-				$total_before = $this->core->number( $new_total-$request['amount'] );
-				// Make sure update went well and that there has been an actual increase
-				if ( $new_total !== false && $new_total != $total_before )
-					mycred_find_users_rank( $request['user_id'], true, $request['amount'], $this->core->get_cred_id() . '_total' );
+			$amount = $this->core->number( $request['amount'] );
+			$zero = $this->core->zero();
+
+			switch ( $this->rank['base'] ) {
+				// Rank is based on current balance
+				case 'current' :
+				
+					mycred_find_users_rank( $request['user_id'], true, $amount );
+				
+				break;
+				// Rank is based on total amount gained
+				case 'total' :
+				
+					if ( $amount > $zero || ( $amount < $zero && $request['ref'] == 'manual' ) ) {
+						mycred_update_users_total( '', $request, $mycred );
+						mycred_find_users_rank(
+							$request['user_id'], 
+							true, 
+							$amount, 
+							$this->core->get_cred_id() . '_total'
+						);
+					}
+				
+				break;
 			}
 
 			return $reply;
@@ -681,6 +695,8 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			<?php echo $mycred->template_tags_general( __( 'Maximum %plural% to be included in this rank', 'mycred' ) ); ?>:<br />
 			<input type="text" name="mycred_rank[max]" id="mycred-rank-max" value="<?php echo $max; ?>" />
 		</p>
+		<?php do_action( 'mycred_rank_after_req', $post, $this->core ); ?>
+
 	</div>
 	<div style="display:block;width:50%;margin:0;padding:0;float:left;">
 		<p><?php _e( 'All Published Ranks', 'mycred' ); ?>:</p>
@@ -693,7 +709,7 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 					if ( empty( $_min ) && (int) $_min !== 0 ) $_min = __( 'Not Set', 'mycred' );
 					$_max = get_post_meta( $rank_id, 'mycred_rank_max', true );
 					if ( empty( $_max ) ) $_max = __( 'Not Set', 'mycred' );
-					echo '<p><strong style="display:inline-block;width:20%;">' . $rank->post_title . '</strong> ' . $_min . ' - ' . $_max . '</p>';
+					echo '<p><strong style="display:inline-block;width:40%;">' . $rank->post_title . '</strong> ' . $_min . ' - ' . $_max . '</p>';
 				}
 			}
 			else {

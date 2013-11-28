@@ -442,12 +442,12 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		public function add_metabox() {
 			$sell_content = $this->sell_content;
 			$post_types = explode( ',', $sell_content['post_types'] );
-			$name = apply_filters( 'mycred_label', myCRED_NAME );
+			$name = sprintf( __( '%s Sell This', 'mycred' ), mycred_label() );
 			foreach ( (array) $post_types as $post_type ) {
 				$post_type = trim( $post_type );
 				add_meta_box(
 					'mycred_sell_content',
-					$name . ' ' . __( 'Sell This', 'mycred' ),
+					$name,
 					array( $this, 'metabox' ),
 					$post_type,
 					'side',
@@ -496,7 +496,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		public function metabox( $post ) {
 			// Make sure add-on has been setup
 			if ( !$this->is_installed() ) {
-				echo apply_filters( 'mycred_label', myCRED_NAME ) . __( ' Sell Content needs to be setup before you can use this feature.', 'mycred' );
+				echo sprintf( __( '%s Sell Content needs to be setup before you can use this feature.', 'mycred' ), mycred_label() );
 				// Settings Link
 				if ( $this->core->can_edit_plugin( get_current_user_id() ) )
 					echo ' <a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '" title="' . __( 'Setup add-on', 'mycred' ) . '">' . __( 'Lets do it', 'mycred' ) . '</a>';

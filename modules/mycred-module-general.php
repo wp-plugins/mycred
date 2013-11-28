@@ -215,13 +215,11 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
 
 			// General Settings
-			$general = $this->general;
-
-			$plugin_name = apply_filters( 'mycred_label', myCRED_NAME ); ?>
+			$general = $this->general; ?>
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo $plugin_name . ' ' . __( 'Settings', 'mycred' ); ?> <?php echo myCRED_VERSION; ?></h2>
+		<h2><?php echo sprintf( __( '%s Settings', 'mycred' ), mycred_label() ); ?> <?php echo myCRED_VERSION; ?></h2>
 		<?php
 			// Updated settings
 			if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ) {

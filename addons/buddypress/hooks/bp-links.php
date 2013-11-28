@@ -166,7 +166,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_link', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Links', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_link', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_link']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_link', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_link']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -179,7 +179,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 					<label for="<?php echo $this->field_id( array( 'vote_link', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Vote on Link', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'vote_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'vote_link', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['vote_link']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'vote_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'vote_link', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['vote_link']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -192,7 +192,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 					<label for="<?php echo $this->field_id( array( 'update_link', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Updating Links', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'update_link', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['update_link']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'update_link', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['update_link']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -205,7 +205,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Links' ) ) {
 					<label for="<?php echo $this->field_id( array( 'delete_link', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Deleting Links', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_link', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['delete_link']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_link', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_link', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_link']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

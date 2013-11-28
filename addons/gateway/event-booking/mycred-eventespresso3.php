@@ -489,7 +489,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		 */
 		public function update_settings() {
 			// Apply Whitelabeling
-			$this->label = apply_filters( 'mycred_label', myCRED_NAME );
+			$this->label = mycred_label();
 
 			// Security
 			if ( !wp_verify_nonce( $_REQUEST['mycred-gateway-token'], 'mycred-espresso-update' ) ) return;

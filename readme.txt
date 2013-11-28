@@ -123,7 +123,7 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 == Upgrade Notice ==
 
 = 1.3.3 =
-Bug fixes, email notice improvements, myCRED Overview Dashboard Widget
+Simple:Press, myCRED Right Now, YouTube + Mobiles and bug fixes.
 
 == Other Notes ==
 
@@ -139,7 +139,19 @@ Bug fixes, email notice improvements, myCRED Overview Dashboard Widget
 == Changelog ==
 
 = 1.3.3 =
-* Fixed Bug #76 - Transfer Add-ons email notice connection is using an incorrect function.
+* Improved Transfer Add-on allowing for more customizations and better logic.
+* Added new functions: mycred_get_users_transfer_history and mycred_update_users_transfer_history.
+* Added new filter mycred_transfer_limit - allows you to override the transfer limit amount.
+* Added new functions mycred_format_number and mycred_format_creds.
+* Removed "fixed" class from log table to prevent some themes from moving the table to the top corner.
+* Adjusted how ranks calculate a users "total" by adding up all point gains but deducting all manual changes (by admins).
+* Adjusted the "Points for watching videos" hook to use the YouTube Iframe API allowing embedded videos to work on mobile devices and re-wrote the mycred_video shortcode to prevent users from changing the amount they gain.
+* Added support for SimplePress.
+* Added new mycred_has_entry filter.
+* Fixed Bug #76 - Fixed bug in the mycred_get_users_rank function.
+* Fixed Bug #77 - Transfer Add-ons email notice connection is using an incorrect function.
+* Fixed Bug #78 - WooCommerce gateways profit sharing settings is not called correctly.
+* Fixed Bug #79 - Users can manipulate the amount of points they can gain for viewing videos if a custom amount is set.
 
 = 1.3.2 =
 * Improved the Ranks add-on and added new management settings allowing to delete all ranks and re-assigning roles to users.

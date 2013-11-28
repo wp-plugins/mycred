@@ -324,7 +324,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'update', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Profile Updates', 'mycred' ) ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'update', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['update']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'update', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'update', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['update']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li>
 							<label for="<?php echo $this->field_id( array( 'update', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
@@ -342,7 +342,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Avatar', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'avatar', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['avatar']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'avatar', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'avatar', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['avatar']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -355,7 +355,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_friend', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Friendships', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_friend', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_friend', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_friend']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_friend', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_friend', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_friend']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -368,7 +368,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'leave_friend', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Leaving Friendship', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'leave_friend', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'leave_friend', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['leave_friend']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'leave_friend', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'leave_friend', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['leave_friend']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -381,7 +381,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'new_comment', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Comment', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_comment', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['new_comment']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_comment', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_comment']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -394,7 +394,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'delete_comment', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Deleting Comment', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_comment', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['delete_comment']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_comment', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_comment']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -407,7 +407,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'message', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Messages', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'message', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'message', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['message']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'message', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'message', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['message']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>
@@ -420,7 +420,7 @@ if ( !class_exists( 'myCRED_BuddyPress_Profile' ) ) {
 					<label for="<?php echo $this->field_id( array( 'send_gift', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Sending Gift', 'mycred' ) ); ?></label>
 					<ol id="">
 						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'send_gift', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'send_gift', 'creds' ) ); ?>" value="<?php echo $this->core->format_number( $prefs['send_gift']['creds'] ); ?>" size="8" /></div>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'send_gift', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'send_gift', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['send_gift']['creds'] ); ?>" size="8" /></div>
 						</li>
 						<li class="empty">&nbsp;</li>
 						<li>

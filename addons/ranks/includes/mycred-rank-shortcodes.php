@@ -59,7 +59,7 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 		
 		// Rank ID required
 		if ( $rank_id === NULL )
-			return '<strong>' . apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Rank ID is required!', 'mycred' );
+			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Rank ID is required!', 'mycred' );
 
 		$mycred = mycred_get_settings();
 		// User is not logged in

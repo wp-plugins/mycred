@@ -155,7 +155,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2> <?php echo $name . ' ' . __( 'Network', 'mycred' ); ?></h2>
+		<h2> <?php echo sprintf( __( '%s Network', 'mycred' ), mycred_label() ); ?></h2>
 		<?php
 			
 			// Inform user that myCRED has not yet been setup

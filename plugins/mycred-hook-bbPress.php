@@ -384,7 +384,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Preferences
 			 * @since 0.1
-			 * @version 1.1.1
+			 * @version 1.2
 			 */
 			public function preferences() {
 				$prefs = $this->prefs;
@@ -505,6 +505,19 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						<li class="empty">&nbsp;</li>
 						<li>
 							<input type="checkbox" name="<?php echo $this->field_name( 'show_points_in_reply' ); ?>" id="<?php echo $this->field_id( 'show_points_in_reply' ); ?>" <?php checked( $prefs['show_points_in_reply'], 1 ); ?> value="1" /> <label for="<?php echo $this->field_id( 'show_points_in_reply' ); ?>"><?php echo $this->core->template_tags_general( __( 'Show users %_plural% balance in replies', 'mycred' ) ); ?>.</label>
+						</li>
+					</ol>
+					<!-- Creds for Deleting Reply -->
+					<label for="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
+					<ol id="">
+						<li>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_reply']['creds'] ); ?>" size="8" /></div>
+						</li>
+						<li class="empty">&nbsp;</li>
+						<li>
+							<label for="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>" value="<?php echo $prefs['delete_reply']['log']; ?>" class="long" /></div>
+							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
 						</li>
 					</ol>
 <?php			unset( $this );
