@@ -499,8 +499,7 @@ if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
 			'height'   => 315,
 			'amount'   => $prefs['creds'],
 			'logic'    => $prefs['logic'],
-			'interval' => $prefs['interval'],
-			'notice'   => 1
+			'interval' => $prefs['interval']
 		), $atts ) );
 
 		// ID is required
@@ -546,10 +545,10 @@ if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
 	<iframe id="mycred_vvideo_v<?php echo $video_id; ?>" class="mycred-video mycred-youtube-video" data-vid="<?php echo $video_id; ?>" src="<?php echo $url; ?>" width="<?php echo $width; ?>" height="<?php echo $height; ?>" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 	<script type="text/javascript">
 function mycred_vvideo_v<?php echo $video_id; ?>( state ) {
+	duration[ "<?php echo $video_id; ?>" ] = state.target.getDuration();
 	mycred_view_video( "<?php echo $video_id; ?>", state.data, "<?php echo $logic; ?>", "<?php echo $interval; ?>", "<?php echo $key; ?>" );
 }
 	</script>
-	<?php if ( $notice ) { ?><div class="mycred-video-update-box" id="mycred_vvideo_v<?php echo $video_id; ?>_box"></div><?php } ?>
 </div>
 <?php
 		$output = ob_get_contents();
