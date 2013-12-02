@@ -8,7 +8,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.0.9
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
+if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 	function mycred_render_shortcode_my_balance( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -84,7 +84,7 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
  * @since 1.0.9
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
+if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
 	function mycred_render_shortcode_history( $atts ) {
 		extract( shortcode_atts( array(
 			'user_id'   => NULL,
@@ -97,7 +97,7 @@ if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
 		), $atts ) );
 
 		// If we are not logged in
-		if ( ! is_user_logged_in() && ! empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
+		if ( !is_user_logged_in() && !empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
 
 		if ( $user_id === NULL )
 			$user_id = get_current_user_id();
@@ -133,7 +133,7 @@ if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
+if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
 	{
 		$attr = shortcode_atts( array(
@@ -167,7 +167,7 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 		}
 
 		// No result template is set
-		if ( ! empty( $attr['nothing'] ) )
+		if ( !empty( $attr['nothing'] ) )
 			return '<p class="mycred-leaderboard-none">' . $attr['nothing'] . '</p>';
 	}
 }
@@ -177,7 +177,7 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
  * @since 0.1
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
+if ( !function_exists( 'mycred_render_my_ranking' ) ) {
 	function mycred_render_my_ranking( $atts, $content )
 	{
 		extract( shortcode_atts( array(
@@ -187,7 +187,7 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 		// If no id is given
 		if ( $user_id === NULL ) {
 			// Current user must be logged in for this shortcode to work
-			if ( ! is_user_logged_in() ) return;
+			if ( !is_user_logged_in() ) return;
 			// Get current user id
 			$user_id = get_current_user_id();
 		}
@@ -209,7 +209,7 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
 	function mycred_render_shortcode_give( $atts, $content )
 	{
-		if ( ! is_user_logged_in() ) return;
+		if ( !is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount'  => NULL,
@@ -264,7 +264,7 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
  * @since 1.1
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
+if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
 	function mycred_render_shortcode_link( $atts, $content )
 	{
 		global $mycred_link_points;
@@ -331,10 +331,10 @@ if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
  * @since 1.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
+if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
 	function mycred_render_shortcode_send( $atts, $content )
 	{
-		if ( ! is_user_logged_in() ) return;
+		if ( !is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount' => NULL,
@@ -390,7 +390,7 @@ if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
+if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
 	add_action( 'wp_footer', 'mycred_send_shortcode_footer' );
 	function mycred_send_shortcode_footer() {
 		global $mycred_sending_points;
@@ -422,11 +422,11 @@ if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
+if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 	add_action( 'wp_ajax_mycred-send-points', 'mycred_shortcode_send_points_ajax' );
 	function mycred_shortcode_send_points_ajax() {
 		// We must be logged in
-		if ( ! is_user_logged_in() ) die();
+		if ( !is_user_logged_in() ) die();
 
 		// Security
 		check_ajax_referer( 'mycred-send-points', 'token' );
@@ -504,7 +504,7 @@ if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
 		), $atts ) );
 
 		// ID is required
-		if ( $id === NULL ) return __( 'A video ID is required for this shortcode', 'mycred' );
+		if ( $id === NULL || empty( $id ) ) return __( 'A video ID is required for this shortcode', 'mycred' );
 
 		// Interval
 		if ( strlen( $interval ) < 3 )

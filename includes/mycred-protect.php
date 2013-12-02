@@ -1,5 +1,6 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Protect class
  * @since 0.1
@@ -37,7 +38,7 @@ class myCRED_Protect {
 	 * Encode
 	 */
 	public function do_encode( $value ) { 
-		if ( !$value ) { return false; }
+		if ( ! $value ) { return false; }
 		$text = $value;
 		$iv_size = mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB );
 		$iv = mcrypt_create_iv( $iv_size, MCRYPT_RAND );
@@ -49,7 +50,7 @@ class myCRED_Protect {
 	 * Decode
 	 */
 	public function do_decode( $value ) {
-		if ( !$value ) { return false; }
+		if ( ! $value ) { return false; }
 		$crypttext = $this->do_safe_b64decode( $value ); 
 		$iv_size = mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB );
 		$iv = mcrypt_create_iv( $iv_size, MCRYPT_RAND );
@@ -61,7 +62,7 @@ class myCRED_Protect {
 	 * Retrieve
 	 */
 	protected function do_retrieve( $value ) {
-		if ( !$value ) { return false; }
+		if ( ! $value ) { return false; }
 		$crypttext = $this->do_safe_b64decode( $value ); 
 		$iv_size = mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB );
 		$iv = mcrypt_create_iv( $iv_size, MCRYPT_RAND );
@@ -91,5 +92,20 @@ class myCRED_Protect {
 		}
 		return base64_decode( $data );
 	}
+}
+
+/**
+ * Load myCRED Protect
+ * @since 0.1
+ * @version 1.0.1
+ */
+function mycred_protect()
+{
+	global $mycred_protect;
+	
+	if ( ! isset( $mycred_protect ) || ! is_object( $mycred_protect ) )
+		$mycred_protect = new myCRED_Protect();
+	
+	return $mycred_protect;
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'myCRED_VERSION' ) ) exit;
+if ( !defined( 'myCRED_VERSION' ) ) exit;
 
 /**
  * myCRED About Page Header

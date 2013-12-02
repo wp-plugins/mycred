@@ -1155,11 +1155,8 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			if ( ! isset( $_POST['key'] ) ) die( json_encode( 300 ) );
 			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
 			$protect = new myCRED_Protect();
-			$key = explode( ':', $protect->do_decode( $_POST['key'] ) );
-			if ( count( $key ) != 2 ) die( json_encode( $key ) );
-			
-			$amount = trim( $key[0] );
-			$id = trim( $key[1] );
+			list ( $amount, $id ) = array_pad( explode( ':', $protect->do_decode( $_POST['key'] ) ), 2, '' );
+			if ( $amount == '' || $id == '' ) die( json_encode( $key ) );
 
 			// Amount
 			if ( $amount == 0 )
@@ -1242,7 +1239,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 /**
  * Hooks for Viewing Videos
  * @since 1.2
- * @version 1.1
+ * @version 1.0
  */
 if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 	class myCRED_Hook_Video_Views extends myCRED_Hook {
@@ -1265,74 +1262,40 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		/**
 		 * Run
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.0
 		 */
 		public function run() {
-			add_shortcode( 'mycred_video',             'mycred_render_shortcode_video'          );
-
 			add_action( 'mycred_front_enqueue',        array( $this, 'register_script' )        );
+			add_shortcode( 'mycred_video',             'mycred_render_shortcode_video'          );
 			add_action( 'wp_ajax_mycred-video-points', array( $this, 'ajax_call_video_points' ) );
-			add_action( 'wp_footer',                   array( $this, 'footer' )                 );
 		}
 
 		/**
 		 * Register Script
 		 * @since 1.2
-		 * @version 1.1
-		 */
-		public function register_script() {
-			if ( ! is_user_logged_in() ) return;
-
-			// Core video script
-			wp_register_script(
-				'mycred-video',
-				plugins_url( 'assets/js/video.js', myCRED_THIS ),
-				array( 'jquery' ),
-				myCRED_VERSION . '.1',
-				true
-			);
-
-			// Template
-			$template = '';
-			if ( isset( $this->prefs['template'] ) )
-				$template = $this->prefs['template'];
-
-			wp_localize_script(
-				'mycred-video',
-				'myCRED_Video',
-				array(
-					'ajaxurl'          => admin_url( 'admin-ajax.php' ),
-					'token'            => wp_create_nonce( 'mycred-view-video' ),
-					'default_interval' => abs( $this->prefs['interval']*1000 ),
-					'default_logic'    => $this->prefs['logic'],
-					'template'         => $this->core->template_tags_general( $template )
-				)
-			);
-			wp_enqueue_script( 'mycred-video' );
-			
-			// YouTube
-			wp_register_script(
-				'mycred-video-youtube',
-				plugins_url( 'assets/js/youtube.js', myCRED_THIS ),
-				array( 'jquery' ),
-				myCRED_VERSION . '.1',
-				true
-			);
-		}
-		
-		/**
-		 * Load Scripts in Footer
-		 * @since 1.3.3
 		 * @version 1.0
 		 */
-		public function footer() {
-			global $mycred_video_points;
-	
-			if ( isset( $mycred_video_points ) ) {
-				// If youtube videos are used
-				if ( in_array( 'youtube', $mycred_video_points ) )
-					wp_enqueue_script( 'mycred-video-youtube' );
-			}
+		public function register_script() {
+			wp_register_script(
+				'mycred-video-points',
+				plugins_url( 'assets/js/video.js', myCRED_THIS ),
+				array( 'jquery', 'swfobject' ),
+				myCRED_VERSION . '.1',
+				true
+			);
+			wp_localize_script(
+				'mycred-video-points',
+				'myCREDvideo',
+				array(
+					'ajaxurl'  => admin_url( 'admin-ajax.php' ),
+					'token'    => wp_create_nonce( 'mycred-video-points' ),
+					'interval' => abs( $this->prefs['interval']*1000 ),
+					'logic'    => $this->prefs['logic'],
+					'amount'   => $this->prefs['creds'],
+					'user_id'  => get_current_user_id()
+				)
+			);
+			wp_enqueue_script( 'mycred-video-points' );
 		}
 
 		/**
@@ -1342,103 +1305,70 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		 */
 		public function ajax_call_video_points() {
 			// We must be logged in
-			if ( ! is_user_logged_in() ) die();
+			if ( !is_user_logged_in() ) die();
 
 			// Security
-			check_ajax_referer( 'mycred-view-video', 'token' );
+			check_ajax_referer( 'mycred-video-points', 'token' );
 
-			// Get user id
-			$user_id = get_current_user_id();
-			
-			// Decode the key giving us the video shortcode setup
-			// This will prevent users from manipulating the shortcode output
-			$protect = mycred_protect();
-			$setup = $protect->do_decode( $_POST['setup'] );
-			list ( $source, $video_id, $amount, $logic, $interval ) = array_pad( explode( ':', $setup ), 5, '' );
-
-			// Required
-			if ( empty( $source ) || empty( $video_id ) ) die();
-
-			// Prep
-			$amount = $this->core->number( $amount );
-			$interval = abs( $interval / 1000 );
-
-			// Get playback details
-			$actions = trim( $_POST['video_a'] );
-			$seconds = abs( $_POST['video_b'] );
-			$duration = abs( $_POST['video_c'] );
-			$state = absint( $_POST['video_d'] );
-
-			// Apply Leniency
-			$leniency = $duration * ( $this->prefs['leniency'] / 100 );
-			$leniency = floor( $leniency );
-			$watched = $seconds + $leniency;
-
+			$award = false;
 			$status = 'silence';
 
-			switch ( $logic ) {
+			// Check for amount override
+			if ( isset( $_POST['amount'] ) && $_POST['amount'] != $this->prefs['creds'] )
+				$amount = $this->core->number( $_POST['amount'] );
+			else
+				$amount = $this->prefs['creds'];
 
-				// Award points when video starts
-				case 'play' :
+			// Check for logic override
+			if ( isset( $_POST['logic'] ) || $_POST['logic'] != $this->prefs['logic'] )
+				$logic = $_POST['logic'];
+			else
+				$logic = $this->prefs['logic'];
 
-					if ( $state == 1 ) {
-						if ( ! $this->has_entry( 'watching_video', '', $user_id, $video_id ) ) {
-							// Execute
-							$this->core->add_creds(
-								'watching_video',
-								$user_id,
-								$amount,
-								$this->prefs['log'],
-								'',
-								$video_id
-							);
+			// Check for interval override
+			if ( isset( $_POST['interval'] ) && !empty( $_POST['interval'] ) )
+				$interval = abs( $_POST['interval']/1000 );
+			else
+				$interval = abs( $this->prefs['interval'] );
 
-							$status = 'added';
-						}
-						else {
-							$status = 'max';
-						}
-					}
+			$video_id = trim( $_POST['video_id'] );
+			$state = trim( $_POST['video_state'] );
+			$duration = abs( $_POST['video_length'] );
 
-				break;
+			$user_id = abs( $_POST['user_id'] );
+			$watched = abs( $_POST['user_watched'] );
+			$actions = trim( $_POST['user_actions'] );
 
-				// Award points when video is viewed in full
-				case 'full' :
+			// Apply Leniency
+			$leniency = $duration*($this->prefs['leniency']/100);
+			$leniency = floor( $leniency );
+			$watched = $watched + $leniency;
 
-					// Check for skipping or if we watched more (with leniency) then the video length
-					if ( ! preg_match( '/22/', $actions, $matches ) || $watched >= $duration ) {
-						if ( $state == 0 ) {
-							if ( ! $this->has_entry( 'watching_video', '', $user_id, $video_id ) ) {
-								// Execute
-								$this->core->add_creds(
-									'watching_video',
-									$user_id,
-									$amount,
-									$this->prefs['log'],
-									'',
-									$video_id
-								);
+			// Award points as soon as video starts
+			if ( $logic == 'play' ) {
+				if ( $state == 1 && !$this->has_entry( 'watching_video', '', $user_id, $video_id ) ) {
+					$award = true;
 
-								$status = 'added';
-							}
-							else {
-								$status = 'max';
-							}
-						}
-					}
+					// Execute
+					$this->core->add_creds(
+						'watching_video',
+						$user_id,
+						$amount,
+						$this->prefs['log'],
+						'',
+						$video_id
+					);
 
-				break;
+					$status = 'max';
+				}
+			}
+			// Awards points when video finished
+			elseif ( $logic == 'full' ) {
+				// Check for skipping or if we watched more (with leniency) then the video length
+				if ( !preg_match( '/22/', $actions, $matches ) || $watched >= $duration ) {
+					if ( $state == 0 && !$this->has_entry( 'watching_video', '', $user_id, $video_id ) ) {
+						$award = true;
 
-				// Award points in intervals
-				case 'interval' :
-
-					// The maximum points a video can earn you
-					$num_intervals = floor( $duration / $interval );
-					$max = abs( $num_intervals * $amount );
-					$users_log = $this->get_users_video_log( $video_id, $user_id );
-
-					// Film is playing and we just started
-					if ( $state == 1 && $users_log === NULL ) {
 						// Execute
 						$this->core->add_creds(
 							'watching_video',
@@ -1449,34 +1379,52 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 							$video_id
 						);
 
-						$status = 'added';
-					}
-
-					// Film is playing and we have not yet reached maximum on this movie
-					elseif ( $state == 1 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
-						$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
-						$this->core->update_users_balance( $user_id, $amount );
-						$amount = $users_log->creds+$amount;
-
-						$status = 'added';
-					}
-
-					// Film has ended and we have not reached maximum
-					elseif ( $state == 0 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
-						$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
-						$this->core->update_users_balance( $user_id, $amount );
-						$amount = $users_log->creds+$amount;
-
 						$status = 'max';
 					}
-
-				break;
+				}
+			}
+			// Awards points in an interval
+			elseif ( $logic == 'interval' ) {
+				// The maximum points a video can earn you
+				$num_intervals = floor( $duration / $interval );
+				$max = abs( $num_intervals * $amount );
+				$users_log = $this->get_users_video_log( $video_id, $user_id );
+				// Film is playing and we just started
+				if ( $state == 1 && $users_log === NULL ) {
+					$award = true;
+					// Execute
+					$this->core->add_creds(
+						'watching_video',
+						$user_id,
+						$amount,
+						$this->prefs['log'],
+						'',
+						$video_id
+					);
+				}
+				// Film is playing and we have not yet reached maximum on this movie
+				elseif ( $state == 1 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
+					$award = true;
+					$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
+					$this->core->update_users_balance( $user_id, $amount );
+					$amount = $users_log->creds+$amount;
+				}
+				// Film has ended and we have not reached maximum
+				elseif ( $state == 0 && isset( $users_log->creds ) && $users_log->creds+$amount <= $max ) {
+					$award = true;
+					$this->update_creds( $users_log->id, $user_id, $users_log->creds+$amount );
+					$this->core->update_users_balance( $user_id, $amount );
+					$amount = $users_log->creds+$amount;
+					$status = 'max';
+				}
 			}
 
-			die( json_encode( array(
-				'status' => $status,
-				'amount' => $amount
-			) ) );
+			$data = array(
+				'status'   => $status,
+				'video_id' => $video_id,
+				'amount'   => $amount
+			);
+			die( json_encode( $data ) );
 		}
 
 		/**

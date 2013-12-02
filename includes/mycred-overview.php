@@ -320,6 +320,7 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 		 */
 		public static function display() {
 			$name = apply_filters( 'mycred_label', myCRED_NAME );
+			$url = add_query_arg( array( 'page' => 'myCRED' ), admin_url( 'admin.php' ) );
 
 			global $wpdb;
 			$mycred = mycred_get_settings();
@@ -330,11 +331,11 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 <table>
 	<tbody>
 		<tr class="first">
-			<td class="first b"><a href="#"><?php echo $mycred->format_number( $gains ); ?></a></td>
+			<td class="first b"><a href="<?php echo add_query_arg( array( 'num' => 0, 'compare' => '>' ), $url ); ?>"><?php echo $mycred->format_number( $gains ); ?></a></td>
 			<td class="t approved"><?php _e( 'Earned by users', 'mycred' ); ?></td>
 		</tr>
 		<tr>
-			<td class="first b"><a href="#"><?php echo $mycred->format_number( abs( $loses ) ); ?></a></td>
+			<td class="first b"><a href="<?php echo add_query_arg( array( 'num' => 0, 'compare' => '<' ), $url ); ?>"><?php echo $mycred->format_number( abs( $loses ) ); ?></a></td>
 			<td class="t spam"><?php _e( 'Taken from users', 'mycred' ); ?></td>
 		</tr>
 <?php
@@ -343,7 +344,7 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 				$purchase = $wpdb->get_var( "SELECT SUM(creds) FROM {$mycred->log_table} WHERE ref IN ('buy_creds_with_paypal_standard','buy_creds_with_skrill','buy_creds_with_zombaio','buy_creds_with_netbilling');" ); ?>
 
 		<tr>
-			<td class="first b"><a href="#"><?php echo $mycred->format_number( abs( $purchase ) ); ?></a></td>
+			<td class="first b"><a href="<?php echo add_query_arg( array( 'ref' => 'buy_creds_with_paypal_standard,buy_creds_with_skrill,buy_creds_with_zombaio,buy_creds_with_netbilling' ), $url ); ?>"><?php echo $mycred->format_number( abs( $purchase ) ); ?></a></td>
 			<td class="t"><?php _e( 'Purchased by users', 'mycred' ); ?></td>
 		</tr>
 <?php
@@ -354,7 +355,7 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 			$transfers = $wpdb->get_var( "SELECT SUM(creds) FROM {$mycred->log_table} WHERE creds > 0 AND ref = 'transfer';" ); ?>
 
 		<tr>
-			<td class="first b"><a href="#"><?php echo $mycred->format_number( abs( $transfers ) ); ?></a></td>
+			<td class="first b"><a href="<?php echo add_query_arg( array( 'ref' => 'transfer' ), $url ); ?>"><?php echo $mycred->format_number( abs( $transfers ) ); ?></a></td>
 			<td class="t"><?php _e( 'Transferred between users', 'mycred' ); ?></td>
 		</tr>
 <?php
@@ -365,7 +366,7 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 				$store = $wpdb->get_var( "SELECT SUM(creds) FROM {$mycred->log_table} WHERE ref IN ('woocommerce_payment','marketpress_payment','wpecom_payment');" ); ?>
 
 		<tr>
-			<td class="first b"><a href="#"><?php echo $mycred->format_number( abs( $store ) ); ?></a></td>
+			<td class="first b"><a href="<?php echo add_query_arg( array( 'ref' => 'woocommerce_payment,marketpress_payment,wpecom_payment,ticket_purchase,event_payment' ), $url ); ?>"><?php echo $mycred->format_number( abs( $store ) ); ?></a></td>
 			<td class="t"><?php _e( 'Used as payment', 'mycred' ); ?></td>
 		</tr>
 <?php		endif;

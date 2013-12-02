@@ -50,7 +50,7 @@ if ( !class_exists( 'myCRED_Query_Log' ) ) {
 				'ids'      => false,
 				'cache'    => NULL
 			);
-			$this->args = shortcode_atts( $defaults, $args );
+			$this->args = mycred_apply_defaults( $defaults, $args );
 
 			$data = false;
 			if ( $this->args['cache'] !== NULL ) {

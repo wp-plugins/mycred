@@ -71,20 +71,21 @@ function mycred_load() {
 	require_once( myCRED_INCLUDES_DIR . 'mycred-remote.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
-
+	require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
+	
 	// Bail now if the setup needs to run
 	if ( is_mycred_ready() === false ) return;
-
+	
 	require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-widgets.php' );
-
+	
 	// Add-ons
 	require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
 	$addons = new myCRED_Addons();
 	$addons->load();
-
+	
 	do_action( 'mycred_ready' );
-
+	
 	add_action( 'init',         'mycred_init' );
 	add_action( 'widgets_init', 'mycred_widgets_init' );
 	add_action( 'admin_init',   'mycred_admin_init' );
@@ -305,9 +306,9 @@ function mycred_admin_init()
 
 	if ( get_transient( '_mycred_activation_redirect' ) === apply_filters( 'mycred_active_redirect', false ) )
 		return;
-
+	
 	delete_transient( '_mycred_activation_redirect' );
-
+	
 	$url = add_query_arg( array( 'page' => 'mycred' ), admin_url( 'index.php' ) );
 	wp_safe_redirect( $url );
 	die;
@@ -372,7 +373,7 @@ function mycred_admin_menu()
 {
 	$mycred = mycred_get_settings();
 	$name = mycred_label( true );
-
+	
 	$pages = array();
 	$pages[] = add_menu_page(
 		$name,
@@ -382,7 +383,7 @@ function mycred_admin_menu()
 		'',
 		''
 	);
-
+	
 	$about_label = sprintf( __( 'About %s', 'mycred' ), $name );
 	$pages[] = add_dashboard_page(
 		$about_label,
@@ -391,7 +392,7 @@ function mycred_admin_menu()
 		'mycred',
 		'mycred_about_page'
 	);
-
+	
 	$cred_label = __( 'Awesome People', 'mycred' );
 	$pages[] = add_dashboard_page(
 		$cred_label,
@@ -400,7 +401,7 @@ function mycred_admin_menu()
 		'mycred-credit',
 		'mycred_about_credit_page'
 	);
-
+	
 	foreach ( $pages as $page )
 		add_action( 'admin_print_styles-' . $page, 'mycred_admin_page_styles' );
 
@@ -545,8 +546,7 @@ function mycred_admin_page_styles()
 add_action( 'mycred_reset_key', 'mycred_reset_key' );
 function mycred_reset_key()
 {
-	require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
-	$protect = new myCRED_Protect();
+	$protect = mycred_protect();
 	$protect->reset_key();
 }
 

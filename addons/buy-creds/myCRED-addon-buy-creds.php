@@ -343,7 +343,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 	<div class="wrap list" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Payment Gateways', 'mycred' ); ?></h2>
+		<h2><?php echo sprintf( __( '%s Payment Gateways', 'mycred' ), mycred_label() ); ?></h2>
 		<p><?php echo $this->core->template_tags_general( __( 'Select the payment gateways you want to offer your users to buy %plural%.', 'mycred' ) ); ?></p>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'myCRED-gateways' ); ?>

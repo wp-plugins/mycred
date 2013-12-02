@@ -284,6 +284,15 @@ if ( !class_exists( 'myCRED_Log' ) ) {
 
 			if ( isset( $_GET['order'] ) && !empty( $_GET['order'] ) )
 				$args['order'] = $_GET['order'];
+			
+			if ( isset( $_GET['start'] ) && isset( $_GET['end'] ) )
+				$args['amount'] = array( 'start' => $_GET['start'], 'end' => $_GET['end'] );
+			
+			elseif ( isset( $_GET['num'] ) && isset( $_GET['compare'] ) )
+				$args['amount'] = array( 'num' => $_GET['num'], 'compare' => $_GET['compare'] );
+
+			elseif ( isset( $_GET['amount'] ) )
+				$args['amount'] = $_GET['amount'];
 
 			$log = new myCRED_Query_Log( $args ); ?>
 

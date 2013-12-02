@@ -176,7 +176,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2><?php echo apply_filters( 'mycred_label', myCRED_NAME ) . ' ' . __( 'Banking', 'mycred' ); ?></h2>
+		<h2><?php echo sprintf( __( '%s Banking', 'mycred' ), mycred_label() ); ?></h2>
 		<p><?php echo $this->core->template_tags_general( __( 'This add-on allows you to setup transaction fees for %_plural% transfers, purchases or payments using the Gateway add-on, along with offering interest on %_plural% balances.', 'mycred' ) ); ?></p>
 		<?php if ( defined( 'DISABLE_WP_CRON' ) ) : ?>
 
