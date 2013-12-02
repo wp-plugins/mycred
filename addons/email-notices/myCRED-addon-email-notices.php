@@ -2,7 +2,7 @@
 /**
  * Addon: Email Notices
  * Addon URI: http://mycred.me/add-ons/email-notices/
- * Version: 1.0
+ * Version: 1.1
  * Description: Create email notices for any type of myCRED instance.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -13,7 +13,7 @@ $mycred_addon_header_translate = array(
 	__( 'Create email notices for any type of myCRED instance.', 'mycred' )
 );
 
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_EMAIL',         __FILE__ );
 define( 'myCRED_EMAIL_VERSION', myCRED_VERSION . '.1' );
@@ -24,7 +24,7 @@ define( 'myCRED_EMAIL_VERSION', myCRED_VERSION . '.1' );
  * @since 1.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Email_Notices' ) ) {
+if ( ! class_exists( 'myCRED_Email_Notices' ) ) {
 	class myCRED_Email_Notices extends myCRED_Module {
 
 		public $instances = array();
@@ -52,8 +52,6 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 				'register'    => false,
 				'add_to_core' => true
 			) );
-
-			//add_action( 'mycred_help',           array( $this, 'help' ), 10, 2 );
 		}
 
 		/**
@@ -65,7 +63,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			$this->register_post_type();
 			$this->setup_instances();
 			add_action( 'mycred_admin_enqueue', array( $this, 'enqueue_scripts' )    );
-			add_filter( 'mycred_add',           array( $this, 'email_check' ), 20, 3 );
+			add_filter( 'mycred_add',           array( $this, 'email_check' ), 199, 3 );
 		}
 
 		/**
@@ -345,7 +343,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Email Notice Check
 		 * @since 1.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function email_check( $reply, $request, $mycred ) {
 			// Override - something has already determaned that this should not be executed
@@ -356,7 +354,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			$amount = $request['amount'];
 
 			// Event: Account gains or loses amount
-			if ( $amount < $this->core->zero() )
+			if ( $amount < $mycred->zero() )
 				$event[] = 'negative';
 			else
 				$event[] = 'positive';
@@ -467,7 +465,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 						$headers[] = 'From: ' . $settings['senders_name'] . ' <' . $settings['senders_email'] . '>';
 
 						// Reply-To
-						if ( !empty( $settings['reply_to'] ) )
+						if ( ! empty( $settings['reply_to'] ) )
 							$headers[] = 'Reply-To: ' . $settings['reply_to'];
 
 						// Both means we blank carbon copy the admin so the user does not see email
@@ -878,14 +876,14 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			// Make sure this is the correct post type
 			if ( get_post_type( $post_id ) != 'mycred_email_notice' ) return;
 			// Make sure we can edit
-			elseif ( !mycred_is_admin( get_current_user_id() ) ) return;
+			elseif ( ! mycred_is_admin( get_current_user_id() ) ) return;
 			// Make sure fields exists
-			elseif ( !isset( $_POST['mycred_email'] ) || !is_array( $_POST['mycred_email'] ) ) return;
+			elseif ( ! isset( $_POST['mycred_email'] ) || !is_array( $_POST['mycred_email'] ) ) return;
 			// Finally check token
-			elseif ( !wp_verify_nonce( $_POST['mycred_email']['token'], 'mycred-edit-email' ) ) return;
+			elseif ( ! wp_verify_nonce( $_POST['mycred_email']['token'], 'mycred-edit-email' ) ) return;
 
 			// Update Instance
-			if ( !empty( $_POST['mycred_email']['instance'] ) ) {
+			if ( ! empty( $_POST['mycred_email']['instance'] ) ) {
 				// Lets make sure the value is properly formatted otherwise things could go uggly later
 				$instance_key = trim( $_POST['mycred_email']['instance'] );
 				$keys = explode( '|', $instance_key );
@@ -896,25 +894,25 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			// Construct new settings
 			$settings = array();
 			// If recipient is set but differs from the default, use the posted one else use default
-			if ( !empty( $_POST['mycred_email']['recipient'] ) )
+			if ( ! empty( $_POST['mycred_email']['recipient'] ) )
 				$settings['recipient'] = $_POST['mycred_email']['recipient'];
 			else
 				$settings['recipient'] = 'user';
 
 			// If senders name is set but differs from the default, use the posted one else use default
-			if ( !empty( $_POST['mycred_email']['senders_name'] ) )
+			if ( ! empty( $_POST['mycred_email']['senders_name'] ) )
 				$settings['senders_name'] = $_POST['mycred_email']['senders_name'];
 			else
 				$settings['senders_name'] = $this->emailnotices['from']['name'];
 
 			// If senders email is set but differs from the default, use the posted one else use default
-			if ( !empty( $_POST['mycred_email']['senders_email'] ) )
+			if ( ! empty( $_POST['mycred_email']['senders_email'] ) )
 				$settings['senders_email'] = $_POST['mycred_email']['senders_email'];
 			else
 				$settings['senders_email'] = $this->emailnotices['from']['email'];
 
 			// If senders email is set but differs from the default, use the posted one else use default
-			if ( !empty( $_POST['mycred_email']['reply_to'] ) )
+			if ( ! empty( $_POST['mycred_email']['reply_to'] ) )
 				$settings['reply_to'] = $_POST['mycred_email']['reply_to'];
 			else
 				$settings['reply_to'] = $this->emailnotices['from']['reply_to'];
@@ -926,7 +924,7 @@ if ( !class_exists( 'myCRED_Email_Notices' ) ) {
 			if ( $this->emailnotices['use_html'] === false ) return;
 
 			// Save styling
-			if ( !empty( $_POST['mycred_email']['styling'] ) )
+			if ( ! empty( $_POST['mycred_email']['styling'] ) )
 				update_post_meta( $post_id, 'mycred_email_styling', trim( $_POST['mycred_email']['styling'] ) );
 		}
 
