@@ -58,7 +58,6 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				'add_to_core' => true
 			) );
 
-			add_action( 'mycred_help',              array( $this, 'help' ), 10, 2          );
 			add_filter( 'mycred_email_before_send', array( $this, 'email_notices' ), 10, 2 );
 		}
 
@@ -623,7 +622,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 		 * @param $post_id (int) required post id
 		 * @returns (bool) true or false
 		 * @since 0.1
-		 * @version 1.2.1
+		 * @version 1.3
 		 */
 		public function user_paid( $user_id, $post_id ) {
 			// Admins can view
@@ -638,7 +637,7 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 			// Search for the latest purchase of this item.
 			$sql = "SELECT * FROM {$this->core->log_table} WHERE user_id = %d AND ref = %s AND ref_id = %d ORDER BY time DESC LIMIT 0,1;";
 			$purchases = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content', $post_id ) );
-			update_option( 'mycred_purchase_check', $purchases );
+
 			// We have found purchase records
 			if ( !empty( $purchases ) ) {
 				// Since individual posts can override the default settings we need to check sales prefs
@@ -1046,26 +1045,6 @@ if ( !class_exists( 'myCRED_Sell_Content' ) ) {
 				$data['message'] = $this->core->template_tags_post( $message, $data['request']['ref_id'] );
 			}
 			return $data;
-		}
-
-		/**
-		 * Contextual Help
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function help( $screen_id, $screen ) {
-			if ( $screen_id != 'mycred_page_myCRED_page_settings' ) return;
-
-			$screen->add_help_tab( array(
-				'id'		=> 'mycred-sell-content',
-				'title'		=> __( 'Sell Content', 'mycred' ),
-				'content'	=> '
-<p>' . $this->core->template_tags_general( __( 'This add-on lets you sell either entire contents or parts of it. You can select if you want to just charge users or share a percentage of the sale with the post author.', 'mycred' ) ) . '</p>
-<p><strong>' . __( 'Defaults', 'mycred' ) . '</strong></p>
-<p>' . __( 'The default price and button label is applied to all content that is set for sale. You can select if you want to enforce these settings or let the content authors set their own.', 'mycred' ) . '</p>
-<p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
-<p>' . __( 'You can either sell entire posts via the Sell Content Meta Box or by using the <code>mycred_sell_this</code> shortcode.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_sell_this/" target="_blank">myCRED Codex</a>.</p>'
-			) );
 		}
 	}
 	$sell_content = new myCRED_Sell_Content();
