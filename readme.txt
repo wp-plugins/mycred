@@ -15,11 +15,11 @@ I felt that todays WordPress community lacks a flexible points management system
 
 So I built an adaptive plugin which gives it’s users full control on how points are awarded, used, traded, managed, logged and presented. Built on the "opt-in" principle, it is up to you what features you want to use and how. If your WordPress installation does not support a feature it is hidden from you to keep things clean and simple.
 
-**my**CRED comes packed with features along with built-in support for some of the most popular WordPress plugins out there. But of course **my**CRED does not support everything out of the box so I have documented as much as possible in the **my**CRED codex and you can find several tutorials that can help you better acquaint yourself with **my**CRED.
+**my**CRED comes packed with features along with built-in support for some of the most popular [WordPress plugins](http://mycred.me/about/supported-plugins/) out there. But of course **my**CRED does not support everything out of the box so I have documented as much as possible in the **my**CRED [codex](http://codex.mycred.me) and you can find several tutorials that can help you better acquaint yourself with **my**CRED.
 
 I am here to help where ever I can but please remember that right now this is a one man show and I do need an occasional coffee break.
 
-You are welcome to post your issues or questions under the "Support" tab but remember that  **my**CRED has it's own online forum along with [F.A.Q.](http://mycred.me/about/faq/) page and [Known Issues](http://mycred.me/download/known-issues/).
+You are welcome to post your issues or questions under the "Support" tab but remember that  **my**CRED has it's own [online forum](http://mycred.me/support/forums/) along with [F.A.Q.](http://mycred.me/about/faq/) page and an online [support page](http://mycred.me/support/).
 
 **Hooks**
 
@@ -28,7 +28,7 @@ You are welcome to post your issues or questions under the "Support" tab but rem
 
 **Add-ons**
 
-**my**CRED add-ons allows you to enable more complex features that is not just about awarding / deducting points. Features include: Sell Content with points, Buy points for real money, transfer points between users, award ranks according to points balances and expand **my**CRED to work with BuddyPress. You can find a complete list of built-in and premium add-ons [here](http://mycred.me/add-ons/).
+**my**CRED add-ons allows you to enable more complex features that is not just about awarding / deducting points. Features include: [Sell Content](http://mycred.me/add-ons/sell-content/) with points, [Buy points](http://mycred.me/add-ons/buycred/) for real money, [Transfer](http://mycred.me/add-ons/transfer/) points between users, award [ranks](http://mycred.me/add-ons/ranks/) according to points balances and expand **my**CRED to work with BuddyPress. You can find a complete list of [built-in](http://mycred.me/add-on-types/built-in/) and [premium](http://mycred.me/add-on-types/premium/) add-ons [here](http://mycred.me/add-ons/).
 
 
 **The Codex**
@@ -41,17 +41,13 @@ If you are comfortable with PHP or have some experience with customising your Wo
 * [Features](http://mycred.me/about/features/)
 * [Hooks](http://mycred.me/about/hooks/)
 * [F.A.Q.](http://mycred.me/about/faq/)
-* [Add-ons](http://mycred.me/add-ons/)
 * [Tutorials](http://mycred.me/support/tutorials/)
-* [Known Issues](http://mycred.me/download/known-issues/)
 * [Codex](http://codex.mycred.me/support/)
 
 
 **Contact**
 
 * [General Inquiries](http://mycred.me/contact/)
-* [Bug Report](http://mycred.me/contact/report-bug/)
-* [Request Feature](http://mycred.me/contact/request-feature/)
 
 
 == Installation ==
