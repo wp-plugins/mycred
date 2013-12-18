@@ -13,7 +13,7 @@ $mycred_addon_header_translate = array(
 	__( 'The <strong>buy</strong>CRED Add-on allows your users to buy points using PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can also let your users buy points for other members.', 'mycred' )
 );
 
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_PURCHASE',         __FILE__ );
 define( 'myCRED_PURCHASE_VERSION', myCRED_VERSION . '.1' );
@@ -36,7 +36,7 @@ require_once( myCRED_PURCHASE_DIR . 'gateways/zombaio.php' );
  * @since 0.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
+if ( ! class_exists( 'myCRED_Buy_CREDs' ) ) {
 	class myCRED_Buy_CREDs extends myCRED_Module {
 
 		/**
@@ -61,17 +61,21 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 				'add_to_core' => true,
 				'menu_pos'    => 85
 			) );
-
-			add_action( 'mycred_help',           array( $this, 'help' ), 10, 2 );
 		}
 
 		/**
 		 * Process
 		 * Processes Gateway returns and IPN calls
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function module_init() {
+			// Add shortcodes first
+			add_shortcode( 'mycred_buy',      array( $this, 'render_shortcode_basic' ) );
+			add_shortcode( 'mycred_buy_form', array( $this, 'render_shortcode_form' ) );
+
+			$gateway = NULL;
+
 			// Make sure we have installed gateways.
 			$installed = $this->get();
 			if ( empty( $installed ) ) return;
@@ -83,74 +87,84 @@ if ( !class_exists( 'myCRED_Buy_CREDs' ) ) {
 			 * for to determen if they are responsible for handling the return.
 			 */
 			foreach ( $installed as $id => $data ) {
-				if ( !$this->is_active( $id ) ) continue;
-				$this->call( 'returning', $installed[$id]['callback'] );
+				if ( ! $this->is_active( $id ) ) continue;
+				$this->call( 'returning', $installed[ $id ]['callback'] );
 			}
 
 			/**
-			 * Init Gateway
+			 * Step 2 - Check for gateway calls
+			 * Checks to see if a gateway should be loaded.
 			 */
-			if ( isset( $_REQUEST['mycred_call'] ) || ( isset( $_REQUEST['mycred_buy'] ) && is_user_logged_in() ) || ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) ) {
-				if ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) {
-					$gateway = new myCRED_Zombaio( $this->gateway_prefs );
+			$gateway_id = '';
+			if ( isset( $_REQUEST['mycred_call'] ) )
+				$gateway_id = trim( $_REQUEST['mycred_call'] );
+			elseif ( isset( $_REQUEST['mycred_buy'] ) && is_user_logged_in() )
+				$gateway_id = trim( $_REQUEST['mycred_buy'] );
+			elseif ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) )
+				$gateway_id = 'zombaio';
+
+			$gateway_id = apply_filters( 'mycred_gateway_id', $gateway_id );
+
+			// If we have a valid gateway ID and the gateway is active, lets run that gateway.
+			if ( ! empty( $gateway_id ) && array_key_exists( $gateway_id, $installed ) && $this->is_active( $gateway_id ) ) {
+				// Gateway Class
+				$class = $installed[ $gateway_id ]['callback'][0];
+
+				// Construct Gateway
+				$gateway = new $class( $this->gateway_prefs );
+
+				// Check payment processing
+				if ( isset( $_REQUEST['mycred_call'] ) ) {
+					$gateway->process();
+				
+					do_action( 'mycred_buy_cred_process', $gateway_id, $this->gateway_prefs, $this->core->buy_creds );
+					do_action( 'mycred_buy_cred_process_' . $gateway_id, $this->gateway_prefs, $this->core->buy_creds );
 				}
-				else {
-					$gateway_id = ( isset( $_REQUEST['mycred_call'] ) ) ? $_REQUEST['mycred_call'] : $_REQUEST['mycred_buy'];
-					if ( array_key_exists( $gateway_id, $installed ) && $this->is_active( $gateway_id ) ) {
-						$class = $installed[$gateway_id]['callback'][0];
-						$gateway = new $class( $this->gateway_prefs );
+
+				// Check purchase request
+				elseif ( isset( $_REQUEST['mycred_buy'] ) ) {
+					// Validate token
+					$token = false;
+					if ( isset( $_REQUEST['token'] ) && wp_verify_nonce( $_REQUEST['token'], 'mycred-buy-creds' ) )
+						$token = true;
+
+					// Validate amount
+					$amount = false;
+					if ( isset( $_REQUEST['amount'] ) && $_REQUEST['amount'] != 0 && $_REQUEST['amount'] >= $this->core->buy_creds['minimum'] )
+						$amount = true;
+
+					if ( $token && $amount ) {
+						$gateway->buy();
+					
+						do_action( 'mycred_buy_cred_buy', $gateway_id, $this->gateway_prefs, $this->core->buy_creds );
+						do_action( 'mycred_buy_cred_buy_' . $gateway_id, $this->gateway_prefs, $this->core->buy_creds );
 					}
 				}
 			}
-
-			/**
-			 * Step 2 - Process
-			 * Next we check to see if there is a purchase request, either made locally though
-			 * a form submission or by gateways calling remotly (see PayPal).
-			 */
-			if ( isset( $_REQUEST['mycred_call'] ) || ( isset( $_GET['wp_zombaio_ips'] ) || isset( $_GET['ZombaioGWPass'] ) ) ) {
-				$gateway->process();
-			}
-
-			/**
-			 * Step 3 - Buy Requests
-			 * Finally we check if there is a request to buy creds. A request must be made by nominating
-			 * the payment gateway that we want to use. Locally managed purchases can use this to show
-			 * the form again if i.e. an error was detected. $this->core->buy_creds
-			 */
-			if ( isset( $_REQUEST['mycred_buy'] ) && is_user_logged_in() ) {
-				if ( !isset( $_REQUEST['token'] ) || !wp_verify_nonce( $_REQUEST['token'], 'mycred-buy-creds' ) ) return;
-				if ( !isset( $_REQUEST['amount'] ) || $_REQUEST['amount'] == 0 || $_REQUEST['amount'] < $this->core->buy_creds['minimum'] ) return;
-				$gateway->buy();
-			}
-
-			// Finish by adding our shortcodes
-			add_shortcode( 'mycred_buy',      array( $this, 'render_shortcode_basic' ) );
-			add_shortcode( 'mycred_buy_form', array( $this, 'render_shortcode_form' ) );
 		}
 
 		/**
 		 * Get Payment Gateways
 		 * Retreivs all available payment gateways that can be used to buy CREDs.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function get() {
 			// Defaults
 			$installed['paypal-standard'] = array(
-				'title'    => __( 'PayPal Payments Standard' ),
+				'title'    => 'PayPal Payments Standard',
 				'callback' => array( 'myCRED_PayPal_Standard' )
 			);
 			$installed['netbilling'] = array(
-				'title'    => __( 'NETbilling' ),
+				'title'    => 'NETbilling',
 				'callback' => array( 'myCRED_NETbilling' )
 			);
 			$installed['skrill'] = array(
-				'title'    => __( 'Skrill (Moneybookers)' ),
+				'title'    => 'Skrill (Moneybookers)',
 				'callback' => array( 'myCRED_Skrill' )
 			);
 			$installed['zombaio'] = array(
-				'title'    => __( 'Zombaio' ),
+				'title'    => 'Zombaio',
 				'callback' => array( 'myCRED_Zombaio' )
 			);
 			$installed = apply_filters( 'mycred_setup_gateways', $installed );
@@ -191,7 +205,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		public function after_general_settings() {
 			// Since we are both registering our own settings and want to hook into
 			// the core settings, we need to define our "defaults" here.
-			if ( !isset( $this->core->buy_creds ) ) {
+			if ( ! isset( $this->core->buy_creds ) ) {
 				$buy_creds = array(
 					'minimum'   => 1,
 					'exchange'  => 1,
@@ -321,8 +335,8 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			$new_data['buy_creds']['cancelled']['custom'] = sanitize_text_field( $settings['cancelled']['custom'] );
 			$new_data['buy_creds']['cancelled']['page'] = abs( $settings['cancelled']['page'] );
 
-			$new_data['buy_creds']['gifting']['members'] = ( !isset( $settings['gifting']['members'] ) ) ? 0 : 1;
-			$new_data['buy_creds']['gifting']['authors'] = ( !isset( $settings['gifting']['authors'] ) ) ? 0 : 1;
+			$new_data['buy_creds']['gifting']['members'] = ( ! isset( $settings['gifting']['members'] ) ) ? 0 : 1;
+			$new_data['buy_creds']['gifting']['authors'] = ( ! isset( $settings['gifting']['authors'] ) ) ? 0 : 1;
 			$new_data['buy_creds']['gifting']['log'] = sanitize_text_field( $settings['gifting']['log'] );
 
 			return $new_data;
@@ -352,7 +366,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 
 			<div class="list-items expandable-li" id="accordion">
 <?php
-			if ( !empty( $installed ) ) {
+			if ( ! empty( $installed ) ) {
 				foreach ( $installed as $key => $data ) { ?>
 
 				<h4><div class="gate-icon <?php
@@ -415,15 +429,6 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		}
 
 		/**
-		 * Register Widgets
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function module_widgets_init() {
-			//register_widget( 'myCRED_Buy_CREDs' );
-		}
-
-		/**
 		 * Render Shortcode Basic
 		 * This shortcode returns a link element to a specified payment gateway.
 		 * @since 0.1
@@ -431,7 +436,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 */
 		public function render_shortcode_basic( $atts, $title = '' ) {
 			// Make sure the add-on has been setup
-			if ( !isset( $this->core->buy_creds ) ) {
+			if ( ! isset( $this->core->buy_creds ) ) {
 				if ( mycred_is_admin() )
 					return '<p style="color:red;"><a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'This Add-on needs to setup before you can use this shortcode.', 'mycred' ) . '</a></p>';
 				else
@@ -447,12 +452,12 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			), $atts ) );
 
 			// If we are not logged in
-			if ( !is_user_logged_in() ) return '<div class="mycred-buy login">' . $this->core->template_tags_general( $login ) . '</div>';
+			if ( ! is_user_logged_in() ) return '<div class="mycred-buy login">' . $this->core->template_tags_general( $login ) . '</div>';
 
 			// Gateways
 			$installed = $this->get();
 			if ( empty( $installed ) ) return __( 'No gateways installed.', 'mycred' );
-			if ( !empty( $gateway ) && !array_key_exists( $gateway, $installed ) ) return __( 'Gateway does not exist.', 'mycred' );
+			if ( ! empty( $gateway ) && !array_key_exists( $gateway, $installed ) ) return __( 'Gateway does not exist.', 'mycred' );
 			if ( empty( $gateway ) || !array_key_exists( $gateway, $installed ) ) {
 				reset( $installed );
 				$gateway = key( $installed );
@@ -528,7 +533,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 */
 		public function render_shortcode_form( $atts, $content = '' ) {
 			// Make sure the add-on has been setup
-			if ( !isset( $this->core->buy_creds ) ) {
+			if ( ! isset( $this->core->buy_creds ) ) {
 				if ( mycred_is_admin() )
 					return '<p style="color:red;"><a href="' . admin_url( 'admin.php?page=myCRED_page_settings' ) . '">' . __( 'This Add-on needs to setup before you can use this shortcode.', 'mycred' ) . '</a></p>';
 				else
@@ -543,14 +548,14 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			), $atts ) );
 
 			// If we are not logged in
-			if ( !is_user_logged_in() ) return '<p class="mycred-buy login">' . $login . '</p>';
+			if ( ! is_user_logged_in() ) return '<p class="mycred-buy login">' . $login . '</p>';
 
 			// Catch errors
 			$installed = $this->get();
 			if ( empty( $installed ) ) return __( 'No gateways installed.', 'mycred' );
-			if ( !empty( $gateway ) && !array_key_exists( $gateway, $installed ) ) return __( 'Gateway does not exist.', 'mycred' );
+			if ( ! empty( $gateway ) && ! array_key_exists( $gateway, $installed ) ) return __( 'Gateway does not exist.', 'mycred' );
 			if ( empty( $this->active ) ) return __( 'No active gateways found.', 'mycred' );
-			if ( !empty( $gateway ) && !$this->is_active( $gateway ) ) return __( 'The selected gateway is not active.', 'mycred' );
+			if ( ! empty( $gateway ) && ! $this->is_active( $gateway ) ) return __( 'The selected gateway is not active.', 'mycred' );
 
 			// Prep
 			$buy_author = false;
@@ -585,7 +590,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			}
 
 			// Button
-			if ( !empty( $gateway ) ) {
+			if ( ! empty( $gateway ) ) {
 				$gateway_title = $installed[$gateway]['title'];
 
 				$button = explode( ' ', $gateway_title );
@@ -619,7 +624,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				if ( $gift_to == 'select' ) {
 					$select = '<select name="gift_to">';
 					$blog_users = get_users();
-					if ( !empty( $blog_users ) ) {
+					if ( ! empty( $blog_users ) ) {
 						foreach ( $blog_users as $blog_user ) {
 							if ( $this->core->exclude_user( $blog_user->ID ) || $blog_user->ID === get_current_user_id() ) continue;
 							$select .= '<option value="' . $blog_user->ID . '">' . $blog_user->display_name . '</option>';
@@ -645,7 +650,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			// Amount
 			$no_of_amounts = 0;
 			$minimum = $this->core->number( $this->core->buy_creds['minimum'] );
-			if ( !empty( $amount ) )
+			if ( ! empty( $amount ) )
 				$no_of_amounts = sizeof( array_filter( explode( ',', $amount ), create_function( '$a', 'return !empty($a);' ) ) );
 
 			// Multiple amounts set
@@ -690,8 +695,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		<select name="mycred_buy">';
 
 				foreach ( $installed as $gateway_id => $data ) {
-					if ( !$this->is_active( $gateway_id ) ) continue;
-					//if ( !$this->is_active( $gateway_id ) ) continue;
+					if ( ! $this->is_active( $gateway_id ) ) continue;
 					$form .= '<option value="' . $gateway_id . '">' . $data['title'] . '</option>';
 				}
 
@@ -755,51 +759,6 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			}
 
 			return false;
-		}
-
-		/**
-		 * Contextual Help
-		 * @since 0.1
-		 * @version 1.0
-		 */
-		public function help( $screen_id, $screen ) {
-			if ( $screen_id == 'mycred_page_myCRED_page_settings' ) {
-				$screen->add_help_tab( array(
-					'id'		=> 'mycred-buy-creds',
-					'title'		=> $this->core->template_tags_general( __( 'Buy %plural%', 'mycred' ) ),
-					'content'	=> '
-<p>' . $this->core->template_tags_general( __( 'This add-on lets your users buy %_plural% using a payment gateway.', 'mycred' ) ) . '</p>
-<p><strong>' . __( 'Supported Gateways', 'mycred' ) . '</strong></p>
-<p>' . __( 'myCRED supports purchases through: PayPal Payments Standard, Skrill (Moneybookers) and NETbilling. Let us know if you want to add other payment gateways.', 'mycred' ) . '</p>
-<p><strong>' . __( 'Usage', 'mycred' ) . '</strong></p>
-<p>' . __( 'Purchases can be made using one of the following shortcodes:', 'mycred' ) . '</p>
-<ul>
-<li><code>mycred_buy</code> ' . __( 'When you want to sell a pre-set amount, sell to a specific user or use a specific gateway.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_buy/" target="_blank">myCRED Codex</a>.</li>
-<li><code>mycred_buy_form</code> ' . __( 'When you want to give your users the option to select an amount, gateway or recipient.<br />For more information on how to use the shortcode, please visit the', 'mycred' ) . ' <a href="http://mycred.me/shortcodes/mycred_buy_form/" target="_blank">myCRED Codex</a>.</li>
-</ul>'
-				) );
-			}
-			elseif ( $screen_id == 'mycred_page_myCRED_page_gateways' ) {
-				$screen->add_help_tab( array(
-					'id'		=> 'mycred-paypal',
-					'title'		=> __( 'PayPal Payments Standard', 'mycred' ),
-					'content'	=> '
-<p><strong>' . __( 'Currency', 'mycred' ) . '</strong></p>
-<p>' . __( 'Make sure you select a currency that your PayPal account supports. Otherwise transactions will not be approved until you login to your PayPal account and Accept each transaction! Purchases made in a currency that is not supported will not be applied to the buyer until you have resolved the issue.', 'mycred' ) . '</p>
-<p><strong>' . __( 'Instant Payment Notifications', 'mycred' ) . '</strong></p>
-<p>' . __( 'For this gateway to work, you must login to your PayPal account and under "Profile" > "Selling Tools" enable "Instant Payment Notifications". Make sure the "Notification URL" is set to the above address and that you have selected "Receive IPN messages (Enabled)".', 'mycred' ) . '</p>'
-				) );
-				$screen->add_help_tab( array(
-					'id'		=> 'mycred-skrill',
-					'title'		=> __( 'Skrill', 'mycred' ),
-					'content'	=> '
-<p><strong>' . __( 'Sandbox Mode', 'mycred' ) . '</strong></p>
-<p>' . __( 'Transactions made while Sandbox mode is active are real transactions! Remember to use your "Test Merchant Account" when Sandbox mode is active!', 'mycred' ) . '</p>
-<p><strong>' . __( 'Checkout Page', 'mycred' ) . '</strong></p>
-<p>' . __( 'By default all Skrill Merchant account accept payments via Bank Transfers. When a user selects this option, no points are awarded! You will need to manually award these once the bank transfer is completed.', 'mycred' ) . '</p>
-<p>' . __( 'By default purchases made using Skrill will result in users having to signup for a Skrill account (if they do not have one already). You can contact Skrill Merchant Services and request to disable this feature.', 'mycred' ) . '</p>'
-				) );
-			}
 		}
 	}
 	$buy_creds = new myCRED_Buy_CREDs();

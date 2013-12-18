@@ -3,7 +3,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 
 /**
  * Query Log
- * @see http://mycred.me/classes/mycred_query_log/ 
+ * @see http://codex.mycred.me/classes/mycred_query_log/ 
  * @since 0.1
  * @version 1.3
  */

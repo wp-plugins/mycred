@@ -5,7 +5,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * myCRED Remote API
  * Allows execution of remote actions such as adding points, removing points,
  * transfering points between two users and balance checks.
- * @see http://mycred.me/classes/mycred_remote/
+ * @see http://codex.mycred.me/classes/mycred_remote/
  * @since 1.3
  * @version 1.0
  */

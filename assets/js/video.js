@@ -1,6 +1,6 @@
 /**
  * Viewing Videos Core
- * @since 1.0
+ * @since 1.2
  * @version 1.1
  */
 var timer = 0;
@@ -15,7 +15,7 @@ var done = {};
 
 /**
  * View Handler
- * @since 1.0
+ * @since 1.2
  * @version 1.0
  */
 function mycred_view_video( id, state, custom_logic, custom_interval, key ) {
@@ -127,7 +127,7 @@ function mycred_view_video( id, state, custom_logic, custom_interval, key ) {
 
 /**
  * AJAX call handler
- * @since 1.0
+ * @since 1.2
  * @version 1.0
  */
 function mycred_video_call( id, key, state, actions, seconds ) {

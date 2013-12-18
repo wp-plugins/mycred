@@ -1,6 +1,6 @@
 /**
  * YouTube Iframe API
- * @since 1.0
+ * @since 1.3.3
  * @version 1.0
  */
 if (!window['YT']) {var YT = {loading: 0,loaded: 0};}if (!window['YTConfig']) {var YTConfig = {};}if (!YT.loading) {YT.loading = 1;(function(){var l = [];YT.ready = function(f) {if (YT.loaded) {f();} else {l.push(f);}};window.onYTReady = function() {YT.loaded = 1;for (var i = 0; i < l.length; i++) {try {l[i]();} catch (e) {}}};YT.setConfig = function(c) {for (var k in c) {if (c.hasOwnProperty(k)) {YTConfig[k] = c[k];}}};var a = document.createElement('script');a.src = 'https:' + '//s.ytimg.com/yts/jsbin/www-widgetapi-vflpUkZCc.js';a.async = true;var b = document.getElementsByTagName('script')[0];b.parentNode.insertBefore(a, b);})();}
@@ -8,7 +8,7 @@ if (!window['YT']) {var YT = {loading: 0,loaded: 0};}if (!window['YTConfig']) {v
 /**
  * onYouTubeIframeAPIReady
  * Creates a player for YouTube Iframes
- * @since 1.0
+ * @since 1.3.3
  * @version 1.0
  */
 function onYouTubeIframeAPIReady() {
@@ -23,6 +23,7 @@ function onYouTubeIframeAPIReady() {
 		yplayer = youtPlayers[i];
 		var video_id = yplayer.getAttribute( 'data-vid' );
 		youframes = new YT.Player( yplayer, { events : { 'onStateChange': 'mycred_vvideo_v' + video_id } } );
+		console.log( video_id );
 	}
 }
 

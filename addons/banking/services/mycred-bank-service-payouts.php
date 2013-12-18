@@ -135,7 +135,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * Do Batch
 		 * Applies points to a batch of user ID's. This is also where we check for exclusions.
 		 * @since 1.2
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function do_payout_batch( $batch, $set = NULL, $cycle = NULL ) {
 			if ( !empty( $batch ) && is_array( $batch ) ) {
@@ -146,7 +146,8 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 					$user_id = intval( $user_id );
 
 					// Add / Deduct points
-					$this->core->add_creds(
+					$this->core->update_users_balance( $user_id, $this->prefs['amount'] );
+					$this->core->add_to_log(
 						'payout',
 						$user_id,
 						$this->prefs['amount'],
@@ -166,6 +167,13 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 				// Single set, check if cycle is zero to deactivate
 				elseif ( $set === NULL && $cycle == 0 )
 					$this->save( date_i18n( 'U' ), 0, true );
+
+				// Else it's a single set with cycles remaining
+				else {
+					// Update ranks now if enabled
+					if ( function_exists( 'mycred_assign_ranks' ) )
+						mycred_assign_ranks();
+				}
 			}
 		}
 
@@ -173,7 +181,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 		 * Save
 		 * Saves the last run and the number of cycles run.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function save( $now = 0, $cycles = 0, $deactivate = false ) {
 			// Update last run
@@ -189,6 +197,10 @@ if ( !class_exists( 'myCRED_Banking_Service_Payouts' ) ) {
 
 			// Deactivate this service if this is the last run
 			if ( $cycles == 0 && $deactivate ) {
+				// Update ranks now if enabled
+				if ( function_exists( 'mycred_assign_ranks' ) )
+					mycred_assign_ranks();
+
 				// Should return the service id as a key for us to unset
 				if ( ( $key = array_search( $this->id, $bank['active'] ) ) !== false ) {
 					unset( $bank['active'][ $key ] );

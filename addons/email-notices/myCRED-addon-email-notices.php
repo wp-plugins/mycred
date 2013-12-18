@@ -343,7 +343,7 @@ if ( ! class_exists( 'myCRED_Email_Notices' ) ) {
 		/**
 		 * Email Notice Check
 		 * @since 1.1
-		 * @version 1.2.1
+		 * @version 1.3
 		 */
 		public function email_check( $reply, $request, $mycred ) {
 			// Override - something has already determaned that this should not be executed
@@ -356,7 +356,7 @@ if ( ! class_exists( 'myCRED_Email_Notices' ) ) {
 			// Event: Account gains or loses amount
 			if ( $amount < $mycred->zero() )
 				$event[] = 'negative';
-			else
+			elseif ( $amount > $mycred->zero() )
 				$event[] = 'positive';
 
 			// Event: Account reaches zero or goes minus

@@ -199,25 +199,27 @@ WHERE post_type = 'mycred_rank';" );
 		/**
 		 * Enqueue Scripts & Styles
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function enqueue_scripts() {
+			$adjust_header = false;
 			$screen = get_current_screen();
 
 			// Ranks List Page
-			if ( $screen->id == 'edit-mycred_rank' ) {
+			if ( preg_match( '/(edit-mycred_rank)/', $screen->id, $matches ) ) {
 				wp_enqueue_style( 'mycred-admin' );
-				wp_enqueue_style( 'mycred-admin' ); 
+				$adjust_header = true;
 			}
 
 			// Edit Rank Page
-			if ( $screen->id == 'mycred_rank' ) {
+			if ( preg_match( '/(mycred_rank)/', $screen->id, $matches ) ) {
 				wp_enqueue_style( 'mycred-admin' );
 				wp_dequeue_script( 'autosave' );
+				$adjust_header = true;
 			}
 
 			// Insert management script
-			if ( $screen->id == 'mycred_page_myCRED_page_settings' ) {
+			if ( preg_match( '/(myCRED_page_settings)/', $screen->id, $matches ) ) {
 				wp_register_script(
 					'mycred-rank-management',
 					plugins_url( 'js/management.js', myCRED_RANKS ),
@@ -238,7 +240,7 @@ WHERE post_type = 'mycred_rank';" );
 				wp_enqueue_script( 'mycred-rank-management' );
 			}
 
-			if ( in_array( $screen->id, array( 'edit-mycred_rank', 'mycred_rank' ) ) ) { ?>
+			if ( $adjust_header ) { ?>
 <style type="text/css">
 #icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
 </style>
@@ -347,34 +349,40 @@ FROM {$this->core->log_table}
 		 * Balance Adjustment
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.1.1
 		 */
 		public function update_balance( $reply, $request, $mycred ) {
 			if ( $reply === false ) return $reply;
 
 			$amount = $this->core->number( $request['amount'] );
 			$zero = $this->core->zero();
+			$user_id = (int) $request['user_id'];
 
 			switch ( $this->rank['base'] ) {
 				// Rank is based on current balance
 				case 'current' :
-				
-					mycred_find_users_rank( $request['user_id'], true, $amount );
-				
+
+					mycred_find_users_rank(
+						$user_id,
+						true,
+						$amount,
+						$this->core->get_cred_id()
+					);
+
 				break;
 				// Rank is based on total amount gained
 				case 'total' :
-				
+
 					if ( $amount > $zero || ( $amount < $zero && $request['ref'] == 'manual' ) ) {
 						mycred_update_users_total( '', $request, $mycred );
 						mycred_find_users_rank(
-							$request['user_id'], 
+							$user_id, 
 							true, 
 							$amount, 
 							$this->core->get_cred_id() . '_total'
 						);
 					}
-				
+
 				break;
 			}
 

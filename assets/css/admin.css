@@ -25,7 +25,7 @@
 body.mp6 #myCRED-wrap .h2 { line-height: 15px; font-size: 18px; }
 body.mp6 #myCRED-wrap .h2.description { line-height: 22px; }
 body.mp6 #myCRED-wrap .h2 input[type="text"] { font-size: 14px; }
-#myCRED-wrap .h2 input[type="text"] { line-height: inherit; }
+#myCRED-wrap .h2 input[type="text"], #myCRED-wrap .h2 input[type="password"] { line-height: inherit; }
 
 /* Accordion */
 #myCRED-wrap #accordion { margin: 24px 0; padding: 0; float: none; clear: both; }

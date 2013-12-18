@@ -103,7 +103,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 */
 		public function admin_header() {
 			$screen = get_current_screen();
-			if ( $screen->id == 'users' && mycred_is_admin() ) {
+			if ( $screen->id == 'users' ) {
 				wp_enqueue_script( 'mycred-inline-edit' );
 				wp_enqueue_style( 'mycred-inline-edit' );
 			}
@@ -121,12 +121,9 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		/**
 		 * Customize Users Column Headers
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function custom_user_column( $columns ) {
-			$user_id = get_current_user_id();
-			if ( !$this->core->can_edit_creds( $user_id ) || !$this->core->can_edit_plugin( $user_id ) ) return $columns;
-
 			$columns['mycred-balance'] = $this->core->plural();
 			return $columns;
 		}
@@ -165,7 +162,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 * Customize User Columns Content
 		 * @filter 'mycred_user_row_actions'
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function custom_user_column_content( $value, $column_name, $user_id ) {
 			if ( 'mycred-balance' != $column_name ) return $value;
@@ -179,8 +176,7 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 			// Row actions
 			$row = array();
 			$row['history'] = '<a href="' . admin_url( 'admin.php?page=myCRED&user_id=' . $user_id ) . '">' . __( 'History', 'mycred' ) . '</a>';
-			if ( $this->core->can_edit_creds( get_current_user_id() ) )
-				$row['adjust'] = '<a href="javascript:void(0)" class="mycred-open-points-editor" data-userid="' . $user_id . '" data-current="' . $ubalance . '">' . __( 'Adjust', 'mycred' ) . '</a>';
+			$row['adjust'] = '<a href="javascript:void(0)" class="mycred-open-points-editor" data-userid="' . $user_id . '" data-current="' . $ubalance . '">' . __( 'Adjust', 'mycred' ) . '</a>';
 
 			$rows = apply_filters( 'mycred_user_row_actions', $row, $user_id, $this->core );
 			$balance .= $this->row_actions( $rows );
@@ -333,10 +329,13 @@ if ( !class_exists( 'myCRED_Admin' ) ) {
 		 * Admin Footer
 		 * Inserts the Inline Edit Form modal.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_footer() {
-			if ( $this->core->can_edit_creds() && !$this->core->can_edit_plugin() )
+			$screen = get_current_screen();
+			if ( $screen->id != 'users' ) return;
+			
+			if ( $this->core->can_edit_creds() && ! $this->core->can_edit_plugin() )
 				$req = '(<strong>' . __( 'required', 'mycred' ) . '</strong>)'; 
 			else
 				$req = '(' . __( 'optional', 'mycred' ) . ')'; ?>

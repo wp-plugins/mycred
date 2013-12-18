@@ -217,7 +217,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Payment Page
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function payment_page( $payment_data ) {
 			extract( $payment_data );
@@ -264,7 +264,6 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		<?php endif; ?>
 
 		<div class="event-display-boxes">
-			<pre><?php print_r( get_option( 'mycred_espresso_test' ) ); ?></pre>
 			<h4 id="mycred_title" class="payment_type_title section-heading"><?php echo $this->prefs['labels']['payment']; ?></h4>
 			<table style="width:100%;">
 				<tr>

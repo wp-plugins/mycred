@@ -3,24 +3,24 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.3.3
- * Tags: points, tokens, credit, management, reward, charge
+ * Version: 1.3.3.1
+ * Tags: points, tokens, credit, management, reward, charge, buddypress, bbpress, jetpack, woocommerce
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
- * Author Email: info@merovingi.com
+ * Author Email: support@mycred.me
  * Requires at least: WP 3.1
- * Tested up to: WP 3.7.1
+ * Tested up to: WP 3.8
  * Text Domain: mycred
  * Domain Path: /lang
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * SSL Compatible: yes
- * bbPress® Compatible: yes
- * WordPress® Compatible: yes
- * BuddyPress® Compatible: yes
+ * bbPress Compatible: yes
+ * WordPress Compatible: yes
+ * BuddyPress Compatible: yes
  * Forum URI: http://mycred.me/support/forums/
  */
-define( 'myCRED_VERSION',      '1.3.3' );
+define( 'myCRED_VERSION',      '1.3.3.1' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -72,20 +72,20 @@ function mycred_load() {
 	require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
-	
+
 	// Bail now if the setup needs to run
 	if ( is_mycred_ready() === false ) return;
-	
+
 	require_once( myCRED_INCLUDES_DIR . 'mycred-rankings.php' );
 	require_once( myCRED_INCLUDES_DIR . 'mycred-widgets.php' );
-	
+
 	// Add-ons
 	require_once( myCRED_MODULES_DIR . 'mycred-module-addons.php' );
 	$addons = new myCRED_Addons();
 	$addons->load();
-	
+
 	do_action( 'mycred_ready' );
-	
+
 	add_action( 'init',         'mycred_init' );
 	add_action( 'widgets_init', 'mycred_widgets_init' );
 	add_action( 'admin_init',   'mycred_admin_init' );
@@ -179,6 +179,7 @@ function mycred_plugin_start_up()
 
 	// Adjust the plugin links
 	add_filter( 'plugin_action_links_mycred/mycred.php', 'mycred_plugin_links', 10, 4 );
+	add_filter( 'plugin_row_meta', 'mycred_plugin_description_links', 10, 2 );
 
 	// Lets start with Multisite
 	if ( is_multisite() ) {
@@ -306,9 +307,9 @@ function mycred_admin_init()
 
 	if ( get_transient( '_mycred_activation_redirect' ) === apply_filters( 'mycred_active_redirect', false ) )
 		return;
-	
+
 	delete_transient( '_mycred_activation_redirect' );
-	
+
 	$url = add_query_arg( array( 'page' => 'mycred' ), admin_url( 'index.php' ) );
 	wp_safe_redirect( $url );
 	die;
@@ -373,7 +374,7 @@ function mycred_admin_menu()
 {
 	$mycred = mycred_get_settings();
 	$name = mycred_label( true );
-	
+
 	$pages = array();
 	$pages[] = add_menu_page(
 		$name,
@@ -383,7 +384,7 @@ function mycred_admin_menu()
 		'',
 		''
 	);
-	
+
 	$about_label = sprintf( __( 'About %s', 'mycred' ), $name );
 	$pages[] = add_dashboard_page(
 		$about_label,
@@ -392,7 +393,7 @@ function mycred_admin_menu()
 		'mycred',
 		'mycred_about_page'
 	);
-	
+
 	$cred_label = __( 'Awesome People', 'mycred' );
 	$pages[] = add_dashboard_page(
 		$cred_label,
@@ -401,7 +402,7 @@ function mycred_admin_menu()
 		'mycred-credit',
 		'mycred_about_credit_page'
 	);
-	
+
 	foreach ( $pages as $page )
 		add_action( 'admin_print_styles-' . $page, 'mycred_admin_page_styles' );
 
@@ -553,21 +554,41 @@ function mycred_reset_key()
 /**
  * myCRED Plugin Links
  * @since 1.3
- * @version 1.0.2
+ * @version 1.1
  */
 function mycred_plugin_links( $actions, $plugin_file, $plugin_data, $context )
 {
 	// Link to Setup
-	if ( !is_mycred_ready() ) {
-		$actions['setup'] = '<a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Setup', 'mycred' ) . '</a>';
-		return $actions;
+	if ( ! is_mycred_ready() )
+		$actions['_setup'] = '<a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Setup', 'mycred' ) . '</a>';
+	else
+		$actions['_settings'] = '<a href="' . admin_url( 'admin.php?page=myCRED' ) . '" >' . __( 'Settings', 'mycred' ) . '</a>';
+
+	ksort( $actions );
+	return $actions;
+}
+
+/**
+ * myCRED Plugin Description Links
+ * @since 1.3.3.1
+ * @version 1.0
+ */
+function mycred_plugin_description_links( $links, $file )
+{
+	$plugin = plugin_basename( myCRED_THIS );
+	if ( $file != $plugin ) return $links;
+	
+	// Link to Setup
+	if ( ! is_mycred_ready() ) {
+		$links[] = '<a href="' . admin_url( 'plugins.php?page=myCRED-setup' ) . '">' . __( 'Setup', 'mycred' ) . '</a>';
+		return $links;
 	}
 
-	$actions['about'] = '<a href="' . admin_url( 'index.php?page=mycred' ) . '" >' . __( 'About', 'mycred' ) . '</a>';
-	$actions['tutorials'] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
-	$actions['docs'] = '<a href="http://codex.mycred.me/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
-	$actions['store'] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';
+	$links[] = '<a href="' . admin_url( 'index.php?page=mycred' ) . '">' . __( 'About', 'mycred' ) . '</a>';
+	$links[] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
+	$links[] = '<a href="http://codex.mycred.me/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
+	$links[] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';
 
-	return $actions;
+	return $links;
 }
 ?>

@@ -3,7 +3,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 /**
  * myCRED_Settings class
- * @see http://mycred.me/classes/mycred_settings/
+ * @see http://codex.mycred.me/classes/mycred_settings/
  * @since 0.1
  * @version 1.3
  */
@@ -1181,7 +1181,7 @@ if ( ! function_exists( 'mycred_is_admin' ) ) {
 /**
  * Exclude User
  * Checks if a given user is excluded from using myCRED.
- * @see http://mycred.me/functions/mycred_exclude_user/
+ * @see http://codex.mycred.me/functions/mycred_exclude_user/
  * @param $user_id (int), optional user to check, defaults to current user
  * @since 0.1
  * @version 1.0
@@ -1284,7 +1284,7 @@ if ( ! function_exists( 'mycred_format_creds' ) ) {
  * Important! This function will not check if the user should be excluded from gaining points, this must
  * be done before calling this function!
  *
- * @see http://mycred.me/functions/mycred_add/
+ * @see http://codex.mycred.me/functions/mycred_add/
  * @param $ref (string), required reference id
  * @param $user_id (int), required id of the user who will get these points
  * @param $amount (int|float), required number of creds to give or deduct from the given user.
@@ -1311,7 +1311,7 @@ if ( ! function_exists( 'mycred_add' ) ) {
 /**
  * Subtract Creds
  * Subtracts creds from a given user. Works just as mycred_add() but the creds are converted into a negative value.
- * @see http://mycred.me/functions/mycred_subtract/
+ * @see http://codex.mycred.me/functions/mycred_subtract/
  * @uses mycred_add()
  * @since 0.1
  * @version 1.0
@@ -1328,7 +1328,7 @@ if ( ! function_exists( 'mycred_subtract' ) ) {
 /**
  * Count Reference Instances
  * Counts the total number of occurrences of a specific reference for a user.
- * @see http://mycred.me/functions/mycred_count_ref_instances/
+ * @see http://codex.mycred.me/functions/mycred_count_ref_instances/
  * @param $reference (string) required reference to check
  * @param $user_id (int) option to check references for a specific user
  * @uses get_var()
@@ -1360,7 +1360,7 @@ if ( ! function_exists( 'mycred_count_ref_instances' ) ) {
  * Count All Reference Instances
  * Counts all the reference instances in the log returning the result
  * in an assosiative array.
- * @see http://mycred.me/functions/mycred_count_all_ref_instances/
+ * @see http://codex.mycred.me/functions/mycred_count_all_ref_instances/
  * @param $number (int) number of references to return. Defaults to 5. Use '-1' for all.
  * @param $order (string) order to return ASC or DESC
  * @filter mycred_count_all_refs

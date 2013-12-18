@@ -3,12 +3,12 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED Shortcode: my_balance
  * Returns the current users balance.
- * @see http://mycred.me/shortcodes/mycred_my_balance/
+ * @see http://codex.mycred.me/shortcodes/mycred_my_balance/
  * @contributor Ian Tasker
  * @since 1.0.9
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 	function mycred_render_shortcode_my_balance( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -80,12 +80,12 @@ if ( !function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 /**
  * myCRED Shortcode: mycred_history
  * Returns the points history.
- * @see http://mycred.me/shortcodes/mycred_history/
+ * @see http://codex.mycred.me/shortcodes/mycred_history/
  * @since 1.0.9
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
-	function mycred_render_shortcode_history( $atts ) {
+if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
+	function mycred_render_shortcode_history( $atts, $content = NULL ) {
 		extract( shortcode_atts( array(
 			'user_id'   => NULL,
 			'number'    => NULL,
@@ -97,7 +97,7 @@ if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
 		), $atts ) );
 
 		// If we are not logged in
-		if ( !is_user_logged_in() && !empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
+		if ( ! is_user_logged_in() && ! empty( $login ) ) return '<p class="mycred-history login">' . $login . '</p>';
 
 		if ( $user_id === NULL )
 			$user_id = get_current_user_id();
@@ -130,10 +130,11 @@ if ( !function_exists( 'mycred_render_shortcode_history' ) ) {
 
 /**
  * myCRED Shortcode: mycred_leaderboard
+ * @see http://codex.mycred.me/shortcodes/mycred_leaderboard/
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_render_leaderboard' ) ) {
+if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = NULL )
 	{
 		$attr = shortcode_atts( array(
@@ -167,18 +168,19 @@ if ( !function_exists( 'mycred_render_leaderboard' ) ) {
 		}
 
 		// No result template is set
-		if ( !empty( $attr['nothing'] ) )
+		if ( ! empty( $attr['nothing'] ) )
 			return '<p class="mycred-leaderboard-none">' . $attr['nothing'] . '</p>';
 	}
 }
 
 /**
  * myCRED Shortcode: mycred_my_ranking
+ * @see http://codex.mycred.me/shortcodes/mycred_my_ranking/
  * @since 0.1
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_my_ranking' ) ) {
-	function mycred_render_my_ranking( $atts, $content )
+if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
+	function mycred_render_my_ranking( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
 			'user_id'  => NULL
@@ -187,7 +189,7 @@ if ( !function_exists( 'mycred_render_my_ranking' ) ) {
 		// If no id is given
 		if ( $user_id === NULL ) {
 			// Current user must be logged in for this shortcode to work
-			if ( !is_user_logged_in() ) return;
+			if ( ! is_user_logged_in() ) return;
 			// Get current user id
 			$user_id = get_current_user_id();
 		}
@@ -202,14 +204,14 @@ if ( !function_exists( 'mycred_render_my_ranking' ) ) {
  * when this shortcode is executed. You can insert this in page/post content
  * or in a template file. Note that users are awarded/deducted points each time
  * this shortcode exectutes!
- * @see 
+ * @see http://codex.mycred.me/shortcodes/mycred_give/
  * @since 1.1
  * @version 1.1
  */
 if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
-	function mycred_render_shortcode_give( $atts, $content )
+	function mycred_render_shortcode_give( $atts, $content = NULL )
 	{
-		if ( !is_user_logged_in() ) return;
+		if ( ! is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount'  => NULL,
@@ -260,12 +262,12 @@ if ( !function_exists( 'mycred_render_shortcode_give' ) ) {
  * Note! Only HTML5 anchor attributes are supported and this shortcode is only
  * available if the hook is enabled!
  *
- * @see http://mycred.me/shortcodes/mycred_link/
+ * @see http://codex.mycred.me/shortcodes/mycred_link/
  * @since 1.1
  * @version 1.1
  */
-if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
-	function mycred_render_shortcode_link( $atts, $content )
+if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
+	function mycred_render_shortcode_link( $atts, $content = NULL )
 	{
 		global $mycred_link_points;
 		
@@ -327,14 +329,14 @@ if ( !function_exists( 'mycred_render_shortcode_link' ) ) {
  * myCRED Shortcode: mycred_send
  * This shortcode allows the current user to send a pre-set amount of points
  * to a pre-set user. A simpler version of the mycred_transfer shortcode.
- * @see 
+ * @see http://codex.mycred.me/shortcodes/mycred_send/ 
  * @since 1.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
-	function mycred_render_shortcode_send( $atts, $content )
+if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
+	function mycred_render_shortcode_send( $atts, $content = NULL )
 	{
-		if ( !is_user_logged_in() ) return;
+		if ( ! is_user_logged_in() ) return;
 
 		extract( shortcode_atts( array(
 			'amount' => NULL,
@@ -390,7 +392,7 @@ if ( !function_exists( 'mycred_render_shortcode_send' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
+if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
 	add_action( 'wp_footer', 'mycred_send_shortcode_footer' );
 	function mycred_send_shortcode_footer() {
 		global $mycred_sending_points;
@@ -422,11 +424,11 @@ if ( !function_exists( 'mycred_send_shortcode_footer' ) ) {
  * @since 0.1
  * @version 1.2
  */
-if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
+if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 	add_action( 'wp_ajax_mycred-send-points', 'mycred_shortcode_send_points_ajax' );
 	function mycred_shortcode_send_points_ajax() {
 		// We must be logged in
-		if ( !is_user_logged_in() ) die();
+		if ( ! is_user_logged_in() ) die();
 
 		// Security
 		check_ajax_referer( 'mycred-send-points', 'token' );
@@ -481,12 +483,12 @@ if ( !function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
  * myCRED Shortcode: mycred_video
  * This shortcode allows points to be given to the current user
  * for watchinga YouTube video.
- * @see http://mycred.me/shortcodes/mycred_video/
+ * @see http://codex.mycred.me/shortcodes/mycred_video/
  * @since 1.2
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
-	function mycred_render_shortcode_video( $atts, $content )
+	function mycred_render_shortcode_video( $atts, $content = NULL )
 	{
 		global $mycred_video_points;
 

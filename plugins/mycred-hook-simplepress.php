@@ -247,12 +247,12 @@ WHERE user_id = %d
 			 * Reched Daily Limit
 			 * Checks if a user has reached their daily limit.
 			 * @since 1.3.3
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function reached_daily_limit( $user_id, $id ) {
 				// No limit used
 				if ( $this->prefs[ $id ]['limit'] == 0 ) return false;
-				$today = date( 'Y-m-d' );
+				$today = date_i18n( 'Y-m-d' );
 				$current = get_user_meta( $user_id, 'mycred_simplepress_limits_' . $id, true );
 				if ( empty( $current ) || ! array_key_exists( $today, (array) $current ) ) $current[$today] = 0;
 				if ( $current[ $today ] < $this->prefs[ $id ]['limit'] ) return false;
@@ -263,13 +263,13 @@ WHERE user_id = %d
 			 * Update Daily Limit
 			 * Updates a given users daily limit.
 			 * @since 1.3.3
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function update_daily_limit( $user_id, $id ) {
 				// No limit used
 				if ( $this->prefs[ $id ]['limit'] == 0 ) return;
 
-				$today = date( 'Y-m-d' );
+				$today = date_i18n( 'Y-m-d' );
 				$current = get_user_meta( $user_id, 'mycred_simplepress_limits_' . $id, true );
 				if ( empty( $current ) || ! array_key_exists( $today, (array) $current ) )
 					$current[ $today ] = 0;

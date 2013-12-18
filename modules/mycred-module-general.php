@@ -209,7 +209,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		public function admin_page() {
 			if ( !$this->core->can_edit_plugin( get_current_user_id() ) ) wp_die( __( 'Access Denied', 'mycred' ) );
@@ -406,7 +406,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 				<li>
 					<label><?php _e( 'Import Log Entry', 'mycred' ); ?>:</label><br />
 					<input type="text" id="mycred-export-log-template" value="" class="regular-text" /><br />
-					<span class="description"><?php echo sprintf( __( 'Optional log entry to use if you intend to import this file in a different %s installation.', 'mycred' ), $plugin_name ); ?></span>
+					<span class="description"><?php echo sprintf( __( 'Optional log entry to use if you intend to import this file in a different %s installation.', 'mycred' ), mycred_label() ); ?></span>
 				</li>
 				<li class="action">
 					<input type="button" id="mycred-run-exporter" value="<?php _e( 'Export', 'mycred' ); ?>" class="button button-large button-primary" />

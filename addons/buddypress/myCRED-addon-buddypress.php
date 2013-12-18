@@ -376,7 +376,7 @@ if ( ! class_exists( 'myCRED_BuddyPress' ) ) {
 		/**
 		 * After General Settings
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function after_general_settings() {
 			// Settings
@@ -399,7 +399,7 @@ if ( ! class_exists( 'myCRED_BuddyPress' ) ) {
 			$bp_nav_positions = array();
 			if ( isset( $bp->bp_nav ) ) {
 				foreach ( $bp->bp_nav as $pos => $data ) {
-					if ( $data['slug'] == 'mycred-history' ) continue; 
+					if ( ! isset( $data['slug'] ) || $data['slug'] == $settings['history_url'] ) continue; 
 					$bp_nav_positions[] = ucwords( $data['slug'] ) . ' = ' . $pos;
 				}
 			}?>

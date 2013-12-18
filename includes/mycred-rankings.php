@@ -1,13 +1,13 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 /**
  * myCRED Query Rankings Class
- * @see http://mycred.me/features/mycred_query_rankings/
+ * @see http://codex.mycred.me/classes/mycred_query_rankings/
  * @since 1.1.2
  * @version 1.1
  */
-if ( !class_exists( 'myCRED_Query_Rankings' ) ) {
+if ( ! class_exists( 'myCRED_Query_Rankings' ) ) {
 	class myCRED_Query_Rankings {
 
 		public $args;
@@ -167,7 +167,7 @@ ORDER BY {$wpdb->usermeta}.meta_value+1 {$order} {$limit};", $this->args, $wpdb 
 
 /**
  * myCRED_Rankings class
- * @see http://mycred.me/features/mycred_rankings/
+ * @see http://codex.mycred.me/classes/mycred_rankings/
  * @since 0.1
  * @version 2.0
  */

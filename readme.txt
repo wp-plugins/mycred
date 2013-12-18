@@ -1,9 +1,9 @@
 === myCRED ===
 Contributors: designbymerovingi
-Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress
+Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce
 Requires at least: 3.1
-Tested up to: 3.7.1
-Stable tag: 1.3.3
+Tested up to: 3.8
+Stable tag: 1.3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,7 +15,7 @@ I felt that todays WordPress community lacks a flexible points management system
 
 So I built an adaptive plugin which gives it’s users full control on how points are awarded, used, traded, managed, logged and presented. Built on the "opt-in" principle, it is up to you what features you want to use and how. If your WordPress installation does not support a feature it is hidden from you to keep things clean and simple.
 
-**my**CRED comes packed with features along with built-in support for some of the most popular [WordPress plugins](http://mycred.me/about/supported-plugins/) out there. But of course **my**CRED does not support everything out of the box so I have documented as much as possible in the **my**CRED [codex](http://codex.mycred.me) and you can find several tutorials that can help you better acquaint yourself with **my**CRED.
+**my**CRED comes packed with features along with built-in support for some of the most popular [WordPress plugins](http://mycred.me/about/supported-plugins/) out there. But of course **my**CRED does not support everything out of the box so I have documented as much as possible in the **my**CRED [codex](http://codex.mycred.me) and you can find several [tutorials](http://mycred.me/support/tutorials/) that can help you better acquaint yourself with **my**CRED.
 
 I am here to help where ever I can but please remember that right now this is a one man show and I do need an occasional coffee break.
 
@@ -118,8 +118,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3.3 =
-Simple:Press, myCRED Right Now, YouTube + Mobiles and bug fixes.
+= 1.3.3.1 =
+Compatibility issue with PHP 5.2.17 fix & bug fixes.
 
 == Other Notes ==
 
@@ -134,6 +134,16 @@ Simple:Press, myCRED Right Now, YouTube + Mobiles and bug fixes.
 
 == Changelog ==
 
+= 1.3.3.1 =
+* FIX - Dashboard widget is not compatible with PHP 5.2.17
+* FIX - Incorrect variable passed for mycred_get_published_ranks filter.
+* FIX - Missing mycred label in general module.
+* FIX - bbPress daily limit is not enforced for replies only "fav"ed topics.
+* FIX - Events Manager (free) payment box.
+* Improved how screen ids are checked when loading scripts to better work with third-party plugins and themes that adjust the screen ids.
+* Replaced date() with date_i18n() in bbPress and SimplePress hooks.
+* Updated admin styling for WordPress 3.8
+
 = 1.3.3 =
 * Improved Transfer Add-on allowing for more customizations and better logic.
 * Added new functions: mycred_get_users_transfer_history and mycred_update_users_transfer_history.
@@ -144,6 +154,7 @@ Simple:Press, myCRED Right Now, YouTube + Mobiles and bug fixes.
 * Adjusted the "Points for watching videos" hook to use the YouTube Iframe API allowing embedded videos to work on mobile devices and re-wrote the mycred_video shortcode to prevent users from changing the amount they gain.
 * Added support for SimplePress.
 * Added new mycred_has_entry filter.
+* Added new mycred_protect function.
 * Fixed Bug #76 - Fixed bug in the mycred_get_users_rank function.
 * Fixed Bug #77 - Transfer Add-ons email notice connection is using an incorrect function.
 * Fixed Bug #78 - WooCommerce gateways profit sharing settings is not called correctly.

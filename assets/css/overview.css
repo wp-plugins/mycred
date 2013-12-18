@@ -30,3 +30,5 @@ div.columns-4 #mycred_overview .table_content.push { margin-right: 0; }
 div.columns-4 #mycred_overview td.b a, 
 div.columns-4 #mycred_overview .t { font-size: 12px; }
 div.columns-4 #mycred_overview td { line-height: 1em; }
+
+#mycred_overview form.dashboard-widget-control-form { overflow: visible; }

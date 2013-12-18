@@ -1136,7 +1136,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.3.1
+		 * @version 1.3.2
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
@@ -1156,7 +1156,7 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
 			$protect = new myCRED_Protect();
 			list ( $amount, $id ) = array_pad( explode( ':', $protect->do_decode( $_POST['key'] ) ), 2, '' );
-			if ( $amount == '' || $id == '' ) die( json_encode( $key ) );
+			if ( $amount == '' || $id == '' ) die( json_encode( 300 ) );
 
 			// Amount
 			if ( $amount == 0 )
@@ -1166,18 +1166,20 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			
 			if ( $amount == 0 || $amount == $this->core->zero() ) die( json_encode( 400 ) );
 
+			$data = array(
+				'ref_type'   => 'link',
+				'link_url'   => $_POST['url'],
+				'link_id'    => $id,
+				'link_title' => ( isset( $_POST['etitle'] ) ) ? $_POST['etitle'] : ''
+			);
+
 			// Limits
 			if ( $this->prefs['limit_by'] == 'url' ) {
-				if ( !isset( $_POST['url'] ) || empty( $_POST['url'] ) ) die( json_encode( 500 ) );
-				if ( $this->has_entry( 'link_click', $_POST['url'], $user_id ) ) die( json_encode( 600 ) );
-				$ref = $_POST['url'];
+				if ( ! isset( $_POST['url'] ) || empty( $_POST['url'] ) ) die( json_encode( 500 ) );
+				if ( $this->has_clicked( $user_id, 'link_url', $data['link_url'] ) ) die( json_encode( 600 ) );
 			}
 			elseif ( $this->prefs['limit_by'] == 'id' ) {
-				if ( $this->has_entry( 'link_click', $id, $user_id ) ) die( json_encode( 700 ) );
-				$ref = $id;
-			}
-			else {
-				$ref = $id;
+				if ( $this->has_clicked( $user_id, 'link_id', $data['link_id'] ) ) die( json_encode( 700 ) );
 			}
 
 			// Execute
@@ -1187,16 +1189,45 @@ if ( !class_exists( 'myCRED_Hook_Click_Links' ) ) {
 				$amount,
 				$this->prefs['log'],
 				'',
-				array(
-					'ref_type'   => 'link',
-					'link_url'   => $_POST['url'],
-					'link_id'    => $id,
-					'link_title' => ( isset( $_POST['etitle'] ) ) ? $_POST['etitle'] : ''
-				)
+				$data
 			);
 
 			// Report the good news
 			die( json_encode( 'done' ) );
+		}
+
+		/**
+		 * Has Clicked
+		 * Checks if a user has received points for a link based on either
+		 * an ID or URL.
+		 * @since 1.3.3.1
+		 * @version 1.0
+		 */
+		public function has_clicked( $user_id = NULL, $by = '', $check = '' ) {
+			global $wpdb;
+
+			$rows = $wpdb->get_results( $wpdb->prepare( "
+SELECT * 
+FROM {$this->core->log_table} 
+WHERE ref = %s 
+	AND user_id = %d", 'link_click', $user_id ) );
+
+			if ( $wpdb->num_rows == 0 ) return false;
+
+			$reply = false;
+			foreach ( $rows as $row ) {
+				$data = maybe_unserialize( $row->data );
+				if ( ! is_array( $data ) || ! isset( $data[ $by ] ) ) continue;
+
+				if ( $data[ $by ] == $check ) {
+					$reply = true;
+					break;
+				}
+			}
+
+			$wpdb->flush();
+
+			return $reply;
 		}
 
 		/**
@@ -1274,7 +1305,7 @@ if ( !class_exists( 'myCRED_Hook_Video_Views' ) ) {
 		/**
 		 * Register Script
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function register_script() {
 			wp_register_script(

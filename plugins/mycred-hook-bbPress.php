@@ -2,7 +2,7 @@
 /**
  * bbPress
  * @since 0.1
- * @version 1.2
+ * @version 1.2.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
 	/**
@@ -36,7 +36,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Insert Points Balance in Profile
 	 * @since 0.1
-	 * @version 1.0
+	 * @version 1.1
 	 */
 	add_action( 'bbp_template_after_user_profile', 'mycred_bbp_add_balance_in_profile' );
 	function mycred_bbp_add_balance_in_profile() {
@@ -46,7 +46,9 @@ if ( defined( 'myCRED_VERSION' ) ) {
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
 		$balance = $mycred->get_users_cred( $user_id );
-		echo '<div class="users-mycred-balance">' . $mycred->plural() . ': ' . $mycred->format_creds( $balance ) . '</div>';
+		$layout = $mycred->plural() . ': ' . $mycred->format_creds( $balance );
+		$layout = apply_filters( 'mycred_bbp_authors_profile_balance', $layout, $balance, $user_id );
+		echo '<div class="users-mycred-balance">' . $layout . '</div>';
 	}
 
 	/**
@@ -54,8 +56,9 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 0.1
 	 * @version 1.2
 	 */
-	if ( !class_exists( 'myCRED_bbPress' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_bbPress' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_bbPress extends myCRED_Hook {
+
 			/**
 			 * Construct
 			 */
@@ -244,7 +247,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * Topic Added to Favorites
 			 * @by Fee (http://wordpress.org/support/profile/wdfee)
 			 * @since 1.1.1
-			 * @version 1.2
+			 * @version 1.2.1
 			 */
 			public function fav_topic( $user_id, $topic_id ) {
 				// $user_id is loggedin_user, not author, so get topic author
@@ -257,7 +260,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( $this->core->exclude_user( $topic_author ) || $topic_author == $user_id ) return;
 
 				// Make sure this is a unique event (favorite not from same user)
-				if ( $this->has_entry( 'topic_favorited', $topic_id, $topic_author, 's:8:"ref_user";i:' . $user_id . ';' ) ) return;
+				$data = array( 'ref_user' => $user_id, 'ref_type' => 'post' );
+				if ( $this->has_entry( 'topic_favorited', $topic_id, $topic_author, $data ) ) return;
 
 				// Execute
 				$this->core->add_creds(
@@ -266,7 +270,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['fav_topic']['creds'],
 					$this->prefs['fav_topic']['log'],
 					$topic_id,
-					array( 'ref_user' => $user_id, 'ref_type' => 'post' )
+					$data
 				);
 
 				// Update Limit
@@ -276,7 +280,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * New Reply
 			 * @since 0.1
-			 * @version 1.2
+			 * @version 1.2.1
 			 */
 			public function new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
 				// Check if user is excluded
@@ -304,13 +308,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				);
 
 				// Update Limit
-				$this->update_daily_limit( $topic_author, 'new_reply' );
+				$this->update_daily_limit( $reply_author, 'new_reply' );
 			}
 
 			/**
 			 * Delete Reply
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function delete_reply( $reply_id ) {
 				// Get Author
@@ -329,35 +333,54 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						array( 'ref_type' => 'post' )
 					);
 
+					// Update Limit
+					$this->update_daily_limit( $reply_author, 'new_reply', true );
+
 				}
 			}
 
 			/**
 			 * Insert Balance
 			 * @since 0.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function insert_balance() {
 				$reply_id = bbp_get_reply_id();
+
+				// Skip Anonymous replies
 				if ( bbp_is_reply_anonymous( $reply_id ) ) return;
 
-				$balance = $this->core->get_users_cred( bbp_get_reply_author_id( $reply_id ) );
-				echo '<div class="mycred-balance">' . $this->core->plural() . ': ' . $this->core->format_creds( $balance ) . '</div>';
+				// Get reply author
+				$reply_author = bbp_get_reply_author_id( $reply_id );
+
+				// Check for exclusions and guests
+				if ( $this->core->exclude( $reply_author ) || $reply_id == 0 ) return;
+
+				// Get balance
+				$balance = $this->core->get_users_cred( $reply_author );
+
+				// Layout
+				$layout = $this->core->plural() . ': ' . $this->core->format_creds( $balance );
+				$layout = apply_filters( 'mycred_bbp_authors_balance', $layout, $balance, $reply_author );
+				echo '<div class="mycred-balance">' . $layout . '</div>';
 			}
 
 			/**
 			 * Reched Daily Limit
 			 * Checks if a user has reached their daily limit.
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.1.1
 			 */
-			public function reached_daily_limit( $user_id, $id ) {
+			public function reached_daily_limit( $user_id, $limit ) {
 				// No limit used
-				if ( $this->prefs[$id]['limit'] == 0 ) return false;
-				$today = date( 'Y-m-d' );
-				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
-				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) ) $current[$today] = 0;
-				if ( $current[ $today ] < $this->prefs[$id]['limit'] ) return false;
+				if ( $this->prefs[ $limit ]['limit'] == 0 ) return false;
+
+				$today = date_i18n( 'Y-m-d' );
+				$current = (array) get_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, true );
+				if ( empty( $current ) || ! array_key_exists( $today, $current ) )
+					$current[ $today ] = 0;
+
+				if ( $current[ $today ] < $this->prefs[ $limit ]['limit'] ) return false;
 				return true;
 			}
 
@@ -365,20 +388,23 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * Update Daily Limit
 			 * Updates a given users daily limit.
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.1.1
 			 */
-			public function update_daily_limit( $user_id, $id ) {
+			public function update_daily_limit( $user_id, $limit, $remove = false ) {
 				// No limit used
-				if ( $this->prefs[$id]['limit'] == 0 ) return;
+				if ( $this->prefs[ $limit ]['limit'] == 0 ) return;
 
-				$today = date( 'Y-m-d' );
-				$current = get_user_meta( $user_id, 'mycred_bbp_limits_' . $id, true );
-				if ( empty( $current ) || !array_key_exists( $today, (array) $current ) )
-					$current[$today] = 0;
+				$today = date_i18n( 'Y-m-d' );
+				$current = (array) get_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, true );
+				if ( empty( $current ) || ! array_key_exists( $today, $current ) )
+					$current[ $today ] = 0;
 
-				$current[ $today ] = $current[ $today ]+1;
+				if ( ! $remove )
+					$current[ $today ] = $current[ $today ]+1;
+				else
+					$current[ $today ] = $current[ $today ]-1;
 
-				update_user_meta( $user_id, 'mycred_bbp_limits_' . $id, $current );
+				update_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, $current );
 			}
 
 			/**
@@ -390,17 +416,17 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				$prefs = $this->prefs;
 
 				// Update
-				if ( !isset( $prefs['show_points_in_reply'] ) )
+				if ( ! isset( $prefs['show_points_in_reply'] ) )
 					$prefs['show_points_in_reply'] = 0;
-				if ( !isset( $prefs['new_topic']['author'] ) )
+				if ( ! isset( $prefs['new_topic']['author'] ) )
 					$prefs['new_topic']['author'] = 0;
-				if ( !isset( $prefs['fav_topic'] ) )
+				if ( ! isset( $prefs['fav_topic'] ) )
 					$prefs['fav_topic'] = array( 'creds' => 1, 'log' => '%plural% for someone favorited your forum topic' );
-				if ( !isset( $prefs['new_reply']['author'] ) )
+				if ( ! isset( $prefs['new_reply']['author'] ) )
 					$prefs['new_reply']['author'] = 0;
-				if ( !isset( $prefs['fav_topic']['limit'] ) )
+				if ( ! isset( $prefs['fav_topic']['limit'] ) )
 					$prefs['fav_topic']['limit'] = 0;
-				if ( !isset( $prefs['new_reply']['limit'] ) )
+				if ( ! isset( $prefs['new_reply']['limit'] ) )
 					$prefs['new_reply']['limit'] = 0; ?>
 
 					<!-- Creds for New Forums -->

@@ -149,14 +149,14 @@ WHERE rank.post_type = 'mycred_rank'
  * @uses get_page_by_title()
  * @returns empty string if title is missing, NULL if rank is not found else the output type
  * @since 1.1
- * @version 1.1
+ * @version 1.2
  */
 if ( ! function_exists( 'mycred_get_rank' ) ) {
 	function mycred_get_rank( $rank_title = '', $format = 'OBJECT' ) {
 		if ( empty( $rank_title ) ) return $rank_title;
 		$rank = get_page_by_title( $rank_title, $format, 'mycred_rank' );
 
-		return apply_filters( 'mycred_get_rank', $rank, $rank_title, $object );
+		return apply_filters( 'mycred_get_rank', $rank, $rank_title, $format );
 	}
 }
 
@@ -381,10 +381,9 @@ if ( ! function_exists( 'mycred_get_my_rank' ) ) {
  * @param $status (string) post status, defaults to 'publish'
  * @param $number (int|string) number of ranks to return, defaults to all
  * @param $order (string) option to return ranks ordered Ascending or Descending
- * @uses WP_Query()
  * @returns (array) empty if no ranks are found or associative array with post ID as key and title as value
  * @since 1.1
- * @version 1.1
+ * @version 1.2
  */
 if ( ! function_exists( 'mycred_get_ranks' ) ) {
 	function mycred_get_ranks( $status = 'publish', $number = '-1', $order = 'DESC' ) {
@@ -403,10 +402,12 @@ if ( ! function_exists( 'mycred_get_ranks' ) ) {
 		// Get ranks
 		$all_ranks = $wpdb->get_results( $wpdb->prepare( "
 SELECT * 
-FROM {$wpdb->posts} 
-WHERE post_type = %s 
-	AND post_status = %s 
-{$order}{$limit};", 'mycred_rank', $status ) );
+FROM {$wpdb->posts} ranks
+	INNER JOIN {$wpdb->postmeta} min
+		ON ( min.post_id = ranks.ID AND min.meta_key = %s )
+WHERE ranks.post_type = %s 
+	AND ranks.post_status = %s 
+ORDER BY min.meta_value+0 {$order} {$limit};", 'mycred_rank_min', 'mycred_rank', $status ) );
 		$wpdb->flush();
 
 		// Sort

@@ -26,7 +26,7 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 		 * Compat
 		 * Check to make sure we reach minimum requirements for this plugin to work propery.
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
 		public function compat() {
 			global $wpdb;
@@ -39,8 +39,8 @@ if ( !class_exists( 'myCRED_Install' ) ) {
 
 			// PHP check
 			$php_version = phpversion();
-			if ( version_compare( $php_version, '5.2.0', '<' ) )
-				$message[] = __( 'myCRED requires PHP 5.2.0 or higher. Version detected: ', 'mycred' ) . ' ' . $php_version;
+			if ( version_compare( $php_version, '5.2.4', '<' ) )
+				$message[] = __( 'myCRED requires PHP 5.2.4 or higher. Version detected: ', 'mycred' ) . ' ' . $php_version;
 
 			// SQL check
 			$sql_version = $wpdb->db_version();

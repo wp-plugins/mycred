@@ -5,7 +5,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * Dashboard Widget: Overview
  * @see https://codex.wordpress.org/Example_Dashboard_Widget
  * @since 1.3.3
- * @version 1.0
+ * @version 1.1
  */
 add_action( 'wp_dashboard_setup', array( 'myCRED_Dashboard_Widget_Overview', 'init' ) );
 add_action( 'admin_head',         array( 'myCRED_Dashboard_Widget_Overview', 'style' ) );
@@ -68,7 +68,8 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 		public static function widget() {
 			$mycred = mycred_get_settings();
 			$modules = self::get_modules();
-			$prefs = self::get_dashboard_widget_options( self::wid ); ?>
+			$prefs = self::get_dashboard_widget_options( self::wid );
+			if ( ! isset( $prefs['active'] ) ) $prefs['active'] = array(); ?>
 
 <div class="overview-module-wrap">
 <?php
@@ -100,7 +101,10 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 						else
 							$_prefs = array();
 
-						$module['call']::display( $_prefs );
+						
+						$module = new $module['call']();
+						$module->display( $_prefs );
+
 						echo '</div>';
 					}
 				}
@@ -118,7 +122,8 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 		public static function config() {
 			$mycred = mycred_get_settings();
 			$modules = self::get_modules();
-			$prefs = self::get_dashboard_widget_options( self::wid ); ?>
+			$prefs = self::get_dashboard_widget_options( self::wid );
+			if ( ! isset( $prefs['active'] ) ) $prefs['active'] = array(); ?>
 
 <div class="overview-module-wrap">
 <?php
@@ -151,7 +156,8 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 					else
 						$_prefs = $module['default'];
 
-					$module['call']::config( self::wid, $_prefs );
+					$module = new $module['call']();
+					$module->config( self::wid, $_prefs );
 				} ?>
 
 			</tbody>
@@ -253,10 +259,13 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 if ( ! class_exists( 'myCRED_Overview_Widget_Module_Refs' ) ) {
 	class myCRED_Overview_Widget_Module_Refs {
 
+		public function __construct() { }
+
 		/**
 		 * Display Module
 		 */
-		public static function display( $prefs ) {
+		public function display( $prefs ) {
+			if ( ! isset( $prefs['number'] ) ) $prefs['number'] = 5;
 			$reference_count = mycred_count_all_ref_instances( $prefs['number'] );
 			$ref_count = count( $reference_count ); ?>
 
@@ -296,7 +305,7 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Refs' ) ) {
 		/**
 		 * Module Config
 		 */
-		public static function config( $widget_id, $prefs ) { ?>
+		public function config( $widget_id, $prefs ) { ?>
 
 <tr class="first">
 	<td class="first b"><input type="text" name="<?php echo $widget_id; ?>[refs][number]" id="mycred-overview-module-refs-number" value="<?php echo $prefs['number']; ?>" size="2" /></td>
@@ -315,10 +324,12 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Refs' ) ) {
 if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 	class myCRED_Overview_Widget_Module_Totals {
 
+		public function __construct() { }
+
 		/**
 		 * Display Module
 		 */
-		public static function display() {
+		public function display() {
 			$name = apply_filters( 'mycred_label', myCRED_NAME );
 			$url = add_query_arg( array( 'page' => 'myCRED' ), admin_url( 'admin.php' ) );
 
@@ -379,6 +390,11 @@ if ( ! class_exists( 'myCRED_Overview_Widget_Module_Totals' ) ) {
 <p><span class="description"><?php _e( 'Note that manual balance adjustments without a log entry are not counted.', 'mycred' ); ?></span></p>
 <?php
 		}
+		
+		/**
+		 * Module Config
+		 */
+		public function config( $widget_id, $prefs ) { }
 	}
 }
 ?>

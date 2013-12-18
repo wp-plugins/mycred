@@ -164,7 +164,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		/**
 		 * Purchase Page Header
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function purchase_header( $title = '', $reload = false ) { ?>
 
@@ -177,8 +177,8 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 	<?php if ( $reload ) echo '<meta http-equiv="refresh" content="2;url=' . $reload . '" />'; ?>
 
 	<style type="text/css">
-		html { text-align: center; background-color: #FCFCFC; }
-		body { text-align: center; width: 50%; margin: 100px auto 48px auto; border-radius: 5px; border: 1px solid #dedede; padding: 32px 24px 24px 24px; background-color: white; font-family: Arial; }
+		html { text-align: center; background-color: #eee; }
+		body { text-align: center; width: 50%; margin: 100px auto 48px auto; -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.13); box-shadow: 0 1px 3px rgba(0,0,0,0.13);border: 1px solid #dedede; padding: 32px 24px 24px 24px; background-color: white; font-family: "Open Sans", sans-serif; }
 		.tl { text-align: left; }
 		.tc { text-align: center; }
 		.tr { text-align: right; }
@@ -203,6 +203,8 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			span { display: block; padding-top: 24px; }
 		}
 	</style>
+	<?php do_action( 'mycred_buy_cred_page_header', $title, $reload, $this->id ); ?>
+
 </head>
 <body>
 <?php
@@ -211,9 +213,10 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		/**
 		 * Purchase Page Footer
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
-		public function purchase_footer() { ?>
+		public function purchase_footer() {
+			do_action( 'mycred_buy_cred_page_footer', $this->id ); ?>
 
 </body> 
 </html>

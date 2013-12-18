@@ -34,7 +34,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 		public function process() {
 			// Prep
 			$id = $this->id;
-			$error = false;
+			$error = $set = false;
 			$log_entry = array();
 
 			// PayPal Host
@@ -179,6 +179,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 							$data
 						);
 
+						$set = true;
 						$log_entry[] = 'CREDs Added.';
 						do_action( "mycred_buy_cred_{$id}_approved", $data );
 					}
@@ -209,7 +210,7 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 			do_action( "mycred_buy_cred_{$id}_end", $log_entry, $data );
 			unset( $data );
 
-			die();
+			if ( $set ) die;
 		}
 
 		/**
