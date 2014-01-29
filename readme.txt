@@ -2,7 +2,7 @@
 Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce
 Requires at least: 3.1
-Tested up to: 3.8
+Tested up to: 3.8.1
 Stable tag: 1.3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,8 +118,8 @@ Yes but if one of them is bought, all is shown. The mycred_sell_this shortcode w
 
 == Upgrade Notice ==
 
-= 1.3.3.1 =
-Compatibility issue with PHP 5.2.17 fix & bug fixes.
+= 1.3.3.2 =
+Security Update.
 
 == Other Notes ==
 
@@ -130,9 +130,17 @@ Compatibility issue with PHP 5.2.17 fix & bug fixes.
 
 = Language Contributors =
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
+* Vietnamese - Biz.O
+* Persian - Mani (maniV-A)
 
 
 == Changelog ==
+
+= 1.3.3.2 =
+* FIX - Bug allowing users to buy any number of points using PayPal (Thank you Johnathan)
+* FIX - Multiple points for registrations bug.
+* FIX - Multisite issue with incorrect points are shown on sub sites.
+* FIX - When using the Banking add-on and Ranks, the banking add-on will reset users ranks. (Thank you Bryan)
 
 = 1.3.3.1 =
 * FIX - Dashboard widget is not compatible with PHP 5.2.17
