@@ -145,11 +145,8 @@ if ( !class_exists( 'myCRED_PayPal_Standard' ) ) {
 				}
 
 				// Verify Cost
-				$amount = $this->core->number( $amount );
-				$_cost = $amount*$this->prefs['exchange'];
-				$_cost = number_format( $cost, 2, '.', '' );
-				if ( $cost != $_cost ) {
-					$log_entry[] = 'Amount mismatch: [' . $cost . '] [' . $_cost . ']';
+				if ( $cost != $data['mc_gross'] ) {
+					$log_entry[] = 'Amount mismatch: [' . $cost . '] [' . $data['mc_gross'] . ']';
 					$error = true;
 				}
 
