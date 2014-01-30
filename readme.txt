@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce
 Requires at least: 3.1
 Tested up to: 3.8.1
-Stable tag: 1.3.3.1
+Stable tag: 1.3.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -137,10 +137,12 @@ Security Update.
 == Changelog ==
 
 = 1.3.3.2 =
-* FIX - Bug allowing users to buy any number of points using PayPal (Thank you Johnathan)
+* FIX - Security issue with the buyCRED add-on (Thank you Johnathan)
 * FIX - Multiple points for registrations bug.
 * FIX - Multisite issue with incorrect points are shown on sub sites.
 * FIX - When using the Banking add-on and Ranks, the banking add-on will reset users ranks. (Thank you Bryan)
+* FIX - When using the mycred_sell_this shortcode in a bbPress topic, the shortcode sells access to the forum the topic belongs to. (Thanks Gabriel Galvão)
+* FIX - Issue with user related template tags when the user has been deleted.
 
 = 1.3.3.1 =
 * FIX - Dashboard widget is not compatible with PHP 5.2.17
