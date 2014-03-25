@@ -110,6 +110,7 @@ User requested features.
 * Swedish - Gabriel S Merovingi
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
 * Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
+* Vietnamese - Thu Hoai [Biz.O](http://bizover.net/)
 
 
 == Changelog ==
