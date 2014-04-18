@@ -2,8 +2,8 @@
 Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.5
-Tested up to: 3.8.1
-Stable tag: 1.4.1
+Tested up to: 3.9
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,8 +95,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.4 =
-User requested features.
+= 1.4.2 =
+Gateway Add-on, Multisite and buyCRED Add-on updates.
 
 == Other Notes ==
 
@@ -110,40 +110,22 @@ User requested features.
 * Swedish - Gabriel S Merovingi
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
 * Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
-* Vietnamese - Thu Hoai [Biz.O](http://bizover.net/)
 
 
 == Changelog ==
 
-= 1.4 =
+= 1.4.2 =
+FIX - Stuck notifications can not be removed without reloading page.
+FIX - Exchange Rate issue with WooCommerce (thank you Profsdk)
+UPDATE - Improved the usage of mycred_buycred_valid_sale filter.
+FIX - Added missing Balance importer.
+FIX - Custom post types not getting points.
+
+= 1.4.1 =
 http://mycred.me/support/changelog/
 
-* NEW - myCRED now requires minimum WordPress 3.5!
-* NEW - Mobile support for Log table and BuddyPress Points History page.
-* FIX - Improved how myCRED displays balances in the Tool Bar even with BuddyPress enabled.
-* FIX - Add-ons are no longer added by searching for files. Instead they are loaded just like hooks.
-* NEW - All modules are now loaded under the new global variable $mycred_modules.
-* FIX - Removed the BuddyPress add-on and instead added the BuddyPress module and hooks just like any other plugin.
-* FIX - Cleaned up the code.
-* NEW - Points for referrals hook.
-* NEW - Added appropriate links for available shortcodes for hooks.
-* NEW - Depreciated rankings for new leaderboard.
-* NEW - Depreciated mycred_get_settings() for mycred()
-* FIX - Improved buyCRED add-on by updating the purchase page, added new logos and option to show a log over purchases in a separate page.
-* FIX - Re-wrote NETbilling gateway to use remote forms.
-* NEW - Added BitPay (Bitcoin) payment gateway for buyCRED.
-* NEW - Added support for Disqus Comments which will override the default comments hook. Points are only awarded on sync!
-* FIX - Redesigned the myCRED Overview Dashboard widget to also include support for multiple point types.
-* NEW - Removed the Import add-on and moved the importers to Tools > Import. Added support for CubePoints Log import and CSV myCRED Log import.
-* FIX - Rewrote the mycred_find_users_rank function to use a single SQL query to retrieve a given users rank post ID.
-* FIX - Improved Email Notice add-on.
-* NEW - Added new Coupons add-on.
-* FIX - Added new mycred_get_option function to always get the correct option depending on site setup.
-* NEW - Added support for Multiple Point Types.
-* NEW - myCRED Wallet widget to show the current users point balances. Requires more then one points type to be setup to be visible!
-* NEW - Added support for Gravity Forms allowing points to be awarded for form submissions by users.
-* NEW - Added support for rtMedia Uploads.
-* NEW - Added support for awarding / deducting points for up / down votes using BuddyPress Links.
+= 1.4 =
+http://mycred.me/support/changelog/
 
 = 1.3.3.2 =
 http://mycred.me/support/changelog/2/
