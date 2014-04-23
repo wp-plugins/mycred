@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,8 +95,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.4.2 =
-Gateway Add-on, Multisite and buyCRED Add-on updates.
+= 1.4.3 =
+Bug fixes for BuddyPress and referral hook and new Spanish Translation.
 
 == Other Notes ==
 
@@ -110,16 +110,20 @@ Gateway Add-on, Multisite and buyCRED Add-on updates.
 * Swedish - Gabriel S Merovingi
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
 * Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
+* Spanish - Rob Row [Website](http://robertrowshan.com)
 
 
 == Changelog ==
 
+= 1.4.3 =
+FIX - BuddyPress Leave Friend causese error.
+FIX - Referral counter is returning an incorrect total causing to many referrals to give points.
+UPDATE - Improved buyCRED Abstract class for customizations.
+NEW - Spanish Translation.
+NEW - Added new shortcode mycred_total_balance.
+
 = 1.4.2 =
-FIX - Stuck notifications can not be removed without reloading page.
-FIX - Exchange Rate issue with WooCommerce (thank you Profsdk)
-UPDATE - Improved the usage of mycred_buycred_valid_sale filter.
-FIX - Added missing Balance importer.
-FIX - Custom post types not getting points.
+http://mycred.me/support/changelog/
 
 = 1.4.1 =
 http://mycred.me/support/changelog/
