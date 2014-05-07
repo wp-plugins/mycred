@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,12 +47,19 @@ If you are comfortable with PHP or have some experience with customising your Wo
 == Installation ==
 
 ** myCRED Guides **
+
 [myCRED Codex - Setup Guides](http://codex.mycred.me/get-started/)
+
 [myCRED Codex - Install](http://codex.mycred.me/get-started/install/)
+
 [myCRED Codex - Setup Hooks](http://codex.mycred.me/get-started/setup-hooks/)
+
 [myCRED Codex - Setup Addons](http://codex.mycred.me/get-started/setup-addons/)
+
 [myCRED Codex - Multiple Point Types](http://codex.mycred.me/get-started/multiple-point-types/)
+
 [myCRED Codex - Multisites](http://codex.mycred.me/get-started/multisites/)
+
 
 == Frequently Asked Questions ==
 
@@ -84,6 +91,7 @@ Yes. myCRED supports YouTube out of the box and you can purchase the video add-o
 
 myCRED supports importing, exporting, inline editing and manual deletion of log entires as of version 1.4.
 
+
 == Screenshots ==
 
 1. **The Log** - myCRED Logs everything for you. You can browse, search, export, edit or delete log entries.
@@ -95,8 +103,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.4.3 =
-Bug fixes for BuddyPress and referral hook and new Spanish Translation.
+= 1.4.4 =
+Bug fixes related to multiple point types, BuddyPress, Ranks and added new Russian translation.
 
 == Other Notes ==
 
@@ -111,16 +119,32 @@ Bug fixes for BuddyPress and referral hook and new Spanish Translation.
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
 * Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
 * Spanish - Rob Row [Website](http://robertrowshan.com)
+* Russian - Skladchik
 
 
 == Changelog ==
 
+= 1.4.4 =
+FIX - Settings tab sorting causes fatal error if function is used instead of a class when adding a new tab.
+FIX - BuddyPress profile header template not rendering.
+FIX - Excluded users are still showing point balance in admin area under "Users".
+FIX - Missing string in Notifications add-on.
+FIX - When using multiple point types, menus and sub menus take on the myCRED name for the default point.
+FIX - The main point types label is shown for all point balances in BuddyPress profiles.
+FIX - Adjusted myCRED_Query_Log class to support search for multiple reference ids and to actually filter them correctly.
+UPDATE - Improved Rank assignments. Ranks are now assigned anytime the balance changes.
+UPDATE - Updated French translation. (thanks Dan)
+UPDATE - Removed translation of the buyCRED label.
+NEW - Added new mycred_woo_order_cost filter to allow custom calculations for WooCommerce product purchases with regards of costs.
+NEW - Added new mycred_bp_rank_in_header filter for adjusting how ranks are shown in the BuddyPress profile header.
+NEW - Added new mycred_bp_rank_in_profile filter for adjusting how ranks are shown on the Buddypress profile page.
+NEW - Added Russian translation. (thanks Skladchik).
+NEW - Added new mycred_user_has_paid_for_content filter to allow overrides for Sell Content purchase checks.
+NEW - Added new mycred_is_content_for_sale filter for overrides of content being set for sale for the Sell Content add-on.
+NEW - Added option to either replace a users current balance or just adjust it when importing balances via CSV files.
+
 = 1.4.3 =
-FIX - BuddyPress Leave Friend causese error.
-FIX - Referral counter is returning an incorrect total causing to many referrals to give points.
-UPDATE - Improved buyCRED Abstract class for customizations.
-NEW - Spanish Translation.
-NEW - Added new shortcode mycred_total_balance.
+http://mycred.me/support/changelog/
 
 = 1.4.2 =
 http://mycred.me/support/changelog/
