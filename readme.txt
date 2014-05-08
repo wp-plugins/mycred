@@ -125,23 +125,24 @@ Bug fixes related to multiple point types, BuddyPress, Ranks and added new Russi
 == Changelog ==
 
 = 1.4.4 =
-FIX - Settings tab sorting causes fatal error if function is used instead of a class when adding a new tab.
-FIX - BuddyPress profile header template not rendering.
-FIX - Excluded users are still showing point balance in admin area under "Users".
-FIX - Missing string in Notifications add-on.
-FIX - When using multiple point types, menus and sub menus take on the myCRED name for the default point.
-FIX - The main point types label is shown for all point balances in BuddyPress profiles.
-FIX - Adjusted myCRED_Query_Log class to support search for multiple reference ids and to actually filter them correctly.
-UPDATE - Improved Rank assignments. Ranks are now assigned anytime the balance changes.
-UPDATE - Updated French translation. (thanks Dan)
-UPDATE - Removed translation of the buyCRED label.
-NEW - Added new mycred_woo_order_cost filter to allow custom calculations for WooCommerce product purchases with regards of costs.
-NEW - Added new mycred_bp_rank_in_header filter for adjusting how ranks are shown in the BuddyPress profile header.
-NEW - Added new mycred_bp_rank_in_profile filter for adjusting how ranks are shown on the Buddypress profile page.
-NEW - Added Russian translation. (thanks Skladchik).
-NEW - Added new mycred_user_has_paid_for_content filter to allow overrides for Sell Content purchase checks.
-NEW - Added new mycred_is_content_for_sale filter for overrides of content being set for sale for the Sell Content add-on.
-NEW - Added option to either replace a users current balance or just adjust it when importing balances via CSV files.
+
+* FIX - Settings tab sorting causes fatal error if function is used instead of a class when adding a new tab.
+* FIX - BuddyPress profile header template not rendering.
+* FIX - Excluded users are still showing point balance in admin area under "Users".
+* FIX - Missing string in Notifications add-on.
+* FIX - When using multiple point types, menus and sub menus take on the myCRED name for the default point.
+* FIX - The main point types label is shown for all point balances in BuddyPress profiles.
+* FIX - Adjusted myCRED_Query_Log class to support search for multiple reference ids and to actually filter them correctly.
+* UPDATE - Improved Rank assignments. Ranks are now assigned anytime the balance changes.
+* UPDATE - Updated French translation. (thanks Dan)
+* UPDATE - Removed translation of the buyCRED label.
+* NEW - Added new mycred_woo_order_cost filter to allow custom calculations for WooCommerce product purchases with regards of costs.
+* NEW - Added new mycred_bp_rank_in_header filter for adjusting how ranks are shown in the BuddyPress profile header.
+* NEW - Added new mycred_bp_rank_in_profile filter for adjusting how ranks are shown on the Buddypress profile page.
+* NEW - Added Russian translation. (thanks Skladchik).
+* NEW - Added new mycred_user_has_paid_for_content filter to allow overrides for Sell Content purchase checks.
+* NEW - Added new mycred_is_content_for_sale filter for overrides of content being set for sale for the Sell Content add-on.
+* NEW - Added option to either replace a users current balance or just adjust it when importing balances via CSV files.
 
 = 1.4.3 =
 http://mycred.me/support/changelog/
