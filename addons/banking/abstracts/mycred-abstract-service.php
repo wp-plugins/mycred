@@ -29,7 +29,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			}
 			
 			// Grab myCRED Settings
-			$this->core = mycred_get_settings();
+			$this->core = mycred();
 
 			// Grab settings
 			if ( $service_prefs !== NULL ) {

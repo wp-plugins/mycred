@@ -2,18 +2,12 @@
 /**
  * Addon: Gateway
  * Addon URI: http://mycred.me/add-ons/gateway/
- * Version: 1.3.1
- * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager. Supported Membership Plugins: WPMU DEV Membership
+ * Version: 1.4
+ * Description: Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress and WP E-Commerce. Supported Event Bookings: Event Espresso, Events Manager.
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
-// Translate Header (by Dan bp-fr)
-$mycred_addon_header_translate = array(
-	__( 'Gateway', 'mycred' ),
-	__( 'Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress. Supported Event Bookings: Event Espresso, Events Manager.', 'mycred' )
-);
-
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_GATE',            __FILE__ );
 define( 'myCRED_GATE_DIR',        myCRED_ADDONS_DIR . 'gateway/' );
@@ -34,7 +28,7 @@ require_once( myCRED_GATE_CART_DIR . 'mycred-wpecommerce.php' );
  */
 add_action( 'init', 'mycred_load_event_espresso3' );
 function mycred_load_event_espresso3() {
-	if ( !defined( 'EVENT_ESPRESSO_VERSION' ) ) return;
+	if ( ! defined( 'EVENT_ESPRESSO_VERSION' ) ) return;
 
 	require_once( myCRED_GATE_EVENT_DIR . 'mycred-eventespresso3.php' );
 	$gateway = new myCRED_Espresso_Gateway();
@@ -46,7 +40,7 @@ function mycred_load_event_espresso3() {
  */
 add_action( 'init', 'mycred_load_events_manager' );
 function mycred_load_events_manager() {
-	if ( !defined( 'EM_VERSION' ) ) return;
+	if ( ! defined( 'EM_VERSION' ) ) return;
 	
 	// Pro
 	if ( class_exists( 'EM_Pro' ) ) {
@@ -60,9 +54,4 @@ function mycred_load_events_manager() {
 		$events->load();
 	}
 }
-
-/**
- * Supported Membership Plugins
- */
-
 ?>

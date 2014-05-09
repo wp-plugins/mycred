@@ -20,7 +20,7 @@
 .mycred-transfer-cred-wrapper ol li label { display: block; }
 .mycred-transfer-cred-wrapper ol li input[type="text"] { width: 90%; }
 .mycred-transfer-cred-wrapper ol li input[type="text"].short { width: 40%; }
-.mycred-transfer-cred-wrapper ol li input[type="button"] { float: right; }
+.mycred-transfer-cred-wrapper ol li input[type="button"] { }
 
 .mycred-transfer-info { margin: 0; padding: 6px 0; display: block; clear: both; float: none; }
 .mycred-transfer-info p { font-size: smaller; line-height: 16px; margin: 0; padding: 0; }

@@ -1,15 +1,17 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * Event Espresso Payment Gateway
  * @since 1.2
- * @version 1.0.1
+ * @version 1.1
  */
-if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
+if ( ! class_exists( 'myCRED_Espresso_Gateway' ) ) {
 	class myCRED_Espresso_Gateway {
 
 		public $label = '';
 		public $core = NULL;
+		public $mycred_type = 'mycred_default';
 		public $prefs = array();
 		public $update = false;
 
@@ -24,6 +26,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 					'payment'  => $this->label . ' ' . __( 'Payments', 'mycred' ),
 					'button'   => __( 'Pay Now', 'mycred' )
 				),
+				'type'     => 'mycred_default',
 				'rate'     => 100,
 				'share'    => 0,
 				'log'      => __( 'Payment for Event Registration', 'mycred' ),
@@ -38,8 +41,10 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 			$settings = get_option( 'mycred_espresso_gateway_prefs' );
 			$this->prefs = mycred_apply_defaults( $defaults, $settings );
 
+			$this->mycred_type = $this->prefs['type'];
+
 			// Load myCRED
-			$this->core = mycred_get_settings();
+			$this->core = mycred( $this->mycred_type );
 		}
 
 		/**
@@ -62,7 +67,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		public function gateway_active( $id = 'mycred' ) {
 			global $active_gateways;
 			
-			if ( !isset( $active_gateways ) || !is_array( $active_gateways ) )
+			if ( ! isset( $active_gateways ) || ! is_array( $active_gateways ) )
 				$active_gateways = get_option( 'event_espresso_active_gateways', array() );
 
 			if ( array_key_exists( $id, $active_gateways ) ) return true;
@@ -148,13 +153,13 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Process Payment
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function process_payment( $payment_data ) {
-			if ( !is_user_logged_in() ) return $payment_data;
+			if ( ! is_user_logged_in() ) return $payment_data;
 
 			// Security
-			if ( !isset( $_REQUEST['token'] ) || !wp_verify_nonce( $_REQUEST['token'], 'pay-with-mycred' ) ) return $payment_data;
+			if ( ! isset( $_REQUEST['token'] ) || ! wp_verify_nonce( $_REQUEST['token'], 'pay-with-mycred' ) ) return $payment_data;
 
 			// Let others play
 			do_action( 'mycred_espresso_process', $payment_data, $this->prefs, $this->core );
@@ -167,7 +172,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 			// Make sure this is unique
 			if ( $this->core->has_entry( 'event_payment', $payment_data['event_id'], $user_id, $payment_data['registration_id'] ) ) return $payment_data;
 			
-			$balance = $this->core->get_users_cred( $user_id );
+			$balance = $this->core->get_users_cred( $user_id, $this->mycred_type );
 			$event_cost = $this->prefs['rate']*$payment_data['total_cost'];
 			$after_purchase = $balance-$event_cost;
 
@@ -183,7 +188,8 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 				0-$event_cost,
 				$entry,
 				$payment_data['event_id'],
-				$payment_data['registration_id']
+				$payment_data['registration_id'],
+				$this->mycred_type
 			);
 
 			// Update Payment Data
@@ -206,7 +212,8 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 						$share,
 						$this->prefs['log'],
 						$payment_data['event_id'],
-						$payment_data['registration_id']
+						$payment_data['registration_id'],
+						$this->mycred_type
 					);
 				}
 			}
@@ -217,7 +224,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Payment Page
 		 * @since 1.2
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function payment_page( $payment_data ) {
 			extract( $payment_data );
@@ -231,7 +238,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 			if ( is_user_logged_in() ) {
 				$member = true;
 				$user_id = get_current_user_id();
-				$balance = $this->core->get_users_cred( $user_id );
+				$balance = $this->core->get_users_cred( $user_id, $this->mycred_type );
 
 				// Calculate Cost
 				$event_cost = $this->prefs['rate']*$event_cost;
@@ -281,7 +288,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 			</table>
 			<p><a href="<?php echo $finalize_link; ?>" class="button button-large button-primary" style="float:right;"><?php echo $this->prefs['labels']['button']; ?></a></p>
 		</div>
-<?php elseif ( $member && !$solvent ) : ?>
+<?php elseif ( $member && ! $solvent ) : ?>
 
 		<div class="event_espresso_attention event-messages ui-state-highlight">
 			<span class="ui-icon ui-icon-alert"></span>
@@ -324,11 +331,11 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		 */
 		public function gateway_settings_page( ) {
 			global $espresso_premium, $active_gateways, $org_options;
-			if ( !$espresso_premium )
+			if ( ! $espresso_premium )
 				return;
 
 			// activate
-			if ( !empty( $_REQUEST['activate_mycred_payment'] ) ) {
+			if ( ! empty( $_REQUEST['activate_mycred_payment'] ) ) {
 				$active_gateways['mycred'] = myCRED_GATE_CART_DIR . 'mycred-eventespresso3.php';
 				update_option( 'event_espresso_active_gateways', $active_gateways );
 			}
@@ -336,7 +343,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 			$activate_text = sprintf( __( 'Activate %s', 'mycred' ), $this->label );
 			
 			// deactivate
-			if ( !empty( $_REQUEST['deactivate_check_payment'] ) ) {
+			if ( ! empty( $_REQUEST['deactivate_check_payment'] ) ) {
 				unset( $active_gateways['mycred'] );
 				update_option( 'event_espresso_active_gateways', $active_gateways );
 			}
@@ -345,7 +352,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 
 			//Open or close the postbox div
 			if ( empty( $_REQUEST['deactivate_mycred_payment'] )
-					&& ( !empty( $_REQUEST['deactivate_mycred_payment'] )
+					&& ( ! empty( $_REQUEST['deactivate_mycred_payment'] )
 					|| array_key_exists( 'mycred', $active_gateways ) ) ) {
 				$postbox_style = '';
 			} else {
@@ -383,7 +390,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		 * Gateway Settings
 		 * Included first when the gateway is activated.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function gateway_settings() {
 			global $org_options;
@@ -392,7 +399,9 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 				__( 'How many %s is 1 %s worth?', 'mycred' ),
 				$this->core->plural(),
 				$org_options['currency_symbol']
-			); ?>
+			);
+			
+			$mycred_types = mycred_get_types(); ?>
 
 <?php if ( $this->update ) : ?>
 <h2 style="color: green;"><?php _e( 'Gateways Settings Successfully Updated', 'mycred' ); ?></h2>
@@ -421,6 +430,20 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 						<span class="description"><?php _e( 'Pay Button', 'mycred' ); ?></span>
 					</li>
 				</ul>
+				<?php if ( count( $mycred_types ) > 1 ) : ?>
+
+				<ul>
+					<li>
+						<label for="mycred-prefs-payment-type"><?php _e( 'Point Type', 'mycred' ); ?></label>
+						<?php mycred_types_select_from_dropdown( 'mycred_prefs[type]', 'mycred-prefs-payment-type', $this->prefs['type'] ); ?>
+
+					</li>
+				</ul>
+				<?php else : ?>
+
+				<input type="hidden" name="mycred_prefs[type]" id="mycred-prefs-payment-type" value="mycred_default" />
+				<?php endif; ?>
+
 				<h4><?php _e( 'Price', 'mycred' ); ?></h4>
 				<ul>
 					<li id="mycred-event-exchange-box">
@@ -438,7 +461,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 					<li id="mycred-event-profit-sharing">
 						<label for="mycred-prefs-profit-share"><?php _e( 'Profit Sharing', 'mycred' ); ?></label>
 						<input type="text" name="mycred_prefs[share]" id="mycred-prefs-profit-share" size="5" value="<?php echo $this->prefs['share']; ?>" /> %<br />
-						<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
+						<span class="description"><?php _e( 'Option to share sales with the product owner. Use zero to disable.', 'mycred' ); ?></span>
 					</li>
 				</ul>
 				<h4><?php _e( 'Log', 'mycred' ); ?></h4>
@@ -446,7 +469,7 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 					<li>
 						<label for="mycred-prefs-log"><?php _e( 'Log Entry', 'mycred' ); ?></label>
 						<input type="text" name="mycred_prefs[log]" id="mycred-prefs-log" size="30" value="<?php echo $this->prefs['log']; ?>" /><br />
-						<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
+						<span class="description"><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
 					</li>
 				</ul>
 			</td>
@@ -456,17 +479,17 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 					<li>
 						<label for="mycred-prefs-message-solvent"><?php _e( 'Solvent users', 'mycred' ); ?></label>
 						<textarea name="mycred_prefs[messages][solvent]" id="mycred-prefs-message-solvent" style="width: 90%; max-width: 90%; min-height: 90px;"><?php echo stripslashes( $this->prefs['messages']['solvent'] ); ?></textarea><br />
-						<span class="description"><?php _e( 'Message to show users on the payment page before they are charged. Leave empty to hide.<br />Available template tags: General', 'mycred' ); ?></span>
+						<span class="description"><?php _e( 'Message to show users on the payment page before they are charged. Leave empty to hide.', 'mycred' ); ?><br /><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
 					</li>
 					<li>
 						<label for="mycred-prefs-message-insolvent"><?php _e( 'Insolvent users', 'mycred' ); ?></label>
 						<textarea name="mycred_prefs[messages][insolvent]" id="mycred-prefs-message-solvent" style="width: 90%; max-width: 90%; min-height: 90px;"><?php echo stripslashes( $this->prefs['messages']['insolvent'] ); ?></textarea><br />
-						<span class="description"><?php _e( 'Message to show users who do not have enough points to pay.<br />Available template tags: General', 'mycred' ); ?></span>
+						<span class="description"><?php _e( 'Message to show users who do not have enough points to pay.', 'mycred' ); ?><br /><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
 					</li>
 					<li>
 						<label for="mycred-prefs-message-insolvent"><?php _e( 'Visitors', 'mycred' ); ?></label>
 						<textarea name="mycred_prefs[messages][visitors]" id="mycred-prefs-message-visitors" style="width: 90%; max-width: 90%; min-height: 90px;"><?php echo stripslashes( $this->prefs['messages']['visitors'] ); ?></textarea><br />
-						<span class="description"><?php _e( 'Message to show visitors (users not logged in) on the payment page.<br />Available template tags: General', 'mycred' ); ?></span>
+						<span class="description"><?php _e( 'Message to show visitors (users not logged in) on the payment page.', 'mycred' ); ?><br /><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
 					</li>
 				</ul>
 			</td>
@@ -484,25 +507,28 @@ if ( !class_exists( 'myCRED_Espresso_Gateway' ) ) {
 		/**
 		 * Update Settings
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function update_settings() {
 			// Apply Whitelabeling
 			$this->label = mycred_label();
 
 			// Security
-			if ( !wp_verify_nonce( $_REQUEST['mycred-gateway-token'], 'mycred-espresso-update' ) ) return;
-			if ( !$this->core->can_edit_plugin() ) return;
+			if ( ! wp_verify_nonce( $_REQUEST['mycred-gateway-token'], 'mycred-espresso-update' ) ) return;
+			if ( ! $this->core->can_edit_plugin() ) return;
 
 			// Prep
 			$new_settings = array();
 			$post = $_POST['mycred_prefs'];
-			if ( !is_array( $post ) || empty( $post ) ) return;
+			if ( ! is_array( $post ) || empty( $post ) ) return;
 
 			// Labels
 			$new_settings['labels']['gateway'] = strip_tags( $post['labels']['gateway'], '<strong><em><span>' );
 			$new_settings['labels']['payment'] = strip_tags( $post['labels']['payment'], '<strong><em><span>' );
 			$new_settings['labels']['button'] = sanitize_text_field( $post['labels']['button'] );
+
+			// Point Type
+			$new_settings['type'] = sanitize_text_field( $post['type'] );
 
 			// Exchange Rate
 			$new_settings['rate'] = sanitize_text_field( $post['rate'] );

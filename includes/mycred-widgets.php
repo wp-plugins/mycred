@@ -35,8 +35,11 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 				// Current user id
 				$user_id = get_current_user_id();
 
-				// Settings
-				$mycred = mycred_get_settings();
+				// Load myCRED Now
+				if ( ! isset( $instance['type'] ) || empty( $instance['type'] ) )
+					$instance['type'] = 'mycred_default';
+
+				$mycred = mycred( $instance['type'] );
 
 				// If this is an excluded user we bail
 				if ( $mycred->exclude_user( $user_id ) ) return;
@@ -52,7 +55,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 				}
 
 				// Balance
-				$balance = $mycred->get_users_cred( $user_id );
+				$balance = $mycred->get_users_cred( $user_id, $instance['type'] );
 				if ( empty( $balance ) ) $balance = 0;
 
 				$layout = $mycred->template_tags_amount( $instance['cred_format'], $balance );
@@ -64,10 +67,10 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 						$rank_name = mycred_get_users_rank( $user_id );
 						$ranking = str_replace( '%rank%', $rank_name, $instance['rank_format'] );
 						$ranking = str_replace( '%rank_logo%', mycred_get_rank_logo( $rank_name ), $ranking );
-						$ranking = str_replace( '%ranking%', mycred_rankings_position( $user_id ), $ranking );
+						$ranking = str_replace( '%ranking%', '', $ranking );
 					}
 					else {
-						$ranking = str_replace( array( '%rank%', '%ranking%' ), mycred_rankings_position( $user_id ), $instance['rank_format'] );
+						$ranking = str_replace( array( '%rank%', '%ranking%' ), '', $instance['rank_format'] );
 					}
 					$ranking = '<div class="myCRED-rank">' . $ranking . '</div>';
 					$layout .= $ranking;
@@ -81,7 +84,8 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 					// Query Log
 					$log = new myCRED_Query_Log( array(
 						'user_id' => $user_id,
-						'number'  => $instance['number']
+						'number'  => $instance['number'],
+						'ctype'   => $instance['type']
 					) );
 					
 					// Have results
@@ -89,7 +93,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 						// Title
 						if ( !empty( $instance['history_title'] ) ) {
 							$history_title = $instance['history_title'];
-							echo '<h3 class="widget-title">' . $mycred->template_tags_general( $history_title ) . '</h3>';
+							echo $before_title . $mycred->template_tags_general( $history_title ) . $after_title;
 						}
 						
 						// Organized List
@@ -99,7 +103,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 						foreach ( $log->results as $entry ) {
 							// Row Layout
 							$layout = $instance['history_format'];
-							$layout = str_replace( '%date%',  '<span class="date">' . date_i18n( $date_format ) . '</span>', $layout );
+							$layout = str_replace( '%date%',  '<span class="date">' . date_i18n( $date_format, $entry->time ) . '</span>', $layout );
 							$layout = str_replace( '%entry%', $mycred->parse_template_tags( $entry->entry, $entry ), $layout );
 							
 							$layout = $mycred->allowed_tags( $layout );
@@ -130,11 +134,10 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 				if ( $instance['show_visitors'] ) {
 					echo $before_widget;
 
-					// Settings
-					$mycred = mycred_get_settings();
+					$mycred = mycred( $instance['type'] );
 
 					// Title
-					if ( !empty( $instance['title'] ) ) {
+					if ( ! empty( $instance['title'] ) ) {
 						echo $before_title;
 						echo $mycred->template_tags_general( $instance['title'] );
 						echo $after_title;
@@ -156,6 +159,8 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 		function form( $instance ) {
 			// Defaults
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'My Balance', 'mycred' );
+			$type = isset( $instance['type'] ) ? $instance['type'] : 'mycred_default';
+
 			$cred_format = isset( $instance['cred_format'] ) ? esc_attr( $instance['cred_format'] ) : '%cred_f%';
 
 			$show_history = isset( $instance['show_history'] ) ? $instance['show_history'] : 0;
@@ -167,6 +172,9 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 			$rank_format = isset( $instance['rank_format'] ) ? $instance['rank_format'] : '#%ranking%';
 			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
 			$message = isset( $instance['message'] ) ? esc_attr( $instance['message'] ) : __( '<a href="%login_url_here%">Login</a> to view your balance.', 'mycred' );
+
+			$mycred = mycred( $type );
+			$mycred_types = mycred_get_types();
 
 			// CSS to help with show/hide
 			$rank_format_class = $history_option_class = $visitor_option_class = '';
@@ -183,27 +191,41 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 			p.myCRED-widget-field span.ex-field { display: block; padding: 6px 0; }
 			p.myCRED-widget-field span textarea { width: 98%; min-height: 80px; }
 		</style>
+
 		<!-- Widget Options -->
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title', 'mycred' ); ?>:</label>
 			<input id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" class="widefat" />
 		</p>
+
+		<!-- Point Type -->
+		<?php if ( count( $mycred_types ) > 1 ) : ?>
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'type' ) ); ?>"><?php _e( 'Point Type', 'mycred' ); ?>:</label>
+			<?php mycred_types_select_from_dropdown( $this->get_field_name( 'type' ), $this->get_field_id( 'type' ), $type ); ?>
+		</p>
+		<?php else : ?>
+			<?php mycred_types_select_from_dropdown( $this->get_field_name( 'type' ), $this->get_field_id( 'type' ), $type ); ?>
+		<?php endif; ?>
+
 		<!-- Balance layout -->
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'cred_format' ) ); ?>"><?php _e( 'Layout', 'mycred' ); ?>:</label>
 			<input id="<?php echo esc_attr( $this->get_field_id( 'cred_format' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'cred_format' ) ); ?>" type="text" value="<?php echo esc_attr( $cred_format ); ?>" class="widefat" /><br />
-			<small><?php _e( 'See the help tab for available template tags.', 'mycred' ); ?></small>
+			<small><?php echo $mycred->available_template_tags( array( 'general', 'amount' ) ); ?></small>
 		</p>
+
 		<!-- Ranking -->
 		<p class="myCRED-widget-field">
 			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_rank' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>" value="1"<?php checked( $show_rank, 1 ); ?> class="checkbox" /> 
-			<label for="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>"><?php _e( 'Include users ranking', 'mycred' ); ?></label><br />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'show_rank' ) ); ?>"><?php _e( 'Include users leaderboard position', 'mycred' ); ?></label><br />
 			<span class="mycred-hidden<?php echo $rank_format_class; ?>">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>"><?php _e( 'Format', 'mycred' ); ?>:</label>
 				<input id="<?php echo esc_attr( $this->get_field_id( 'rank_format' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'rank_format' ) ); ?>" type="text" value="<?php echo $rank_format; ?>" class="widefat" /><br />
-				<small><?php _e( 'This will be appended after the balance. See the help tab for available template tags.', 'mycred' ); ?></small>
+				<small><?php _e( 'This will be appended after the balance.', 'mycred' ); ?></small>
 			</span>
 		</p>
+
 		<!-- History -->
 		<p class="myCRED-widget-field">
 			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_history' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_history' ) ); ?>" value="1"<?php checked( $show_history, 1 ); ?> class="checkbox" /> 
@@ -215,7 +237,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 				<input id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" type="text" value="<?php echo $history_length; ?>" size="3" class="align-right" /><br />
 				<label for="<?php echo esc_attr( $this->get_field_id( 'history_format' ) ); ?>"><?php _e( 'Row layout', 'mycred' ); ?>:</label>
 				<textarea name="<?php echo esc_attr( $this->get_field_name( 'history_format' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'history_format' ) ); ?>" rows="3"><?php echo esc_attr( $history_entry ); ?></textarea>
-				<small><?php _e( 'See the help tab for available template tags.', 'mycred' ); ?></small>
+				<small><?php echo $mycred->available_template_tags( array( 'general', 'widget' ) ); ?></small>
 			</span>
 		</p>
 		<!-- Show to Visitors -->
@@ -225,7 +247,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 			<span class="mycred-hidden<?php echo $visitor_option_class; ?>">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'message' ) ); ?>"><?php _e( 'Message', 'mycred' ); ?>:</label><br />
 				<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'message' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'message' ) ); ?>"><?php echo $message; ?></textarea><br />
-				<small><?php _e( 'See the help tab for available template tags.', 'mycred' ); ?></small>
+				<small><?php echo $mycred->available_template_tags( array( 'general', 'amount' ) ); ?></small>
 			</span>
 		</p>
 		<!-- Widget Admin Scripting -->
@@ -252,10 +274,11 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 		 * Processes widget options to be saved
 		 */
 		function update( $new_instance, $old_instance ) {
-			$mycred = mycred_get_settings();
 			$instance = $old_instance;
 
 			$instance['title'] = trim( $new_instance['title'] );
+			$instance['type'] = trim( $new_instance['type'] );
+
 			$instance['cred_format'] = trim( $new_instance['cred_format'] );
 
 			$instance['show_rank'] = ( isset( $new_instance['show_rank'] ) ) ? 1 : 0;
@@ -272,26 +295,26 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 			$instance['number'] = (int) $new_instance['number'];
 
 			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? 1 : 0;
-			$instance['message'] = $mycred->allowed_tags( trim( $new_instance['message'] ) );
+			$instance['message'] = trim( $new_instance['message'] );
 
-			mycred_flush_widget_cache( 'mycred_widget_list' );
+			mycred_flush_widget_cache( 'mycred_widget_balance' );
 			return $instance;
 		}
 	}
 }
 
 /**
- * Widget: User List
+ * Widget: Leaderboard
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
-if ( ! class_exists( 'myCRED_Widget_List' ) ) {
-	class myCRED_Widget_List extends WP_Widget {
+if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
+	class myCRED_Widget_Leaderboard extends WP_Widget {
 
 		/**
 		 * Construct
 		 */
-		function myCRED_Widget_List() {
+		function myCRED_Widget_Leaderboard() {
 			$name = mycred_label( true );
 
 			// Basic details about our widget
@@ -301,6 +324,7 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 			);
 			$this->WP_Widget( 'mycred_widget_list', sprintf( __( '(%s) Leaderboard', 'mycred' ), $name ), $widget_ops );
 			$this->alt_option_name = 'mycred_widget_list';
+
 		}
 
 		/**
@@ -312,10 +336,16 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 			// Check if we want to show this to visitors
 			if ( ! $instance['show_visitors'] && ! is_user_logged_in() ) return;
 
+			if ( ! isset( $instance['type'] ) || empty( $instance['type'] ) )
+				$instance['type'] = 'mycred_default';
+
+			$mycred = mycred( $instance['type'] );
+
 			// Get Rankings
 			$args = array(
 				'number'   => $instance['number'],
-				'template' => $instance['text']
+				'template' => $instance['text'],
+				'type'     => $instance['type']
 			);
 
 			if ( isset( $instance['order'] ) )
@@ -324,27 +354,23 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 			if ( isset( $instance['offset'] ) )
 				$args['offset'] = $instance['offset'];
 
-			$rankings = mycred_rankings( $args );
-			if ( $rankings->have_results() ) {
-				// Settings
-				$mycred = mycred_get_settings();
+			if ( isset( $instance['current'] ) )
+				$args['current'] = 1;
 
-				// Header
-				echo $before_widget;
+			echo $before_widget;
 
-				// Title
-				if ( ! empty( $instance['title'] ) ) {
-					echo $before_title;
-					echo $mycred->template_tags_general( $instance['title'] );
-					echo $after_title;
-				}
-
-				// Result
-				$rankings->leaderboard();
-
-				// Footer
-				echo $after_widget;
+			// Title
+			if ( ! empty( $instance['title'] ) ) {
+				echo $before_title;
+				echo $mycred->template_tags_general( $instance['title'] );
+				echo $after_title;
 			}
+
+			echo mycred_render_leaderboard( $args );
+
+			// Footer
+			echo $after_widget;
+
 		}
 
 		/**
@@ -353,16 +379,32 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 		function form( $instance ) {
 			// Defaults
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Leaderboard', 'mycred' );
+			$type = isset( $instance['type'] ) ? $instance['type'] : 'mycred_default';
+
 			$number = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
-			$show_visitors = isset( $instance['show_visitors'] ) ? 1 : 0;
-			$text = isset( $instance['text'] ) ? esc_attr( $instance['text'] ) : '#%ranking% %user_profile_link% %cred_f%';
+			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
+			$text = isset( $instance['text'] ) ? esc_attr( $instance['text'] ) : '#%position% %user_profile_link% %cred_f%';
 			$offset = isset( $instance['offset'] ) ? esc_attr( $instance['offset'] ) : 0;
-			$order = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC'; ?>
+			$order = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC';
+			$current = isset( $instance['current'] ) ? $instance['current'] : 0;
+			
+			$mycred = mycred( $type );
+			$mycred_types = mycred_get_types(); ?>
 
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title', 'mycred' ); ?>:</label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
+		
+		<?php if ( count( $mycred_types ) > 1 ) : ?>
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'type' ) ); ?>"><?php _e( 'Point Type', 'mycred' ); ?>:</label>
+			<?php mycred_types_select_from_dropdown( $this->get_field_name( 'type' ), $this->get_field_id( 'type' ), $type ); ?>
+		</p>
+		<?php else : ?>
+			<?php mycred_types_select_from_dropdown( $this->get_field_name( 'type' ), $this->get_field_id( 'type' ), $type ); ?>
+		<?php endif; ?>
+
 		<p class="myCRED-widget-field">
 			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_visitors' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>" value="1"<?php checked( $show_visitors, 1 ); ?> class="checkbox" /> 
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>"><?php _e( 'Visible to non-members', 'mycred' ); ?></label>
@@ -374,7 +416,7 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'text' ) ); ?>"><?php _e( 'Row layout', 'mycred' ); ?>:</label>
 			<textarea class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'text' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'text' ) ); ?>" rows="3"><?php echo esc_attr( $text ); ?></textarea>
-			<small><?php _e( 'See the help tab for available template tags.', 'mycred' ); ?></small>
+			<small><?php echo $mycred->available_template_tags( array( 'general', 'widget' ) ); ?></small>
 		</p>
 		<p class="myCRED-widget-field">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'offset' ) ); ?>"><?php _e( 'Offset', 'mycred' ); ?>:</label>
@@ -398,6 +440,11 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 
 			</select>
 		</p>
+		<p class="myCRED-widget-field">
+			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'current' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'current' ) ); ?>" value="1"<?php checked( $current, 1 ); ?> class="checkbox" /> 
+			<label for="<?php echo esc_attr( $this->get_field_id( 'current' ) ); ?>"><?php _e( 'Append current users position', 'mycred' ); ?></label><br />
+			<small><?php _e( 'If the current user is not in this leaderboard, you can select to append them at the end with their current position.', 'mycred' ); ?></small>
+		</p>
 <?php
 		}
 
@@ -408,15 +455,178 @@ if ( ! class_exists( 'myCRED_Widget_List' ) ) {
 			$instance = $old_instance;
 			$instance['number'] = (int) $new_instance['number'];
 			$instance['title'] = trim( $new_instance['title'] );
-			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? 1 : 0;
+			$instance['type'] = trim( $new_instance['type'] );
+
+			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? $new_instance['show_visitors'] : 0;
 			
-			$rank_format = trim( $new_instance['text'] );
-			$instance['text'] = str_replace( '%rank%', '%ranking%', $rank_format );
+			$template = trim( $new_instance['text'] );
+
+			// Remove rank tag if the ranks add-on is disabled
+			if ( ! function_exists( 'mycred_get_users_rank' ) )
+				$instance['text'] = str_replace( '%rank%', '%ranking%', $template );
+			else
+				$instance['text'] = $template;
 			
 			$instance['offset'] = $new_instance['offset'];
 			$instance['order'] = $new_instance['order'];
+			$instance['current'] = ( isset( $new_instance['current'] ) ) ? $new_instance['current'] : 0;
 
 			mycred_flush_widget_cache( 'mycred_widget_list' );
+			return $instance;
+		}
+	}
+}
+
+/**
+ * Widget: myCRED Wallet
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! class_exists( 'myCRED_Widget_Wallet' ) ) {
+	class myCRED_Widget_Wallet extends WP_Widget {
+
+		/**
+		 * Construct
+		 */
+		function myCRED_Widget_Wallet() {
+			// Basic details about our widget
+			$widget_ops = array( 
+				'classname'   => 'widget-my-wallet',
+				'description' => __( 'Shows the current users balances for each point type.', 'mycred' )
+			);
+			$this->WP_Widget( 'mycred_widget_wallet', sprintf( __( '(%s) Wallet', 'mycred' ), mycred_label( true ) ), $widget_ops );
+			$this->alt_option_name = 'mycred_widget_wallet';
+		}
+
+		/**
+		 * Widget Output
+		 */
+		function widget( $args, $instance ) {
+			extract( $args, EXTR_SKIP );
+
+			$mycred = mycred();
+
+			// If we are logged in
+			if ( is_user_logged_in() ) {
+				// Current user id
+				$user_id = get_current_user_id();
+
+				// Start
+				echo $before_widget;
+
+				// Title
+				if ( ! empty( $instance['title'] ) ) {
+					echo $before_title;
+					echo $mycred->template_tags_general( $instance['title'] );
+					echo $after_title;
+				}
+
+				$mycred_types = mycred_get_types();
+				if ( ! empty( $mycred_types ) && ! empty( $instance['types'] ) ) {
+					foreach ( $mycred_types as $type => $label ) {
+
+						$type_setup = mycred( $type );
+
+						// If user is excluded from using this point type
+						if ( $type_setup->exclude_user( $user_id ) ) continue;
+
+						// If type is selected
+						if ( ! in_array( $type, (array) $instance['types'] ) ) continue;
+
+						$balance = $type_setup->get_users_balance( $user_id, $type );
+						$row_template = $type_setup->template_tags_general( $instance['row'] );
+						$row_template = $type_setup->template_tags_amount( $row_template, $balance );
+						$row_template = str_replace( '%label%', $label, $row_template );
+						echo '<div class="balance ' . $type . '">' . $row_template . '</div>';
+
+					}
+				}
+
+				// End
+				echo $after_widget;
+			}
+
+			// Visitor
+			elseif ( ! is_user_logged_in() && $instance['show_visitors'] ) {
+
+				echo $before_widget;
+
+				// Title
+				if ( ! empty( $instance['title'] ) ) {
+					echo $before_title;
+					echo $mycred->template_tags_general( $instance['title'] );
+					echo $after_title;
+				}
+
+				$message = $instance['message'];
+				$message = $mycred->template_tags_general( $message );
+
+				echo '<div class="myCRED-wallet-message"><p>' . nl2br( $message ) . '</p></div>';
+				echo $after_widget;
+
+			}
+		}
+
+		/**
+		 * Outputs the options form on admin
+		 */
+		function form( $instance ) {
+			$mycred = mycred();
+
+			// Defaults
+			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'My Wallet', 'mycred' );
+			
+			$types = isset( $instance['types'] ) ? $instance['types'] : array();
+			$row_template = isset( $instance['row'] ) ? $instance['row'] : '%label%: %cred_f%';
+
+			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
+			$message = isset( $instance['message'] ) ? esc_attr( $instance['message'] ) : __( '<a href="%login_url_here%">Login</a> to view your balance.', 'mycred' ); ?>
+
+		<!-- Widget Options -->
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title', 'mycred' ); ?>:</label>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" class="widefat" />
+		</p>
+
+		<!-- Point Type -->
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'types' ) ); ?>"><?php _e( 'Point Types', 'mycred' ); ?>:</label><br />
+			<?php mycred_types_select_from_checkboxes( $this->get_field_name( 'types' ) . '[]', $this->get_field_id( 'types' ), $types ); ?>
+		</p>
+
+		<!-- Row layout -->
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'row' ) ); ?>"><?php _e( 'Row Layout', 'mycred' ); ?>:</label>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'row' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'row' ) ); ?>" type="text" value="<?php echo esc_attr( $row_template ); ?>" class="widefat" /><br />
+			<small><?php echo $mycred->available_template_tags( array( 'general', 'amount' ) ); ?></small>
+		</p>
+
+		<!-- Show to Visitors -->
+		<p class="myCRED-widget-field">
+			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_visitors' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>" value="1"<?php checked( $show_visitors, 1 ); ?> class="checkbox" /> 
+			<label for="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>"><?php _e( 'Show message when not logged in', 'mycred' ); ?></label><br />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'message' ) ); ?>"><?php _e( 'Message', 'mycred' ); ?>:</label><br />
+			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'message' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'message' ) ); ?>"><?php echo $message; ?></textarea><br />
+			<small><?php echo $mycred->available_template_tags( array( 'general', 'amount' ) ); ?></small>
+		</p>
+<?php
+		}
+
+		/**
+		 * Processes widget options to be saved
+		 */
+		function update( $new_instance, $old_instance ) {
+			$instance = $old_instance;
+update_option( 'gabe_widget', $new_instance );
+			$instance['title'] = trim( $new_instance['title'] );
+
+			$instance['types'] = (array) $new_instance['types'];
+			$instance['row'] = trim( $new_instance['row'] );
+
+			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? 1 : 0;
+			$instance['message'] = trim( $new_instance['message'] );
+
+			mycred_flush_widget_cache( 'mycred_widget_wallet' );
 			return $instance;
 		}
 	}

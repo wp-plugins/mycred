@@ -1,50 +1,79 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Payment_Gateway class
  * @see http://mycred.me/add-ons/mycred_payment_gateway/
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
-if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
+if ( ! class_exists( 'myCRED_Payment_Gateway' ) ) {
 	abstract class myCRED_Payment_Gateway {
 
-		protected $id;
-		protected $core;
-		protected $prefs = false;
-		protected $current_user_id;
+		public $id;
+		public $core;
+		public $prefs = false;
+
+		protected $current_user_id = 0;
+		protected $sandbox_mode = false;
+		public $gateway_logo_url = '';
+
 		protected $response;
 		protected $request;
 		protected $status;
-		protected $errors;
+		protected $errors = array();
+		protected $processing_log = NULL;
 
 		/**
 		 * Construct
 		 */
 		function __construct( $args = array(), $gateway_prefs = NULL ) {
+			// Make sure gateway prefs is set
+			if ( $gateway_prefs === NULL ) return;
+
 			// Current User ID
 			$this->current_user_id = get_current_user_id();
 
 			// Arguments
-			if ( !empty( $args ) ) {
+			if ( ! empty( $args ) ) {
 				foreach ( $args as $key => $value ) {
 					$this->$key = $value;
 				}
 			}
 
 			// Preferences
-			if ( $gateway_prefs !== NULL ) {
-				// Assign prefs if set
-				if ( is_array( $gateway_prefs ) && isset( $gateway_prefs[$this->id] ) )
-					$this->prefs = $gateway_prefs[$this->id];
-				elseif ( is_object( $gateway_prefs ) && isset( $gateway_prefs->gateway_prefs[$this->id] ) )
-					$this->prefs = $gateway_prefs->gateway_prefs[$this->id];
+			if ( is_array( $gateway_prefs ) && isset( $gateway_prefs[ $this->id ] ) )
+				$this->prefs = mycred_apply_defaults( $this->defaults, $gateway_prefs[ $this->id ] );
 
-				// Apply defaults (if needed)
-				if ( empty( $this->prefs ) || $this->prefs === false )
-					$this->prefs = $this->defaults;
-			}
-			$this->core = mycred_get_settings();
+			elseif ( is_object( $gateway_prefs ) && isset( $gateway_prefs->gateway_prefs[ $this->id ] ) )
+				$this->prefs = mycred_apply_defaults( $this->defaults, $gateway_prefs->gateway_prefs[ $this->id ] );
+
+			else
+				$this->prefs = $this->defaults;
+
+			// Load myCRED
+			if ( isset( $gateway_prefs->core ) )
+				$mycred = $gateway_prefs->core;
+			
+			else
+				$mycred = mycred();
+
+			if ( isset( $mycred->core->buy_creds['type'] ) )
+				$this->mycred_type = $mycred->core->buy_creds['type'];
+			else
+				$this->mycred_type = $mycred->cred_id;
+
+			if ( $this->mycred_type != 'mycred_default' )
+				$this->core = new myCRED_Settings( $this->mycred_type );
+			else
+				$this->core = $mycred;
+
+			// Sandbox Mode
+			if ( isset( $this->prefs['sandbox'] ) )
+				$this->sandbox_mode = (bool) $this->prefs['sandbox'];
+
+			if ( isset( $this->defaults['gateway_logo_url'] ) )
+				$this->gateway_logo_url = $this->defaults['gateway_logo_url'];
 
 			// Decode Log Entries
 			add_filter( 'mycred_prep_template_tags',                          array( $this, 'decode_log_entries' ), 10, 2 );
@@ -74,14 +103,14 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function returning() { }
+		function returning() { }
 
 		/**
 		 * Preferences
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		function preferences() {
+		function preferences( $buy_creds = NULL ) {
 			echo '<p>' . __( 'This Payment Gateway has no settings', 'mycred' ) . '</p>';
 		}
 
@@ -105,20 +134,33 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		}
 
 		/**
+		 * Get Log Entry
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function get_log_entry( $from = 0, $to = 0 ) {
+			$entry = $this->get_entry( $from, $to );
+			$entry = str_replace( '%gateway%', $this->label, $entry );
+			if ( $this->sandbox_mode ) $entry = 'TEST ' . $entry;
+			
+			return apply_filters( 'mycred_buycred_get_log_entry', $entry, $from, $to, $this );
+		}
+
+		/**
 		 * Get Field Name
 		 * Returns the field name for the current gateway
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function field_name( $field = '' ) {
+		function field_name( $field = '' ) {
 			if ( is_array( $field ) ) {
 				$array = array();
 				foreach ( $field as $parent => $child ) {
-					if ( !is_numeric( $parent ) )
-						$array[] = str_replace( '_', '-', $parent );
+					if ( ! is_numeric( $parent ) )
+						$array[] = str_replace( '-', '_', $parent );
 
-					if ( !empty( $child ) && !is_array( $child ) )
-						$array[] = str_replace( '_', '-', $child );
+					if ( ! empty( $child ) && ! is_array( $child ) )
+						$array[] = str_replace( '-', '_', $child );
 				}
 				$field = '[' . implode( '][', $array ) . ']';
 			}
@@ -134,14 +176,14 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function field_id( $field = '' ) {
+		function field_id( $field = '' ) {
 			if ( is_array( $field ) ) {
 				$array = array();
 				foreach ( $field as $parent => $child ) {
-					if ( !is_numeric( $parent ) )
+					if ( ! is_numeric( $parent ) )
 						$array[] = str_replace( '_', '-', $parent );
 
-					if ( !empty( $child ) && !is_array( $child ) )
+					if ( ! empty( $child ) && ! is_array( $child ) )
 						$array[] = str_replace( '_', '-', $child );
 				}
 				$field = implode( '-', $array );
@@ -157,69 +199,291 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function callback_url() {
+		function callback_url() {
 			return get_bloginfo( 'url' ) . '/?mycred_call=' . $this->id;
 		}
 
 		/**
-		 * Purchase Page Header
+		 * Start Log
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function start_log() {
+			$this->new_log_entry( __( 'Incoming confirmation call detected', 'mycred' ) );
+			$this->new_log_entry( sprintf( __( 'Gateway identified itself as "%s"', 'mycred' ), $this->id ) );
+			$this->new_log_entry( __( 'Verifying caller', 'mycred' ) );
+		}
+
+		/**
+		 * New Log Entry
+		 * @since 0.1
+		 * @version 1.0
+		 */
+		function new_log_entry( $entry = '' ) {
+			if ( ! isset( $this->processing_log[ $this->id ] ) )
+				$this->processing_log[ $this->id ] = array();
+
+			$this->processing_log[ $this->id ][] = $entry;
+		}
+
+		/**
+		 * Save Log Entry
+		 * @since 0.1
+		 * @version 1.0
+		 */
+		function save_log_entry( $id = '', $outcome = '' ) {
+			update_option( 'mycred_buycred_last_call', array(
+				'gateway' => $this->id,
+				'date'    => time(),
+				'outcome' => $outcome,
+				'id'      => $id,
+				'entries' => serialize( $this->processing_log[ $this->id ] )
+			) );
+		}
+
+		/**
+		 * Payment Page Header
 		 * @since 0.1
 		 * @version 1.1
 		 */
-		public function purchase_header( $title = '', $reload = false ) { ?>
+		function get_page_header( $site_title = '', $reload = false ) {
+			// Set Logo
+			$logo = '';
+			if ( isset( $this->prefs['logo'] ) && ! empty( $this->prefs['logo'] ) )
+				$logo = '<img src="' . $this->prefs['logo'] . '" alt="" />';
+			elseif ( isset( $this->prefs['logo_url'] ) && ! empty( $this->prefs['logo_url'] ) )
+				$logo = '<img src="' . $this->prefs['logo_url'] . '" alt="" />';
+			elseif ( isset( $this->gateway_logo_url ) && ! empty( $this->gateway_logo_url ) )
+				$logo = '<img src="' . $this->gateway_logo_url . '" alt="" />';
+			
+			if ( $this->sandbox_mode )
+				$title = __( 'Test Payment', 'mycred' );
+			elseif ( isset( $this->label ) )
+				$title = $this->label;
+			else
+				$title = __( 'Payment', 'mycred' ); ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> 
-<head> 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><?php echo $title; ?></title>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+	<meta charset="<?php bloginfo( 'charset' ); ?>" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<title><?php echo $site_title; ?></title>
 	<meta name="robots" content="noindex, nofollow" />
 	<?php if ( $reload ) echo '<meta http-equiv="refresh" content="2;url=' . $reload . '" />'; ?>
 
-	<style type="text/css">
-		html { text-align: center; background-color: #eee; }
-		body { text-align: center; width: 50%; margin: 100px auto 48px auto; -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.13); box-shadow: 0 1px 3px rgba(0,0,0,0.13);border: 1px solid #dedede; padding: 32px 24px 24px 24px; background-color: white; font-family: "Open Sans", sans-serif; }
-		.tl { text-align: left; }
-		.tc { text-align: center; }
-		.tr { text-align: right; }
-		.tj { text-align: justify; }
-		p { font-size: 10px; margin-top: 24px; text-align: left; }
-		form p { margin-top: 0; }
-		form label { display: block; }
-		form .long { width: 40%; }
-		form .medium { width: 20%; }
-		form .short { width: 10%; }
-		form .submit { text-align: right; }
-		form .error label { color: red; }
-		ul li { text-align: left; }
-		pre { text-align: left; background-color: #eee; padding: 4px; white-space: pre-wrap; }
-		a { color: #0E79BF; text-decoration: none; }
-		img { margin: 0 auto 12px auto; display: block; float: none; }
-		@media only screen and (min-width: 480px) and (max-width: 767px) {
-			body { padding: 32px 12px; }
-		}
-		@media only screen and (max-width: 480px) {
-			body { padding: 48px 12px; margin-top: 48px; }
-			span { display: block; padding-top: 24px; }
-		}
-	</style>
-	<?php do_action( 'mycred_buy_cred_page_header', $title, $reload, $this->id ); ?>
+	<link rel="stylesheet" href="<?php echo plugins_url( 'assets/css/gateway.css', myCRED_PURCHASE ); ?>" type="text/css" media="all" />
+	<?php do_action( 'mycred_buycred_page_header', $title, $reload, $this->id ); ?>
 
 </head>
 <body>
+	<div id="payment-title"><?php echo $logo; ?><?php echo $title; ?><a href="<?php echo $this->get_cancelled(); ?>" id="return-where-we-came-from"><?php _e( 'Cancel purchase', 'mycred_stripe' ); ?></a></div>
+<?php
+			do_action( 'mycred_buycred_page_top', $title, $reload, $this->id );
+		}
+			public function purchase_header( $title = '', $reload = false ) {
+				$this->get_page_header( $title, $reload );
+			}
+
+		/**
+		 * Payment Page Footer
+		 * @since 0.1
+		 * @version 1.1
+		 */
+		function get_page_footer() {
+			do_action( 'mycred_buycred_page_footer', $this->id ); ?>
+
+</body> 
+</html>
+<?php
+		}
+			function purchase_footer() {
+				$this->get_page_footer();
+			}
+
+		/**
+		 * Get Billing Address Form
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function get_billing_address_form( $country_dropdown = false ) {
+			if ( ! is_user_logged_in() ) return;
+
+			$user = wp_get_current_user();
+
+			// Base
+			$user_details = array(
+				'first_name' => ( isset( $_POST['billing']['first_name'] ) ) ? $_POST['billing']['first_name'] : $user->first_name,
+				'last_name'  => ( isset( $_POST['billing']['last_name'] )  ) ? $_POST['billing']['last_name']  : $user->last_name,
+				'address1'   => ( isset( $_POST['billing']['address1'] )   ) ? $_POST['billing']['address1']   : $user->address1,
+				'address2'   => ( isset( $_POST['billing']['address2'] )   ) ? $_POST['billing']['address2']   : $user->address2,
+				'city'       => ( isset( $_POST['billing']['city'] )       ) ? $_POST['billing']['city']       : $user->city,
+				'postcode'   => ( isset( $_POST['billing']['postcode'] )   ) ? $_POST['billing']['postcode']   : $user->postcode,
+				'state'      => ( isset( $_POST['billing']['state'] )      ) ? $_POST['billing']['state']      : $user->state,
+				'country'    => ( isset( $_POST['billing']['country'] )    ) ? $_POST['billing']['country']    : $user->country
+			);
+
+			// Grab WooCommerce User Fields
+			if ( ! isset( $_POST['billing']['address1'] ) ) {
+				if ( class_exists( 'WC_Customer' ) ) {
+					$user_details['first_name'] = get_user_meta( $user->ID, 'billing_first_name', true );
+					$user_details['last_name']  = get_user_meta( $user->ID, 'billing_last_name',  true );
+					$user_details['address1']   = get_user_meta( $user->ID, 'billing_address_1',  true );
+					$user_details['address2']   = get_user_meta( $user->ID, 'billing_address_2',  true );
+					$user_details['city']       = get_user_meta( $user->ID, 'billing_city',       true );
+					$user_details['postcode']   = get_user_meta( $user->ID, 'billing_postcode',   true );
+					$user_details['state']      = get_user_meta( $user->ID, 'billing_state',      true );
+				}
+
+				// Else grab MarketPress User Fields
+				elseif ( class_exists( 'MarketPress' ) ) {
+					$meta = get_user_meta( $user->ID, 'mp_billing_info', true );
+					if ( is_array( $meta ) ) {
+						$user_details['address1']   = ( isset( $meta['address1'] ) ) ? $meta['address1'] : '';
+						$user_details['address2']   = ( isset( $meta['address2'] ) ) ? $meta['address2'] : '';
+						$user_details['city']       = ( isset( $meta['city'] ) )     ? $meta['city']     : '';
+						$user_details['postcode']   = ( isset( $meta['zip'] ) )      ? $meta['zip']      : '';
+						$user_details['state']      = ( isset( $meta['state'] ) )    ? $meta['state']    : '';
+						$user_details['country']    = ( isset( $meta['country'] ) )  ? $meta['country']  : '';
+					}
+				}
+			}
+
+			// Let others play
+			$user_details = apply_filters( 'mycred_buycred_user_details', $user_details, $this );
+
+			// Required Fields
+			$required_fields = apply_filters( 'mycred_buycred_req_fields', array( 'first_name', 'last_name', 'address1', 'city', 'zip', 'state', 'country' ), $this );
+
+			// Show required and optional fields via placeholders
+			$required = 'placeholder="' . __( 'required', 'mycred' ) . '"';
+			$optional = 'placeholder="' . __( 'optional', 'mycred' ) . '"'; ?>
+
+<div class="gateway-section">
+	<ul class="input-fields">
+		<li class="inline">
+			<label for="billing-first-name"><?php _e( 'First Name', 'mycred' ); ?></label>
+			<input type="text" name="billing[first_name]" id="billing-first-name" value="<?php echo $user_details['first_name']; ?>" class="long<?php if ( array_key_exists( 'first_name', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'first_name', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline last">
+			<label for="billing-last-name"><?php _e( 'Last Name', 'mycred' ); ?></label>
+			<input type="text" name="billing[last_name]" id="billing-last-name" value="<?php echo $user_details['last_name']; ?>" class="long<?php if ( array_key_exists( 'last_name', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'last_name', $required_fields ) ) echo $required; else echo $optional; ?>  autocomplete="off"  />
+		</li>
+		<li class="inline">
+			<label for="billing-address1"><?php _e( 'Address Line 1', 'mycred' ); ?></label>
+			<input type="text" name="billing[address1]" id="billing-address1" value="<?php echo $user_details['address1']; ?>" class="long<?php if ( array_key_exists( 'address1', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'address1', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline">
+			<label for="billing-address2"><?php _e( 'Address Line 2', 'mycred' ); ?></label>
+			<input type="text" name="billing[address2]" id="billing-address2" value="<?php echo $user_details['address2']; ?>" class="long<?php if ( array_key_exists( 'address2', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'address2', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline">
+			<label for="billing-city"><?php _e( 'City', 'mycred' ); ?></label>
+			<input type="text" name="billing[city]" id="billing-city" value="<?php echo $user_details['city']; ?>" class="medium<?php if ( array_key_exists( 'city', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'city', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline">
+			<label for="billing-zip"><?php _e( 'Zip', 'mycred' ); ?></label>
+			<input type="text" name="billing[zip]" id="billing-zip" value="<?php echo $user_details['postcode']; ?>" class="short<?php if ( array_key_exists( 'zip', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'zip', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline">
+			<label for="billing-state"><?php _e( 'State', 'mycred' ); ?></label>
+			<input type="text" name="billing[state]" id="billing-state" value="<?php echo $user_details['state']; ?>" class="short<?php if ( array_key_exists( 'state', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'state', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+		</li>
+		<li class="inline last">
+			<label for="billing-country"><?php _e( 'Country', 'mycred' ); ?></label>
+			<?php if ( $country_dropdown !== false ) : ?>
+			<select name="billing[country]" id="billing-country">
+				<option value=""><?php _e( 'Choose Country', 'mycred' ); ?></option>
+				<?php $this->list_option_countries(); ?>
+			</select>
+			<?php else : ?>
+				<input type="text" name="billing[country]" id="billing-country" value="<?php echo $user_details['country']; ?>" class="medium<?php if ( array_key_exists( 'country', $this->errors ) ) { echo ' error'; } ?>" <?php if ( in_array( 'country', $required_fields ) ) echo $required; else echo $optional; ?> autocomplete="off"  />
+
+			<?php endif; ?>
+			
+		</li>
+	</ul>
+	<?php do_action( 'mycred_buycred_after_billing_details', $user_details, $this ); ?>
+
+</div>
 <?php
 		}
 
 		/**
-		 * Purchase Page Footer
-		 * @since 0.1
-		 * @version 1.1
+		 * Get Order
+		 * @since 1.0
+		 * @version 1.0
 		 */
-		public function purchase_footer() {
-			do_action( 'mycred_buy_cred_page_footer', $this->id ); ?>
+		function get_order( $amount, $cost ) {
+			$order_name = apply_filters( 'mycred_buycred_order_name', sprintf( __( '%s Purchase', 'mycred' ), $this->core->singular() ), $amount, $cost, $this ) ?>
 
-</body> 
-</html>
+<table cellpadding="0" cellspacing="0">
+	<thead>
+		<tr>
+			<th id="gateway-order-item" class="order-item"><?php _e( 'Item', 'mycred' ); ?></th>
+			<th id="gateway-order-amount" class="order-amount"><?php _e( 'Amount', 'mycred' ); ?></th>
+			<th id="gateway-order-cost" class="order-cost"><?php _e( 'Cost', 'mycred' ); ?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class=""><?php echo $order_name; ?></td>
+			<td class=""><?php echo $amount; ?></td>
+			<td class=""><?php echo $cost; ?> <?php if ( isset( $this->prefs['currency'] ) ) echo $this->prefs['currency']; else echo 'USD'; ?></td>
+		</tr>
+	</tbody>
+</table>
+<?php
+		}
+
+		/**
+		 * Get Debug
+		 * @since 1.0
+		 * @version 1.0
+		 */
+		function get_debug() { ?>
+
+<h2><?php _e( 'Debug', 'mycred' ); ?></h2>
+<p><span class="description"><?php _e( 'Here you can see information that are collected and sent to this gateway. Debug information is only visible for administrators and are intended for troubleshooting / testing of this gateway. Please disable "Sandbox Mode" when you want to take this gateway online.', 'mycred' ); ?></span></p>
+<table id="gateway-debug">
+	<thead>
+		<tr>
+			<th id="gateway-col-section" class="col-section"><?php _e( 'Section', 'mycred' ); ?></th>
+			<th id="gateway-col-result" class="col-result"><?php _e( 'Result', 'mycred' ); ?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="col-section"><?php _e( 'Payment Status', 'mycred' ); ?></td>
+			<td class="col-result"><pre><?php print_r( $this->status ); ?></pre></td>
+		</tr>
+		<tr>
+			<td class="col-section"><?php _e( 'Request', 'mycred' ); ?></td>
+			<td class="col-result"><pre><?php print_r( $this->request ); ?></pre></td>
+		</tr>
+		<tr>
+			<td class="col-section"><?php _e( 'Gateway Response', 'mycred' ); ?></td>
+			<td class="col-result"><pre><?php print_r( $this->response ); ?></pre></td>
+		</tr>
+	</tbody>
+</table>
+<?php
+		}
+
+		/**
+		 * Get Errors
+		 * @since 1.0
+		 * @version 1.0
+		 */
+		function get_errors() {
+			if ( empty( $this->errors ) ) return;
+
+			$errors = array();
+			foreach ( $this->errors as $form_field => $error_message )
+				$errors[] = $error_message; ?>
+
+<div class="gateway-error"><?php echo implode( '<br />', $errors ); ?></div>
 <?php
 		}
 
@@ -229,12 +493,8 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function form_with_redirect( $hidden_fields = array(), $location = '', $logo_url = '', $custom_html = '', $sales_data = '' ) {
-			// Prep
-			$id = $this->id;
-			$goto = str_replace( '-', ' ', $id );
-			$goto = str_replace( '_', ' ', $goto );
-			$goto = __( 'Go to ', 'mycred' ) . ucwords( $goto );
+		function get_page_redirect( $hidden_fields = array(), $location = '' ) {
+			$id = str_replace( '-', '_', $this->id );
 
 			// Logo
 			if ( empty( $logo_url ) )
@@ -243,51 +503,33 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			// Hidden Fields
 			$hidden_fields = apply_filters( "mycred_{$id}_purchase_fields", $hidden_fields, $this ); ?>
 
-	<form name="mycred_<?php echo str_replace( '-', '_', $this->id ); ?>_request" action="<?php echo $location; ?>" method="post">
+<form name="mycred_<?php echo $id; ?>_request" action="<?php echo $location; ?>" method="post" id="redirect-form">
 <?php
 			// Required hidden form fields
-			foreach ( $hidden_fields as $name => $value ) {
-				echo "\t" . '<input type="hidden" name="' . $name . '" value="' . $value . '" />' . "\n";
+			foreach ( $hidden_fields as $name => $value )
+				echo "\t" . '<input type="hidden" name="' . $name . '" value="' . $value . '" />' . "\n"; ?>
+
+		<img src="<?php echo plugins_url( 'assets/images/loading.gif', myCRED_PURCHASE ); ?>" alt="Loading" />
+		<noscript><input type="submit" name="submit-form" value="<?php printf( __( 'Continue to %s', 'mycred' ), $this->label ); ?>" /></noscript>
+		<p id="manual-continue"><a href="javascript:void(0);" onclick="document.mycred_<?php echo str_replace( '-', '_', $this->id ); ?>_request.submit();return false;"><?php _e( 'Click here if you are not automatically redirected', 'mycred' ); ?></a></p>
+</form>
+<?php		if ( $this->sandbox_mode ) : ?>
+
+<div class="gateway-section">
+	<pre><?php _e( 'The following information will be sent to the gateway', 'mycred' ); ?>:
+
+<?php print_r( $hidden_fields ); ?></pre>
+</div>
+<?php		endif; ?>
+
+<script type="text/javascript">
+<?php if ( $this->sandbox_mode ) echo '//'; ?>setTimeout( "document.mycred_<?php echo $id; ?>_request.submit()",2000 );
+</script>
+<?php
+		}
+			function form_with_redirect( $hidden_fields = array(), $location = '', $logo_url = '', $custom_html = '', $sales_data = '' ) {
+				$this->get_page_redirect( $hidden_fields, $location, $custom_html, $sales_data );
 			}
-
-			// Option to add custom HTML
-			if ( !empty( $custom_html ) )
-				echo $custom_html; ?>
-
-		<div id="payment-gateway">
-			<img src="<?php echo $logo_url; ?>" border="0" alt="<?php _e( 'Payment Gateway Logo', 'mycred' ); ?>" />
-			<img src="<?php echo plugins_url( 'images/loading.gif', myCRED_PURCHASE ); ?>" alt="Loading" />
-		</div>
-<?php
-		// Hidden submit button
-		$hidden_submit = '<input type="submit" name="submit-form" value="' . $goto . '" />';
-		if ( $this->prefs['sandbox'] )
-			echo $hidden_submit;
-		else
-			echo '<noscript>' . $hidden_submit . '</noscript>'; ?>
-
-	</form>
-	<div>
-		<p class="tc"><a href="javascript:void(0);" onclick="document.mycred_<?php echo str_replace( '-', '_', $this->id ); ?>_request.submit();return false;"><?php _e( 'Click here if you are not automatically redirected', 'mycred' ); ?></a></p>
-	</div>
-<?php
-		// Sandbox
-		if ( $this->prefs['sandbox'] ) {
-			echo '<pre>request: ' . print_r( $hidden_fields, true ) . '</pre>';
-			
-			if ( !empty( $sales_data ) && isset( $hidden_fields[$sales_data] ) )
-				echo '<pre>sales_data: ' . print_r( $this->decode_sales_data( $hidden_fields[$sales_data] ), true ) . '</pre>';
-			
-			if ( isset( $hidden_fields[$sales_data] ) )
-				echo '<pre>length: ' . print_r( strlen( $hidden_fields[$sales_data] ), true ) . '</pre>';
-		}
-?>
-
-	<script type="text/javascript">
-		<?php if ( $this->prefs['sandbox'] ) echo '//'; ?>setTimeout( "document.mycred_<?php echo str_replace( '-', '_', $this->id ); ?>_request.submit()",2000 );
-	</script>
-<?php
-		}
 
 		/**
 		 * Get To
@@ -296,36 +538,27 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function get_to() {
+		function get_to() {
 			// Gift to a user
 			if ( $this->core->buy_creds['gifting']['members'] == 1 ) {
 				if ( isset( $_POST['gift_to'] ) ) {
 					$gift_to = trim( $_POST['gift_to'] );
-					return abs( $gift_to );
+					return absint( $gift_to );
 				}
 				elseif ( isset( $_GET['gift_to'] ) ) {
 					$gift_to = trim( $_GET['gift_to'] );
-					return abs( $gift_to );
+					return absint( $gift_to );
 				}
 			}
 
 			// Gifting author
 			if ( $this->core->buy_creds['gifting']['authors'] == 1 ) {
-				if ( isset( $_POST['post_id'] ) ) {
+				if ( isset( $_REQEST['post_id'] ) ) {
 					$post_id = trim( $_POST['post_id'] );
-					$post_id = abs( $post_id );
-					$post = get_post( (int) $post_id );
-					$author = $post->post_author;
-					unset( $post );
-					return (int) $author;
-				}
-				elseif ( isset( $_GET['post_id'] ) ) {
-					$post_id = trim( $_GET['post_id'] );
-					$post_id = abs( $post_id );
-					$post = get_post( (int) $post_id );
-					$author = $post->post_author;
-					unset( $post );
-					return (int) $author;
+					$post_id = absint( $post_id );
+					$post = get_post( $post_id );
+					if ( isset( $post->post_author ) )
+						return absint( $post->post_author );
 				}
 			}
 
@@ -337,15 +570,15 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function get_thankyou() {
+		function get_thankyou() {
 			if ( $this->core->buy_creds['thankyou']['use'] == 'page' ) {
 				if ( empty( $this->core->buy_creds['thankyou']['page'] ) )
 					return get_bloginfo( 'url' );
 				else
 					return get_permalink( $this->core->buy_creds['thankyou']['page'] );
 			}
-			else
-				return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['thankyou']['custom'];
+
+			return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['thankyou']['custom'];
 		}
 
 		/**
@@ -353,15 +586,15 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.1
 		 */
-		public function get_cancelled() {
+		function get_cancelled() {
 			if ( $this->core->buy_creds['cancelled']['use'] == 'page' ) {
 				if ( empty( $this->core->buy_creds['cancelled']['page'] ) )
 					return get_bloginfo( 'url' );
 				else
 					return get_permalink( $this->core->buy_creds['cancelled']['page'] );
 			}
-			else
-				return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['cancelled']['custom'];
+
+			return get_bloginfo( 'url' ) . '/' . $this->core->buy_creds['cancelled']['custom'];
 		}
 
 		/**
@@ -370,7 +603,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function get_entry( $_to, $_from ) {
+		function get_entry( $_to, $_from ) {
 			// Log entry
 			if ( $_to == $_from ) return $this->core->buy_creds['log'];
 
@@ -385,10 +618,10 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.2
 		 */
-		public function POST_to_data( $unset = false ) {
+		function POST_to_data( $unset = false ) {
 			$data = array();
 			foreach ( $_POST as $key => $value ) {
-				$data[$key] = stripslashes( $value );
+				$data[ $key ] = stripslashes( $value );
 			}
 			if ( $unset )
 				unset( $_POST );
@@ -404,21 +637,49 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0.1
 		 */
-		public function transaction_id_is_unique( $transaction_id = '' ) {
+		function transaction_id_is_unique( $transaction_id = '' ) {
 			if ( empty( $transaction_id ) ) return false;
 
 			global $wpdb;
 
 			// Make sure this is a new transaction
-			$sql = "SELECT * FROM {$this->core->log_table} WHERE ref = %s AND data LIKE %s;";
+			$sql = "
+				SELECT * 
+				FROM {$this->core->log_table} 
+				WHERE ref = %s 
+					AND data LIKE %s 
+					AND ctype = %s;";
 
 			$gateway = str_replace( '-', '_', $this->id );
 			$gateway_id = 'buy_creds_with_' . $gateway;
 
-			$check = $wpdb->get_results( $wpdb->prepare( $sql, $gateway_id, '%' . $transaction_id . '%' ) );
+			$check = $wpdb->get_results( $wpdb->prepare( $sql, $gateway_id, "%:\"" . $transaction_id . "\";%", $this->mycred_type ) );
 			if ( $wpdb->num_rows > 0 ) return false;
 
 			return true;
+		}
+
+		/**
+		 * Create Unique Transaction ID
+		 * Returns a unique transaction ID that has no been used by buyCRED yet.
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function create_unique_transaction_id() {
+			global $wpdb;
+
+			do {
+
+				$id = strtoupper( wp_generate_password( 12, false, false ) );
+				$query = $wpdb->get_row( $wpdb->prepare( "
+					SELECT * 
+					FROM {$this->core->log_table} 
+					WHERE ref LIKE %s 
+						AND data LIKE %s;", 'buy_creds_with_%', "%:\"" . $id . "\";%" ) );
+
+			} while ( ! empty( $query ) );
+	
+			return $id;
 		}
 
 		/**
@@ -427,7 +688,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function create_token() {
+		function create_token( $user_id = NULL ) {
 			return wp_create_nonce( 'mycred-buy-' . $this->id );
 		}
 
@@ -439,20 +700,20 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 *
 		 * @param $user_id (int) required user id
 		 * @param $nonce (string) required nonce to check
-		 * @param $action (string) required nonce id
 		 * @returns true or false
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.0.1
 		 */
-		public function verify_token( $user_id, $nonce ) {
-			$uid = (int) $user_id;
+		function verify_token( $user_id, $nonce ) {
+			$uid = absint( $user_id );
 
 			$i = wp_nonce_tick();
 
-			// Nonce generated 0-12 hours ago
 			if ( substr( wp_hash( $i . 'mycred-buy-' . $this->id . $uid, 'nonce' ), -12, 10 ) == $nonce )
 				return true;
-			
+			if ( substr( wp_hash( ( $i - 1 ) . 'mycred-buy-' . $this->id . $uid, 'nonce' ), -12, 10 ) === $nonce )
+				return true;
+
 			return false;
 		}
 
@@ -461,7 +722,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function encode_sales_data( $data ) {
+		function encode_sales_data( $data ) {
 			// Include
 			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
 			$protect = new myCRED_Protect();
@@ -473,7 +734,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function decode_sales_data( $data ) {
+		function decode_sales_data( $data ) {
 			// Include
 			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
 			$protect = new myCRED_Protect();
@@ -485,7 +746,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 1.3.2
 		 * @version 1.0
 		 */
-		public function get_cost( $amount = 0, $raw = false ) {
+		function get_cost( $amount = 0, $raw = false ) {
 			// Apply minimum
 			if ( $amount < $this->core->buy_creds['minimum'] )
 				$amount = $this->core->buy_creds['minimum'];
@@ -508,7 +769,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function currencies_dropdown( $name = '' ) {
+		function currencies_dropdown( $name = '', $js = '' ) {
 			$currencies = array(
 				'USD' => 'US Dollars',
 				'AUD' => 'Australian Dollars',
@@ -536,11 +797,14 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			);
 			$currencies = apply_filters( 'mycred_dropdown_currencies', $currencies );
 
-			echo '<select name="' . $this->field_name( $name ) . '" id="' . $this->field_id( $name ) . '">';
+			if ( ! empty( $js ) )
+				$js = ' data-update="' . $js . '"';
+
+			echo '<select name="' . $this->field_name( $name ) . '" id="' . $this->field_id( $name ) . '" class="currency"' . $js . '>';
 			echo '<option value="">' . __( 'Select', 'mycred' ) . '</option>';
 			foreach ( $currencies as $code => $cname ) {
 				echo '<option value="' . $code . '"';
-				if ( $this->prefs[$name] == $code ) echo ' selected="selected"';
+				if ( isset( $this->prefs[ $name ] ) && $this->prefs[ $name ] == $code ) echo ' selected="selected"';
 				echo '>' . $cname . '</option>';
 			}
 			echo '</select>';
@@ -551,7 +815,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function item_types_dropdown( $name = '' ) {
+		function item_types_dropdown( $name = '' ) {
 			$types = array(
 				'product'  => 'Product',
 				'service'  => 'Service',
@@ -563,7 +827,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 			echo '<option value="">' . __( 'Select', 'mycred' ) . '</option>';
 			foreach ( $types as $code => $cname ) {
 				echo '<option value="' . $code . '"';
-				if ( $this->prefs[$name] == $code ) echo ' selected="selected"';
+				if ( isset( $this->prefs[ $name ] ) && $this->prefs[ $name ] == $code ) echo ' selected="selected"';
 				echo '>' . $cname . '</option>';
 			}
 			echo '</select>';
@@ -574,7 +838,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function list_option_countries( $selected = '' ) {
+		function list_option_countries( $selected = '' ) {
 			$countries = array (
 				"US"  =>  "UNITED STATES",
 				"AF"  =>  "AFGHANISTAN",
@@ -619,7 +883,6 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 				"KY"  =>  "CAYMAN ISLANDS",
 				"CF"  =>  "CENTRAL AFRICAN REPUBLIC",
 				"TD"  =>  "CHAD",
-				"CL"  =>  "CHILE",
 				"CL"  =>  "CHILE",
 				"CN"  =>  "CHINA",
 				"CX"  =>  "CHRISTMAS ISLAND",
@@ -832,7 +1095,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function list_option_us_states( $selected = '', $non_us = false ) {
+		function list_option_us_states( $selected = '', $non_us = false ) {
 			$states = array (
 				"AL"  =>  "Alabama",
 				"AK"  =>  "Alaska",
@@ -903,7 +1166,7 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function list_option_months( $selected = '' ) {
+		function list_option_months( $selected = '' ) {
 			$months = array (
 				"01"  =>  "January",
 				"02"  =>  "February",
@@ -931,19 +1194,19 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function list_option_card_years( $selected = '', $number = 16 ) {
+		function list_option_card_years( $selected = '', $number = 16 ) {
 			$yy = date_i18n( 'y' );
 			$yyyy = date_i18n( 'Y' );
 			$count = 0;
 			$options = array();
 
 			while ( $count <= (int) $number ) {
-				$count++;
+				$count ++;
 				if ( $count > 1 ) {
 					$yy++;
 					$yyyy++;
 				}
-				$options[$yy] = $yyyy;
+				$options[ $yy ] = $yyyy;
 			}
 
 			foreach ( $options as $key => $value ) {
@@ -954,12 +1217,133 @@ if ( !class_exists( 'myCRED_Payment_Gateway' ) ) {
 		}
 
 		/**
-		 * Contextual Help
-		 * @since 0.1
+		 * IPN - Has Required Fields
+		 * @since 1.4
 		 * @version 1.0
 		 */
-		public function help( $screen_id, $screen ) {
-			if ( $screen_id != 'mycred_page_myCRED_page_gateways' ) return;
+		function IPN_has_required_fields( $required_fields = array(), $method = 'REQUEST' ) {
+			$missing = 0;
+			foreach ( $required_fields as $field_key ) {
+				if ( $method == 'POST' ) {
+					if ( ! isset( $_POST[ $field_key ] ) )
+						$missing ++;
+				}
+				elseif ( $method == 'GET' ) {
+					if ( ! isset( $_GET[ $field_key ] ) )
+						$missing ++;
+				}
+				elseif ( $method == 'REQUEST' ) {
+					if ( ! isset( $_REQUEST[ $field_key ] ) )
+						$missing ++;
+				}
+				else {
+					if ( ! isset( $method[ $field_key ] ) )
+						$missing ++;
+				}
+			}
+			
+			if ( $missing > 0 )
+				$result = false;
+			else
+				$result = true;
+			
+			$result = apply_filters( 'mycred_buycred_IPN_missing', $result, $required_fields, $this->id );
+			
+			if ( ! $result )
+				 $this->new_log_entry( ' > ' . __( 'Missing required information.', 'mycred' ) );
+			
+			return $result;
+		}
+
+		/**
+		 * IPN - Is Valid Call
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function IPN_is_valid_call() {
+			return false;
+		}
+
+		/**
+		 * IPN - Is Valid Sale
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function IPN_is_valid_sale( $sales_data_key = '', $cost_key = '', $transactionid_key = '', $method = '' ) {
+			$this->new_log_entry( __( 'Validating sale', 'mycred' ) );
+
+			if ( $method == 'POST' )
+				$key = $_POST[ $sales_data_key ];
+			elseif ( $method == 'GET' )
+				$key = $_GET[ $sales_data_key ];
+			else
+				$key = $_REQUEST[ $sales_data_key ];
+
+			$decoded_data = explode( '|', $this->decode_sales_data( $key ) );
+			if ( ! isset( $decoded_data[1] ) ) return false;
+
+			$result = true;
+			if ( ! $this->verify_token( (int) $decoded_data[1], $decoded_data[5] ) ) {
+				$this->new_log_entry( ' > ' . __( 'Token mismatch', 'mycred' ) );
+				$result = false;
+			}
+			
+			if ( $method == 'POST' )
+				$price = $_POST[ $cost_key ];
+			elseif ( $method == 'GET' )
+				$price = $_GET[ $cost_key ];
+			else
+				$price = $_REQUEST[ $cost_key ];
+				
+			if ( $result === true && $decoded_data[3] != $price ) {
+				$this->new_log_entry( ' > ' . __( 'Price mismatch', 'mycred' ) );
+				$result = false;
+			}
+
+			if ( $result === true && isset( $this->prefs['currency'] ) && $this->prefs['currency'] != $decoded_data[4] ) {
+				$this->new_log_entry( ' > ' . __( 'Currency mismatch', 'mycred' ) );
+				$result = false;
+			}
+
+			if ( $method == 'POST' )
+				$transaction_id = $_POST[ $transactionid_key ];
+			elseif ( $method == 'GET' )
+				$transaction_id = $_GET[ $transactionid_key ];
+			else
+				$transaction_id = $_REQUEST[ $transactionid_key ];
+
+			if ( $result === true && ! $this->transaction_id_is_unique( $transaction_id ) ) {
+				$this->new_log_entry( ' > ' . __( 'Duplicate transaction', 'mycred' ) );
+				$result = false;
+			}
+			
+			$result = apply_filters( 'mycred_buycred_valid_sale', $result, $sales_data_key, $cost_key, $transactionid_key, $method, $this );
+			
+			if ( $result === true )
+				return $decoded_data;
+		
+			return $result;
+		}
+
+		/**
+		 * Complete Payment
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		function complete_payment( $to = 0, $from = 0, $amount = 0, $data = '' ) {
+			$reference = 'buy_creds_with_' . str_replace( array( ' ', '-' ), '_', $this->id );
+
+			$reply = $this->core->add_creds(
+				$reference,
+				$to,
+				$amount,
+				$this->get_log_entry( $to, $from ),
+				$from,
+				$data,
+				$this->mycred_type
+			);
+
+			return apply_filters( 'mycred_buycred_complete_payment', $reply, $to, $from, $data, $this );
 		}
 	}
 }

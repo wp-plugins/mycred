@@ -1,10 +1,12 @@
 <?php
+
 /**
  * WP Favorite Posts
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 1.1
@@ -23,14 +25,15 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * WP Favorite Hook
 	 * @since 1.1
-	 * @version 1.0
+	 * @version 1.1
 	 */
-	if ( !class_exists( 'myCRED_Hook_WPFavorite' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_Hook_WPFavorite' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_WPFavorite extends myCRED_Hook {
+
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'wpfavorite',
 					'defaults' => array(
@@ -43,7 +46,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 							'log'   => '%plural% deduction for removing a post from favorites'
 						)
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -62,11 +65,11 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Add Favorite
 			 * @since 1.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function add_favorite( $post_id ) {
 				// Must be logged in
-				if ( !is_user_logged_in() ) return;
+				if ( ! is_user_logged_in() ) return;
 
 				$user_id = get_current_user_id();
 				// Check for exclusion
@@ -82,18 +85,19 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['add']['creds'],
 					$this->prefs['add']['log'],
 					$post_id,
-					array( 'ref_type' => 'post' )
+					array( 'ref_type' => 'post' ),
+					$this->mycred_type
 				);
 			}
 
 			/**
 			 * Remove Favorite
 			 * @since 1.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function remove_favorite( $post_id ) {
 				// Must be logged in
-				if ( !is_user_logged_in() ) return;
+				if ( ! is_user_logged_in() ) return;
 
 				$user_id = get_current_user_id();
 				// Check for exclusion
@@ -109,7 +113,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['remove']['creds'],
 					$this->prefs['remove']['log'],
 					$post_id,
-					array( 'ref_type' => 'post' )
+					array( 'ref_type' => 'post' ),
+					$this->mycred_type
 				);
 			}
 
@@ -121,33 +126,33 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			public function preferences() {
 				$prefs = $this->prefs; ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>"><?php _e( 'Adding Content to Favorites', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['add']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'log' ) ); ?>" value="<?php echo $prefs['add']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>"><?php _e( 'Removing Content from Favorites', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['remove']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'log' ) ); ?>" value="<?php echo $prefs['remove']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>"><?php _e( 'Adding Content to Favorites', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['add']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'add' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'add' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'add' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['add']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>"><?php _e( 'Removing Content from Favorites', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['remove']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'remove' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'remove' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'remove' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['remove']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 		}
 	}

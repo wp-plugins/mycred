@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Jetpack
  * @since 1.0.5
- * @version 1.0
+ * @version 1.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 1.0.5
@@ -23,15 +25,15 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Jetpack Hook
 	 * @since 1.0.5
-	 * @version 1.0
+	 * @version 1.1
 	 */
-	if ( !class_exists( 'myCRED_Hook_Jetpack' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_Hook_Jetpack' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_Jetpack extends myCRED_Hook {
 
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'jetpack',
 					'defaults' => array(
@@ -44,7 +46,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 							'log'              => '%plural% for comment subscription'
 						)
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -54,16 +56,14 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			public function run() {
 				// Site Subscriptions
-				if ( $this->prefs['subscribe_site']['creds'] != 0 ) {
-					add_filter( 'wp_redirect',   array( $this, 'submit_redirect' ), 1              );
-				}
-			
+				if ( $this->prefs['subscribe_site']['creds'] != 0 )
+					add_filter( 'wp_redirect',   array( $this, 'submit_redirect' ), 1 );
+
 				// Comment Subscriptions
-				if ( $this->prefs['subscribe_comment']['creds'] != 0 ) {
+				if ( $this->prefs['subscribe_comment']['creds'] != 0 )
 					add_action( 'comment_post',  array( $this, 'comment_subscribe_submit' ), 99, 2 );
-				}
-			
-				add_action( 'mycred_admin_init', array( $this, 'admin_init' )                      );
+
+				add_action( 'mycred_admin_init', array( $this, 'admin_init' ) );
 			}
 
 			/**
@@ -73,7 +73,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * as pending we save it for a later try.
 			 *
 			 * @since 1.0.5
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function admin_init() {
 				$types = array();
@@ -83,7 +83,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 
 				if ( $this->prefs['subscribe_comment']['creds'] != 0 )
 					$types[] = 'comment';
-			
+
 				// Not enabled, bail
 				if ( empty( $types ) ) return;
 
@@ -91,29 +91,29 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					// Get list if it exist
 					if ( false === ( $pending = get_option( 'mycred_jetpack_' . $type . '_pendings' ) ) )
 						continue;
-			
+
 					// Make sure list is not empty
 					if ( empty( $pending ) ) {
 						// Clean up before exit
 						delete_option( 'mycred_jetpack_' . $type . '_pendings' );
 						continue;
 					}
-			
+
 					$new = array();
 					foreach ( $pending as $id => $email ) {
 						// Validate
-						if ( trim( $email ) == '' || !is_email( $email ) ) continue;
-				
+						if ( trim( $email ) == '' || ! is_email( $email ) ) continue;
+
 						// Make sure user exist
 						$user = get_user_by( 'email', $email );
 						if ( $user === false ) continue;
-				
+
 						// Check for exclusion
 						if ( $this->core->exclude_user( $user->ID ) === true ) continue;
-				
+
 						// Make sure this is a unique event
 						if ( $this->core->has_entry( 'site_subscription', '', $user->ID ) ) continue;
-					
+
 						// Site Subscriptions
 						if ( $type == 'site' ) {
 							// Check subscription status
@@ -125,45 +125,51 @@ if ( defined( 'myCRED_VERSION' ) ) {
 									'site_subscription',
 									$user->ID,
 									$this->prefs['subscribe_site']['creds'],
-									$this->prefs['subscribe_site']['log']
+									$this->prefs['subscribe_site']['log'],
+									0,
+									'',
+									$this->mycred_type
 								);
 							}
+
 							// Pending status = save so we try again later
 							elseif ( $subscription == 'pending' ) {
 								$new[] = $email;
 								continue;
 							}
 						}
+
 						// Comment Subscriptions
 						else {
 							$comment = get_comment( $id );
 							if ( empty( $comment ) ) continue;
-						
+
 							// If no user id exist, check and see if the authors email is used by someone
 							if ( $comment->user_id == 0 ) {
 								$user = get_user_by( 'email', $email );
 								if ( $user === false ) continue;
 							}
+
 							// Make sure the user still exist
 							else {
 								$user = get_user_by( 'id', $comment->user_id );
 								if ( $user === false ) continue;
 							}
-			
+
 							// Check for exclusion
 							if ( $this->core->exclude_user( $user->ID ) === true ) continue;
-				
+
 							// Start with making sure this is a unique event
 							if ( $this->core->has_entry( 'comment_subscription', $id, $comment->user_id ) ) continue;
-				
+
 							$post_ids = array();
-	
+
 							if ( isset( $_REQUEST['subscribe_comments'] ) )
 								$post_ids[] = $comment->comment_post_ID;
-	
+
 							// Attempt to subscribe again to get results
 							$subscription = $this->check_jetpack_subscription( $email, array( $comment->comment_post_ID ) );
-				
+
 							// Subscription is active
 							if ( $subscription == 'active' ) {
 								// Execute
@@ -173,18 +179,19 @@ if ( defined( 'myCRED_VERSION' ) ) {
 									$this->prefs['subscribe_comment']['creds'],
 									$this->prefs['subscribe_comment']['log'],
 									$id,
-									array( 'ref_type' => 'comment' )
+									array( 'ref_type' => 'comment' ),
+									$this->mycred_type
 								);
 							}
 							// Subscription pending
 							elseif ( $subscription == 'pending' ) {
-								$new[$id] = $email;
+								$new[ $id ] = $email;
 							}
 						}
 					}
-			
+
 					// If we still have pending emails save for later
-					if ( !empty( $new ) )
+					if ( ! empty( $new ) )
 						update_option( 'mycred_jetpack_' . $type . '_pendings', $new );
 					// Else delete
 					else
@@ -200,18 +207,18 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			public function submit_redirect( $location ) {
 				// Make sure we have what we need
-				if ( !isset( $_REQUEST['jetpack_subscriptions_widget'] ) || !isset( $_REQUEST['email'] ) || empty( $_REQUEST['email'] ) )
+				if ( ! isset( $_REQUEST['jetpack_subscriptions_widget'] ) || ! isset( $_REQUEST['email'] ) || empty( $_REQUEST['email'] ) )
 					return $location;
-			
+
 				// Make sure Jetpack has executed
-				if ( !isset( $_GET['subscribe'] ) || $_GET['subscribe'] != 'success' )
+				if ( ! isset( $_GET['subscribe'] ) || $_GET['subscribe'] != 'success' )
 					return $location;
-			
+
 				// Make sure user exist
 				$user = get_user_by( 'email', $_REQUEST['email'] );
 				if ( $user === false )
 					return $location;
-			
+
 				// Check for exclusion
 				if ( $this->core->exclude_user( $user->ID ) === true )
 					return $location;
@@ -221,7 +228,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					return $location;
 
 				$this->site_subscribe( $_REQUEST['email'], $user->ID );
-			
+
 				return $location;
 			}
 
@@ -234,29 +241,28 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * @version 1.0
 			 */
 			public function comment_subscribe_submit( $comment_id, $approved ) {
-				if ( 'spam' === $approved ) {
-					return;
-				}
+				if ( 'spam' === $approved ) return;
 
-				if ( !isset( $_REQUEST['subscribe_comments'] ) && !isset( $_REQUEST['subscribe_blog'] ) )
+				if ( ! isset( $_REQUEST['subscribe_comments'] ) && ! isset( $_REQUEST['subscribe_blog'] ) )
 					return;
 
 				$comment = get_comment( $comment_id );
-			
+
 				// If no user id exist, check and see if the authors email is used by someone
 				if ( $comment->user_id == 0 ) {
 					$user = get_user_by( 'email', $comment->comment_author_email );
 					if ( $user === false ) return;
 				}
+
 				// Make sure the user still exist
 				else {
 					$user = get_user_by( 'id', $comment->user_id );
 					if ( $user === false ) return;
 				}
-			
+
 				// Check for exclusion
 				if ( $this->core->exclude_user( $user->ID ) === true ) return;
-			
+
 				// Start with making sure this is a unique event
 				if ( $this->core->has_entry( 'comment_subscription', $comment_id, $user->ID ) ) return;
 
@@ -267,20 +273,20 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				// Handle site subscription
 				if ( isset( $_REQUEST['subscribe_blog'] ) )
 					$this->site_subscribe( $comment->comment_author_email, $user->ID );
-		 	}
-	 	
-		 	/**
+			}
+
+			/**
 			 * Comment Subscribe
 			 * Awards points for active subscriptions or adds email and comment id to the pending array.
 			 * Note! This methods should only be called once the primary checks have been made, including making sure
 			 * the user exist, is not excluded and that this is a unique event!
 			 * @since 1.0.5
-			 * @version 1.0
+			 * @version 1.1
 			 */
-		 	protected function comment_subscribe( $email = '', $post_ids = '', $user_id = 0, $comment_id = 0 ) {
-		 		// Attempt to subscribe again to get results
+			protected function comment_subscribe( $email = '', $post_ids = '', $user_id = 0, $comment_id = 0 ) {
+				// Attempt to subscribe again to get results
 				$subscription = $this->check_jetpack_subscription( $email, $post_ids );
-			
+
 				// Subscription is active
 				if ( $subscription == 'active' ) {
 					// Execute
@@ -290,30 +296,32 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['subscribe_comment']['creds'],
 						$this->prefs['subscribe_comment']['log'],
 						$comment_id,
-						array( 'ref_type' => 'comment' )
+						array( 'ref_type' => 'comment' ),
+						$this->mycred_type
 					);
-	
+
 					// Let others share our success
 					do_action( 'mycred_jetpack_comment', $user_id, $comment_id );
 				}
+
 				// Subscription pending
 				elseif ( $subscription == 'pending' ) {
 					// Add email to pending list if not in it already
-					if ( !$this->is_pending( $email, $comment_id ) )
+					if ( ! $this->is_pending( $email, $comment_id ) )
 						$this->add_to_pending( $email, $comment_id );
 				}
-		 	}
-	 	
-		 	/**
+			}
+
+			/**
 			 * Site Subscription
 			 * Awards points for active site subscriptions or adds email to the pending array.
 			 * Note! This methods should only be called once the primary checks have been made, including making sure
 			 * the user exist, is not excluded and that this is a unique event!
 			 * @since 1.0.5
-			 * @version 1.0
+			 * @version 1.1
 			 */
-		 	protected function site_subscribe( $email = '', $user_id = 0 ) {
-		 		// Attempt to add this email again to check it's status
+			protected function site_subscribe( $email = '', $user_id = 0 ) {
+				// Attempt to add this email again to check it's status
 				$subscription = $this->check_jetpack_subscription( $email );
 
 				// Subscription is active
@@ -323,20 +331,24 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						'site_subscription',
 						$user_id,
 						$this->prefs['subscribe_site']['creds'],
-						$this->prefs['subscribe_site']['log']
+						$this->prefs['subscribe_site']['log'],
+						0,
+						'',
+						$this->mycred_type
 					);
 
 					// Let others share our success
 					do_action( 'mycred_jetpack_site', $user_id, $GLOBALS['blog_id'] );
 				}
+
 				// Subscription pending
 				elseif ( $subscription == 'pending' ) {
 					// Add email to pending list if not in it already
-					if ( !$this->is_pending( $email ) )
+					if ( ! $this->is_pending( $email ) )
 						$this->add_to_pending( $email );
 				}
-		 	}
-		
+			}
+
 			/**
 			 * Check Jetpack Subscription
 			 * @since 1.0.5
@@ -344,12 +356,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			protected function check_jetpack_subscription( $email = NULL, $post_ids = NULL ) {
 				if ( $email === NULL ) return 'missing';
-			
-				if ( !class_exists( 'Jetpack' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
+
+				if ( ! class_exists( 'Jetpack' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
 					require_once( JETPACK__PLUGIN_DIR . 'jetpack.php' );
-				if ( !class_exists( 'Jetpack_Subscriptions' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
+
+				if ( ! class_exists( 'Jetpack_Subscriptions' ) && defined( 'JETPACK__PLUGIN_DIR' ) )
 					require_once( JETPACK__PLUGIN_DIR . 'modules/subscriptions.php' );
-			
+
 				if ( $post_ids === NULL )
 					$subscribe = Jetpack_Subscriptions::subscribe( $email, 0, false );
 				else
@@ -357,7 +370,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 
 				if ( is_wp_error( $subscribe ) ) {
 					$error = $subscribe->get_error_code();
-				} else {
+				}
+				else {
 					$error = false;
 					foreach ( $subscribe as $response ) {
 						if ( is_wp_error( $response ) ) {
@@ -383,15 +397,16 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						break;
 					}
 				}
+
 				else {
 					if ( is_array( $subscribe ) && $subscribe[0] === true )
 						$error = true;
 						$return = 'pending';
 				}
-			
+
 				if ( $error )
 					return $return;
-			
+
 				return 'new';
 			}
 
@@ -406,7 +421,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			protected function is_pending( $email = NULL, $section = 'site' ) {
 				if ( $email === NULL || trim( $email ) === '' ) return;
-			
+
 				if ( $section == 'site' )
 					$name = $section;
 				else
@@ -421,18 +436,15 @@ if ( defined( 'myCRED_VERSION' ) ) {
 
 					update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
 				}
-			
+
 				// Site check
-				if ( $section == 'site' ) {
-					if ( in_array( $email, $pending ) )
-						return true;
-				}
+				if ( $section == 'site' && in_array( $email, $pending ) )
+					return true;
+
 				// Comment check
-				else {
-					if ( array_key_exists( $section, $pending ) && $pending[$section] == $email )
-						return true;
-				}
-			
+				elseif ( array_key_exists( $section, $pending ) && $pending[ $section ] == $email )
+					return true;
+
 				return false;
 			}
 
@@ -446,7 +458,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			protected function add_to_pending( $email = NULL, $section = 'site' ) {
 				if ( $email === NULL || trim( $email ) === '' ) return;
-			
+
 				if ( $section == 'site' )
 					$name = $section;
 				else
@@ -458,23 +470,20 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$pending = array( $email );
 					else
 						$pending = array( $section => $email );
-	
+
 					update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
 				}
-			
+
 				// Site pending list
-				if ( $section == 'site' ) {
-					if ( !in_array( $email, $pending ) ) {
-						$pending[] = $email;
-						update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
-					}
+				if ( $section == 'site' && ! in_array( $email, $pending ) ) {
+					$pending[] = $email;
+					update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
 				}
+
 				// Comment pending list
-				else {
-					if ( !array_key_exists( $section, $pending ) ) {
-						$pending[$section] = $email;
-						update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
-					}
+				elseif ( ! array_key_exists( $section, $pending ) ) {
+					$pending[ $section ] = $email;
+					update_option( 'mycred_jetpack_' . $name . '_pendings', $pending );
 				}
 			}
 
@@ -486,33 +495,33 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			public function preferences() {
 				$prefs = $this->prefs; ?>
 
-					<!-- Creds for Site Subscription -->
-					<label for="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" class="subheader"><?php _e( 'Site Subscriptions', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_site']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'subscribe_site', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'log' ) ); ?>" value="<?php echo $prefs['subscribe_site']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<!-- Creds for Comment Subscription -->
-					<label for="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" class="subheader"><?php _e( 'Comment Subscriptions', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_comment']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'subscribe_comment', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'log' ) ); ?>" value="<?php echo $prefs['subscribe_comment']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<!-- Creds for Site Subscription -->
+<label for="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" class="subheader"><?php _e( 'Site Subscriptions', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_site']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'subscribe_site', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_site', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_site', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['subscribe_site']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<!-- Creds for Comment Subscription -->
+<label for="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" class="subheader"><?php _e( 'Comment Subscriptions', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['subscribe_comment']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'subscribe_comment', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'subscribe_comment', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'subscribe_comment', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['subscribe_comment']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 		}
 	}

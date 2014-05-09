@@ -1,10 +1,12 @@
 <?php
+
 /**
  * WP-Polls Plugin
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 1.1
@@ -23,21 +25,22 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * WP-Polls Hook
 	 * @since 1.1
-	 * @version 1.0
+	 * @version 1.1
 	 */
-	if ( !class_exists( 'myCRED_Hook_WPPolls' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_Hook_WPPolls' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_WPPolls extends myCRED_Hook {
+
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'wppolls',
 					'defaults' => array(
 						'creds' => 1,
 						'log'   => '%plural% for voting'
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -53,7 +56,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Poll Voting
 			 * @since 1.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function vote_poll() {
 				if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'polls' && is_user_logged_in() ) {
@@ -68,19 +71,20 @@ if ( defined( 'myCRED_VERSION' ) ) {
 								case 'process':
 									$poll_aid = $_POST["poll_$poll_id"];
 									$poll_aid_array = array_unique( array_map( 'intval', explode( ',', $poll_aid ) ) );
-									if ( $poll_id > 0 && !empty( $poll_aid_array ) && check_allowtovote() ) {
+									if ( $poll_id > 0 && ! empty( $poll_aid_array ) && check_allowtovote() ) {
 										$check_voted = check_voted( $poll_id );
 										if ( $check_voted == 0 ) {
 											$user_id = get_current_user_id();
 											// Make sure we are not excluded
-											if ( !$this->core->exclude_user( $user_id ) ) {
+											if ( ! $this->core->exclude_user( $user_id ) ) {
 												$this->core->add_creds(
 													'poll_voting',
 													$user_id,
 													$this->prefs['creds'],
 													$this->prefs['log'],
 													$poll_id,
-													array( 'ref_type' => 'poll' )
+													array( 'ref_type' => 'poll' ),
+													$this->mycred_type
 												);
 											}
 										}
@@ -111,7 +115,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 */
 			protected function get_poll_name( $poll_id ) {
 				global $wpdb;
-				$sql = "SELECT pollq_question FROM $wpdb->pollsq WHERE pollq_id = %d ";
+				$sql = "SELECT pollq_question FROM {$wpdb->pollsq} WHERE pollq_id = %d ";
 				return $wpdb->get_var( $wpdb->prepare( $sql, $poll_id ) );
 			}
 
@@ -123,20 +127,20 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			public function preferences() {
 				$prefs = $this->prefs; ?>
 
-					<label class="subheader"><?php echo $this->core->plural(); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $prefs['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General. You can also use %poll_id% and %poll_question%.', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<label class="subheader"><?php echo $this->core->plural(); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo esc_attr( $prefs['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ), '%poll_id% and %poll_question%' ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 		}
 	}

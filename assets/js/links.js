@@ -2,7 +2,7 @@
  * myCRED Points for Link Clicks jQuery Scripts
  * @contributors Kevin Reeves
  * @since 0.1
- * @version 1.3.3
+ * @version 1.4
  */
 jQuery(function($) {
 	var mycred_click = function( href, title, target, skey ) {
@@ -11,14 +11,14 @@ jQuery(function($) {
 			data : {
 				action : 'mycred-click-points',
 				url    : href,
-				token  : myCREDgive.token,
+				token  : myCREDlink.token,
 				etitle : title,
 				key    : skey
 			},
 			dataType : "JSON",
-			url : myCREDgive.ajaxurl,
+			url : myCREDlink.ajaxurl,
 			success    : function( data ) {
-				//console.log( data );
+				console.log( data );
 				if ( target == 'self' || target == '_self' )
 					window.location.href = href;
 			},

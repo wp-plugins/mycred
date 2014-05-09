@@ -1,10 +1,12 @@
 <?php
+
 /**
  * GD Star Rating
  * @since 1.2
  * @version 1.0
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 1.2
@@ -25,12 +27,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.2
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_GD_Star_Rating' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_Hook_GD_Star_Rating' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_GD_Star_Rating extends myCRED_Hook {
+
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'gdstars',
 					'defaults' => array(
@@ -43,7 +46,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 							'log'   => '%plural% for rating'
 						)
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -61,10 +64,10 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * @version 1.0
 			 */
 			public function vote( $vote_value, $post_id, $vote_tpl, $vote_size ) {
-				if ( !is_user_logged_in() ) return;
+				if ( ! is_user_logged_in() ) return;
 
 				if ( is_string( $vote_value ) && $this->prefs['up_down']['creds'] == 0 ) return;
-				elseif ( !is_string( $vote_value ) && $this->prefs['star_rating']['creds'] == 0 ) return;
+				elseif ( ! is_string( $vote_value ) && $this->prefs['star_rating']['creds'] == 0 ) return;
 
 				if ( is_string( $vote_value ) ) {
 					$vote = 'up_down';
@@ -84,7 +87,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					( $star ) ? $this->prefs['star_rating']['creds'] : $this->prefs['up_down']['creds'],
 					( $star ) ? $this->prefs['star_rating']['log'] : $this->prefs['up_down']['log'],
 					$post_id,
-					$vote
+					$vote,
+					$this->mycred_type
 				);
 			}
 
@@ -96,33 +100,33 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			public function preferences() {
 				$prefs = $this->prefs; ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>"><?php _e( 'Rating', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['star_rating']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'log' ) ); ?>" value="<?php echo $prefs['star_rating']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>"><?php _e( 'Up / Down Vote', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['up_down']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'log' ) ); ?>" value="<?php echo $prefs['up_down']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>"><?php _e( 'Rating', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['star_rating']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'star_rating' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'star_rating' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'star_rating' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['star_rating']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>"><?php _e( 'Up / Down Vote', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['up_down']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'up_down' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'up_down' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'up_down' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['up_down']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 		}
 	}

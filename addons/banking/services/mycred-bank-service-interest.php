@@ -299,7 +299,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					<ol>
 						<li>
 							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo $prefs['log']; ?>" style="width: 65%;" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, %timeframe%, %rate%, %base%', 'mycred' ); ?></span>
+							<span class="description"><?php echo $this->core->available_template_tags( array( 'general' ), '%timeframe%, %rate%, %base%' ); ?></span>
 						</li>
 					</ol>
 					<label class="subheader" for="<?php echo $this->field_id( 'run_time' ); ?>"><?php _e( 'Run Time', 'mycred' ); ?></label>

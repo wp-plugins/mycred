@@ -1,7 +1,7 @@
 /**
  * myCRED Points for Link Clicks jQuery Scripts
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 jQuery(function($) {
 	var mycred_send = function( button, label ) {
@@ -13,6 +13,7 @@ jQuery(function($) {
 				recipient : button.attr( 'data-to' ),
 				log       : button.attr( 'data-log' ),
 				reference : button.attr( 'data-ref' ),
+				type      : button.attr( 'data-type' ),
 				token     : myCREDsend.token
 			},
 			dataType : "JSON",
@@ -50,13 +51,6 @@ jQuery(function($) {
 						}
 					});
 				}
-			},
-			// Error (sent to console)
-			error      : function( jqXHR, textStatus, errorThrown ) {
-				button.attr( 'value', myCREDsend.error );
-				button.removeAttr( 'disabled' );
-				// Debug - uncomment to use
-				//console.log( jqXHR );
 			}
 		});
 	};

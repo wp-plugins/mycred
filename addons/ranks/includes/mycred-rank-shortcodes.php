@@ -1,5 +1,6 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED Shortcode: mycred_my_rank
  * Returns the current users balance.
@@ -7,7 +8,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_my_rank' ) ) {
+if ( ! function_exists( 'mycred_render_my_rank' ) ) {
 	function mycred_render_my_rank( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -43,9 +44,9 @@ if ( !function_exists( 'mycred_render_my_rank' ) ) {
  * Returns all users who have the given rank with the option to show the rank logo and optional content.
  * @see http://mycred.me/shortcodes/mycred_users_of_rank/
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
-if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
+if ( ! function_exists( 'mycred_render_users_of_rank' ) ) {
 	function mycred_render_users_of_rank( $atts, $row_template = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -61,12 +62,13 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 		if ( $rank_id === NULL )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Rank ID is required!', 'mycred' );
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		// User is not logged in
-		if ( !empty( $login ) && !is_user_logged_in() ) return $mycred->template_tags_general( $login );
+		if ( ! is_user_logged_in() )
+			return $mycred->template_tags_general( $login );
 		
 		// ID is not a post id but a rank title
-		if ( !is_numeric( $rank_id ) )
+		if ( ! is_numeric( $rank_id ) )
 			$rank_id = mycred_get_rank_id_from_title( $rank_id );
 
 		$output = '';
@@ -80,14 +82,14 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
 			$row_template = apply_filters( 'mycred_users_of_rank', $row_template, $atts, $mycred );
 			// Get users of this rank if there are any
 			$users = mycred_get_users_of_rank( $rank_id, $number );
-			if ( !empty( $users ) ) {
+			if ( ! empty( $users ) ) {
 				// Add support for table
 				if ( $wrap != 'table' && !empty( $wrap ) )
 					$output .= '<' . $wrap . ' class="mycred-users-of-rank-wrapper">';
 				
 				// Loop
-				foreach ( $users as $user_id ) {
-					$output .= $mycred->template_tags_user( $row_template, $user_id );
+				foreach ( $users as $user ) {
+					$output .= $mycred->template_tags_user( $row_template, $user['user_id'] );
 				}
 				
 				// Add support for table
@@ -118,9 +120,9 @@ if ( !function_exists( 'mycred_render_users_of_rank' ) ) {
  * Returns all users fore every registered rank in order.
  * @see http://mycred.me/shortcodes/mycred_users_of_all_ranks/
  * @since 1.1
- * @version 1.0
+ * @version 1.0.1
  */
-if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
+if ( ! function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 	function mycred_render_users_of_all_ranks( $atts, $row_template = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -133,10 +135,11 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 		), $atts ) );
 
 		// Prep
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		
 		// User is not logged in
-		if ( !empty( $login ) && !is_user_logged_in() ) return $mycred->template_tags_general( $login );
+		if ( ! is_user_logged_in() )
+			return $mycred->template_tags_general( $login );
 		
 		// Default template
 		if ( $row_template === NULL || empty( $row_template ) )
@@ -148,7 +151,7 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 		$output = '';
 		$all_ranks = mycred_get_ranks();
 		// If we have ranks
-		if ( !empty( $all_ranks ) ) {
+		if ( ! empty( $all_ranks ) ) {
 			$output .= '<div class="mycred-all-ranks-wrapper">' . "\n";
 			// Loop though all ranks
 			foreach ( $all_ranks as $rank_id => $rank ) {
@@ -191,7 +194,7 @@ if ( !function_exists( 'mycred_render_users_of_all_ranks' ) ) {
  * @since 1.1.1
  * @version 1.0
  */
-if ( !function_exists( 'mycred_render_rank_list' ) ) {
+if ( ! function_exists( 'mycred_render_rank_list' ) ) {
 	function mycred_render_rank_list( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -202,11 +205,11 @@ if ( !function_exists( 'mycred_render_rank_list' ) ) {
 		if ( $content === NULL || empty( $content ) )
 			$content = '<p>%rank% <span class="min">%min%</span> - <span class="max">%max%</span></p>';
 		
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 
 		$output = '';
 		$all_ranks = mycred_get_ranks( 'publish', '-1', $order );
-		if ( !empty( $all_ranks ) ) {
+		if ( ! empty( $all_ranks ) ) {
 			$output .= '<' . $wrap . ' class="mycred-rank-list">';
 			$content = apply_filters( 'mycred_rank_list', $content, $atts, $mycred );
 			foreach ( $all_ranks as $rank_id => $rank ) {

@@ -1,21 +1,23 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * Events Manager Pro Gateway
  * @since 1.3
- * @version 1.0.2
+ * @version 1.1
  */
-if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
+if ( ! class_exists( 'EM_Gateway_myCRED' ) ) {
 	class EM_Gateway_myCRED extends EM_Gateway {
 
-		var $gateway = 'mycred';
-		var $title = '';
-		var $status = 1;
-		var $status_txt = '';
-		var $button_enabled = true;
-		var $supports_multiple_bookings = true;
+		public $gateway = 'mycred';
+		public $title = '';
+		public $status = 1;
+		public $status_txt = '';
+		public $mycred_type = 'mycred_default';
+		public $button_enabled = true;
+		public $supports_multiple_bookings = true;
 
-		var $registered_timer = 0;
+		public $registered_timer = 0;
 
 		/**
 		 * Construct 
@@ -24,6 +26,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			// Default settings
 			$defaults = array(
 				'setup'    => 'off',
+				'type'     => 'mycred_default',
 				'rate'     => 100,
 				'share'    => 0,
 				'log'      => array(
@@ -46,8 +49,10 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			$settings = get_option( 'mycred_eventsmanager_gateway_prefs' );
 			$this->prefs = mycred_apply_defaults( $defaults, $settings );
 
+			$this->mycred_type = $this->prefs['type'];
+
 			// Load myCRED
-			$this->core = mycred_get_settings();
+			$this->core = mycred( $this->mycred_type );
 			
 			// Apply Whitelabeling
 			$this->label = mycred_label();
@@ -121,7 +126,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * @version 1.0
 		 */
 		public function ticket_columns( $columns, $EM_Event ) {
-			if ( !$EM_Event->is_free() ) {
+			if ( ! $EM_Event->is_free() ) {
 				unset( $columns['price'] );
 				unset( $columns['type'] );
 				unset( $columns['spaces'] );
@@ -167,14 +172,14 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * @version 1.0
 		 */
 		function booking_form_button() {
-			if ( !is_user_logged_in() ) return;
+			if ( ! is_user_logged_in() ) return;
 			$user_id = get_current_user_id();
 			
 			// Check for exclusion
 			if ( $this->core->exclude_user( $user_id ) ) return;
 			
 			// Make sure we have points
-			if ( $this->core->get_users_cred( $user_id ) <= $this->core->format_number( 0 ) ) return;
+			if ( $this->core->get_users_cred( $user_id, $this->mycred_type ) <= $this->core->format_number( 0 ) ) return;
 			
 			$button = get_option( 'em_'. $this->gateway . '_button', $this->title );
 			ob_start();
@@ -208,7 +213,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		/**
 		 * Booking Payment
 		 * @since 1.3
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		function booking_payment( $result, $EM_Booking ) {
 			global $wpdb, $wp_rewrite, $EM_Notices;
@@ -224,15 +229,15 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 						$ok = false;
 					}
 					// User can not afford to pay
-					elseif ( !$this->can_pay( $EM_Booking ) ) {
+					elseif ( ! $this->can_pay( $EM_Booking ) ) {
 						$EM_Booking->add_error( $this->core->template_tags_general( $this->prefs['messages']['error'] ) );
 						$ok = false;
 					}
 					// User has not yet paid (prefered)
-					elseif ( !$this->has_paid( $EM_Booking ) ) {
+					elseif ( ! $this->has_paid( $EM_Booking ) ) {
 						// Price
 						$price = $this->core->number( $EM_Booking->booking_price );
-						if ( !$this->single_currency() ) {
+						if ( ! $this->single_currency() ) {
 							$exchange_rate = $this->prefs['rate'];
 							$price = $this->core->number( $exchange_rate*$price );
 						}
@@ -244,7 +249,8 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 							0-$price,
 							$this->prefs['log']['purchase'],
 							$EM_Booking->event->post_id,
-							array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id )
+							array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id ),
+							$this->mycred_type
 						);
 						
 						// Log transaction with EM
@@ -263,7 +269,8 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 									$share,
 									$this->prefs['log']['purchase'],
 									$event_post->ID,
-									array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id )
+									array( 'ref_type' => 'post', 'bid' => (int) $EM_Booking->booking_id ),
+									$this->mycred_type
 								);
 							}
 						}
@@ -275,7 +282,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 			
 					// Successfull Payment
 					if ( $ok ) {
-						if ( !get_option( 'em_' . $this->gateway . '_manual_approval', false ) || !get_option( 'dbem_bookings_approval' ) ) {
+						if ( ! get_option( 'em_' . $this->gateway . '_manual_approval', false ) || ! get_option( 'dbem_bookings_approval' ) ) {
 							$EM_Booking->set_status( 1, false ); //Approve
 						} else {
 							$EM_Booking->set_status( 0, false ); //Set back to normal "pending"
@@ -284,7 +291,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 					// Error in payment - delete booking
 					else {
 						// Delete any user that got registered for this event
-						if ( !is_user_logged_in() && get_option( 'dbem_bookings_anonymous' ) && !get_option( 'dbem_bookings_registration_disable' ) && !empty( $EM_Booking->person_id ) ) {
+						if ( ! is_user_logged_in() && get_option( 'dbem_bookings_anonymous' ) && !get_option( 'dbem_bookings_registration_disable' ) && ! empty( $EM_Booking->person_id ) ) {
 							$EM_Person = $EM_Booking->get_person();
 							if ( strtotime( $EM_Person->data->user_registered ) >= $this->registered_timer ) {
 								if ( is_multisite() ) {
@@ -341,7 +348,8 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 						$refund,
 						$this->prefs['log']['refund'],
 						$EM_Booking->event->post_id,
-						array( 'ref_type' => 'post', 'bid' => (int) $booking_id )
+						array( 'ref_type' => 'post', 'bid' => (int) $booking_id ),
+						$this->mycred_type
 					);
 				}
 			}
@@ -379,19 +387,19 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * Can Pay Check
 		 * Checks if the user can pay for their booking.
 		 * @since 1.2
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function can_pay( $EM_Booking ) {
 			$EM_Event = $EM_Booking->get_event();
 			// You cant pay for free events
 			if ( $EM_Event->is_free() ) return false;
 
-			$balance = $this->core->get_users_cred( $EM_Booking->person->ID );
+			$balance = $this->core->get_users_cred( $EM_Booking->person->ID, $this->mycred_type );
 			if ( $balance <= $this->core->zero() ) return false;
 
 			$price = $this->core->number( $EM_Booking->booking_price );
 			if ( $price == $this->core->zero() ) return true;
-			if ( !$this->single_currency() ) {
+			if ( ! $this->single_currency() ) {
 				$exchange_rate = $this->prefs['rate'];
 				$price = $this->core->number( $exchange_rate*$price );
 			}
@@ -405,7 +413,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		 * Has Paid
 		 * Checks if the user has paid for booking
 		 * @since 1.3
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function has_paid( $EM_Booking ) {
 			if ( $this->core->has_entry(
@@ -415,7 +423,8 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 				array(
 					'ref_type' => 'post',
 					'bid'      => (int) $EM_Booking->booking_id
-				)
+				),
+				$this->mycred_type
 			) )
 				return true;
 
@@ -425,7 +434,7 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 		/**
 		 * Getway Settings
 		 * @since 1.3
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function mysettings() {
 			global $page, $action;
@@ -441,60 +450,76 @@ if ( !class_exists( 'EM_Gateway_myCRED' ) ) {
 				$this->core->plural(),
 				em_get_currency_symbol()
 			);
-			
+
+			$mycred_types = mycred_get_types();
+
 			do_action( 'mycred_em_before_settings', $this ); ?>
 
-					<h4><?php _e( 'Setup', 'mycred' ); ?></h4>
-					<table class="form-table">
-						<tr>
-							<th scope="row"><?php _e( 'Payments', 'mycred' ); ?></th>
-							<td>
-								<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-off" value="off"<?php checked( $this->prefs['setup'], 'off' ); ?> /> <label for="mycred-gateway-setup-off"><?php echo $this->core->template_tags_general( __( 'Disabled - Users CAN NOT pay for tickets using %plural%.', 'mycred' ) ); ?></label><br />
-								<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-single" value="single"<?php checked( $this->prefs['setup'], 'single' ); ?> /> <label for="mycred-gateway-setup-single"><?php echo $this->core->template_tags_general( __( 'Single - Users can ONLY pay for tickets using %plural%.', 'mycred' ) ); ?></label><br />
-								<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-multi" value="multi"<?php checked( $this->prefs['setup'], 'multi' ); ?> /> <label for="mycred-gateway-setup-multi"><?php echo $this->core->template_tags_general( __( 'Multi - Users can pay for tickets using other gateways or %plural%.', 'mycred' ) ); ?></label>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><?php _e( 'Refunds', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[refund]" type="text" id="mycred-gateway-log-refund" value="<?php echo $this->prefs['refund']; ?>" size="5" /> %<br />
-								<span class="description"><?php _e( 'The percentage of the paid amount to refund if a user cancells their booking. Use zero for no refunds. No refunds are given to "Rejected" bookings!', 'mycred' ); ?></span>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><?php _e( 'Profit Sharing', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[share]" type="text" id="mycred-gateway-profit-sharing" value="<?php echo $this->prefs['share']; ?>" size="5" /> %<br />
-								<span class="description"><?php _e( 'Option to share sales with the event owner (post author). Use zero to disable.', 'mycred' ); ?></span>
-							</td>
-						</tr>
-					</table>
-					<table class="form-table" id="mycred-exchange-rate" style="<?php echo $box; ?>">
-						<tr>
-							<th scope="row"><?php _e( 'Exchange Rate', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[rate]" type="text" id="mycred-gateway-rate" size="6" value="<?php echo $this->prefs['rate']; ?>" /><br />
-								<span class="description"><?php echo $exchange_message; ?></span>
-							</td>
-						</tr>
-					</table>
-					<h4><?php _e( 'Log Templates', 'mycred' ); ?></h4>
-					<table class="form-table">
-						<tr>
-							<th scope="row"><?php _e( 'Purchases', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[log][purchase]" type="text" id="mycred-gateway-log-purchase" style="width: 95%;" value="<?php echo $this->prefs['log']['purchase']; ?>" size="45" /><br />
-								<span class="description"><?php _e( 'Available template tags: General and Post related.', 'mycred' ); ?></span>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><?php _e( 'Refunds', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[log][refund]" type="text" id="mycred-gateway-log-refund" style="width: 95%;" value="<?php echo $this->prefs['log']['refund']; ?>" size="45" /><br />
-								<span class="description"><?php _e( 'Available template tags: General and Post related.', 'mycred' ); ?></span>
-							</td>
-						</tr>
-					</table>
+<h4><?php _e( 'Setup', 'mycred' ); ?></h4>
+<table class="form-table">
+	<?php if ( count( $mycred_types ) > 1 ) : ?>
+
+	<tr>
+		<th scope="row"><?php _e( 'Point Type', 'mycred' ); ?></th>
+		<td>
+			<?php mycred_types_select_from_dropdown( 'mycred_gateway[type]', 'mycred-gateway-type', $this->prefs['type'] ); ?>
+
+		</td>
+	</tr>
+	<?php else : ?>
+
+	<input type="hidden" name="mycred_gateway[type]" value="mycred_default" />
+	<?php endif; ?>
+
+	<tr>
+		<th scope="row"><?php _e( 'Payments', 'mycred' ); ?></th>
+		<td>
+			<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-off" value="off"<?php checked( $this->prefs['setup'], 'off' ); ?> /> <label for="mycred-gateway-setup-off"><?php echo $this->core->template_tags_general( __( 'Disabled - Users CAN NOT pay for tickets using %plural%.', 'mycred' ) ); ?></label><br />
+			<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-single" value="single"<?php checked( $this->prefs['setup'], 'single' ); ?> /> <label for="mycred-gateway-setup-single"><?php echo $this->core->template_tags_general( __( 'Single - Users can ONLY pay for tickets using %plural%.', 'mycred' ) ); ?></label><br />
+			<input type="radio" name="mycred_gateway[setup]" id="mycred-gateway-setup-multi" value="multi"<?php checked( $this->prefs['setup'], 'multi' ); ?> /> <label for="mycred-gateway-setup-multi"><?php echo $this->core->template_tags_general( __( 'Multi - Users can pay for tickets using other gateways or %plural%.', 'mycred' ) ); ?></label>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><?php _e( 'Refunds', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[refund]" type="text" id="mycred-gateway-log-refund" value="<?php echo $this->prefs['refund']; ?>" size="5" /> %<br />
+			<span class="description"><?php _e( 'The percentage of the paid amount to refund if a user cancels their booking. Use zero for no refunds. No refunds are given to "Rejected" bookings!', 'mycred' ); ?></span>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><?php _e( 'Profit Sharing', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[share]" type="text" id="mycred-gateway-profit-sharing" value="<?php echo $this->prefs['share']; ?>" size="5" /> %<br />
+			<span class="description"><?php _e( 'Option to share sales with the product owner. Use zero to disable.', 'mycred' ); ?></span>
+		</td>
+	</tr>
+</table>
+<table class="form-table" id="mycred-exchange-rate" style="<?php echo $box; ?>">
+	<tr>
+		<th scope="row"><?php _e( 'Exchange Rate', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[rate]" type="text" id="mycred-gateway-rate" size="6" value="<?php echo $this->prefs['rate']; ?>" /><br />
+			<span class="description"><?php echo $exchange_message; ?></span>
+		</td>
+	</tr>
+</table>
+<h4><?php _e( 'Log Templates', 'mycred' ); ?></h4>
+<table class="form-table">
+	<tr>
+		<th scope="row"><?php _e( 'Purchases', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[log][purchase]" type="text" id="mycred-gateway-log-purchase" style="width: 95%;" value="<?php echo $this->prefs['log']['purchase']; ?>" size="45" /><br />
+			<span class="description"><?php echo $this->core->available_template_tags( array( 'general', 'post' ) ); ?>></span>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><?php _e( 'Refunds', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[log][refund]" type="text" id="mycred-gateway-log-refund" style="width: 95%;" value="<?php echo $this->prefs['log']['refund']; ?>" size="45" /><br />
+			<span class="description"><?php echo $this->core->available_template_tags( array( 'general', 'post' ) ); ?></span>
+		</td>
+	</tr>
+</table>
 <script type="text/javascript">
 jQuery(function($){
 	$('input[name="mycred_gateway[setup]"]').change(function(){
@@ -507,47 +532,47 @@ jQuery(function($){
 	});
 });
 </script>
-					<h4><?php _e( 'Labels', 'mycred' ); ?></h4>
-					<table class="form-table">
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Payment Link Label', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[labels][link]" type="text" id="mycred-gateway-labels-link" style="width: 95%" value="<?php echo $this->prefs['labels']['link']; ?>" size="45" /><br />
-								<span class="description"><?php _e( 'The payment link shows / hides the payment form under "My Bookings". No HTML allowed.', 'mycred' ); ?></span>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Payment Header', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[labels][header]" type="text" id="mycred-gateway-labels-header" style="width: 95%" value="<?php echo $this->prefs['labels']['header']; ?>" size="45" /><br />
-								<span class="description"><?php _e( 'Shown on top of the payment form. No HTML allowed.', 'mycred' ); ?></span>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Button Label', 'mycred' ); ?></th>
-							<td>
-								<input name="mycred_gateway[labels][button]" type="text" id="mycred-gateway-labels-button" style="width: 95%" value="<?php echo $this->prefs['labels']['button']; ?>" size="45" /><br />
-								<span class="description"><?php _e( 'The button label for payments. No HTML allowed!', 'mycred' ); ?></span>
-							</td>
-						</tr>
-					</table>
-					<h4><?php _e( 'Messages', 'mycred' ); ?></h4>
-					<table class='form-table'>
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Successful Payments', 'mycred' ); ?></th>
-							<td>
-								<input type="text" name="mycred_gateway[messages][success]" id="mycred-gateway-messages-success" style="width: 95%;" value="<?php echo stripslashes( $this->prefs['messages']['success'] ); ?>" /><br />
-								<span class="description"><?php _e( 'No HTML allowed! Available template tags: General', 'mycred' ); ?></span>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e( 'Insufficient Funds', 'mycred' ); ?></th>
-							<td>
-								<input type="text" name="mycred_gateway[messages][error]" id="mycred-gateway-messages-error" style="width: 95%;" value="<?php echo stripslashes( $this->prefs['messages']['error'] ); ?>" /><br />
-								<span class="description"><?php _e( 'No HTML allowed! Available template tags: General', 'mycred' ); ?></span>
-							</td>
-						</tr>
-					</table>
+<h4><?php _e( 'Labels', 'mycred' ); ?></h4>
+<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Payment Link Label', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[labels][link]" type="text" id="mycred-gateway-labels-link" style="width: 95%" value="<?php echo $this->prefs['labels']['link']; ?>" size="45" /><br />
+			<span class="description"><?php _e( 'The payment link shows / hides the payment form under "My Bookings". No HTML allowed.', 'mycred' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Payment Header', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[labels][header]" type="text" id="mycred-gateway-labels-header" style="width: 95%" value="<?php echo $this->prefs['labels']['header']; ?>" size="45" /><br />
+			<span class="description"><?php _e( 'Shown on top of the payment form. No HTML allowed.', 'mycred' ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Button Label', 'mycred' ); ?></th>
+		<td>
+			<input name="mycred_gateway[labels][button]" type="text" id="mycred-gateway-labels-button" style="width: 95%" value="<?php echo $this->prefs['labels']['button']; ?>" size="45" /><br />
+			<span class="description"><?php _e( 'The button label for payments. No HTML allowed!', 'mycred' ); ?></span>
+		</td>
+	</tr>
+</table>
+<h4><?php _e( 'Messages', 'mycred' ); ?></h4>
+<table class='form-table'>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Successful Payments', 'mycred' ); ?></th>
+		<td>
+			<input type="text" name="mycred_gateway[messages][success]" id="mycred-gateway-messages-success" style="width: 95%;" value="<?php echo stripslashes( $this->prefs['messages']['success'] ); ?>" /><br />
+			<span class="description"><?php _e( 'No HTML allowed!', 'mycred' ); ?><br /><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
+		</td>
+	</tr>
+	<tr valign="top">
+		<th scope="row"><?php _e( 'Insufficient Funds', 'mycred' ); ?></th>
+		<td>
+			<input type="text" name="mycred_gateway[messages][error]" id="mycred-gateway-messages-error" style="width: 95%;" value="<?php echo stripslashes( $this->prefs['messages']['error'] ); ?>" /><br />
+			<span class="description"><?php _e( 'No HTML allowed!', 'mycred' ); ?><br /><?php echo $this->core->available_template_tags( array( 'general' ) ); ?></span>
+		</td>
+	</tr>
+</table>
 <?php		do_action( 'mycred_em_after_settings', $this );
 		}
 		
@@ -558,7 +583,7 @@ jQuery(function($){
 		 */
 		function update() {
 			parent::update();
-			if ( !isset( $_POST['mycred_gateway'] ) || !is_array( $_POST['mycred_gateway'] ) ) return;
+			if ( ! isset( $_POST['mycred_gateway'] ) || ! is_array( $_POST['mycred_gateway'] ) ) return;
 
 			// Prep
 			$data = $_POST['mycred_gateway'];
@@ -566,6 +591,7 @@ jQuery(function($){
 
 			// Setup
 			$new_settings['setup'] = $data['setup'];
+			$new_settings['type'] = sanitize_text_field( $data['type'] );
 			$new_settings['refund'] = abs( $data['refund'] );
 			$new_settings['share'] = abs( $data['share'] );
 

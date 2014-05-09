@@ -6,11 +6,11 @@
  * @requires jQuery UI
  * @requires jQuery Autocomplete
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 jQuery(function($){
 	// Transfer function
-	var transfer_creds = function( to, creds, label ) {
+	var transfer_creds = function( to, creds, label, point ) {
 		$.ajax({
 			type : "POST",
 			data : {
@@ -18,6 +18,7 @@ jQuery(function($){
 				sender    : myCRED.user_id,
 				recipient : to,
 				amount    : creds,
+				type      : point,
 				token     : myCRED.token
 			},
 			dataType : "JSON",
@@ -30,9 +31,6 @@ jQuery(function($){
 			},
 			// On Successful Communication
 			success    : function( data ) {
-				// Debug - uncomment to use
-				//console.log( data );
-				// Remove disable
 				$('.mycred-click').attr( 'value', label );
 				$('.mycred-click').removeAttr( 'disabled' );
 				// Security token could not be verified.
@@ -79,13 +77,6 @@ jQuery(function($){
 					if ( myCRED.reload == '1' )
 						location.reload();
 				}
-			},
-			// Error (sent to console)
-			error      : function( jqXHR, textStatus, errorThrown ) {
-				alert( myCRED.error_2 );
-				location.reload();
-				// Debug - uncomment to use
-				//console.log( jqXHR );
 			}
 		});
 	};
@@ -125,20 +116,17 @@ jQuery(function($){
 	// Attempt Transfer
 	$('.mycred-click').click(function(){
 		// To:
-		var receipient = $(this).parent().prev().children( 'div' ).children( 'input' );
-		var to = $(receipient).val();
-		// Debug - uncomment to use
-		//console.log( to );
+		var receipient = $(this).parent().prev().children( 'div' ).children( 'input' ).val();
 
 		// Amount:
-		var amount = $(this).prev().children( 'input' );
-		var creds = $(amount).val();
-		// Debug - uncomment to use
-		//console.log( creds );
+		var creds = $(this).prev().children( 'input[name=mycred-transfer-amount]' ).val();
+
+		// Type:
+		var point_type = $(this).prev().children( 'input[name=mycred-transfer-type]' ).val();
 
 		// If elements are not emepty attempt transfer
-		if ( to != '' && creds != '' ) {
-			transfer_creds( to, creds, $(this).attr( 'value' ) );
+		if ( receipient != '' && creds != '' ) {
+			transfer_creds( receipient, creds, $(this).attr( 'value' ), point_type );
 		}
 	});
 });

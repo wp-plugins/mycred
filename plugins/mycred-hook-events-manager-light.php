@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Events Manager
  * @since 1.1
- * @version 1.0
+ * @version 1.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 1.1
@@ -25,12 +27,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	 * @since 1.1
 	 * @version 1.0
 	 */
-	if ( !class_exists( 'myCRED_Hook_Events_Manager' ) && class_exists( 'myCRED_Hook' ) ) {
+	if ( ! class_exists( 'myCRED_Hook_Events_Manager' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_Events_Manager extends myCRED_Hook {
+
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'eventsmanager',
 					'defaults' => array(
@@ -43,7 +46,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 							'log'   => '%plural% for cancelled attendance at %link_with_title%'
 						)
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -78,12 +81,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['attend']['creds'],
 						$this->prefs['attend']['log'],
 						$booking->event->post_id,
-						array( 'ref_type' => 'post' )
+						array( 'ref_type' => 'post' ),
+						$this->mycred_type
 					);
 				}
 				return $result;
 			}
-		
+
 			/**
 			 * Adjust Booking
 			 * Incase an administrator needs to approve bookings first or if booking gets
@@ -108,9 +112,11 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['attend']['creds'],
 						$this->prefs['attend']['log'],
 						$booking->event->post_id,
-						array( 'ref_type' => 'post' )
+						array( 'ref_type' => 'post' ),
+						$this->mycred_type
 					);
 				}
+
 				// Else if status got changed from previously 'approved', remove points given
 				elseif ( $booking->booking_status != 1 && $booking->previous_status == 1 ) {
 					// If we do not deduct points for cancellation bail now
@@ -123,7 +129,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['cancel']['creds'],
 						$this->prefs['cancel']['log'],
 						$booking->event->post_id,
-						array( 'ref_type' => 'post' )
+						array( 'ref_type' => 'post' ),
+						$this->mycred_type
 					);
 				}
 				return $result;
@@ -137,33 +144,33 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			public function preferences() {
 				$prefs = $this->prefs; ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>"><?php _e( 'Attending Event', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['attend']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'log' ) ); ?>" value="<?php echo $prefs['attend']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>"><?php _e( 'Cancelling Attendance', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['cancel']['creds'] ); ?>" size="8" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'log' ) ); ?>" value="<?php echo $prefs['cancel']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General and Post Related', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>"><?php _e( 'Attending Event', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['attend']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'attend' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'attend' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'attend' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['attend']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>"><?php _e( 'Cancelling Attendance', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['cancel']['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( array( 'cancel' => 'log' ) ); ?>"><?php _e( 'Log Template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'cancel' => 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'cancel' => 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['cancel']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 		}
 	}

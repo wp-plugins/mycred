@@ -1,13 +1,13 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Skrill class
  * Skrill (Moneybookers) - Payment Gateway
- * 
  * @since 0.1
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Skrill' ) ) {
+if ( ! class_exists( 'myCRED_Skrill' ) ) {
 	class myCRED_Skrill extends myCRED_Payment_Gateway {
 
 		/**
@@ -15,7 +15,9 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 */
 		function __construct( $gateway_prefs ) {
 			parent::__construct( array(
-				'id'       => 'skrill',
+				'id'               => 'skrill',
+				'label'            => 'Skrill Payment',
+				'gateway_logo_url' => plugins_url( 'assets/images/skrill.png', myCRED_PURCHASE ),
 				'defaults' => array(
 					'sandbox'           => 0,
 					'currency'          => '',
@@ -27,8 +29,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 					'email_receipt'     => 0,
 					'item_name'         => __( 'Purchase of myCRED %plural%', 'mycred' ),
 					'exchange'          => 1
-				),
-				'allowed'  => array( 'pay_to_email', 'pay_from_email', 'merchant_id', 'customer_id', 'transaction_id', 'mb_transaction_id', 'mb_amount', 'mb_currency', 'status', 'failed_reason_code', 'md5sig', 'sha2sig', 'amount', 'currency', 'payment_type', 'merchant_fields', 'sales_data' )
+				)
 			), $gateway_prefs );
 			
 		}
@@ -69,149 +70,131 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		}
 
 		/**
-		 * Process Handler
-		 * @since 0.1
+		 * IPN - Is Valid Call
+		 * Replaces the default check
+		 * @since 1.4
 		 * @version 1.0
 		 */
+		public function IPN_is_valid_call() {
+			$result = true;
+
+			$check = $_POST['merchant_id'] . $_POST['transaction_id'] . strtoupper( md5( $this->prefs['word'] ) ) . $_POST['mb_amount'] . $_POST['mb_currency'] . $_POST['status'];
+			if ( strtoupper( md5( $check ) ) !== $_POST['md5sig'] )
+				$result = false;
+			
+			if ( $_POST['pay_to_email'] != trim( $this->prefs['account'] ) )
+				$result = false;
+
+			if ( ! $result )
+				$this->new_log_entry( ' > ' . __( 'Invalid Call', 'mycred' ) );
+			else
+				$this->new_log_entry( sprintf( __( 'Caller verified as "%s"', 'mycred' ), $this->id ) );
+
+			return $result;
+		}
+
+		/**
+		 * Process Handler
+		 * @since 0.1
+		 * @version 1.1
+		 */
 		public function process() {
-			// Prep
-			$id = $this->id;
-			$error = false;
-			$log_entry = array();
+			$outcome = 'FAILED';
+			$valid_call = false;
+			$valid_sale = false;
 
-			$data = $this->POST_to_data();
-			if ( $this->prefs['sandbox'] ) {
-				$log_entry[] = 'Incoming Test IPN Call at ' . date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
-			}
-			else {
-				$log_entry[] = 'Incoming IPN Call' . date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) );
-			}
+			$this->start_log();
+			
+			// VALIDATION OF CALL
+			$required_fields = array(
+				'merchant_id',
+				'transaction_id',
+				'amount',
+				'currency',
+				'status',
+				'md5sig',
+				'sales_data',
+				'pay_to_email'
+			);
 
-			// Step 1. Compare md5
-			if ( !empty( $this->prefs['word'] ) ) {
-				$check = $data['merchant_id'] . $data['transaction_id'] . strtoupper( md5( $this->prefs['word'] ) ) . $data['mb_amount'] . $data['mb_currency'] . $data['status'];
-				if ( strtoupper( md5( $check ) ) !== $data['md5sig'] ) {
-					$log_entry[] = 'MD5 mismatch: [' . strtoupper( md5( $check ) ) . '] [' . $data['md5sig'] . ']';
-					$error = true;
-				}
-			}
+			// All required fields exists
+			if ( $this->IPN_has_required_fields( $required_fields, 'POST' ) ) {
 
-			// Step 2. Verify Sales Data
-			$sales_data = $this->decode_sales_data( $data['sales_data'] );
-			$s_data = explode( '|', $sales_data );
+				// Validate call
+				if ( $this->IPN_is_valid_call() ) {
 
-			// to|from|amount|cost|currency|token|extra
-			list ( $_to, $_from, $_amount, $cost, $_currency, $token, $other ) = $s_data;
+					$valid_call = true;
+					
+					// Validate sale
+					$sales_data = false;
+					$sales_data = $this->IPN_is_valid_sale( 'sales_data', 'amount', 'transaction_id' );
+					if ( $sales_data !== false ) {
 
-			// Verify Token
-			if ( !$this->verify_token( $_from, trim( $token ) ) ) {
-				$log_entry[] = 'Could not verify token: [' . $token . ']';
-				$error = true;
-			}
+						$valid_sale = true;
+						$this->new_log_entry( __( 'Sales Data is Valid', 'mycred' ) );
 
-			// Make sure Purchase is unique
-			if ( !$this->transaction_id_is_unique( $data['transaction_id'] ) ) {
-				$log_entry[] = 'Transaction ID previously used: [' . $data['transaction_id'] . ']';
-				$error = true;
-			}
+					}
 
-			// Make sure accounts match
-			if ( $data['pay_to_email'] != trim( $this->prefs['account'] ) ) {
-				$log_entry[] = 'Recipient Email mismatch: [' . $data['pay_to_email'] . ']';
-				$error = true;
-			}
+					else $this->new_log_entry( __( 'Failed to validate sale', 'mycred' ) );
 
-			// Verify Currency
-			if ( $data['mb_currency'] != $this->prefs['currency'] || $data['mb_currency'] != $_currency ) {
-				$log_entry[] = 'Currency mismatch: [' . $data['mb_currency'] . '] [' . $_currency . ']';
-				$error = true;
-			}
-
-			// Verify Cost
-			$amount = $this->core->number( $data['amount'] );
-			$_cost = $amount*$this->prefs['exchange'];
-			if ( $cost != $_cost ) {
-				$log_entry[] = 'Amount mismatch: [' . $cost . '] [' . $_cost . ']';
-				$error = true;
-			}
-
-			// Step 3. Act acording to our findings
-			if ( $error === false ) {
-
-				// Pending transaction
-				if ( $data['status'] == '0' ) {
-					$log_entry[] = 'Transaction Pending';
-					do_action( "mycred_buy_cred_{$id}_pending", $data );
 				}
 
-				// Completed transaction
-				elseif ( $data['status']  == '2' ) {
-					// Highlight test purchases
-					$entry = $this->get_entry( $_to, $_from );
-					$entry = str_replace( '%gateway%', 'Skrill', $entry );
-					if ( $this->prefs['sandbox'] ) $entry = 'TEST ' . $entry;
+			}
+			
+			else $this->new_log_entry( __( 'Failed to verify caller', 'mycred' ) );
+
+			// EXECUTION
+			if ( $valid_call === true && $valid_sale === true ) {
+
+				// Finally check payment
+				if ( $_POST['status']  == '2' ) {
+							
+					$this->new_log_entry( sprintf( __( 'Attempting to credit %s to users account', 'mycred' ), $this->core->plural() ) );
 
 					$data = array(
-						'transaction_id' => $data['transaction_id'],
-						'skrill_ref'     => $data['mb_transaction_id'],
-						'md5'            => $data['md5sig'],
-						'sales_data'     => $sales_data
+						'transaction_id' => $_POST['transaction_id'],
+						'skrill_ref'     => $_POST['mb_transaction_id'],
+						'md5'            => $_POST['md5sig'],
+						'sales_data'     => implode( '|', $sales_data )
 					);
 
 					// Add creds
-					$this->core->add_creds(
-						'buy_creds_with_skrill',
-						$_to,
-						$amount,
-						$entry,
-						$_from,
-						$data
-					);
+					if ( $this->complete_payment( $sales_data[0], $sales_data[1], $sales_data[2], $data ) ) {
 
-					$log_entry[] = 'CREDs Added.';
-					do_action( "mycred_buy_cred_{$id}_approved", $data );
-				}
+						$this->new_log_entry( sprintf( __( '%s was successfully credited to users account', 'mycred' ), $this->core->format_creds( $sales_data[2] ) ) );
+						$outcome = 'COMPLETED';
 
-				// Cancelled transaction
-				elseif ( $data['status'] == '-1' ) {
-					$log_entry[] = 'Transaction Cancelled';
-					do_action( "mycred_buy_cred_{$id}_cancelled", $data );
-				}
+						do_action( "mycred_buycred_{$this->id}_approved", $this->processing_log, $_REQUEST );
 
-				// Failed transaction
-				else {
-					$log_entry[] = 'Transaction Failed';
-					do_action( "mycred_buy_cred_{$id}_failed", $data );
+					}
+
+					else $this->new_log_entry( __( 'Failed to credit the users account', 'mycred' ) );
 				}
+				
+				else $this->new_log_entry( __( 'Purchase not paid', 'mycred' ) );
+
 			}
-
-			// Error
 			else {
-				do_action( "mycred_buy_cred_{$id}_error", $log_entry, $data );
+				$this->new_log_entry( __( 'Hanging up on caller', 'mycred' ) );
+				do_action( "mycred_buycred_{$this->id}_error", $this->processing_log, $_REQUEST );
 			}
 
-			// Step 4. Log if need be
-			do_action( "mycred_buy_cred_{$id}_end", $log_entry, $data );
-			unset( $data );
+			$this->save_log_entry( $_POST['transaction_id'], $outcome );
 
-			// Respond & Die
-			header( "HTTP/1.1 200 OK" );
-			die();
+			do_action( "mycred_buycred_{$this->id}_end", $this->processing_log, $_REQUEST );
 		}
 
 		/**
 		 * Results Handler
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function returning() {
-			if ( isset( $_GET['transaction_id'] ) && !empty( $_GET['transaction_id'] ) && isset( $_GET['msid'] ) && !empty( $_GET['msid'] ) ) {
-				$thankyou_url = $this->get_thankyou();
-
-				$this->purchase_header( __( 'Success', 'mycred' ), $thankyou_url );
+			if ( isset( $_GET['transaction_id'] ) && ! empty( $_GET['transaction_id'] ) && isset( $_GET['msid'] ) && ! empty( $_GET['msid'] ) ) {
+				$this->get_page_header( __( 'Success', 'mycred' ), $this->get_thankyou() );
 				echo '<h1>' . __( 'Thank you for your purchase', 'mycred' ) . '</h1>';
-				$this->purchase_footer();
-				exit();
+				$this->get_page_footer();
+				exit;
 			}
 		}
 
@@ -221,14 +204,10 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 * @version 1.0.1
 		 */
 		public function buy() {
-			if ( !isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
+			if ( ! isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
-			$amount = $_REQUEST['amount'];
-			$home = get_bloginfo( 'url' );
-			$logo_url = plugins_url( 'images/skrill.png', myCRED_PURCHASE );
 			$token = $this->create_token();
-			$transaction_id = 'BUYCRED' . date_i18n( 'U' ) . $this->get_to();
 
 			// Location
 			$location = 'https://www.moneybookers.com/app/payment.pl';
@@ -237,7 +216,7 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 			$currency = $this->prefs['currency'];
 
 			// Amount
-			$amount =  $this->core->number( $amount );
+			$amount = $this->core->number( $_REQUEST['amount'] );
 			$amount = abs( $amount );
 
 			// Get Cost
@@ -251,6 +230,8 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 
 			$to = $this->get_to();
 			$from = $this->current_user_id;
+
+			$transaction_id = 'BUYCRED' . date_i18n( 'U' ) . $to . $from;
 
 			// Let others play
 			$extra = apply_filters( 'mycred_skrill_extra', '', $amount, $from, $to, $this->prefs, $this->core );
@@ -317,13 +298,13 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 			}
 
 			// Generate processing page
-			$this->purchase_header( __( 'Processing payment &hellip;', 'mycred' ) );
-			$this->form_with_redirect( $hidden_fields, $location, $logo_url, '', 'sales_data' );
-			$this->purchase_footer();
+			$this->get_page_header( __( 'Processing payment &hellip;', 'mycred' ) );
+			$this->get_page_redirect( $hidden_fields, $location );
+			$this->get_page_footer();
 
 			// Exit
 			unset( $this );
-			exit();
+			exit;
 		}
 
 		/**
@@ -331,78 +312,72 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function preferences( $buy_creds ) {
+		function preferences( $buy_creds = NULL ) {
 			add_filter( 'mycred_dropdown_currencies', array( $this, 'skrill_currencies' ) );
 			$prefs = $this->prefs; ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( 'sandbox' ); ?>"><?php _e( 'Sandbox Mode', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( 'sandbox' ); ?>" id="<?php echo $this->field_id( 'sandbox' ); ?>" value="1"<?php checked( $prefs['sandbox'], 1 ); ?> /><span class="description"><?php _e( 'Remember to use your Test Merchant Account when Sandbox mode is active!', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'currency' ); ?>"><?php _e( 'Currency', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<?php $this->currencies_dropdown( 'currency' ); ?>
+<label class="subheader" for="<?php echo $this->field_id( 'currency' ); ?>"><?php _e( 'Currency', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<?php $this->currencies_dropdown( 'currency', 'mycred-gateway-skrill-currency' ); ?>
 
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'account' ); ?>"><?php _e( 'Merchant Account Email', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account' ); ?>" id="<?php echo $this->field_id( 'account' ); ?>" value="<?php echo $prefs['account']; ?>" class="long" /></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'word' ); ?>"><?php _e( 'Secret Word', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'word' ); ?>" id="<?php echo $this->field_id( 'word' ); ?>" value="<?php echo $prefs['word']; ?>" class="medium" /></div>
-							<span class="description"><?php _e( 'You can set your secret word under "Merchant Tools" in your Skrill Account.', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'item_name' ); ?>"><?php _e( 'Item Name', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'item_name' ); ?>" id="<?php echo $this->field_id( 'item_name' ); ?>" value="<?php echo $prefs['item_name']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Description of the item being purchased by the user.', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'exchange' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% Exchange Rate', 'mycred' ) ); ?></label>
-					<ol>
-						<li>
-							<div class="h2"><?php echo $this->core->format_creds( 1 ); ?> = <input type="text" name="<?php echo $this->field_name( 'exchange' ); ?>" id="<?php echo $this->field_id( 'exchange' ); ?>" value="<?php echo $prefs['exchange']; ?>" size="3" /> <span id="mycred-gateway-paypal-currency"><?php echo ( empty( $prefs['currency'] ) ) ? __( 'Your selected currency', 'mycred' ) : $prefs['currency']; ?></span></div>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'email_receipt' ); ?>"><?php _e( 'Confirmation Email', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( 'email_receipt' ); ?>" id="<?php echo $this->field_id( 'email_receipt' ); ?>" value="1"<?php checked( $prefs['email_receipt'], 1 ); ?> /><?php _e( 'Ask Skrill to send me a confirmation email for each successful purchase.', 'mycred' ); ?>
-						</li>
-					</ol>
-					<label class="subheader"><?php _e( 'Checkout Page', 'mycred' ); ?></label>
-					<ol>
-						<li>
-							<label for="<?php echo $this->field_id( 'account_title' ); ?>"><?php _e( 'Title', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account_title' ); ?>" id="<?php echo $this->field_id( 'account_title' ); ?>" value="<?php echo $prefs['account_title']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'If left empty, your account email is used as title on the Skill Payment Page.', 'mycred' ); ?></span>
-						</li>
-						<li>
-							<label for="<?php echo $this->field_id( 'account_logo' ); ?>"><?php _e( 'Logo URL', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account_logo' ); ?>" id="<?php echo $this->field_id( 'account_title' ); ?>" value="<?php echo $prefs['account_logo']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'The URL to the image you want to use on the top of the gateway. For best integration results we recommend you use logos with dimensions up to 200px in width and 50px in height.', 'mycred' ); ?></span>
-						</li>
-						<li>
-							<label for="<?php echo $this->field_id( 'confirmation_note' ); ?>"><?php _e( 'Confirmation Note', 'mycred' ); ?></label>
-							<textarea rows="10" cols="50" name="<?php echo $this->field_name( 'confirmation_note' ); ?>" id="<?php echo $this->field_id( 'confirmation_note' ); ?>" class="large-text code"><?php echo $prefs['confirmation_note']; ?></textarea>
-							<span class="description"><?php _e( 'Optional text to show user once a transaction has been successfully completed. This text is shown by Skrill.', 'mycred' ); ?></span>
-						</li>
-						<li>
-							<h3><?php _e( 'Important!', 'mycred' ); ?></h3>
-							<p><span class="description"><strong>1. </strong><?php echo $this->core->template_tags_general( __( 'By default all Skrill Merchant account accept payments via Bank Transfers. When a user selects this option, no %_plural% are awarded! You will need to manually award these once the bank transfer is completed.', 'mycred' ) ); ?></span></p>
-							<p><span class="description"><strong>2. </strong><?php _e( 'By default purchases made using Skrill will result in users having to signup for a Skrill account (if they do not have one already). You can contact Skrill Merchant Services and request to disable this feature.', 'mycred' ); ?></span></p>
-						</li>
-					</ol>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( 'account' ); ?>"><?php _e( 'Merchant Account Email', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account' ); ?>" id="<?php echo $this->field_id( 'account' ); ?>" value="<?php echo $prefs['account']; ?>" class="long" /></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( 'word' ); ?>"><?php _e( 'Secret Word', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'word' ); ?>" id="<?php echo $this->field_id( 'word' ); ?>" value="<?php echo $prefs['word']; ?>" class="medium" /></div>
+		<span class="description"><?php _e( 'You can set your secret word under "Merchant Tools" in your Skrill Account.', 'mycred' ); ?></span>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( 'item_name' ); ?>"><?php _e( 'Item Name', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'item_name' ); ?>" id="<?php echo $this->field_id( 'item_name' ); ?>" value="<?php echo $prefs['item_name']; ?>" class="long" /></div>
+		<span class="description"><?php _e( 'Description of the item being purchased by the user.', 'mycred' ); ?></span>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( 'exchange' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% Exchange Rate', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><?php echo $this->core->format_creds( 1 ); ?> = <input type="text" name="<?php echo $this->field_name( 'exchange' ); ?>" id="<?php echo $this->field_id( 'exchange' ); ?>" value="<?php echo $prefs['exchange']; ?>" size="3" /> <span id="mycred-gateway-skrill-currency"><?php echo ( empty( $prefs['currency'] ) ) ? __( 'Select currency', 'mycred' ) : $prefs['currency']; ?></span></div>
+	</li>
+</ol>
+<label class="subheader" for="<?php echo $this->field_id( 'email_receipt' ); ?>"><?php _e( 'Confirmation Email', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<input type="checkbox" name="<?php echo $this->field_name( 'email_receipt' ); ?>" id="<?php echo $this->field_id( 'email_receipt' ); ?>" value="1"<?php checked( $prefs['email_receipt'], 1 ); ?> /><?php _e( 'Ask Skrill to send me a confirmation email for each successful purchase.', 'mycred' ); ?>
+	</li>
+</ol>
+<label class="subheader"><?php _e( 'Checkout Page', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<label for="<?php echo $this->field_id( 'account_title' ); ?>"><?php _e( 'Title', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account_title' ); ?>" id="<?php echo $this->field_id( 'account_title' ); ?>" value="<?php echo $prefs['account_title']; ?>" class="long" /></div>
+		<span class="description"><?php _e( 'If left empty, your account email is used as title on the Skill Payment Page.', 'mycred' ); ?></span>
+	</li>
+	<li>
+		<label for="<?php echo $this->field_id( 'account_logo' ); ?>"><?php _e( 'Logo URL', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'account_logo' ); ?>" id="<?php echo $this->field_id( 'account_title' ); ?>" value="<?php echo $prefs['account_logo']; ?>" class="long" /></div>
+		<span class="description"><?php _e( 'The URL to the image you want to use on the top of the gateway. For best integration results we recommend you use logos with dimensions up to 200px in width and 50px in height.', 'mycred' ); ?></span>
+	</li>
+	<li>
+		<label for="<?php echo $this->field_id( 'confirmation_note' ); ?>"><?php _e( 'Confirmation Note', 'mycred' ); ?></label>
+		<textarea rows="10" cols="50" name="<?php echo $this->field_name( 'confirmation_note' ); ?>" id="<?php echo $this->field_id( 'confirmation_note' ); ?>" class="large-text code"><?php echo $prefs['confirmation_note']; ?></textarea>
+		<span class="description"><?php _e( 'Optional text to show user once a transaction has been successfully completed. This text is shown by Skrill.', 'mycred' ); ?></span>
+	</li>
+	<li>
+		<h3><?php _e( 'Important!', 'mycred' ); ?></h3>
+		<p><span class="description"><strong>1. </strong><?php echo $this->core->template_tags_general( __( 'By default all Skrill Merchant account accept payments via Bank Transfers. When a user selects this option, no %_plural% are awarded! You will need to manually award these once the bank transfer is completed.', 'mycred' ) ); ?></span></p>
+		<p><span class="description"><strong>2. </strong><?php _e( 'By default purchases made using Skrill will result in users having to signup for a Skrill account (if they do not have one already). You can contact Skrill Merchant Services and request to disable this feature.', 'mycred' ); ?></span></p>
+	</li>
+</ol>
 <?php
 		}
 
@@ -412,24 +387,24 @@ if ( !class_exists( 'myCRED_Skrill' ) ) {
 		 * @version 1.0
 		 */
 		public function sanitise_preferences( $data ) {
-			$data['sandbox'] = ( !isset( $data['sandbox'] ) ) ? 0 : 1;
-			$data['email_receipt'] = ( !isset( $data['email_receipt'] ) ) ? 0 : 1;
-			
-			// Exchange can not be empty
-			if ( empty( $data['exchange'] ) ) {
-				$data['exchange'] = 1;
-			}
-			// If exchange is less then 1 we must start with a zero
-			if ( $data['exchange'] != 1 && substr( $data['exchange'], 0, 1 ) != '0' ) {
-				$data['exchange'] = (float) '0' . $data['exchange'];
-			}
-			// Decimal seperator must be punctuation and not comma
-			$data['exchange'] = str_replace( ',', '.', $data['exchange'] );
+			$new_data = array();
 
-			$data['account_title'] = substr( $data['account_title'], 0, 30 );
-			$data['confirmation_note'] = substr( $data['confirmation_note'], 0, 240 );
-			
-			return $data;
+			$new_data['sandbox']           = ( isset( $data['sandbox'] ) ) ? 1 : 0;
+			$new_data['currency']          = sanitize_text_field( $data['currency'] );
+			$new_data['account']           = sanitize_text_field( $data['account'] );
+			$new_data['word']              = sanitize_text_field( $data['word'] );
+			$new_data['email_receipt']     = ( isset( $data['email_receipt'] ) ) ? 1 : 0;
+			$new_data['item_name']         = sanitize_text_field( $data['item_name'] );
+			$new_data['exchange']          = ( ! empty( $data['exchange'] ) ) ? $data['exchange'] : 1;
+			$new_data['account_title']     = substr( $data['account_title'], 0, 30 );
+			$new_data['account_logo']      = sanitize_text_field( $data['account_logo'] );
+			$new_data['confirmation_note'] = substr( $data['confirmation_note'], 0, 240 );
+
+			// If exchange is less then 1 we must start with a zero
+			if ( $new_data['exchange'] != 1 && in_array( substr( $new_data['exchange'], 0, 1 ), array( '.', ',' ) ) )
+				$new_data['exchange'] = (float) '0' . $new_data['exchange'];
+
+			return $new_data;
 		}
 	}
 }

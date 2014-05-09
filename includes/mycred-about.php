@@ -23,7 +23,7 @@ function mycred_about_header( $name ) {
 	$addons_url = esc_url( add_query_arg( array( 'page' => 'myCRED_page_addons' ), $admin_php ) );
 	$settings_url = esc_url( add_query_arg( array( 'page' => 'myCRED_page_settings' ), $admin_php ) ); ?>
 
-	<div class="about-text"><?php printf( __( 'Thank you for choosing %s as your points management tool!<br />I hope you have as much fun using it as I had developing it.', 'mycred' ), $name ); ?></div>
+	<div class="about-text"><?php printf( 'Thank you for choosing %s as your points management tool!<br />I hope you have as much fun using it as I had developing it.', $name ); ?></div>
 	<p class="mycred-actions">
 		<a href="<?php echo $log_url; ?>" class="button button-large">Log</a>
 		<a href="<?php echo $hook_url; ?>" class="button button-large">Hooks</a>
@@ -33,11 +33,7 @@ function mycred_about_header( $name ) {
 	<div class="mycred-badge">&nbsp;</div>
 	
 	<h2 class="nav-tab-wrapper">
-		<a class="nav-tab<?php echo $new; ?>" href="<?php echo $about_page; ?>">
-			<?php _e( 'What&#8217;s New', 'mycred' ); ?>
-		</a><a class="nav-tab<?php echo $credit; ?>" href="<?php echo $credit_page; ?>">
-			<?php _e( 'Credits', 'mycred' ); ?>
-		</a>
+		<a class="nav-tab<?php echo $new; ?>" href="<?php echo $about_page; ?>">What&#8217;s New</a><a class="nav-tab<?php echo $credit; ?>" href="<?php echo $credit_page; ?>">Credits</a>
 	</h2>
 <?php
 }
@@ -72,53 +68,64 @@ function mycred_about_footer() { ?>
  */
 function mycred_about_page() {
 	$name = mycred_label();
-	$mycred = mycred_get_settings();
+	$mycred = mycred();
 	$settings_url = esc_url( add_query_arg( array( 'page' => 'myCRED_page_settings' ), admin_url( 'admin.php' ) ) ); ?>
 
 <div class="wrap about-wrap" id="mycred-about-wrap">
 	<h1><?php printf( __( 'Welcome to %s %s', 'mycred' ), $name, myCRED_VERSION ); ?></h1>
 	<?php mycred_about_header( $name ); ?>
 
+	<h4><strong>Important!</strong> Make sure you re-save your myCRED Settings and Hook settings by visiting both pages and clicking "Save Changes" even if you make no changes in your current settings. Version 1.4 also requires you to re-save all myCRED Widget settings in order to add support for multiple point types.</h4>
 	<div class="changelog">
-		<h3><?php _e( 'New Features', 'mycred' ); ?></h3>
+		<h3>New Features</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4><?php printf( __( '%s Right Now', 'mycred' ), $name ); ?></h4>
-				<p><?php echo $mycred->template_tags_general( __( 'This new Dashboard widget gives you an overview of %_plural% gained or lost by your users along with a few other summaries based on your logs content.', 'mycred' ) ); ?></p>
+				<h4>Multiple Point Types</h4>
+				<p>No longer are you bound to use only one point type! New in 1.4 is the built in multiple point types system. Visit the Settings page to add any number of point types.</p>
 			</div>
 			<div class="last-feature">
-				<h4><?php _e( 'YouTube Iframe API', 'mycred' ); ?></h4>
-				<p><?php echo $mycred->template_tags_general( __( 'The "%plural% for watching videos" hook has been updated to use the YouTube Iframe API which allows you to embed videos that can also be viewed on mobile devices.', 'mycred' ) ); ?></p>
+				<h4><?php echo $mycred->template_tags_general( '%plural% for Referrals Hook!' ); ?></h4>
+				<p><?php echo $mycred->template_tags_general( 'Based on the most popular myCRED Tutorial, you will find a new Referral hook allowing you to give %_plural% for visit or signup referrals!' ); ?></p>
 			</div>
 		</div>
-		<h3><?php _e( 'Added Support', 'mycred' ); ?></h3>
+		<h3>Add-on News</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4><a href="http://simple-press.com/" target="_blank"><?php _e( 'SimplePress', 'mycred' ); ?></a></h4>
-				<p><?php printf( __( 'As of 1.3.3, %s has a built in support for SimplePress!', 'mycred' ), $name ); ?> <?php echo $mycred->template_tags_general( __( 'Once you have installed SimplePress, you will find the "SimplePress" hook on your Hooks page. You can award or deduct %_plural% for new topics and topic posts.', 'mycred' ) ); ?></p>
+				<h4>Coupons</h4>
+				<p>The new Coupons add-on allows you to setup your own coupons that users can redeem via the new [mycred_get_coupon_by_code] shortcode. Coupons can have a global and/or a user limit with an optional minimum or maximum balance requirement in order to use!</p>
 			</div>
 			<div class="last-feature">
-				<h4><a href="http://www.timersys.com/plugins-wordpress/wordpress-social-invitations/" target="_blank">WP Social Invitations</a></h4>
-				<p><?php _e( 'With WordPress Social Invitations aka WSI you can enhance your site by letting your users to invite their social network friends. This plugin works perfectly with Buddypress and also hooks into Invite Anyone Plugin.', 'mycred' ); ?></p>
-				<p><?php _e( 'Please consult the plugins website for information on how to install and setup this plugin.', 'mycred' ); ?></p>
+				<h4>Removed Add-ons</h4>
+				<p>In 1.4 the BuddyPress and Import add-ons have been removed and instead been integrated into myCRED. If you have BuddyPress enabled, the BuddyPress features are automatically enabled while you can find the Import add-on now under Tools > Import in the admin menu to the left.</p>
 			</div>
 		</div>
-		<h3><?php _e( 'Improvements', 'mycred' ); ?></h3>
+		<h3>Added Support</h3>
+		<div class="feature-section col two-col">
+			<div>
+				<h4><a href="http://disqus.com/" target="_blank">Disqus</a></h4>
+				<p>myCRED now has built-in support for Disqus comments! Please remember that in order for points to be awarded, comments must be synced and comment authors must use the email they have registered on your website!</p>
+			</div>
+			<div class="last-feature">
+				<h4><a href="http://www.gravityforms.com/" target="_blank">Gravity Forms</a></h4>
+				<p>Just like with Contact Form 7, you can now award / deduct points from your users for submitting forms managed by Gavity Forms!</p>
+			</div>
+		</div>
+		<h3>Improvements</h3>
 		<div class="feature-section col three-col">
 			<div>
-				<h4><?php _e( 'Transfer Add-on', 'mycred' ); ?></h4>
-				<p><?php _e( 'The transfer add-on has received several improvements which gives you must better control of customizing your setup.', 'mycred' ); ?></p>
+				<h4>The Log</h4>
+				<p>The myCRED log now supports paginations, inline editing and/or removal of individual log entries. Gone are the days where you are stuck with your current log entries!</p>
 			</div>
 			<div>
-				<h4><?php _e( 'Ranks Add-on', 'mycred' ); ?></h4>
-				<p><?php _e( 'The ranks add-on has received several bug fixes, especially if you are assigning ranks according to your users total accumilated points and not their current balance.', 'mycred' ); ?></p>
-				<p><em><?php _e( 'If you have been experiencing issues with users not getting the correct rank, please make sure you "Calculate Totals" to fix the issue!', 'mycred' ); ?></em></p>
+				<h4>Leaderboard</h4>
+				<p>The myCRED Leaderboard feature has been updated and improved to handle larger user bases. Note that in 1.4 the Leaderboard will be updated automatically and you can no longer select specific update intervals.</p>
 			</div>
 			<div class="last-feature">
-				<h4><?php _e( 'Events Management', 'mycred' ); ?></h4>
-				<p><?php _e( 'Fixed the issue with users not being able to pay for events in the free version, if attendance is pre-approved.', 'mycred' ); ?></p>
+				<h4>New Wallet Widget</h4>
+				<p>If you have more then one point type setup, you gain access to the new myCRED Wallet Widget which you can use to show your users point balances in a single widget.</p>
 			</div>
 		</div>
+		<p style="text-align:right;">Want to help further development of <strong>my</strong>CRED? <a href="http://mycred.me/about/support-mycred/" target="_blank">Here is a list</a> of things you can do to help!</p>
 	</div>
 	<?php mycred_about_footer(); ?>
 
@@ -135,30 +142,42 @@ function mycred_about_credit_page() {
 	$name = mycred_label(); ?>
 
 <div class="wrap about-wrap" id="mycred-credit-wrap">
-	<h1><?php _e( 'Awesome People', 'mycred' ); ?></h1>
+	<h1>Awesome People</h1>
 	<?php mycred_about_header( $name ); ?>
 
 	<div class="changelog">
-		<h3><?php printf( __( '%s Users', 'mycred' ), $name ); ?></h3>
+		<h3>myCRED Users</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4><?php _e( 'Bug Finders', 'mycred' ); ?></h4>
-				<p><?php _e( 'Users who have taken the time to report bugs helping me improve this plugin.', 'mycred' ); ?></p>
+				<h4>Bug Finders</h4>
+				<p>Users who have taken the time to report bugs helping me improve this plugin.</p>
 				<ul>
-					<li><a href="http://mycred.me/members/douglas-dupuis-9_o8jr2b/">Douglas</a></li>
+					<li><a href="http://mycred.me/members/seamtv/">seamtv</a></li>
 					<li><a href="http://mycred.me/members/joebethepro-com/">joe</a></li>
+					<li><a href="http://mycred.me/members/gogott/">gogott</a></li>
+					<li><a href="http://mycred.me/members/geegee/">Christian S</a></li>
+					<li><a href="http://mycred.me/members/keisermedia/">Lucas Keiser</a></li>
+					<li><a href="http://mycred.me/members/ebf/">Boab</a></li>
+					<li><a href="http://mycred.me/members/threadsgeneration/">Gabriel Galvão</a></li>
+					<li><a href="http://mycred.me/members/dvdbrazil/">Dvdbrazil</a></li>
+					<li><a href="http://mycred.me/members/bobblefruit/">Dean</a></li>
+					<li><a href="http://mycred.me/members/sl21/">sl21</a></li>
 				</ul>
 			</div>
 			<div class="last-feature">
-				<h4><?php _e( 'Plugin Translators', 'mycred' ); ?></h4>
-				<p><?php _e( 'Users who have helped with translating this plugin.', 'mycred' ); ?></p>
+				<h4>Plugin Translators</h4>
+				<p>Users who have helped with translating this plugin.</p>
 				<ul>
 					<li><a href="http://bp-fr.net/">Dan</a> <em>( French )</em></li>
+					<li><a href="http://mycred.me/members/maniv-a/">Mani Akhtar</a> <em>( Persian )</em></li>
+					<li><a href="http://www.merovingi.com/">Gabriel S Merovingi</a> <em>( Swedish )</em></li>
+					<li><a href="http://robertrowshan.com/">Rob Row</a> <em>( Spanish )</em></li>
+					<li>Skladchik <em>( Russian )</em></li>
 				</ul>
 			</div>
 		</div>
-		<h3><?php _e( 'Find out more', 'mycred' ); ?></h3>
-		<p><?php printf( __( 'You can always find more information about this plugin on the %s <a href="%s">website</a>.', 'mycred' ), $name, 'http://mycred.me' ); ?></p>
+		<h3>Find out more</h3>
+		<p>You can always find more information about this plugin on the <strong>my</strong>CRED <a href="http://mycred.me/">website</a>.</p>
 	</div>
 	<?php mycred_about_footer(); ?>
 

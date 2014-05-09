@@ -2,18 +2,12 @@
 /**
  * Addon: Ranks
  * Addon URI: http://mycred.me/add-ons/ranks/
- * Version: 1.1
+ * Version: 1.2
  * Description: Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank. 
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  */
-// Translate Header (by Dan bp-fr)
-$mycred_addon_header_translate = array(
-	__( 'Ranks', 'mycred' ),
-	__( 'Create ranks for users reaching a certain number of points with the option to add logos for each rank.', 'mycred' )
-);
-
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
 define( 'myCRED_RANKS',         __FILE__ );
 define( 'myCRED_RANKS_DIR',     myCRED_ADDONS_DIR . 'ranks/' );
@@ -21,22 +15,23 @@ define( 'myCRED_RANKS_VERSION', myCRED_VERSION . '.1' );
 
 include_once( myCRED_RANKS_DIR . 'includes/mycred-rank-functions.php' );
 include_once( myCRED_RANKS_DIR . 'includes/mycred-rank-shortcodes.php' );
+
 /**
- * myCRED_Ranks class
+ * myCRED_Ranks_Module class
  * While myCRED rankings just ranks users according to users total amount of
  * points, ranks are titles that can be given to users when their reach a certain
  * amount.
  * @since 1.1
- * @version 1.1
+ * @version 1.2
  */
-if ( !class_exists( 'myCRED_Ranks' ) ) {
-	class myCRED_Ranks extends myCRED_Module {
+if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
+	class myCRED_Ranks_Module extends myCRED_Module {
 
 		/**
 		 * Construct
 		 */
 		function __construct() {
-			parent::__construct( 'myCRED_Ranks', array(
+			parent::__construct( 'myCRED_Ranks_Module', array(
 				'module_name' => 'rank',
 				'defaults'    => array(
 					'public'      => 0,
@@ -56,10 +51,10 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 				'add_to_core' => true
 			) );
 
-			if ( !isset( $this->rank['order'] ) ) {
+			if ( ! isset( $this->rank['order'] ) )
 				$this->rank['order'] = 'ASC';
-			}
-			if ( !isset( $this->rank['support'] ) )
+
+			if ( ! isset( $this->rank['support'] ) )
 				$this->rank['support'] = array(
 					'content'         => 0,
 					'excerpt'         => 0,
@@ -67,32 +62,36 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 					'page-attributes' => 0,
 					'custom-fields'   => 0
 				);
+		}
 
-			add_action( 'mycred_parse_tags_user',    array( $this, 'parse_rank' ), 10, 3 );
-			add_action( 'mycred_post_type_excludes', array( $this, 'exclude_ranks' ) );
+		/**
+		 * Hook into Init
+		 * @since 1.4.4
+		 * @version 1.0
+		 */
+		public function module_pre_init() {
+			add_action( 'mycred_parse_tags_user',     array( $this, 'parse_rank' ), 10, 3 );
+			add_action( 'mycred_post_type_excludes',  array( $this, 'exclude_ranks' ) );
+			add_filter( 'mycred_update_user_balance', array( $this, 'update_balance' ), 99, 4 );
 		}
 
 		/**
 		 * Hook into Init
 		 * @since 1.1
-		 * @version 1.3
+		 * @version 1.4
 		 */
 		public function module_init() {
-			global $mycred_ranks;
-
 			$this->register_post_type();
 			$this->add_default_rank();
 
-			add_filter( 'pre_get_posts',          array( $this, 'adjust_wp_query' ), 20       );
-			add_action( 'mycred_admin_enqueue',   array( $this, 'enqueue_scripts' )           );
+			add_filter( 'pre_get_posts',          array( $this, 'adjust_wp_query' ), 20 );
+			add_action( 'mycred_admin_enqueue',   array( $this, 'enqueue_scripts' ) );
 
 			// Instances to update ranks
-			add_action( 'transition_post_status',     array( $this, 'post_status_change' ), 99, 3  );
-			add_action( 'user_register',              array( $this, 'registration' ), 999          );
-			add_filter( 'mycred_add',                 array( $this, 'update_balance' ), 99, 3      );
+			add_action( 'transition_post_status', array( $this, 'post_status_change' ), 99, 3 );
 
 			// BuddyPress
-			if ( function_exists( 'bp_displayed_user_id' ) && isset( $this->rank['bb_location'] ) && !empty( $this->rank['bb_location'] ) ) {
+			if ( function_exists( 'bp_displayed_user_id' ) && isset( $this->rank['bb_location'] ) && ! empty( $this->rank['bb_location'] ) ) {
 				if ( $this->rank['bb_location'] == 'top' || $this->rank['bb_location'] == 'both' )
 					add_action( 'bp_before_member_header_meta',  array( $this, 'insert_rank_header' ) );
 
@@ -105,9 +104,8 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 			add_shortcode( 'mycred_users_of_rank',      'mycred_render_users_of_rank' );
 			add_shortcode( 'mycred_users_of_all_ranks', 'mycred_render_users_of_all_ranks' );
 			add_shortcode( 'mycred_list_ranks',         'mycred_render_rank_list' );
-			
-			add_action( 'mycred_management_prefs', array( $this, 'rank_management' ) );
 
+			add_action( 'mycred_management_prefs',    array( $this, 'rank_management' ) );
 			add_action( 'wp_ajax_mycred-calc-totals', array( $this, 'calculate_totals' ) );
 		}
 
@@ -117,21 +115,21 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 		 * @version 1.1
 		 */
 		public function module_admin_init() {
-			add_action( 'admin_print_styles-edit-mycred_rank', array( $this, 'ranks_page_header' ) );
-			add_filter( 'manage_mycred_rank_posts_columns',       array( $this, 'adjust_column_headers' )        );
+			add_action( 'admin_print_styles-edit-mycred_rank',    array( $this, 'ranks_page_header' ) );
+			add_filter( 'manage_mycred_rank_posts_columns',       array( $this, 'adjust_column_headers' ) );
 			add_action( 'manage_mycred_rank_posts_custom_column', array( $this, 'adjust_column_content' ), 10, 2 );
 
-			add_filter( 'manage_users_columns',       array( $this, 'custom_user_column' )                );
+			add_filter( 'manage_users_columns',       array( $this, 'custom_user_column' ) );
 			add_action( 'manage_users_custom_column', array( $this, 'custom_user_column_content' ), 10, 3 );
 
 			add_filter( 'post_row_actions',           array( $this, 'adjust_row_actions' ), 10, 2 );
 
 			add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ) );
-			add_filter( 'enter_title_here',           array( $this, 'enter_title_here' )      );
+			add_filter( 'enter_title_here',           array( $this, 'enter_title_here' ) );
 
-			add_action( 'add_meta_boxes_mycred_rank', array( $this, 'add_meta_boxes' )        );
-			add_action( 'save_post',                  array( $this, 'save_rank_settings' )    );
-			
+			add_action( 'add_meta_boxes_mycred_rank', array( $this, 'add_meta_boxes' ) );
+			add_action( 'save_post',                  array( $this, 'save_rank_settings' ) );
+
 			add_action( 'wp_ajax_mycred-action-delete-ranks', array( $this, 'action_delete_ranks' ) );
 			add_action( 'wp_ajax_mycred-action-assign-ranks', array( $this, 'action_assign_ranks' ) );
 		}
@@ -148,28 +146,28 @@ if ( !class_exists( 'myCRED_Ranks' ) ) {
 
 			// First get the ids of all existing ranks
 			$rank_ids = $wpdb->get_col( "
-SELECT ID 
-FROM {$wpdb->posts} 
-WHERE post_type = 'mycred_rank';" );
+			SELECT ID 
+			FROM {$wpdb->posts} 
+			WHERE post_type = 'mycred_rank';" );
 
 			// Delete all ranks
 			$wpdb->query( "
-DELETE FROM {$wpdb->posts} 
-WHERE post_type = 'mycred_rank';" );
+			DELETE FROM {$wpdb->posts} 
+			WHERE post_type = 'mycred_rank';" );
 
 			// Delete rank post meta
 			if ( $rank_ids ) {
 				$ids = implode( ',', $rank_ids );
 				$wpdb->query( "
-DELETE FROM {$wpdb->postmeta} 
-WHERE post_id IN ({$ids});" );
+				DELETE FROM {$wpdb->postmeta} 
+				WHERE post_id IN ({$ids});" );
 			}
 
 			// Confirm that ranks are gone
 			$rows = $wpdb->get_var( "
-SELECT COUNT(*) 
-FROM {$wpdb->posts} 
-WHERE post_type = 'mycred_rank';" );
+			SELECT COUNT(*) 
+			FROM {$wpdb->posts} 
+			WHERE post_type = 'mycred_rank';" );
 
 			die( json_encode( array( 'status' => 'OK', 'rows' => $rows ) ) );
 		}
@@ -199,23 +197,20 @@ WHERE post_type = 'mycred_rank';" );
 		/**
 		 * Enqueue Scripts & Styles
 		 * @since 1.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function enqueue_scripts() {
 			$adjust_header = false;
 			$screen = get_current_screen();
 
 			// Ranks List Page
-			if ( preg_match( '/(edit-mycred_rank)/', $screen->id, $matches ) ) {
+			if ( preg_match( '/(edit-mycred_rank)/', $screen->id, $matches ) )
 				wp_enqueue_style( 'mycred-admin' );
-				$adjust_header = true;
-			}
 
 			// Edit Rank Page
 			if ( preg_match( '/(mycred_rank)/', $screen->id, $matches ) ) {
 				wp_enqueue_style( 'mycred-admin' );
 				wp_dequeue_script( 'autosave' );
-				$adjust_header = true;
 			}
 
 			// Insert management script
@@ -238,13 +233,6 @@ WHERE post_type = 'mycred_rank';" );
 					)
 				);
 				wp_enqueue_script( 'mycred-rank-management' );
-			}
-
-			if ( $adjust_header ) { ?>
-<style type="text/css">
-#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
-</style>
-<?php
 			}
 		}
 
@@ -312,18 +300,20 @@ WHERE post_type = 'mycred_rank';" );
 
 			global $wpdb;
 
-			$users = $wpdb->get_results( $wpdb->prepare( "
-SELECT user_id AS ID, SUM( CASE WHEN creds > 0 OR ( creds < 0 AND ref = %s ) THEN creds ELSE 0 END ) as total
-FROM {$this->core->log_table} 
-	GROUP BY user_id;", 'manual' ) );
+			$users = $wpdb->get_results( apply_filters( 'mycred_ranks_calc_total', $wpdb->prepare( "
+			SELECT user_id AS ID, SUM( CASE WHEN creds > 0 OR ( creds < 0 AND ref = %s ) THEN creds ELSE 0 END ) as total
+			FROM {$this->core->log_table} 
+			GROUP BY user_id;", 'manual' ), $this ) );
+
+			$total_key = apply_filters( 'mycred_ranks_total_key', 'mycred_default_total', $this );
 
 			$count = 0;
 			if ( $users ) {
 				foreach ( $users as $user ) {
 					if ( $user->total == 0 ) continue;
 
-					update_user_meta( $user->ID, $this->core->get_cred_id() . '_total', $user->total );
-					mycred_find_users_rank( $user->ID, true, 0, $this->core->get_cred_id() . '_total' );
+					update_user_meta( $user->ID, $total_key, $user->total );
+					mycred_find_users_rank( $user->ID, true, 0, $total_key );
 
 					$count = $count+1;
 				}
@@ -336,64 +326,59 @@ FROM {$this->core->log_table}
 		}
 
 		/**
-		 * Registration
-		 * Check what rank this user should have
-		 * @since 1.1
-		 * @version 1.0
-		 */
-		public function registration( $user_id ) {
-			mycred_find_users_rank( $user_id, true );
-		}
-
-		/**
 		 * Balance Adjustment
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.1.1
+		 * @version 1.3
 		 */
-		public function update_balance( $reply, $request, $mycred ) {
-			if ( $reply === false ) return $reply;
+		public function update_balance( $user_id, $current_balance, $amount, $type ) {
+			if ( $type != 'mycred_default' ) return;
 
-			$amount = $this->core->number( $request['amount'] );
-			$zero = $this->core->zero();
-			$user_id = (int) $request['user_id'];
-
-			switch ( $this->rank['base'] ) {
-				// Rank is based on current balance
-				case 'current' :
-
-					mycred_find_users_rank(
-						$user_id,
-						true,
-						$amount,
-						$this->core->get_cred_id()
-					);
-
-				break;
-				// Rank is based on total amount gained
-				case 'total' :
-
-					if ( $amount > $zero || ( $amount < $zero && $request['ref'] == 'manual' ) ) {
-						mycred_update_users_total( '', $request, $mycred );
-						mycred_find_users_rank(
-							$user_id, 
-							true, 
-							$amount, 
-							$this->core->get_cred_id() . '_total'
-						);
-					}
-
-				break;
+			if ( $this->rank['base'] == 'total' ) {
+				$total = mycred_get_users_total( $user_id );
+				$balance = $this->core->number( $total+$amount );
+			}
+			else {
+				$balance = $this->core->number( $current_balance+$amount );
 			}
 
-			return $reply;
+			$balance_format = '%d';
+			if ( isset( $this->core->format['decimals'] ) && $this->core->format['decimals'] > 0 )
+				$balance_format = '%f';
+
+			global $wpdb;
+
+			$rank_id = $wpdb->get_var( $wpdb->prepare( "
+			SELECT rank.ID 
+			FROM {$wpdb->posts} rank 
+			INNER JOIN {$wpdb->postmeta} min 
+				ON ( min.post_id = rank.ID AND min.meta_key = 'mycred_rank_min' )
+			INNER JOIN {$wpdb->postmeta} max 
+				ON ( max.post_id = rank.ID AND max.meta_key = 'mycred_rank_max' )
+			WHERE rank.post_type = 'mycred_rank' 
+				AND rank.post_status = 'publish'
+				AND {$balance_format} BETWEEN min.meta_value AND max.meta_value
+			LIMIT 0,1;", $balance ) );
+
+			if ( $rank_id !== NULL ) {
+				if ( mycred_user_got_demoted( $user_id, $rank_id ) )
+					do_action( 'mycred_user_got_demoted', $user_id, $rank_id );
+
+				elseif ( mycred_user_got_promoted( $user_id, $rank_id ) )
+					do_action( 'mycred_user_got_promoted', $user_id, $rank_id );
+		
+				else
+					do_action( 'mycred_find_users_rank', $user_id, $rank_id );
+
+				update_user_meta( $user_id, 'mycred_rank', $rank_id );
+			}
 		}
 
 		/**
 		 * Publishing Content
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.2.1
+		 * @version 1.3
 		 */
 		public function post_status_change( $new_status, $old_status, $post ) {
 			global $mycred_ranks;
@@ -402,14 +387,12 @@ FROM {$this->core->log_table}
 			if ( $post->post_type != 'mycred_rank' ) return;
 
 			// Publishing rank
-			if ( $new_status == 'publish' && $old_status != 'publish' ) {
+			if ( $new_status == 'publish' && $old_status != 'publish' )
 				mycred_assign_ranks();
-			}
 
 			// Trashing of rank
-			elseif ( $new_status == 'trash' && $old_status != 'trash' ) {
+			elseif ( $new_status == 'trash' && $old_status != 'trash' )
 				mycred_assign_ranks();
-			}
 		}
 
 		/**
@@ -423,7 +406,7 @@ FROM {$this->core->log_table}
 				$query->set( 'meta_key', 'mycred_rank_min' );
 				$query->set( 'orderby',  'meta_value_num' );
 
-				if ( !isset( $this->rank['order'] ) ) $this->rank['order'] = 'ASC';
+				if ( ! isset( $this->rank['order'] ) ) $this->rank['order'] = 'ASC';
 				$query->set( 'order',    $this->rank['order'] );
 			}
 
@@ -438,9 +421,9 @@ FROM {$this->core->log_table}
 		 */
 		public function parse_rank( $content, $user = '', $data = '' ) {
 			// No rank no need to run
-			if ( !preg_match( '/(%rank[%|_])/', $content ) ) return $content;
+			if ( ! preg_match( '/(%rank[%|_])/', $content ) ) return $content;
 
-			if ( !isset( $user->ID ) ) {
+			if ( ! isset( $user->ID ) ) {
 				if ( is_array( $data ) && isset( $data['ID'] ) )
 					$user_id = $data['ID'];
 				else
@@ -460,34 +443,35 @@ FROM {$this->core->log_table}
 		/**
 		 * Insert Rank In Profile Header
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.2
 		 */
 		public function insert_rank_header() {
-			if ( bp_is_my_profile() || mycred_is_admin() ) {
-				$user_id = bp_displayed_user_id();
-				if ( $this->core->exclude_user( $user_id ) ) return;
+			$user_id = bp_displayed_user_id();
+			if ( $this->core->exclude_user( $user_id ) ) return;
 
-				$rank_name = mycred_get_users_rank( $user_id );
-				echo '<div id="mycred-my-rank">' . __( 'Rank', 'mycred' ) . ': ' . $rank_name . ' ' . mycred_get_rank_logo( $rank_name ) . '</div>';
-			}
+			$rank_name = mycred_get_users_rank( $user_id );
+			$output = '<span>' . __( 'Rank', 'mycred' ) . '</span>: ' . $rank_name . ' ' . mycred_get_rank_logo( $rank_name );
+			echo '<div id="mycred-my-rank">' . apply_filters( 'mycred_bp_rank_in_header', $output, $user_id ) . '</div>';
 		}
 
 		/**
 		 * Insert Rank In Profile Details
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function insert_rank_profile() {
 			$user_id = bp_displayed_user_id();
 			if ( $this->core->exclude_user( $user_id ) ) return;
-			$rank_name = mycred_get_users_rank( $user_id ); ?>
+
+			$rank_name = mycred_get_users_rank( $user_id );
+			$output = $rank_name . ' ' . mycred_get_rank_logo( $rank_name ); ?>
 
 <div class="bp-widget mycred-field">
 	<table class="profile-fields">
 		<tr id="mycred-users-rank">
 			<td class="label"><?php _e( 'Rank', 'mycred' ); ?></td>
 			<td class="data">
-				<?php echo $rank_name . ' ' . mycred_get_rank_logo( $rank_name ); ?>
+				<?php echo apply_filters( 'mycred_bp_rank_in_profile', $output, $user_id ); ?>
 
 			</td>
 		</tr>
@@ -514,7 +498,7 @@ FROM {$this->core->log_table}
 			if ( ! mycred_have_ranks() ) {
 				// Construct a new post
 				$rank = array();
-				$rank['post_title'] = __( 'Newbie', 'mycred' );
+				$rank['post_title'] = 'Newbie';
 				$rank['post_type'] = 'mycred_rank';
 				$rank['post_status'] = 'publish';
 
@@ -541,8 +525,8 @@ FROM {$this->core->log_table}
 			$messages['mycred_rank'] = array(
 				0 => '',
 				1 => sprintf( __( 'Rank Updated. View <a href="%1$s">All Ranks</a>.', 'mycred' ), admin_url( 'edit.php?post_type=mycred_rank' ) ),
-				2 => __( 'Custom field updated', 'mycred' ),
-				3 => __( 'Custom filed updated', 'mycred' ),
+				2 => '',
+				3 => '',
 				4 => sprintf( __( 'Rank Updated. View <a href="%1$s">All Ranks</a>.', 'mycred' ), admin_url( 'edit.php?post_type=mycred_rank' ) ),
 				5 => false,
 				6 => __( 'Rank Activated', 'mycred' ),
@@ -567,7 +551,7 @@ FROM {$this->core->log_table}
 			if ( $post->post_type == 'mycred_rank' ) {
 				unset( $actions['inline hide-if-no-js'] );
 
-				if ( !$this->rank['public'] )
+				if ( ! $this->rank['public'] )
 					unset( $actions['view'] );
 			}
 
@@ -606,9 +590,9 @@ FROM {$this->core->log_table}
 			unset( $defaults['date'] );
 
 			// Add / Adjust
-			$defaults['title'] = __( 'Rank Title', 'mycred' );
-			$defaults['mycred-rank-logo'] = __( 'Logo', 'mycred' );
-			$defaults['mycred-rank-req'] = __( 'Requirement', 'mycred' );
+			$defaults['title']             = __( 'Rank Title', 'mycred' );
+			$defaults['mycred-rank-logo']  = __( 'Logo', 'mycred' );
+			$defaults['mycred-rank-req']   = __( 'Requirement', 'mycred' );
 			$defaults['mycred-rank-users'] = __( 'Users', 'mycred' );
 
 			// Return
@@ -631,7 +615,7 @@ FROM {$this->core->log_table}
 			}
 			// Rank Requirement (custom metabox)
 			elseif ( $column_name == 'mycred-rank-req' ) {
-				$mycred = mycred_get_settings();
+				$mycred = mycred();
 				$min = get_post_meta( $post_id, 'mycred_rank_min', true );
 				if ( empty( $min ) && (int) $min !== 0 )
 					$min = __( 'Any Value', 'mycred' );
@@ -647,8 +631,6 @@ FROM {$this->core->log_table}
 			// Rank Users (user list)
 			elseif ( $column_name == 'mycred-rank-users' ) {
 				$users = count( mycred_get_users_of_rank( $post_id ) );
-				//if ( $users > 0 )
-				//	$users = '<a href="' . admin_url( 'users.php?rank=' . $post_id ) . '">' . $users . '</a>';
 				echo '<p>' . $users . '</p>';
 			}
 		}
@@ -688,7 +670,7 @@ FROM {$this->core->log_table}
 		 * @version 1.0
 		 */
 		public function rank_settings( $post ) {
-			$mycred = mycred_get_settings();
+			$mycred = mycred();
 			$min = get_post_meta( $post->ID, 'mycred_rank_min', true );
 			$max = get_post_meta( $post->ID, 'mycred_rank_max', true ); ?>
 
@@ -708,10 +690,9 @@ FROM {$this->core->log_table}
 	</div>
 	<div style="display:block;width:50%;margin:0;padding:0;float:left;">
 		<p><?php _e( 'All Published Ranks', 'mycred' ); ?>:</p>
-		<?php
-
+<?php
 			$all = mycred_get_ranks();
-			if ( !empty( $all ) ) {
+			if ( ! empty( $all ) ) {
 				foreach ( $all as $rank_id => $rank ) {
 					$_min = get_post_meta( $rank_id, 'mycred_rank_min', true );
 					if ( empty( $_min ) && (int) $_min !== 0 ) $_min = __( 'Not Set', 'mycred' );
@@ -732,17 +713,20 @@ FROM {$this->core->log_table}
 		/**
 		 * Save Email Notice Details
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function save_rank_settings( $post_id ) {
 			// Make sure this is the correct post type
 			if ( get_post_type( $post_id ) != 'mycred_rank' ) return;
+
 			// Make sure we can edit
-			elseif ( !mycred_is_admin( get_current_user_id() ) ) return;
+			elseif ( ! mycred_is_admin( get_current_user_id() ) ) return;
+
 			// Make sure fields exists
-			elseif ( !isset( $_POST['mycred_rank'] ) || !is_array( $_POST['mycred_rank'] ) ) return;
+			elseif ( ! isset( $_POST['mycred_rank'] ) || ! is_array( $_POST['mycred_rank'] ) ) return;
+
 			// Finally check token
-			elseif ( !wp_verify_nonce( $_POST['mycred_rank']['token'], 'mycred-edit-rank' ) ) return;
+			elseif ( ! wp_verify_nonce( $_POST['mycred_rank']['token'], 'mycred-edit-rank' ) ) return;
 
 			// Minimum can not be empty
 			if ( empty( $_POST['mycred_rank']['min'] ) )
@@ -774,59 +758,59 @@ FROM {$this->core->log_table}
 			else
 				$box = 'display: block;'; ?>
 
-				<h4><div class="icon icon-active"></div><?php _e( 'Ranks', 'mycred' ); ?></h4>
-				<div class="body" style="display:none;">
-					<label class="subheader" for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'Rank Features', 'mycred' ); ?></label>
-					<ol id="myCRED-rank-supports">
-						<li>
-							<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php _e( 'Title', 'mycred' ); ?></label><br />
-							<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php echo $this->core->template_tags_general( __( '%plural% requirement', 'mycred' ) ); ?></label><br />
-							<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php _e( 'Featured Image (Logo)', 'mycred' ); ?></label><br />
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'content' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'content' ) ); ?>" <?php checked( $this->rank['support']['content'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Content', 'mycred' ); ?></label><br />
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'excerpt' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'excerpt' ) ); ?>" <?php checked( $this->rank['support']['excerpt'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Excerpt', 'mycred' ); ?></label><br />
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'comments' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'comments' ) ); ?>" <?php checked( $this->rank['support']['comments'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Comments', 'mycred' ); ?></label><br />
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'page-attributes' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'page-attributes' ) ); ?>" <?php checked( $this->rank['support']['page-attributes'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Page Attributes', 'mycred' ); ?></label><br />
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'custom-fields' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'custom-fields' ) ); ?>" <?php checked( $this->rank['support']['custom-fields'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Custom Fields', 'mycred' ); ?></label>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'Public', 'mycred' ); ?></label>
-					<ol id="myCRED-rank-public">
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( 'public' ); ?>" id="<?php echo $this->field_id( 'public' ); ?>" <?php checked( $this->rank['public'], 1 ); ?> value="1" />
-							<label for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'If you want to create a template archive for each rank, you must select to have ranks public. Defaults to disabled.', 'mycred' ); ?></label>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'count' ); ?>"><?php _e( 'Rank Basis', 'mycred' ); ?></label>
-					<ol id="myCRED-rank-basis">
-						<li>
-							<input type="radio" name="<?php echo $this->field_name( 'base' ); ?>" id="<?php echo $this->field_id( array( 'base' => 'current' ) ); ?>"<?php checked( $this->rank['base'], 'current' ); ?> value="current" /> <label for="<?php echo $this->field_id( array( 'base' => 'current' ) ); ?>"><?php _e( 'Users are ranked according to their current balance.', 'mycred' ); ?></label>
-						</li>
-						<li>
-							<input type="radio" name="<?php echo $this->field_name( 'base' ); ?>" id="<?php echo $this->field_id( array( 'base' => 'total' ) ); ?>"<?php checked( $this->rank['base'], 'total' ); ?> value="total" /> <label for="<?php echo $this->field_id( array( 'base' => 'total' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Users are ranked according to the total amount of %_plural% they have accumulated.', 'mycred' ) ); ?></label>
-						</li>
-					</ol>
-					<div id="calc-total" style="<?php echo $box; ?>">
-						<label class="subheader" for=""><?php _e( 'Calculate Totals', 'mycred' ); ?></label>
-						<ol id="mycred-rank-calculate">
-							<li>
-								<p><?php _e( 'Use this button to calculate or re-calcualte your users totals. If not used, the users current balance will be used as a starting point.', 'mycred' ); ?><br /><?php _e( 'Once a users total has been calculated, they will be assigned to their appropriate roles. For this reason, it is highly recommended that you first setup your ranks!', 'mycred' ); ?></p>
-								<p><strong><?php _e( 'Depending on your log size and number of users this process may take a while. Please do not leave, click "Update Settings" or re-fresh this page until this is completed!', 'mycred' ); ?></strong></p>
-								<input type="button" name="mycred-update-totals" id="mycred-update-totals" value="<?php _e( 'Calculate Totals', 'mycred' ); ?>" class="button button-large button-<?php if ( $this->rank['base'] == 'current' ) echo 'secondary'; else echo 'primary'; ?>"<?php if ( $this->rank['base'] == 'current' ) echo ' disabled="disabled"'; ?> />
-							</li>
-						</ol>
-					</div>
-					<label class="subheader" for="<?php echo $this->field_id( 'slug' ); ?>"><?php _e( 'Archive URL', 'mycred' ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><?php bloginfo( 'url' ); ?>/ <input type="text" name="<?php echo $this->field_name( 'slug' ); ?>" id="<?php echo $this->field_id( 'slug' ); ?>" value="<?php echo $this->rank['slug']; ?>" size="20" />/</div>
-							<span class="description"><?php _e( 'Ignored if Ranks are not public', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<label class="subheader" for="<?php echo $this->field_id( 'order' ); ?>"><?php _e( 'Display Order', 'mycred' ); ?></label>
-					<ol id="myCRED-rank-order">
-						<li>
-							<select name="<?php echo $this->field_name( 'order' ); ?>" id="<?php echo $this->field_id( 'order' ); ?>">
-								<?php
+<h4><div class="icon icon-active"></div><?php _e( 'Ranks', 'mycred' ); ?></h4>
+<div class="body" style="display:none;">
+	<label class="subheader" for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'Rank Features', 'mycred' ); ?></label>
+	<ol id="myCRED-rank-supports">
+		<li>
+			<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php _e( 'Title', 'mycred' ); ?></label><br />
+			<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php echo $this->core->template_tags_general( __( '%plural% requirement', 'mycred' ) ); ?></label><br />
+			<input type="checkbox" value="1" checked="checked" disabled="disabled" /> <label for=""><?php _e( 'Featured Image (Logo)', 'mycred' ); ?></label><br />
+			<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'content' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'content' ) ); ?>" <?php checked( $this->rank['support']['content'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Content', 'mycred' ); ?></label><br />
+			<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'excerpt' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'excerpt' ) ); ?>" <?php checked( $this->rank['support']['excerpt'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Excerpt', 'mycred' ); ?></label><br />
+			<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'comments' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'comments' ) ); ?>" <?php checked( $this->rank['support']['comments'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Comments', 'mycred' ); ?></label><br />
+			<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'page-attributes' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'page-attributes' ) ); ?>" <?php checked( $this->rank['support']['page-attributes'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Page Attributes', 'mycred' ); ?></label><br />
+			<input type="checkbox" name="<?php echo $this->field_name( array( 'support' => 'custom-fields' ) ); ?>" id="<?php echo $this->field_id( array( 'support' => 'custom-fields' ) ); ?>" <?php checked( $this->rank['support']['custom-fields'], 1 ); ?> value="1" /> <label for=""><?php _e( 'Custom Fields', 'mycred' ); ?></label>
+		</li>
+	</ol>
+	<label class="subheader" for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'Public', 'mycred' ); ?></label>
+	<ol id="myCRED-rank-public">
+		<li>
+			<input type="checkbox" name="<?php echo $this->field_name( 'public' ); ?>" id="<?php echo $this->field_id( 'public' ); ?>" <?php checked( $this->rank['public'], 1 ); ?> value="1" />
+			<label for="<?php echo $this->field_id( 'public' ); ?>"><?php _e( 'If you want to create a template archive for each rank, you must select to have ranks public. Defaults to disabled.', 'mycred' ); ?></label>
+		</li>
+	</ol>
+	<label class="subheader" for="<?php echo $this->field_id( 'count' ); ?>"><?php _e( 'Rank Basis', 'mycred' ); ?></label>
+	<ol id="myCRED-rank-basis">
+		<li>
+			<input type="radio" name="<?php echo $this->field_name( 'base' ); ?>" id="<?php echo $this->field_id( array( 'base' => 'current' ) ); ?>"<?php checked( $this->rank['base'], 'current' ); ?> value="current" /> <label for="<?php echo $this->field_id( array( 'base' => 'current' ) ); ?>"><?php _e( 'Users are ranked according to their current balance.', 'mycred' ); ?></label>
+		</li>
+		<li>
+			<input type="radio" name="<?php echo $this->field_name( 'base' ); ?>" id="<?php echo $this->field_id( array( 'base' => 'total' ) ); ?>"<?php checked( $this->rank['base'], 'total' ); ?> value="total" /> <label for="<?php echo $this->field_id( array( 'base' => 'total' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Users are ranked according to the total amount of %_plural% they have accumulated.', 'mycred' ) ); ?></label>
+		</li>
+	</ol>
+	<div id="calc-total" style="<?php echo $box; ?>">
+		<label class="subheader" for=""><?php _e( 'Calculate Totals', 'mycred' ); ?></label>
+		<ol id="mycred-rank-calculate">
+			<li>
+				<p><?php _e( 'Use this button to calculate or re-calcualte your users totals. If not used, the users current balance will be used as a starting point.', 'mycred' ); ?><br /><?php _e( 'Once a users total has been calculated, they will be assigned to their appropriate roles. For this reason, it is highly recommended that you first setup your ranks!', 'mycred' ); ?></p>
+				<p><strong><?php _e( 'Depending on your log size and number of users this process may take a while. Please do not leave, click "Update Settings" or re-fresh this page until this is completed!', 'mycred' ); ?></strong></p>
+				<input type="button" name="mycred-update-totals" id="mycred-update-totals" value="<?php _e( 'Calculate Totals', 'mycred' ); ?>" class="button button-large button-<?php if ( $this->rank['base'] == 'current' ) echo 'secondary'; else echo 'primary'; ?>"<?php if ( $this->rank['base'] == 'current' ) echo ' disabled="disabled"'; ?> />
+			</li>
+		</ol>
+	</div>
+	<label class="subheader" for="<?php echo $this->field_id( 'slug' ); ?>"><?php _e( 'Archive URL', 'mycred' ); ?></label>
+	<ol id="mycred-rank-archive-url">
+		<li>
+			<div class="h2"><?php bloginfo( 'url' ); ?>/ <input type="text" name="<?php echo $this->field_name( 'slug' ); ?>" id="<?php echo $this->field_id( 'slug' ); ?>" value="<?php echo $this->rank['slug']; ?>" size="20" />/</div>
+			<span class="description"><?php _e( 'Ignored if Ranks are not public', 'mycred' ); ?></span>
+		</li>
+	</ol>
+	<label class="subheader" for="<?php echo $this->field_id( 'order' ); ?>"><?php _e( 'Display Order', 'mycred' ); ?></label>
+	<ol id="myCRED-rank-order">
+		<li>
+			<select name="<?php echo $this->field_name( 'order' ); ?>" id="<?php echo $this->field_id( 'order' ); ?>">
+<?php
 			// Order added in 1.1.1
 			$options = array(
 				'ASC'  => __( 'Ascending - Lowest rank to highest', 'mycred' ),
@@ -838,14 +822,14 @@ FROM {$this->core->log_table}
 				echo '>' . $option_label . '</option>';
 			} ?>
 
-							</select><br />
-							<span class="description"><?php _e( 'Select in what order ranks should be displayed in your admin area and/or front if ranks are "Public"', 'mycred' ); ?></span>
-						</li>
-					</ol>
+			</select><br />
+			<span class="description"><?php _e( 'Select in what order ranks should be displayed in your admin area and/or front if ranks are "Public"', 'mycred' ); ?></span>
+		</li>
+	</ol>
 <?php
 			// If BuddyPress is installed
 			if ( function_exists( 'bp_displayed_user_id' ) ) {
-				if ( !isset( $this->rank['bb_location'] ) )
+				if ( ! isset( $this->rank['bb_location'] ) )
 					$this->rank['bb_location'] = '';
 
 				$rank_locations = array(
@@ -855,28 +839,27 @@ FROM {$this->core->log_table}
 					'both'        => __( 'Include under the "Profile" tab and Profile Header.', 'mycred' )
 				); ?>
 
-					<label class="subheader" for="<?php echo $this->field_id( 'bb_location' ); ?>"><?php _e( 'Rank in BuddyPress', 'mycred' ); ?></label>
-					<ol id="myCRED-rank-bb-location">
-						<li>
-							<select name="<?php echo $this->field_name( 'bb_location' ); ?>" id="<?php echo $this->field_id( 'bb_location' ); ?>">
-								<?php
+	<label class="subheader" for="<?php echo $this->field_id( 'bb_location' ); ?>"><?php _e( 'Rank in BuddyPress', 'mycred' ); ?></label>
+	<ol id="myCRED-rank-bb-location">
+		<li>
+			<select name="<?php echo $this->field_name( 'bb_location' ); ?>" id="<?php echo $this->field_id( 'bb_location' ); ?>">
+<?php
 				// Loop though locations
 				foreach ( $rank_locations as $value => $label ) {
 					echo '<option value="' . $value . '"';
 					if ( $this->rank['bb_location'] == $value ) echo ' selected="selected"';
 					echo '>' . $label . '</option>';
-				
 				} ?>
 
-							</select>
-						</li>
-					</ol>
+			</select>
+		</li>
+	</ol>
 <?php		}
 			else {
 				echo '<input type="hidden" name="' . $this->field_name( 'bb_location' ) . '" value="" />';
 			} ?>
 
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
 jQuery(function($){
 	$('input[name="<?php echo $this->field_name( 'base' ); ?>"]').change(function(){
 		var basis = $(this).val();
@@ -898,13 +881,13 @@ jQuery(function($){
 
 	var mycred_calc = function( button ) {
 		$.ajax({
-			type : "POST",
-			data : {
+			type       : "POST",
+			data       : {
 				action    : 'mycred-calc-totals',
 				token     : '<?php echo wp_create_nonce( 'mycred-calc-totals' ); ?>'
 			},
-			dataType : "JSON",
-			url : '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+			dataType   : "JSON",
+			url        : '<?php echo admin_url( 'admin-ajax.php' ); ?>',
 			// Before we start
 			beforeSend : function() {
 				button.attr( 'disabled', 'disabled' );
@@ -919,7 +902,8 @@ jQuery(function($){
 			// Error (sent to console)
 			error      : function( jqXHR, textStatus, errorThrown ) {
 				// Debug - uncomment to use
-				console.log( jqXHR );
+				//console.log( jqXHR );
+
 				button.removeAttr( 'disabled' );
 				button.removeClass( 'button-seconday' );
 				button.addClass( 'button-primary' );
@@ -931,9 +915,9 @@ jQuery(function($){
 	$('input#mycred-update-totals').click(function(){
 		mycred_calc( $(this) );
 	});
-});
+});//]]>
 </script>
-				</div>
+</div>
 <?php
 		}
 
@@ -943,17 +927,18 @@ jQuery(function($){
 		 * @version 1.2
 		 */
 		public function sanitize_extra_settings( $new_data, $data, $core ) {
-			$new_data['rank']['support']['content'] = ( isset( $data['rank']['support']['content'] ) ) ? true : false;
-			$new_data['rank']['support']['excerpt'] = ( isset( $data['rank']['support']['excerpt'] ) ) ? true : false;
-			$new_data['rank']['support']['comments'] = ( isset( $data['rank']['support']['comments'] ) ) ? true : false;
+			$new_data['rank']['support']['content']         = ( isset( $data['rank']['support']['content'] ) ) ? true : false;
+			$new_data['rank']['support']['excerpt']         = ( isset( $data['rank']['support']['excerpt'] ) ) ? true : false;
+			$new_data['rank']['support']['comments']        = ( isset( $data['rank']['support']['comments'] ) ) ? true : false;
 			$new_data['rank']['support']['page-attributes'] = ( isset( $data['rank']['support']['page-attributes'] ) ) ? true : false;
-			$new_data['rank']['support']['custom-fields'] = ( isset( $data['rank']['support']['custom-fields'] ) ) ? true : false;
+			$new_data['rank']['support']['custom-fields']   = ( isset( $data['rank']['support']['custom-fields'] ) ) ? true : false;
 
-			$new_data['rank']['base'] = sanitize_text_field( $data['rank']['base'] );
-			$new_data['rank']['public'] = ( isset( $data['rank']['public'] ) ) ? true : false;
-			$new_data['rank']['slug'] = sanitize_text_field( $data['rank']['slug'] );
-			$new_data['rank']['order'] = sanitize_text_field( $data['rank']['order'] );
+			$new_data['rank']['base']        = sanitize_text_field( $data['rank']['base'] );
+			$new_data['rank']['public']      = ( isset( $data['rank']['public'] ) ) ? true : false;
+			$new_data['rank']['slug']        = sanitize_text_field( $data['rank']['slug'] );
+			$new_data['rank']['order']       = sanitize_text_field( $data['rank']['order'] );
 			$new_data['rank']['bb_location'] = sanitize_text_field( $data['rank']['bb_location'] );
+
 			return $new_data;
 		}
 
@@ -963,31 +948,32 @@ jQuery(function($){
 		 * @version 1.0
 		 */
 		public function rank_management() {
-			$data = mycred_get_published_ranks();
+			$data = mycred_get_published_ranks_count();
 			
 			$reset_block = false;
 			if ( $data == 0 || $data === false )
 				$reset_block = true; ?>
 
-		<label class="subheader"><?php _e( 'Ranks', 'mycred' ); ?></label>
-		<ol id="myCRED-rank-actions" class="inline">
-			<li>
-				<label><?php _e( 'Rank Post Type', 'mycred' ); ?></label>
-				<div class="h2"><input type="text" id="mycred-rank-post-type" disabled="disabled" value="mycred_rank" class="readonly" /></div>
-			</li>
-			<li>
-				<label><?php _e( 'No. of ranks', 'mycred' ); ?></label>
-				<div class="h2"><input type="text" id="mycred-ranks-no-of-ranks" disabled="disabled" value="<?php echo $data; ?>" class="readonly short" /></div>
-			</li>
-			<li>
-				<label><?php _e( 'Actions', 'mycred' ); ?></label>
-				<div class="h2"><input type="button" id="mycred-manage-action-reset-ranks" value="<?php _e( 'Remove All Ranks', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="mycred-manage-action-assign-ranks" value="<?php _e( 'Assign Ranks to Users', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; ?>" /></div>
-			</li>
-		</ol>
+<label class="subheader"><?php _e( 'Ranks', 'mycred' ); ?></label>
+<ol id="myCRED-rank-actions" class="inline">
+	<li>
+		<label><?php _e( 'Rank Post Type', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" id="mycred-rank-post-type" disabled="disabled" value="mycred_rank" class="readonly" /></div>
+	</li>
+	<li>
+		<label><?php _e( 'No. of ranks', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" id="mycred-ranks-no-of-ranks" disabled="disabled" value="<?php echo $data; ?>" class="readonly short" /></div>
+	</li>
+	<li>
+		<label><?php _e( 'Actions', 'mycred' ); ?></label>
+		<div class="h2"><input type="button" id="mycred-manage-action-reset-ranks" value="<?php _e( 'Remove All Ranks', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; else echo 'button-primary'; ?>" /> <input type="button" id="mycred-manage-action-assign-ranks" value="<?php _e( 'Assign Ranks to Users', 'mycred' ); ?>" class="button button-large large <?php if ( $reset_block ) echo '" disabled="disabled'; ?>" /></div>
+	</li>
+</ol>
 <?php
 		}
 	}
-	$rank = new myCRED_Ranks();
+
+	$rank = new myCRED_Ranks_Module();
 	$rank->load();
 }
 ?>

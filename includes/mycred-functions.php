@@ -5,40 +5,49 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Settings class
  * @see http://codex.mycred.me/classes/mycred_settings/
  * @since 0.1
- * @version 1.3
+ * @version 1.4
  */
-if ( ! class_exists( 'myCRED_Settings' ) ) {
+if ( ! class_exists( 'myCRED_Settings' ) ) :
 	class myCRED_Settings {
 
 		public $core;
 		public $log_table;
+		public $cred_id;
+
+		public $is_multisite = false;
+		public $use_master_template = false;
+		public $use_central_logging = false;
 
 		/**
 		 * Construct
 		 */
-		function __construct() {
-			if ( is_multisite() ) {
-				if ( mycred_override_settings() )
-					$this->core = get_blog_option( 1, 'mycred_pref_core', $this->defaults() );
-				else
-					$this->core = get_blog_option( $GLOBALS['blog_id'], 'mycred_pref_core', $this->defaults() );
-			}
-			else {
-				$this->core = get_option( 'mycred_pref_core', $this->defaults() );
-			}
+		function __construct( $type = 'mycred_default' ) {
+			// Prep
+			$this->is_multisite = is_multisite();
+			$this->use_master_template = mycred_override_settings();
+			$this->use_central_logging = mycred_centralize_log();
+
+			// Load Settings
+			$option_id = 'mycred_pref_core';
+			if ( $type != 'mycred_default' )
+				$option_id .= '_' . $type;
+
+			$this->core = mycred_get_option( $option_id, $this->defaults() );
 			
 			if ( $this->core !== false ) {
 				foreach ( (array) $this->core as $key => $value ) {
 					$this->$key = $value;
 				}
 			}
-			
+
+			$this->cred_id = $type;
+
 			if ( defined( 'MYCRED_LOG_TABLE' ) )
 				$this->log_table = MYCRED_LOG_TABLE;
 			else {
 				global $wpdb;
 				
-				if ( mycred_centralize_log() )
+				if ( $this->is_multisite && $this->use_central_logging )
 					$this->log_table = $wpdb->base_prefix . 'myCRED_log';
 				else
 					$this->log_table = $wpdb->prefix . 'myCRED_log';
@@ -46,7 +55,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 
 			do_action_ref_array( 'mycred_settings', array( &$this ) );
 		}
-		
+
 		/**
 		 * Default Settings
 		 * @since 1.3
@@ -56,7 +65,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			return array(
 				'cred_id'   => 'mycred_default',
 				'format'    => array(
-					'type'       => '',
+					'type'       => 'bigint',
 					'decimals'   => 0,
 					'separators' => array(
 						'decimal'   => '.',
@@ -82,34 +91,35 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 				'frequency' => array(
 					'rate'     => 'always',
 					'date'     => ''
-				)
+				),
+				'delete_user' => 0
 			);
 		}
 
 		/**
 		 * Singular myCRED name
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function singular() {
 			if ( ! isset( $this->core['name']['singular'] ) )
 				return $this->name['singular'];
-			else
-				return $this->core['name']['singular'];
+
+			return $this->core['name']['singular'];
 		}
 
 		/**
 		 * Plural myCRED name
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function plural() {
 			if ( ! isset( $this->core['name']['plural'] ) )
 				return $this->name['plural'];
-			else
-				return $this->core['name']['plural'];
+
+			return $this->core['name']['plural'];
 		}
-		
+
 		/**
 		 * Zero
 		 * Returns zero formated with or without decimals.
@@ -121,7 +131,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 				$decimals = $this->core['format']['decimals'];
 			else
 				$decimals = $this->format['decimals'];
-			
+
 			return number_format( 0, $decimals );
 		}
 
@@ -134,7 +144,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $number (int|float) the initial number
 		 * @returns the given number formated either as an integer or float
 		 * @since 0.1
-		 * @version 1.1.1
+		 * @version 1.2
 		 */
 		public function number( $number = '' ) {
 			if ( $number === '' ) return $number;
@@ -144,12 +154,10 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			else
 				$decimals = (int) $this->format['decimals'];
 
-			if ( $decimals > 0 ) {
+			if ( $decimals > 0 )
 				return number_format( (float) $number, $decimals, '.', '' );
-			}
-			else {
-				return (int) $number;
-			}
+
+			return (int) $number;
 		}
 
 		/**
@@ -174,11 +182,10 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 
 			// Format
 			$creds = number_format( $number, (int) $decimals, $sep_dec, $sep_tho );
-			$creds = apply_filters( 'mycred_format_number', $creds, $number, $this->core );
 
-			return $creds;
+			return apply_filters( 'mycred_format_number', $creds, $number, $this->core );
 		}
-		
+
 		/**
 		 * Format Creds
 		 * Returns a given number formated with prefix and/or suffix along with any custom presentation set.
@@ -212,10 +219,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			else
 				$layout = $before . $prefix . $creds . $suffix . $after;
 
-			// Let others play
-			$formated = apply_filters( 'mycred_format_creds', $layout, $creds, $this->core );
-
-			return $formated;
+			return apply_filters( 'mycred_format_creds', $layout, $creds, $this->core );
 		}
 
 		/**
@@ -227,26 +231,27 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $precision (int) the optional number of decimal digits to round to. defaults to 0
 		 * @returns rounded int or float
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function round_value( $amount = 0, $up_down = false, $precision = 0 ) {
-			if ( $amount == 0 || !$up_down ) return $amount;
+			if ( $amount == 0 || ! $up_down ) return $amount;
 
 			// Use round() for precision
 			if ( $precision !== false ) {
 				if ( $up_down == 'up' )
-					$amount = round( $amount, (int) $precision, PHP_ROUND_HALF_UP );
+					$_amount = round( $amount, (int) $precision, PHP_ROUND_HALF_UP );
 				elseif ( $up_down == 'down' )
-					$amount = round( $amount, (int) $precision, PHP_ROUND_HALF_DOWN );
+					$_amount = round( $amount, (int) $precision, PHP_ROUND_HALF_DOWN );
 			}
 			// Use ceil() or floor() for everything else
 			else {
 				if ( $up_down == 'up' )
-					$amount = ceil( $amount );
+					$_amount = ceil( $amount );
 				elseif ( $up_down == 'down' )
-					$amount = floor( $amount );
+					$_amount = floor( $amount );
 			}
-			return $amount;
+
+			return apply_filters( 'mycred_round_value', $_amount, $amount, $up_down, $precision );
 		}
 
 		/**
@@ -257,18 +262,17 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $rate (int|float) the exchange rate to devide by
 		 * @param $round (bool) option to round values, defaults to yes.
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function apply_exchange_rate( $amount = 0, $rate = 1, $round = true ) {
-			$amount = $this->number( $amount );
 			if ( ! is_numeric( $rate ) || $rate == 1 ) return $amount;
 
 			$exchange = $amount/(float) $rate;
 			if ( $round ) $exchange = round( $exchange );
 
-			return $this->number( $exchange );
+			return apply_filters( 'mycred_apply_exchange_rate', $exchange, $amount, $rate, $round );
 		}
-		
+
 		/**
 		 * Parse Template Tags
 		 * Parses template tags in a given string by checking for the 'ref_type' array key under $log_entry->data.
@@ -335,7 +339,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			// Logout URL
 			$content = str_replace( '%logout_url%',      wp_logout_url(), $content );
 			$content = str_replace( '%logout_url_here%', wp_logout_url( get_permalink() ), $content );
-			
+
 			// Blog Related
 			if ( preg_match( '%(num_members|blog_name|blog_url|blog_info|admin_email)%', $content, $matches ) ) {
 				$content = str_replace( '%num_members%',     $this->count_members(), $content );
@@ -455,6 +459,8 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			// Let others play first
 			$content = apply_filters( 'mycred_parse_tags_user', $content, $user, $data );
 
+			if ( ! isset( $user->ID ) ) return $content;
+
 			// Replace template tags
 			$content = str_replace( '%user_id%',          $user->ID, $content );
 			$content = str_replace( '%user_name%',        $user->user_login, $content );
@@ -480,13 +486,13 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			$balance = $this->get_users_cred( $user->ID );
 			$content = str_replace( '%balance%',            $balance, $content );
 			$content = str_replace( '%balance_f%',          $this->format_creds( $balance ), $content );
-			
+
 			// Ranking
 			if ( ! function_exists( 'mycred_get_users_rank' ) )
 				$content = str_replace( array( '%rank%', '%ranking%' ), mycred_rankings_position( $user->ID ), $content );
 			else
 				$content = str_replace( '%ranking%', mycred_rankings_position( $user->ID ), $content );
-			
+
 			//$content = str_replace( '', $user->, $content );
 			unset( $user );
 
@@ -545,7 +551,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			unset( $comment );
 			return $content;
 		}
-		
+
 		/**
 		 * Has Tags
 		 * Checks if a string has any of the defined template tags.
@@ -565,7 +571,79 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			if ( ! preg_match( '%(' . trim( $tags ) . ')%', $content, $matches ) ) return false;
 			return true;
 		}
-		
+
+		/**
+		 * Available Template Tags
+		 * Based on an array of template tag types, a list of codex links
+		 * are generted for each tag type.
+		 * @since 1.4
+		 * @version 1.0
+		 */
+		public function available_template_tags( $available = array(), $custom = '' ) {
+			// Prep
+			$links = $template_tags = array();
+
+			// General
+			if ( in_array( 'general', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'General', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-general/'
+				);
+
+			// User
+			if ( in_array( 'user', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'User Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-user/'
+				);
+
+			// Post
+			if ( in_array( 'post', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'Post Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-post/'
+				);
+
+			// Comment
+			if ( in_array( 'comment', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'Comment Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-comment/'
+				);
+
+			// Widget
+			if ( in_array( 'widget', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'Widget Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-widget/'
+				);
+
+			// Amount
+			if ( in_array( 'amount', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'Amount Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-amount/'
+				);
+
+			// Video
+			if ( in_array( 'video', $available ) )
+				$template_tags[] = array(
+					'title' => __( 'Video Related', 'mycred' ),
+					'url'   => 'http://codex.mycred.me/category/template-tags/temp-amount/'
+				);
+
+			if ( ! empty( $template_tags ) ) {
+				foreach ( $template_tags as $tag ) {
+					$links[] = '<a href="' . $tag['url'] . '" target="_blank">' . $tag['title'] . '</a>';
+				}
+			}
+
+			if ( ! empty( $custom ) )
+				$custom = ' ' . __( 'and', 'mycred' ) . ' ' . $custom;
+
+			return __( 'Available Template Tags:', 'mycred' ) . ' ' . implode( ', ', $links ) . $custom . '.';
+		}
+
 		/**
 		 * Allowed Tags
 		 * Strips HTML tags from a given string.
@@ -575,15 +653,15 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @filter 'mycred_allowed_tags'
 		 * @returns (string) string stripped of tags
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function allowed_tags( $data = '', $allow = '' ) {
 			if ( $allow === false )
 				return strip_tags( $data );
 			elseif ( ! empty( $allow ) )
 				return strip_tags( $data, $allow );
-			else
-				return strip_tags( $data, apply_filters( 'mycred_allowed_tags', '<a><br><em><strong><span>' ) );
+
+			return strip_tags( $data, apply_filters( 'mycred_allowed_tags', '<a><br><em><strong><span>' ) );
 		}
 
 		/**
@@ -592,13 +670,13 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 *
 		 * @returns capability (string)
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function edit_creds_cap() {
 			if ( ! isset( $this->caps['creds'] ) || empty( $this->caps['creds'] ) )
 				$this->caps['creds'] = 'delete_users';
 
-			return $this->caps['creds'];
+			return apply_filters( 'mycred_edit_creds_cap', $this->caps['creds'] );
 		}
 
 		/**
@@ -609,9 +687,11 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $user_id (int) user id
 		 * @returns true or false
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function can_edit_creds( $user_id = '' ) {
+			$result = false;
+
 			if ( ! function_exists( 'get_current_user_id' ) )
 				require_once( ABSPATH . WPINC . '/user.php' );
 
@@ -623,9 +703,10 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 				require_once( ABSPATH . WPINC . '/capabilities.php' );
 
 			// Check if user can
-			if ( user_can( $user_id, $this->edit_creds_cap() ) ) return true;
+			if ( user_can( $user_id, $this->edit_creds_cap() ) )
+				$result = true;
 
-			return false;
+			return apply_filters( 'mycred_can_edit_creds', $result, $user_id );
 		}
 
 		/**
@@ -634,13 +715,13 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 *
 		 * @returns capability (string)
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function edit_plugin_cap() {
 			if ( ! isset( $this->caps['plugin'] ) || empty( $this->caps['plugin'] ) )
 				$this->caps['plugin'] = 'manage_options';
 
-			return $this->caps['plugin'];
+			return apply_filters( 'mycred_edit_plugin_cap', $this->caps['plugin'] );
 		}
 
 		/**
@@ -651,9 +732,11 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $user_id (int) user id
 		 * @returns true or false
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function can_edit_plugin( $user_id = '' ) {
+			$result = false;
+
 			if ( ! function_exists( 'get_current_user_id' ) )
 				require_once( ABSPATH . WPINC . '/user.php' );
 
@@ -665,30 +748,33 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 				require_once( ABSPATH . WPINC . '/capabilities.php' );
 
 			// Check if user can
-			if ( user_can( $user_id, $this->edit_plugin_cap() ) ) return true;
+			if ( user_can( $user_id, $this->edit_plugin_cap() ) )
+				$result = true;
 			
-			return false;
+			return apply_filters( 'mycred_can_edit_plugin', $result, $user_id );
 		}
 
 		/**
 		 * Check if user id is in exclude list
 		 * @return true or false
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function in_exclude_list( $user_id = '' ) {
+			$result = false;
+
 			// Grab current user id
 			if ( empty( $user_id ) )
 				$user_id = get_current_user_id();
 
-			if ( !isset( $this->exclude['list'] ) )
+			if ( ! isset( $this->exclude['list'] ) )
 				$this->exclude['list'] = '';
 
-			$list = explode( ',', $this->exclude['list'] );
-			$list = apply_filters( 'mycred_exclude_user_list', $list, $user_id );
-			if ( in_array( $user_id, $list ) ) return true;
+			$list = wp_parse_id_list( $this->exclude['list'] );
+			if ( in_array( $user_id, $list ) )
+				$result = true;
 
-			return false;
+			return apply_filters( 'mycred_is_excluded_list', $result, $user_id );
 		}
 
 		/**
@@ -772,12 +858,17 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $type (string), optional cred type to check for
 		 * @returns zero if user id is not set or if no creds were found, else returns amount
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function get_users_cred( $user_id = '', $type = '' ) {
 			if ( empty( $user_id ) ) return $this->zero();
 
 			if ( empty( $type ) ) $type = $this->get_cred_id();
+
+			// Handle multisites without centralized log
+			if ( $this->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->use_central_logging )
+				$type .= '_' . $GLOBALS['blog_id'];
+
 			$balance = get_user_meta( $user_id, $type, true );
 			if ( empty( $balance ) ) $balance = $this->zero();
 
@@ -798,11 +889,11 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $amount (int|float), amount to add/deduct from users balance. This value must be pre-formated.
 		 * @returns the new balance.
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
-		public function update_users_balance( $user_id = NULL, $amount = NULL ) {
+		public function update_users_balance( $user_id = NULL, $amount = NULL, $type = 'mycred_default' ) {
 			if ( $user_id === NULL || $amount === NULL ) return $amount;
-			if ( empty( $this->cred_id ) ) $this->cred_id = $this->get_cred_id();
+			if ( empty( $type ) ) $type = $this->get_cred_id();
 
 			// Enforce max
 			if ( $this->max() > $this->zero() && $amount > $this->max() ) {
@@ -812,17 +903,18 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			}
 
 			// Adjust creds
-			$current_balance = $this->get_users_cred( $user_id );
+			$current_balance = $this->get_users_cred( $user_id, $type );
 			$new_balance = $current_balance+$amount;
 
-			// Update creds
-			update_user_meta( $user_id, $this->cred_id, $new_balance );
+			// Handle multisites without centralized log
+			if ( $this->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->use_central_logging )
+				$type .= '_' . $GLOBALS['blog_id'];
 
-			// Rankings
-			if ( $this->frequency['rate'] == 'always' ) delete_transient( $this->cred_id . '_ranking' );
+			// Update creds
+			update_user_meta( $user_id, $type, $new_balance );
 
 			// Let others play
-			do_action( 'mycred_update_user_balance', $user_id, $current_balance, $amount, $this->cred_id );
+			do_action( 'mycred_update_user_balance', $user_id, $current_balance, $amount, $type );
 
 			// Return the new balance
 			return $new_balance;
@@ -842,13 +934,12 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.4
 		 */
 		public function add_creds( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
 			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 			if ( $this->exclude_user( $user_id ) === true ) return false;
-			if ( ! preg_match( '/mycred_/', $type ) ) return false;
 
 			// Format creds
 			$amount = $this->number( $amount );
@@ -869,33 +960,31 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			// Acceptable answers:
 			// true (boolean)  - "Yes" let myCRED add points and log the event
 			if ( $execute === true ) {
-				$this->update_users_balance( $user_id, $amount );
+				$this->update_users_balance( $user_id, $amount, $type );
 				
 				if ( ! empty( $entry ) )
 					$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 
 				// Update rankings
-				if ( $this->frequency['rate'] == 'always' )
-					$this->update_rankings();
+				//if ( $this->frequency['rate'] == 'always' )
+				//	$this->update_rankings();
 
 				return true;
 			}
 			// done (string)   - "Already done"
 			elseif ( $execute === 'done' ) {
 				// Update rankings
-				if ( $this->frequency['rate'] == 'always' )
-					$this->update_rankings();
+				//if ( $this->frequency['rate'] == 'always' )
+				//	$this->update_rankings();
 
 				return true;
 			}
-			// false (boolean) - "No"
-			else {
-				return false;
-			}
+
+			return false;
 		}
-		
+
 		/**
-		 * Update Rankings
+		 * Update Rankings (no longer used)
 		 * Updates the rankings for a given points type.
 		 *
 		 * @param $force (bool), if rankings are updated on a set interval, this option can override
@@ -904,11 +993,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @since 1.1.2
 		 * @version 1.0
 		 */
-		public function update_rankings( $force = false, $type = 'mycred_default' ) {
-			$ranking = new myCRED_Query_Rankings( array( 'type' => $type ) );
-			$ranking->get_rankings();
-			$ranking->save( $force );
-		}
+		public function update_rankings( $force = false, $type = 'mycred_default' ) { }
 
 		/**
 		 * Add Log Entry
@@ -925,7 +1010,6 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		public function add_to_log( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
 			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
-			if ( ! preg_match( '/mycred_/', $type ) ) return false;
 			if ( $amount == $this->zero() || $amount == 0 ) return false;
 
 			global $wpdb;
@@ -949,6 +1033,8 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			else
 				$format = '%s';
 
+			$time = apply_filters( 'mycred_log_time', date_i18n( 'U' ), $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
+
 			// Insert into DB
 			$new_entry = $wpdb->insert(
 				$this->log_table,
@@ -958,7 +1044,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 					'user_id' => (int) $user_id,
 					'creds'   => $amount,
 					'ctype'   => $type,
-					'time'    => date_i18n( 'U' ),
+					'time'    => $time,
 					'entry'   => $entry,
 					'data'    => ( is_array( $data ) || is_object( $data ) ) ? serialize( $data ) : $data
 				),
@@ -989,9 +1075,9 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 		 * @param $user_id (int) optional user id
 		 * @param $data (array|string) option data to search
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
-		function has_entry( $reference = '', $ref_id = '', $user_id = '', $data = '' ) {
+		function has_entry( $reference = '', $ref_id = '', $user_id = '', $data = '', $type = '' ) {
 			global $wpdb;
 
 			$where = $prep = array();
@@ -1015,6 +1101,12 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 				$prep[] = maybe_serialize( $data );
 			}
 
+			if ( empty( $type ) )
+				$type = $this->cred_id;
+
+			$where[] = 'ctype = %s';
+			$prep[] = sanitize_text_field( $type );
+
 			$where = implode( ' AND ', $where );
 
 			$has = false;
@@ -1028,7 +1120,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
 			return apply_filters( 'mycred_has_entry', $has, $reference, $ref_id, $user_id, $data );
 		}
 	}
-}
+endif;
 
 /**
  * myCRED Label
@@ -1036,7 +1128,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) {
  * @since 1.3.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_label' ) ) {
+if ( ! function_exists( 'mycred_label' ) ) :
 	function mycred_label( $trim = false )
 	{
 		global $mycred_label;
@@ -1048,24 +1140,123 @@ if ( ! function_exists( 'mycred_label' ) ) {
 
 		return $name;
 	}
-}
+endif;
 
 /**
- * Get Settings
- * Returns myCRED's general settings.
- * @since 0.1
+ * Get myCRED
+ * Returns myCRED's general settings and core functions.
+ * Replaces mycred_get_settings()
+ * @since 1.4
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_get_settings' ) ) {
-	function mycred_get_settings()
+if ( ! function_exists( 'mycred' ) ) :
+	function mycred( $type = 'mycred_default' )
 	{
+		if ( $type != 'mycred_default' )
+			return new myCRED_Settings( $type );
+
 		global $mycred;
+
 		if ( ! isset( $mycred ) || ! is_object( $mycred ) )
 			$mycred = new myCRED_Settings();
 
 		return $mycred;
 	}
-}
+endif;
+
+/**
+ * Get Cred Types
+ * Returns an associative array of registered point types.
+ * @since 1.4
+ * @version 1.1
+ */
+if ( ! function_exists( 'mycred_get_types' ) ) :
+	function mycred_get_types() {
+		$types = array();
+
+		$available_types = mycred_get_option( 'mycred_types', array( 'mycred_default' => mycred_label() ) );
+		if ( count( $available_types ) > 1 ) {
+			foreach ( $available_types as $type => $label ) {
+				if ( $type == 'mycred_default' ) {
+					$_mycred = mycred( $type );
+					$label = $_mycred->plural();
+				}
+
+				$types[ $type ] = $label;
+			}
+		}
+		else {
+			$types = $available_types;
+		}
+
+		return apply_filters( 'mycred_types', $types );
+	}
+endif;
+
+/**
+ * Select Point Type from Select Dropdown
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_types_select_from_dropdown' ) ) :
+	function mycred_types_select_from_dropdown( $name = '', $id = '', $selected = '', $return = false, $extra = '' ) {
+		$types = mycred_get_types();
+
+		$output = '';
+		if ( count( $types ) == 1 ) {
+			$output .= '<input type="hidden"' . $extra . ' name="' . $name . '" id="' . $id . '" value="mycred_default" />';
+		}
+		else {
+			$output .= '
+<select' . $extra . ' name="' . $name . '" id="' . $id . '">';
+			foreach ( $types as $type => $label ) {
+				if ( $type == 'mycred_default' ) {
+					$_mycred = mycred( $type );
+					$label = $_mycred->plural();
+				}
+				$output .= '<option value="' . $type . '"';
+				if ( $selected == $type ) $output .= ' selected="selected"';
+				$output .= '>' . $label . '</option>';
+			}
+			$output .= '
+</select>';
+		}
+
+		if ( $return )
+			return $output;
+
+		echo $output;
+	}
+endif;
+
+/**
+ * Select Point Type from Checkboxes
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_types_select_from_checkboxes' ) ) :
+	function mycred_types_select_from_checkboxes( $name = '', $id = '', $selected_values = array(), $return = false ) {
+		$types = mycred_get_types();
+
+		$output = '';
+		if ( count( $types ) > 0 ) {
+			foreach ( $types as $type => $label ) {
+				$selected = '';
+				if ( in_array( $type, (array) $selected_values ) )
+					$selected = ' checked="checked"';
+
+				$id .= '-' . $type;
+
+				$output .= '<input type="checkbox" name="' . $name . '" id="' . $id . '" value="' . $type . '"' . $selected . ' /><label for="' . $id . '">' . $label . '</label><br />';
+			}
+		}
+
+		if ( $return )
+			return $output;
+
+		echo $output;
+	}
+endif;
 
 /**
  * Get Network Settings
@@ -1073,7 +1264,7 @@ if ( ! function_exists( 'mycred_get_settings' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_get_settings_network' ) ) {
+if ( ! function_exists( 'mycred_get_settings_network' ) ) :
 	function mycred_get_settings_network()
 	{
 		if ( ! is_multisite() ) return false;
@@ -1087,41 +1278,85 @@ if ( ! function_exists( 'mycred_get_settings_network' ) ) {
 
 		return $settings;
 	}
-}
+endif;
 
 /**
  * Override Settings
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_override_settings' ) ) {
-	function mycred_override_settings() {
+if ( ! function_exists( 'mycred_override_settings' ) ) :
+	function mycred_override_settings()
+	{
 		// Not a multisite
 		if ( ! is_multisite() ) return false;
 
 		$mycred_network = mycred_get_settings_network();
 		if ( $mycred_network['master'] ) return true;
-		
+
 		return false;
 	}
-}
+endif;
+
+/**
+ * Get Option
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_option' ) ) :
+	function mycred_get_option( $option_id, $default = array() ) {
+		if ( is_multisite() ) {
+			if ( mycred_override_settings() )
+				$settings = get_blog_option( 1, $option_id, $default );
+			else
+				$settings = get_blog_option( $GLOBALS['blog_id'], $option_id, $default );
+		}
+		else {
+			$settings = get_option( $option_id, $default );
+		}
+
+		return $settings;
+	}
+endif;
+
+/**
+ * Update Option
+ * Used to make sure settings that are encompased by
+ * the MU Master Template feature are saved correctly.
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_update_option' ) ) :
+	function mycred_update_option( $option_id, $value = '' ) {
+		if ( is_multisite() ) {
+			if ( mycred_override_settings() )
+				update_blog_option( 1, $option_id, $value );
+			else
+				update_blog_option( $GLOBALS['blog_id'], $option_id, $value );
+		}
+		else {
+			update_option( $option_id, $value );
+		}
+	}
+endif;
 
 /**
  * Centralize Log
  * @since 1.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_centralize_log' ) ) {
-	function mycred_centralize_log() {
+if ( ! function_exists( 'mycred_centralize_log' ) ) :
+	function mycred_centralize_log()
+	{
 		// Not a multisite
 		if ( ! is_multisite() ) return true;
 
 		$mycred_network = mycred_get_settings_network();
 		if ( $mycred_network['central'] ) return true;
-		
+
 		return false;
 	}
-}
+endif;
 
 /**
  * Get myCRED Name
@@ -1130,16 +1365,16 @@ if ( ! function_exists( 'mycred_centralize_log' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_name' ) ) {
+if ( ! function_exists( 'mycred_name' ) ) :
 	function mycred_name( $singular = true )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( $singular )
 			return $mycred->singular();
 		else
 			return $mycred->plural();
 	}
-}
+endif;
 
 /**
  * Strip Tags
@@ -1149,13 +1384,13 @@ if ( ! function_exists( 'mycred_name' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_strip_tags' ) ) {
+if ( ! function_exists( 'mycred_strip_tags' ) ) :
 	function mycred_strip_tags( $string = '', $overwride = '' )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		return $mycred->allowed_tags( $string, $overwrite );
 	}
-}
+endif;
 
 /**
  * Is Admin
@@ -1166,17 +1401,17 @@ if ( ! function_exists( 'mycred_strip_tags' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_is_admin' ) ) {
+if ( ! function_exists( 'mycred_is_admin' ) ) :
 	function mycred_is_admin( $user_id = NULL )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
 		if ( $mycred->can_edit_creds( $user_id ) || $mycred->can_edit_plugin( $user_id ) ) return true;
 
 		return false;
 	}
-}
+endif;
 
 /**
  * Exclude User
@@ -1186,14 +1421,14 @@ if ( ! function_exists( 'mycred_is_admin' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_exclude_user' ) ) {
+if ( ! function_exists( 'mycred_exclude_user' ) ) :
 	function mycred_exclude_user( $user_id = NULL )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 		return $mycred->exclude_user( $user_id );
 	}
-}
+endif;
 
 /**
  * Get Users Creds
@@ -1204,15 +1439,15 @@ if ( ! function_exists( 'mycred_exclude_user' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_get_users_cred' ) ) {
+if ( ! function_exists( 'mycred_get_users_cred' ) ) :
 	function mycred_get_users_cred( $user_id = NULL, $type = '' )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		return $mycred->get_users_cred( $user_id, $type );
 	}
-}
+endif;
 
 /**
  * Get Users Creds Formated
@@ -1223,60 +1458,60 @@ if ( ! function_exists( 'mycred_get_users_cred' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_get_users_fcred' ) ) {
+if ( ! function_exists( 'mycred_get_users_fcred' ) ) :
 	function mycred_get_users_fcred( $user_id = NULL, $type = '' )
 	{
 		if ( $user_id === NULL ) return false;
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		$cred = $mycred->get_users_cred( $user_id, $type );
 		return $mycred->format_creds( $cred );
 	}
-}
+endif;
 
 /**
  * Flush Widget Cache
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_flush_widget_cache' ) ) {
+if ( ! function_exists( 'mycred_flush_widget_cache' ) ) :
 	function mycred_flush_widget_cache( $id = NULL )
 	{
 		if ( $id === NULL ) return;
 		wp_cache_delete( $id, 'widget' );
 	}
-}
+endif;
 
 /**
  * Format Number
  * @since 1.3.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_format_number' ) ) {
+if ( ! function_exists( 'mycred_format_number' ) ) :
 	function mycred_format_number( $value = NULL )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( $value === NULL )
 			return $mycred->zero();
 
 		return $mycred->format_number( $value );
 	}
-}
+endif;
 
 /**
  * Format Creds
  * @since 1.3.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_format_creds' ) ) {
+if ( ! function_exists( 'mycred_format_creds' ) ) :
 	function mycred_format_creds( $value = NULL )
 	{
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( $value === NULL ) $mycred->zero();
 
 		return $mycred->format_creds( $value );
 	}
-}
+endif;
 
 /**
  * Add Creds
@@ -1294,19 +1529,19 @@ if ( ! function_exists( 'mycred_format_creds' ) ) {
  * @since 0.1
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_add' ) ) {
+if ( ! function_exists( 'mycred_add' ) ) :
 	function mycred_add( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' )
 	{
 		// $ref, $user_id and $cred is required
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
 
 		// Add creds
 		return $mycred->add_creds( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 	}
-}
+endif;
 
 /**
  * Subtract Creds
@@ -1316,14 +1551,43 @@ if ( ! function_exists( 'mycred_add' ) ) {
  * @since 0.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_subtract' ) ) {
+if ( ! function_exists( 'mycred_subtract' ) ) :
 	function mycred_subtract( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' )
 	{
 		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
 		if ( (int) $amount > 0 ) $amount = 0-$amount;
 		return mycred_add( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
 	}
-}
+endif;
+
+/**
+ * Get Log Exports
+ * Returns an associative array of log export options.
+ * @since 1.4
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_log_exports' ) ) :
+	function mycred_get_log_exports()
+	{
+		return apply_filters( 'mycred_log_exports', array(
+			'all' => array(
+				'label' => __( 'Entire Log', 'mycred' ),
+				'my_label' => '',
+				'class' => 'btn btn-primary button button-secondary'
+			),
+			'display'  => array(
+				'label' => __( 'Displayed Rows', 'mycred' ),
+				'my_label' => __( 'Displayed Rows', 'mycred' ),
+				'class' => 'btn btn-default button button-secondary'
+			),
+			'search'     => array(
+				'label' => __( 'Search Results', 'mycred' ),
+				'my_label' => __( 'My Entire Log', 'mycred' ),
+				'class' => 'btn btn-default button button-secondary'
+			)
+		) );
+	}
+endif;
 
 /**
  * Count Reference Instances
@@ -1335,26 +1599,27 @@ if ( ! function_exists( 'mycred_subtract' ) ) {
  * @since 1.1
  * @version 1.0.1
  */
-if ( ! function_exists( 'mycred_count_ref_instances' ) ) {
-	function mycred_count_ref_instances( $reference = '', $user_id = NULL )
+if ( ! function_exists( 'mycred_count_ref_instances' ) ) :
+	function mycred_count_ref_instances( $reference = '', $user_id = NULL, $type = 'mycred_default' )
 	{
 		if ( empty( $reference ) ) return '';
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred( $type );
 
 		global $wpdb;
 
 		if ( $user_id !== NULL ) {
 			return $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$mycred->log_table} WHERE ref = %s AND user_id = %d;",
+				"SELECT COUNT(*) FROM {$mycred->log_table} WHERE ref = %s AND user_id = %d AND ctype = %s;",
 				$reference,
-				$user_id
+				$user_id,
+				$type
 			) );
 		}
 
 		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$mycred->log_table} WHERE ref = %s;", $reference ) );
 	}
-}
+endif;
 
 /**
  * Count All Reference Instances
@@ -1367,11 +1632,11 @@ if ( ! function_exists( 'mycred_count_ref_instances' ) ) {
  * @since 1.3.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) {
-	function mycred_count_all_ref_instances( $number = 5, $order = 'DESC' )
+if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) :
+	function mycred_count_all_ref_instances( $number = 5, $order = 'DESC', $type = 'mycred_default' )
 	{
 		global $wpdb;
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 
 		if ( $number == '-1' )
 			$limit = '';
@@ -1381,7 +1646,12 @@ if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) {
 		if ( ! in_array( $order, array( 'ASC', 'DESC' ) ) )
 			$order = 'DESC';
 
-		$query = $wpdb->get_results( "SELECT ref, COUNT(*) AS count FROM {$mycred->log_table} GROUP BY ref ORDER BY count {$order} {$limit};" );
+		if ( $type != 'all' )
+			$type = " WHERE ctype = '{$type}'";
+		else
+			$type = '';
+
+		$query = $wpdb->get_results( "SELECT ref, COUNT(*) AS count FROM {$mycred->log_table} {$type} GROUP BY ref ORDER BY count {$order} {$limit};" );
 
 		$results = array();
 		if ( $wpdb->num_rows > 0 ) {
@@ -1397,7 +1667,7 @@ if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) {
 
 		return apply_filters( 'mycred_count_all_refs', $results );
 	}
-}
+endif;
 
 /**
  * Get Total Points by Time
@@ -1418,13 +1688,13 @@ if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) {
  * @param $type (string) point type to filer by.
  * @returns total points (int|float) or error message (string)
  * @since 1.1.1
- * @version 1.1
+ * @version 1.2
  */
-if ( ! function_exists( 'mycred_get_total_by_time' ) ) {
-	function mycred_get_total_by_time( $from = 'today', $to = 'now', $ref = NULL, $user_id = NULL, $type = '' )
+if ( ! function_exists( 'mycred_get_total_by_time' ) ) :
+	function mycred_get_total_by_time( $from = 'today', $to = 'now', $ref = NULL, $user_id = NULL, $type = 'mycred_default' )
 	{
 		// Get myCRED
-		$mycred = mycred_get_settings();
+		$mycred = mycred( $type );
 
 		// Prep
 		$wheres = array();
@@ -1440,7 +1710,7 @@ if ( ! function_exists( 'mycred_get_total_by_time' ) ) {
 
 		// User
 		if ( $user_id !== NULL ) {
-			if ( !is_int( $user_id ) ) return __( 'incorrect user id format', 'mycred' );
+			if ( ! is_int( $user_id ) ) return __( 'incorrect user id format', 'mycred' );
 
 			$wheres[] = 'user_id = %d';
 			$prep[] = $user_id;
@@ -1480,17 +1750,17 @@ if ( ! function_exists( 'mycred_get_total_by_time' ) ) {
 
 		// Query
 		$query = $wpdb->get_var( $wpdb->prepare( "
-SELECT SUM( creds ) 
-FROM {$mycred->log_table} 
-WHERE {$where} 
-ORDER BY time;", $prep ) );
+			SELECT SUM( creds ) 
+			FROM {$mycred->log_table} 
+			WHERE {$where} 
+			ORDER BY time;", $prep ) );
 
 		if ( $query === NULL || $query == 0 )
 			return $mycred->zero();
 
 		return $mycred->number( $query );
 	}
-}
+endif;
 
 /**
  * Get users total creds
@@ -1501,20 +1771,22 @@ ORDER BY time;", $prep ) );
  * @param $type (string), optional cred type to check for
  * @returns zero if user id is not set or if no total were found, else returns creds
  * @since 1.2
- * @version 1.0
+ * @version 1.1
  */
-if ( ! function_exists( 'mycred_get_users_total' ) ) {
-	function mycred_get_users_total( $user_id = '', $type = '' ) {
+if ( ! function_exists( 'mycred_get_users_total' ) ) :
+	function mycred_get_users_total( $user_id = '', $type = 'mycred_default' )
+	{
 		if ( empty( $user_id ) ) return 0;
 
-		$mycred = mycred_get_settings();
+		$mycred = mycred( $type );
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
+
 		$total = get_user_meta( $user_id, $type . '_total', true );
 		if ( empty( $total ) ) $total = $mycred->get_users_cred( $user_id, $type );
 
 		return $mycred->number( $total );
 	}
-}
+endif;
 
 /**
  * Update users total creds
@@ -1527,31 +1799,32 @@ if ( ! function_exists( 'mycred_get_users_total' ) ) {
  * @since 1.2
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_update_users_total' ) ) {
-	function mycred_update_users_total( $type = '', $request = NULL, $mycred = NULL ) {
+if ( ! function_exists( 'mycred_update_users_total' ) ) :
+	function mycred_update_users_total( $type = 'mycred_default', $request = NULL, $mycred = NULL )
+	{
 		if ( $request === NULL || ! is_object( $mycred ) || ! isset( $request['user_id'] ) || ! isset( $request['amount'] ) ) return false;
 		if ( empty( $type ) ) $type = $mycred->get_cred_id();
-		
+
 		do_action( 'mycred_update_users_total', $request, $type, $mycred );
-		
+
 		$amount = $mycred->number( $request['amount'] );
 		$user_id = $request['user_id'];
 		$users_total = get_user_meta( $user_id, $type . '_total', true );
 		if ( empty( $users_total ) ) {
 			global $wpdb;
 			$users_total = $wpdb->get_var( $wpdb->prepare( "
-SELECT SUM( creds ) 
-FROM {$mycred->log_table} 
-WHERE user_id = %d
-	AND ( ( creds > 0 ) OR ( creds < 0 AND ref = %s ) );", $user_id, 'manual' ) );
+				SELECT SUM( creds ) 
+				FROM {$mycred->log_table} 
+				WHERE user_id = %d
+					AND ( ( creds > 0 ) OR ( creds < 0 AND ref = %s ) )
+					AND ctype = %s;", $user_id, 'manual', $type ) );
 		}
-		
+
 		$new_total = $mycred->number( $users_total+$amount );
 		update_user_meta( $user_id, $type . '_total', $new_total );
-		
 		return $new_total;
 	}
-}
+endif;
 
 /**
  * Apply Defaults
@@ -1560,30 +1833,32 @@ WHERE user_id = %d
  * @since 1.1.2
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_apply_defaults' ) ) {
-	function mycred_apply_defaults( &$pref, $set ) {
+if ( ! function_exists( 'mycred_apply_defaults' ) ) :
+	function mycred_apply_defaults( &$pref, $set )
+	{
 		$set = (array) $set;
 		$return = array();
 		foreach ( $pref as $key => $value ) {
 			if ( array_key_exists( $key, $set ) ) {
-				if ( is_array( $value ) && !empty( $value ) )
-					$return[$key] = mycred_apply_defaults( $value, $set[$key] );
+				if ( is_array( $value ) && ! empty( $value ) )
+					$return[ $key ] = mycred_apply_defaults( $value, $set[ $key ] );
 				else
-					$return[$key] = $set[$key];
+					$return[ $key ] = $set[ $key ];
 			}
-			else $return[$key] = $value;
+			else $return[ $key ] = $value;
 		}
 		return $return;
 	}
-}
+endif;
 
 /**
  * Get Remote API Settings
  * @since 1.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_get_remote' ) ) {
-	function mycred_get_remote() {
+if ( ! function_exists( 'mycred_get_remote' ) ) :
+	function mycred_get_remote()
+	{
 		$defaults = apply_filters( 'mycred_remote_defaults', array(
 			'enabled' => 0,
 			'key'     => '',
@@ -1592,44 +1867,45 @@ if ( ! function_exists( 'mycred_get_remote' ) ) {
 		) );
 		return mycred_apply_defaults( $defaults, get_option( 'mycred_pref_remote', array() ) );
 	}
-}
+endif;
 
 /**
  * Is myCRED Ready
  * @since 1.3
  * @version 1.0
  */
-function is_mycred_ready()
-{
-	global $mycred;
-	$mycred = new myCRED_Settings();
+if ( ! function_exists( 'is_mycred_ready' ) ) :
+	function is_mycred_ready()
+	{
+		global $mycred;
+		$mycred = new myCRED_Settings();
 
-	// By default we start with the main sites setup. If it is not a multisite installation
-	// get_blog_option() will default to get_option() for us.
-	if ( is_multisite() )
-		$setup = get_blog_option( 1, 'mycred_setup_completed' );
-	else
-		$setup = get_option( 'mycred_setup_completed' );
+		// By default we start with the main sites setup. If it is not a multisite installation
+		// get_blog_option() will default to get_option() for us.
+		if ( $mycred->is_multisite )
+			$setup = get_blog_option( 1, 'mycred_setup_completed', false );
+		else
+			$setup = get_option( 'mycred_setup_completed', false );
 
-	// If it is a multisite and the master template is not used, check if this site has
-	// been installed
-	if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() )
-		$setup = get_blog_option( $GLOBALS['blog_id'], 'mycred_setup_completed' );
+		// If it is a multisite and the master template is not used, check if this site has
+		// been installed
+		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_master_template )
+			$setup = get_blog_option( $GLOBALS['blog_id'], 'mycred_setup_completed' );
 
-	// Make sure that if we switch from central log to seperate logs, we install this
-	// log if it does not exists.
-	if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() ) {
-		mycred_install_log( $mycred->core['format']['decimals'], $mycred->log_table );
+		// Make sure that if we switch from central log to seperate logs, we install this
+		// log if it does not exists.
+		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_master_template )
+			mycred_install_log( $mycred->core['format']['decimals'], $mycred->log_table );
+
+		// If setup is set, we are ready
+		if ( $setup !== false ) return true;
+
+		// If we have come this far we need to load the setup
+		require_once( myCRED_INCLUDES_DIR . 'mycred-install.php' );
+		$setup = new myCRED_Setup();
+		return $setup->status();
 	}
-
-	// If setup is set, we are ready
-	if ( $setup !== false ) return true;
-
-	// If we have come this far we need to load the setup
-	require_once( myCRED_INCLUDES_DIR . 'mycred-install.php' );
-	$setup = new myCRED_Setup();
-	return $setup->status();
-}
+endif;
 
 /**
  * Install Log
@@ -1638,59 +1914,62 @@ function is_mycred_ready()
  * @since 1.3
  * @version 1.2
  */
-function mycred_install_log( $decimals = 0, $table = NULL )
-{
-	if ( is_multisite() && get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
-	elseif ( ! is_multisite() && get_option( 'mycred_version_db', false ) !== false ) return true;
+if ( ! function_exists( 'mycred_install_log' ) ) :
+	function mycred_install_log( $decimals = 0, $table = NULL )
+	{
+		if ( is_multisite() && get_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', false ) !== false ) return true;
+		elseif ( ! is_multisite() && get_option( 'mycred_version_db', false ) !== false ) return true;
 
-	global $wpdb;
+		global $wpdb;
 
-	if ( $table === NULL ) {
-		$mycred = mycred_get_settings();
-		$table = $mycred->log_table;
-	}
+		if ( $table === NULL ) {
+			$mycred = mycred();
+			$table = $mycred->log_table;
+		}
 
-	if ( $decimals > 0 ) {
-		if ( $decimals > 4 )
-			$cred_format = "decimal(32,$decimals)";
+		if ( $decimals > 0 ) {
+			if ( $decimals > 4 )
+				$cred_format = "decimal(32,$decimals)";
+			else
+				$cred_format = "decimal(22,$decimals)";
+		}
+		else {
+			$cred_format = 'bigint(22)';
+		}
+
+		$wpdb->hide_errors();
+
+		$collate = '';
+		if ( $wpdb->has_cap( 'collation' ) ) {
+			if ( ! empty( $wpdb->charset ) )
+				$collate .= "DEFAULT CHARACTER SET {$wpdb->charset}";
+			if ( ! empty( $wpdb->collate ) )
+				$collate .= " COLLATE {$wpdb->collate}";
+		}
+
+		// Log structure
+		$sql = "
+			id int(11) NOT NULL AUTO_INCREMENT, 
+			ref VARCHAR(256) NOT NULL, 
+			ref_id int(11) DEFAULT NULL, 
+			user_id int(11) DEFAULT NULL, 
+			creds $cred_format DEFAULT NULL, 
+			ctype VARCHAR(64) DEFAULT 'mycred_default', 
+			time bigint(20) DEFAULT NULL, 
+			entry LONGTEXT DEFAULT NULL, 
+			data LONGTEXT DEFAULT NULL, 
+			PRIMARY KEY  (id), 
+			UNIQUE KEY id (id)"; 
+
+		// Insert table
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " ) $collate;" );
+		if ( is_multisite() )
+			add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
 		else
-			$cred_format = "decimal(22,$decimals)";
+			add_option( 'mycred_version_db', '1.0' );
+
+		return true;
 	}
-	else {
-		$cred_format = 'bigint(22)';
-	}
-
-	$wpdb->hide_errors();
-
-	$collate = '';
-	if ( $wpdb->has_cap( 'collation' ) ) {
-		if ( ! empty( $wpdb->charset ) )
-			$collate .= "DEFAULT CHARACTER SET {$wpdb->charset}";
-		if ( ! empty( $wpdb->collate ) )
-			$collate .= " COLLATE {$wpdb->collate}";
-	}
-
-	// Log structure
-	$sql = "id int(11) NOT NULL AUTO_INCREMENT, 
-		ref VARCHAR(256) NOT NULL, 
-		ref_id int(11) DEFAULT NULL, 
-		user_id int(11) DEFAULT NULL, 
-		creds $cred_format DEFAULT NULL, 
-		ctype VARCHAR(64) DEFAULT 'mycred_default', 
-		time bigint(20) DEFAULT NULL, 
-		entry LONGTEXT DEFAULT NULL, 
-		data LONGTEXT DEFAULT NULL, 
-		PRIMARY KEY  (id), 
-		UNIQUE KEY id (id)"; 
-
-	// Insert table
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( "CREATE TABLE IF NOT EXISTS {$table} ( " . $sql . " ) $collate;" );
-	if ( is_multisite() )
-		add_blog_option( $GLOBALS['blog_id'], 'mycred_version_db', '1.0' );
-	else
-		add_option( 'mycred_version_db', '1.0' );
-
-	return true;
-}
+endif;
 ?>

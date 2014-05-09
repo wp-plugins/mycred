@@ -1,12 +1,13 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * myCRED_Network class
  * @since 0.1
  * @version 1.1
  */
-if ( !class_exists( 'myCRED_Network' ) ) {
-	class myCRED_Network {
+if ( ! class_exists( 'myCRED_Network_Module' ) ) {
+	class myCRED_Network_Module {
 
 		public $core;
 		public $plug;
@@ -16,7 +17,7 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 		 */
 		function __construct() {
 			global $mycred_network;
-			$this->core = mycred_get_settings();
+			$this->core = mycred();
 		}
 
 		/**
@@ -44,16 +45,21 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 		/**
 		 * Add Network Menu Items
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function add_menu() {
+			global $wp_version;
+			$menu_icon = 'dashicons-star-filled';
+			if ( version_compare( $wp_version, '3.8', '<' ) )
+				$menu_icon = '';
+
 			$pages[] = add_menu_page(
 				__( 'myCRED', 'mycred' ),
 				__( 'myCRED', 'mycred' ),
 				'manage_network_options',
 				'myCRED_Network',
 				'',
-				''
+				$menu_icon
 			);
 			$pages[] = add_submenu_page(
 				'myCRED_Network',
@@ -65,7 +71,7 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 			);
 
 			foreach ( $pages as $page )
-				add_action( 'admin_print_styles-' . $page, array( $this, 'admin_print_styles' ) );
+				add_action( 'admin_print_styles-' . $page, array( $this, 'admin_menu_styling' ) );
 		}
 
 		/**
@@ -95,17 +101,22 @@ if ( !class_exists( 'myCRED_Network' ) ) {
 		 * @version 1.0
 		 */
 		public function admin_menu_styling() {
+			global $wp_version;
+
+			wp_enqueue_style( 'mycred-admin' );
 			$image = plugins_url( 'assets/images/logo-menu.png', myCRED_THIS ); ?>
 
 <style type="text/css">
+<?php if ( version_compare( $wp_version, '3.8', '<' ) ) : ?>
 #icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
-h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
-h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
-h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
 #adminmenu .toplevel_page_myCRED_Network div.wp-menu-image { background-image: url(<?php echo $image; ?>); background-position: 1px -28px; }
 #adminmenu .toplevel_page_myCRED_Network:hover div.wp-menu-image, 
 #adminmenu .toplevel_page_myCRED_Network.current div.wp-menu-image, 
 #adminmenu .toplevel_page_myCRED_Network .wp-menu-open div.wp-menu-image { background-position: 1px 0; }
+<?php endif; ?>
+h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
+h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
+h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
 </style>
 <?php
 		}
@@ -116,7 +127,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 * @version 1.0
 		 */
 		public function admin_print_styles() {
-			if ( !wp_style_is( 'mycred-admin', 'registered' ) ) {
+			if ( ! wp_style_is( 'mycred-admin', 'registered' ) ) {
 				wp_register_style(
 					'mycred-admin',
 					plugins_url( 'assets/css/admin.css', myCRED_THIS ),
@@ -127,7 +138,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			}
 			wp_enqueue_style( 'mycred-admin' );
 
-			if ( !wp_script_is( 'mycred-admin', 'registered' ) ) {
+			if ( ! wp_script_is( 'mycred-admin', 'registered' ) ) {
 				wp_register_script(
 					'mycred-admin',
 					plugins_url( 'assets/js/accordion.js', myCRED_THIS ),
@@ -146,7 +157,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		 */
 		public function admin_page_settings() {
 			// Security
-			if ( !current_user_can( 'manage_network_options' ) ) wp_die( __( 'Access Denied', 'mycred' ) );
+			if ( ! current_user_can( 'manage_network_options' ) ) wp_die( __( 'Access Denied', 'mycred' ) );
 
 			global $mycred_network;
 
@@ -160,66 +171,66 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			
 			// Inform user that myCRED has not yet been setup
 			$setup = get_blog_option( 1, 'mycred_version', false );
-			if ( $setup !== false )
+			if ( $setup === false )
 				echo '<div class="error"><p>' . sprintf( __( 'Note! %s has not yet been setup.', 'mycred' ), $name ) . '</p></div>';
 
 			// Settings Updated
 			if ( isset( $_GET['settings-updated'] ) )
 				echo '<div class="updated"><p>' . __( 'Network Settings Updated', 'mycred' ) . '</p></div>'; ?>
 
-		<p><?php echo sprintf( __( 'Configure network settings for %s.', 'mycred' ), $name ); ?></p>
-		<form method="post" action="<?php echo admin_url( 'options.php' ); ?>" class="">
-			<?php settings_fields( 'mycred_network' ); ?>
+<p><?php echo sprintf( __( 'Configure network settings for %s.', 'mycred' ), $name ); ?></p>
+<form method="post" action="<?php echo admin_url( 'options.php' ); ?>" class="">
+	<?php settings_fields( 'mycred_network' ); ?>
 
-			<div class="list-items expandable-li" id="accordion">
-				<h4><div class="icon icon-inactive core"></div><?php _e( 'Settings', 'mycred' ); ?></h4>
-				<div class="body" style="display:block;">
-					<label class="subheader"><?php _e( 'Master Template', 'mycred' ); ?></label>
-					<ol id="myCRED-network-settings-enabling">
-						<li>
-							<input type="radio" name="mycred_network[master]" id="myCRED-network-overwrite-enabled" <?php checked( $prefs['master'], 1 ); ?> value="1" /> 
-							<label for="myCRED-network-"><?php _e( 'Yes', 'mycred' ); ?></label>
-						</li>
-						<li>
-							<input type="radio" name="mycred_network[master]" id="myCRED-network-overwrite-disabled" <?php checked( $prefs['master'], 0 ); ?> value="0" /> 
-							<label for="myCRED-network-"><?php _e( 'No', 'mycred' ); ?></label>
-						</li>
-						<li>
-							<p class="description"><?php echo sprintf( __( "If enabled, %s will use your main site's settings for all other sites in your network.", 'mycred' ), $name ); ?></p>
-						</li>
-					</ol>
-					<label class="subheader"><?php _e( 'Central Logging', 'mycred' ); ?></label>
-					<ol id="myCRED-network-log-enabling">
-						<li>
-							<input type="radio" name="mycred_network[central]" id="myCRED-network-overwrite-log-enabled" <?php checked( $prefs['central'], 1 ); ?> value="1" /> 
-							<label for="myCRED-network-"><?php _e( 'Yes', 'mycred' ); ?></label>
-						</li>
-						<li>
-							<input type="radio" name="mycred_network[central]" id="myCRED-network-overwrite-log-disabled" <?php checked( $prefs['central'], 0 ); ?> value="0" /> 
-							<label for="myCRED-network-"><?php _e( 'No', 'mycred' ); ?></label>
-						</li>
-						<li>
-							<p class="description"><?php echo sprintf( __( "If enabled, %s will log all site actions in your main site's log.", 'mycred' ), $name ); ?></p>
-						</li>
-					</ol>
-					<label class="subheader"><?php _e( 'Site Block', 'mycred' ); ?></label>
-					<ol id="myCRED-network-site-blocks">
-						<li>
-							<div class="h2"><input type="text" name="mycred_network[block]" id="myCRED-network-block" value="<?php echo $prefs['block']; ?>" class="long" /></div>
-							<span class="description"><?php echo sprintf( __( 'Comma separated list of blog ids where %s is to be disabled.', 'mycred' ), $name ); ?></span>
-						</li>
-					</ol>
-					<?php do_action( 'mycred_network_prefs', $this ); ?>
+	<div class="list-items expandable-li" id="accordion">
+		<h4><div class="icon icon-inactive core"></div><?php _e( 'Settings', 'mycred' ); ?></h4>
+		<div class="body" style="display:block;">
+			<label class="subheader"><?php _e( 'Master Template', 'mycred' ); ?></label>
+			<ol id="myCRED-network-settings-enabling">
+				<li>
+					<input type="radio" name="mycred_network[master]" id="myCRED-network-overwrite-enabled" <?php checked( $prefs['master'], 1 ); ?> value="1" /> 
+					<label for="myCRED-network-"><?php _e( 'Yes', 'mycred' ); ?></label>
+				</li>
+				<li>
+					<input type="radio" name="mycred_network[master]" id="myCRED-network-overwrite-disabled" <?php checked( $prefs['master'], 0 ); ?> value="0" /> 
+					<label for="myCRED-network-"><?php _e( 'No', 'mycred' ); ?></label>
+				</li>
+				<li>
+					<p class="description"><?php echo sprintf( __( "If enabled, %s will use your main site's settings for all other sites in your network.", 'mycred' ), $name ); ?></p>
+				</li>
+			</ol>
+			<label class="subheader"><?php _e( 'Central Logging', 'mycred' ); ?></label>
+			<ol id="myCRED-network-log-enabling">
+				<li>
+					<input type="radio" name="mycred_network[central]" id="myCRED-network-overwrite-log-enabled" <?php checked( $prefs['central'], 1 ); ?> value="1" /> 
+					<label for="myCRED-network-"><?php _e( 'Yes', 'mycred' ); ?></label>
+				</li>
+				<li>
+					<input type="radio" name="mycred_network[central]" id="myCRED-network-overwrite-log-disabled" <?php checked( $prefs['central'], 0 ); ?> value="0" /> 
+					<label for="myCRED-network-"><?php _e( 'No', 'mycred' ); ?></label>
+				</li>
+				<li>
+					<p class="description"><?php echo sprintf( __( "If enabled, %s will log all site actions in your main site's log.", 'mycred' ), $name ); ?></p>
+				</li>
+			</ol>
+			<label class="subheader"><?php _e( 'Site Block', 'mycred' ); ?></label>
+			<ol id="myCRED-network-site-blocks">
+				<li>
+					<div class="h2"><input type="text" name="mycred_network[block]" id="myCRED-network-block" value="<?php echo $prefs['block']; ?>" class="long" /></div>
+					<span class="description"><?php echo sprintf( __( 'Comma separated list of blog ids where %s is to be disabled.', 'mycred' ), $name ); ?></span>
+				</li>
+			</ol>
+			<?php do_action( 'mycred_network_prefs', $this ); ?>
 
-				</div>
-				<?php do_action( 'mycred_after_network_prefs', $this ); ?>
-
-			</div>
-			<p><?php submit_button( __( 'Save Network Settings', 'mycred' ), 'primary large', 'submit', false ); ?></p>
-		</form>	
-		<?php do_action( 'mycred_bottom_network_page', $this ); ?>
+		</div>
+		<?php do_action( 'mycred_after_network_prefs', $this ); ?>
 
 	</div>
+	<p><?php submit_button( __( 'Save Network Settings', 'mycred' ), 'primary large', 'submit', false ); ?></p>
+</form>	
+<?php do_action( 'mycred_bottom_network_page', $this ); ?>
+
+</div>
 <?php
 		}
 

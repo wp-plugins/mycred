@@ -4,24 +4,20 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
 /**
  * myCRED_Protect class
  * @since 0.1
- * @version 1.0.1
+ * @version 1.1
  */
 class myCRED_Protect {
 
-	private $skey;
+	public $skey;
 
 	/**
 	 * Construct
 	 */
-	public function __construct( $new_key = '' ) {
-		if ( mycred_override_settings() )
-			$skey = get_blog_option( 1, 'mycred_key' );
-		else
-			$skey = get_option( 'mycred_key' );
-
-		if ( $skey === false || ( $new_key === true && function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) ) {
+	public function __construct() {
+		$skey = mycred_get_option( 'mycred_key', false );
+		if ( $skey === false )
 			$skey = $this->reset_key();
-		}
+
 		$this->skey = $skey;
 	}
 
@@ -30,7 +26,7 @@ class myCRED_Protect {
 	 */
 	public function reset_key() {
 		$skey = wp_generate_password( 12, true, true );
-		update_option( 'mycred_key', $skey );
+		mycred_update_option( 'mycred_key', $skey );
 		$this->skey = $skey;
 	}
 

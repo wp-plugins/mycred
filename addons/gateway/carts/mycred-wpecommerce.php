@@ -1,14 +1,16 @@
 <?php
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
+
 /**
  * WP E-Commerce Payment Gateway
  *
  * Custom Payment Gateway for WP E-Commerce.
  * @see http://getshopped.org/resources/docs/get-involved/writing-a-new-payment-gateway/
  * @since 1.3
- * @version 1.0.1
+ * @version 1.1
  */
-if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
+if ( ! function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
+
 	/**
 	 * Construct Gateway
 	 * @since 1.3
@@ -17,12 +19,13 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 	add_action( 'after_setup_theme', 'mycred_init_wpecom_construct_gateway' );
 	function mycred_init_wpecom_construct_gateway()
 	{
-		if ( !class_exists( 'wpsc_merchant' ) ) return;
+		if ( ! class_exists( 'wpsc_merchant' ) ) return;
 
 		global $nzshpcrt_gateways, $mycred_wpecom_settings;
 
 		$mycred_wpecom_settings = shortcode_atts( array(
 			'log'       => __( 'Payment for Order: #%order_id%', 'mycred' ),
+			'type'      => 'mycred_default',
 			'share'     => 0,
 			'share_log' => __( 'Store sale', 'mycred' ),
 			'rate'      => 1,
@@ -49,14 +52,22 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 
 			public $core = '';
 			public $prefs = array();
+			public $mycred_type = 'mycred_default';
 
 			/**
 			 * Construct
 			 */
 			function __construct() {
 				global $mycred_wpecom_settings;
-				$this->core = mycred_get_settings();
+
 				$this->prefs = $mycred_wpecom_settings;
+				
+				$type = 'mycred_default';
+				if ( isset( $mycred_wpecom_settings['type'] ) )
+					$type = $mycred_wpecom_settings['type'];
+				
+				$this->core = mycred( $type );
+				$this->mycred_type = $type;
 
 				add_action( 'wpsc_submit_checkout_gateway',          array( $this, 'process_gateway' ), 1, 2 );
 				add_filter( 'wpsc_gateway_checkout_form_mycred',     array( $this, 'checkout_form' ) );
@@ -66,7 +77,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			/**
 			 * Process Payment
 			 * @since 1.3
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			function process_gateway( $gateway, $purchase_log ) {
 				if ( $gateway != 'mycred' ) return;
@@ -75,7 +86,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				$log_id = $purchase_log->get( 'id' );
 
 				// Load Gateway
-				$merchant_instance = new wpsc_merchant_mycred( $log_id, false, $this->prefs, $this->core );
+				$merchant_instance = new wpsc_merchant_mycred( $log_id, false, $this->prefs, $this->core, $this->mycred_type );
 				$merchant_instance->construct_value_array();
 
 				// Validate
@@ -89,11 +100,11 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			/**
 			 * Checkout Form
 			 * @since 1.3
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			function checkout_form() {
 				$output = '';
-				if ( !is_user_logged_in() ) {
+				if ( ! is_user_logged_in() ) {
 					$output .= '<tr><td>' . $this->core->template_tags_general( $this->prefs['visitor'] ) . '</td></tr>';
 					return $output;
 				}
@@ -110,7 +121,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				endwhile;
 				
 				$output .= '<tr><td colspan="2">' . __( 'Total Cost', 'mycred' ) . '</td><td class="cart-item-cost">' . $this->core->format_creds( $total ) . '</td></tr>';
-				$balance = $this->core->get_users_cred( get_current_user_id() );
+				$balance = $this->core->get_users_cred( get_current_user_id(), $this->mycred_type );
 				
 				if ( $balance < $total )
 					$highlight = ' style="color:red;"';
@@ -119,7 +130,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 
 				$output .= '<tr><td class="cart-item" colspan="2">' . __( 'Your current balance', 'mycred' ) . '</td><td class="cart-item-cost"' . $highlight . '>' . $this->core->format_creds( $balance ) . '</td></tr></tdody></table></tr>';
 
-				if ( !empty( $this->prefs['message'] ) ) {
+				if ( ! empty( $this->prefs['message'] ) ) {
 					$output .= '<tr><td>' . $this->core->template_tags_general( $this->prefs['message'] ) . '</td></tr>';
 				}
 
@@ -132,7 +143,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			 * @version 1.0
 			 */
 			function parse_template_tags( $content, $log_entry ) {
-				if ( !empty( $log_entry->data ) )
+				if ( ! empty( $log_entry->data ) )
 					$content = str_replace( '%order_id%', $log_entry->data, $content );
 				else
 					$content = str_replace( '%order_id%', 'missing', $content );
@@ -146,23 +157,25 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 
 			var $prefs = array();
 			var $core = '';
+			var $mycred_type = 'mycred_default';
 			var $cost = 0;
 			var $transaction_id = '';
 
 			/**
 			 * Construct
 			 */
-			function __construct( $purchase_id = NULL, $is_receiving = false, $prefs = NULL, $mycred = NULL ) {
+			function __construct( $purchase_id = NULL, $is_receiving = false, $prefs = NULL, $mycred = NULL, $type = 'mycred_default' ) {
 				parent::__construct( $purchase_id, $is_receiving );
 				$this->prefs = $prefs;
 				$this->core = $mycred;
+				$this->mycred_type = $type;
 			}
 
 			/**
 			 * Validate
 			 * Checks to make sure the current user can use this gateway.
 			 * @since 1.3
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			function validate( $purchase_log ) {
 				$error = false;
@@ -177,7 +190,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				$this->cost = $cart_total;
 
 				// User is not logged in
-				if ( !is_user_logged_in() ) {
+				if ( ! is_user_logged_in() ) {
 					$error = $this->core->template_tags_general( $this->prefs['visitor'] );
 				}
 
@@ -189,7 +202,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				// Else check balance
 				else {
 					// Rate
-					$balance = $this->core->get_users_cred( $user_id );
+					$balance = $this->core->get_users_cred( $user_id, $this->mycred_type );
 					if ( $balance < $this->cost ) {
 						$error = $this->core->template_tags_general( $this->prefs['low_funds'] );
 					}
@@ -215,7 +228,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 			 * Charges the user for the purchase and if profit sharing is enabled
 			 * each product owner.
 			 * @since 1.3
-			 * @version 1.0.1
+			 * @version 1.1
 			 */
 			function submit() {
 				// Since the wpsc_pre_submit_gateway action could change these values, we need to check
@@ -230,7 +243,8 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 						0-$this->cost,
 						$this->prefs['log'],
 						'',
-						$this->purchase_id
+						$this->purchase_id,
+						$this->mycred_type
 					);
 
 					// Update Order
@@ -262,7 +276,8 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 								$this->core->number( $share ),
 								$this->prefs['share_log'],
 								$product->ID,
-								array( 'ref_type' => 'post' )
+								array( 'ref_type' => 'post' ),
+								$this->mycred_type
 							);
 						}
 					}
@@ -277,7 +292,7 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 				}
 
 				// Else save this as pending
-				elseif ( !empty( $this->transaction_id ) ) {
+				elseif ( ! empty( $this->transaction_id ) ) {
 					$this->set_transaction_details( $this->transaction_id, 2 );
 				}
 			}
@@ -289,13 +304,18 @@ if ( !function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
  * Gateway Settings
  * @filter mycred_wpecom_settings
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
-if ( !function_exists( 'mycred_wpecom_gateway_settings' ) ) {
+if ( ! function_exists( 'mycred_wpecom_gateway_settings' ) ) {
 	function mycred_wpecom_gateway_settings() {
 		global $wpdb, $mycred_wpecom_settings;
 
-		$mycred = mycred_get_settings();
+		if ( ! isset( $mycred_wpecom_settings['type'] ) )
+			$type = 'mycred_default';
+		else
+			$type = $mycred_wpecom_settings['type'];
+
+		$mycred = mycred( $type );
 
 		// Get current currency
 		$currency_data = $wpdb->get_results( "SELECT * FROM `" . WPSC_TABLE_CURRENCY_LIST . "` ORDER BY `country` ASC", ARRAY_A );
@@ -303,7 +323,7 @@ if ( !function_exists( 'mycred_wpecom_gateway_settings' ) ) {
 		foreach ( $currency_data as $currency ) {
 			if ( $selected_currency != $currency['id'] ) continue;
 			else {
-				if ( !empty( $currency['symbol_html'] ) )
+				if ( ! empty( $currency['symbol_html'] ) )
 					$selected_currency = $currency['symbol_html'];
 				else
 					$selected_currency = $currency['code'];
@@ -318,8 +338,20 @@ if ( !function_exists( 'mycred_wpecom_gateway_settings' ) ) {
 		</tr>
 		<tr>
 			<td width="150">' . __( 'Log Template for Payments', 'mycred' ) . '</td>
-			<td><input type="text" name="mycred_gateway[log]" value="' . esc_attr( $mycred_wpecom_settings['log'] ) . '" style="width:50%;" /><br /><span class="description">' . __( 'Log entry template for successful payments. Available template tags: General, %order_id%', 'mycred' ) . '</span></td>
-		</tr>
+			<td><input type="text" name="mycred_gateway[log]" value="' . esc_attr( $mycred_wpecom_settings['log'] ) . '" style="width:50%;" /><br /><span class="description">' . $mycred->available_template_tags( array( 'general' ), '%order_id%' ) . '</span></td>
+		</tr>';
+
+		$mycred_types = mycred_get_types();
+		if ( count( $mycred_types ) == 1 )
+			$output .= '<input type="hidden" name="mycred_gateway[type]" value="mycred_default" />';
+		else
+			$output .= '
+		<tr>
+			<td width="150">' . __( 'Point Type', 'mycred' ) . '</td>
+			<td>' . mycred_types_select_from_dropdown( 'mycred_gateway[type]', 'mycred-point-type', $type, true ) . '</td>
+		</tr>';
+
+		$output .= '
 		<tr>
 			<td width="150">' . __( 'Exchange Rate', 'mycred' ) . '</td>
 			<td><input type="text" name="mycred_gateway[rate]" value="' . esc_attr( $mycred_wpecom_settings['rate'] ) . '" style="width:50px;" /><br /><span class="description">' . sprintf( __( 'How much is 1 %s worth in %s', 'mycred' ), $selected_currency, $mycred->plural() ) . '</span></td>
@@ -329,11 +361,11 @@ if ( !function_exists( 'mycred_wpecom_gateway_settings' ) ) {
 		</tr>
 		<tr>
 			<td width="150">' . __( 'Payout', 'mycred' ) . '</td>
-			<td><input type="text" name="mycred_gateway[share]" value="' . esc_attr( $mycred_wpecom_settings['share'] ) . '" style="width:50px;" /> %<br /><span class="description">' . __( 'Option to share a percentage of the sale with the product owner (post author). User zero to disable.', 'mycred' ) . '</span></td>
+			<td><input type="text" name="mycred_gateway[share]" value="' . esc_attr( $mycred_wpecom_settings['share'] ) . '" style="width:50px;" /> %<br /><span class="description">' . __( 'Option to share sales with the product owner. Use zero to disable.', 'mycred' ) . '</span></td>
 		</tr>
 		<tr>
 			<td width="150">' . __( 'Log Template', 'mycred' ) . '</td>
-			<td><input type="text" name="mycred_gateway[share_log]" value="' . esc_attr( $mycred_wpecom_settings['share_log'] ) . '" style="width:50%;" /><br /><span class="description">' . __( 'Log entry template for profit sharing. Available template tags: General and Post related', 'mycred' ) . '</span></td>
+			<td><input type="text" name="mycred_gateway[share_log]" value="' . esc_attr( $mycred_wpecom_settings['share_log'] ) . '" style="width:50%;" /><br /><span class="description">' . $mycred->available_template_tags( array( 'general', 'post' ) ) . '</span></td>
 		</tr>
 		<tr>
 			<td colspan="2"><strong>' . __( 'Messages', 'mycred' ) . '</strong></td>
@@ -359,13 +391,14 @@ if ( !function_exists( 'mycred_wpecom_gateway_settings' ) ) {
  * Save Gateway Settings
  * @filter mycred_wpecom_save_settings
  * @since 1.3
- * @version 1.0
+ * @version 1.1
  */
-if ( !function_exists( 'mycred_wpecom_gateway_settings_save' ) ) {
+if ( ! function_exists( 'mycred_wpecom_gateway_settings_save' ) ) {
 	function mycred_wpecom_gateway_settings_save() {
 		if ( isset( $_POST['mycred_gateway'] ) ) {
 			$new_settings = apply_filters( 'mycred_wpecom_save_settings', array(
 				'log'       => trim( $_POST['mycred_gateway']['log'] ),
+				'type'      => trim( $_POST['mycred_gateway']['type'] ),
 				'share'     => abs( $_POST['mycred_gateway']['share'] ),
 				'share_log' => trim( $_POST['mycred_gateway']['share_log'] ),
 				'rate'      => trim( $_POST['mycred_gateway']['rate'] ),
@@ -384,7 +417,7 @@ if ( !function_exists( 'mycred_wpecom_gateway_settings_save' ) ) {
  * @since 1.2.2
  * @version 1.0
  */
-if ( !function_exists( 'mycred_wpecom_parse_email' ) ) {
+if ( ! function_exists( 'mycred_wpecom_parse_email' ) ) {
 	add_filter( 'mycred_email_before_send', 'mycred_wpecom_parse_email' );
 	function mycred_wpecom_parse_email( $email )
 	{

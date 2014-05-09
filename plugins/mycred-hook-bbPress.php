@@ -1,10 +1,12 @@
 <?php
+
 /**
  * bbPress
  * @since 0.1
- * @version 1.2.1
+ * @version 1.3
  */
 if ( defined( 'myCRED_VERSION' ) ) {
+
 	/**
 	 * Register Hook
 	 * @since 0.1
@@ -41,20 +43,21 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	add_action( 'bbp_template_after_user_profile', 'mycred_bbp_add_balance_in_profile' );
 	function mycred_bbp_add_balance_in_profile() {
 		$user_id = bbp_get_displayed_user_id();
-		$mycred = mycred_get_settings();
+		$mycred = mycred();
 
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
-		$balance = $mycred->get_users_cred( $user_id );
+		$balance = $mycred->get_users_cred( $user_id, $mycred->mycred_type );
 		$layout = $mycred->plural() . ': ' . $mycred->format_creds( $balance );
 		$layout = apply_filters( 'mycred_bbp_authors_profile_balance', $layout, $balance, $user_id );
-		echo '<div class="users-mycred-balance">' . $layout . '</div>';
+
+		echo apply_filters( 'mycred_bbp_profile_balance', '<div class="users-mycred-balance">' . $layout . '</div>', $user_id, $balance );
 	}
 
 	/**
 	 * bbPress Hook
 	 * @since 0.1
-	 * @version 1.2
+	 * @version 1.3
 	 */
 	if ( ! class_exists( 'myCRED_bbPress' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_bbPress extends myCRED_Hook {
@@ -62,7 +65,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Construct
 			 */
-			function __construct( $hook_prefs ) {
+			function __construct( $hook_prefs, $type = 'mycred_default' ) {
 				parent::__construct( array(
 					'id'       => 'hook_bbpress',
 					'defaults' => array(
@@ -100,7 +103,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						),
 						'show_points_in_reply' => 0
 					)
-				), $hook_prefs );
+				), $hook_prefs, $type );
 			}
 
 			/**
@@ -115,22 +118,28 @@ if ( defined( 'myCRED_VERSION' ) ) {
 
 				// New Forum
 				if ( $this->prefs['new_forum']['creds'] != 0 )
-					add_action( 'bbp_new_forum', array( $this, 'new_forum' ), 20 );
+					add_action( 'bbp_new_forum',    array( $this, 'new_forum' ), 20 );
+
 				// Delete Forum
 				if ( $this->prefs['delete_forum']['creds'] != 0 )
 					add_action( 'bbp_delete_forum', array( $this, 'delete_forum' ) );
+
 				// New Topic
 				if ( $this->prefs['new_topic']['creds'] != 0 )
-					add_action( 'bbp_new_topic', array( $this, 'new_topic' ), 20, 4 );
+					add_action( 'bbp_new_topic',    array( $this, 'new_topic' ), 20, 4 );
+
 				// Delete Topic
 				if ( $this->prefs['delete_topic']['creds'] != 0 )
 					add_action( 'bbp_delete_topic', array( $this, 'delete_topic' ) );
+
 				// Fave Topic
 				if ( $this->prefs['fav_topic']['creds'] != 0 )
 					add_action( 'bbp_add_user_favorite', array( $this, 'fav_topic' ), 10, 2 );
+
 				// New Reply
 				if ( $this->prefs['new_reply']['creds'] != 0 )
-					add_action( 'bbp_new_reply', array( $this, 'new_reply' ), 20, 5 );
+					add_action( 'bbp_new_reply',    array( $this, 'new_reply' ), 20, 5 );
+
 				// Delete Reply
 				if ( $this->prefs['delete_reply']['creds'] != 0 )
 					add_action( 'bbp_delete_reply', array( $this, 'delete_reply' ) );
@@ -139,7 +148,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * New Forum
 			 * @since 1.1.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function new_forum( $forum ) {
 				// Forum id
@@ -161,14 +170,15 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['new_forum']['creds'],
 					$this->prefs['new_forum']['log'],
 					$forum_id,
-					array( 'ref_type' => 'post' )
+					array( 'ref_type' => 'post' ),
+					$this->mycred_type
 				);
 			}
 
 			/**
 			 * Delete Forum
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function delete_forum( $forum_id ) {
 				// Get Author
@@ -184,7 +194,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['delete_forum']['creds'],
 						$this->prefs['delete_forum']['log'],
 						$forum_id,
-						array( 'ref_type' => 'post' )
+						'',
+						$this->mycred_type
 					);
 
 				}
@@ -193,7 +204,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * New Topic
 			 * @since 0.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function new_topic( $topic_id, $forum_id, $anonymous_data, $topic_author ) {
 				// Check if user is excluded
@@ -214,14 +225,15 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['new_topic']['creds'],
 					$this->prefs['new_topic']['log'],
 					$topic_id,
-					array( 'ref_type' => 'post' )
+					array( 'ref_type' => 'post' ),
+					$this->mycred_type
 				);
 			}
 
 			/**
 			 * Delete Topic
 			 * @since 1.2
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function delete_topic( $topic_id ) {
 				// Get Author
@@ -237,7 +249,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['delete_topic']['creds'],
 						$this->prefs['delete_topic']['log'],
 						$topic_id,
-						array( 'ref_type' => 'post' )
+						'',
+						$this->mycred_type
 					);
 
 				}
@@ -247,7 +260,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * Topic Added to Favorites
 			 * @by Fee (http://wordpress.org/support/profile/wdfee)
 			 * @since 1.1.1
-			 * @version 1.2.1
+			 * @version 1.3
 			 */
 			public function fav_topic( $user_id, $topic_id ) {
 				// $user_id is loggedin_user, not author, so get topic author
@@ -270,7 +283,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['fav_topic']['creds'],
 					$this->prefs['fav_topic']['log'],
 					$topic_id,
-					$data
+					$data,
+					$this->mycred_type
 				);
 
 				// Update Limit
@@ -280,16 +294,14 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * New Reply
 			 * @since 0.1
-			 * @version 1.2.1
+			 * @version 1.4
 			 */
 			public function new_reply( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
 				// Check if user is excluded
 				if ( $this->core->exclude_user( $reply_author ) ) return;
 
 				// Check if topic author gets points for their own replies
-				if ( (bool) $this->prefs['new_reply']['author'] === false ) {
-					if ( bbp_get_topic_author_id( $topic_id ) == $reply_author ) return;
-				}
+				if ( (bool) $this->prefs['new_reply']['author'] === false && bbp_get_topic_author_id( $topic_id ) == $reply_author ) return;
 
 				// Check daily limit
 				if ( $this->reached_daily_limit( $reply_author, 'new_reply' ) ) return;
@@ -304,7 +316,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					$this->prefs['new_reply']['creds'],
 					$this->prefs['new_reply']['log'],
 					$reply_id,
-					array( 'ref_type' => 'post' )
+					array( 'ref_type' => 'post' ),
+					$this->mycred_type
 				);
 
 				// Update Limit
@@ -314,7 +327,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Delete Reply
 			 * @since 1.2
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function delete_reply( $reply_id ) {
 				// Get Author
@@ -330,7 +343,8 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->prefs['delete_reply']['creds'],
 						$this->prefs['delete_reply']['log'],
 						$reply_id,
-						array( 'ref_type' => 'post' )
+						'',
+						$this->mycred_type
 					);
 
 					// Update Limit
@@ -354,14 +368,14 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				$reply_author = bbp_get_reply_author_id( $reply_id );
 
 				// Check for exclusions and guests
-				if ( $this->core->exclude( $reply_author ) || $reply_id == 0 ) return;
+				if ( $this->core->exclude_user( $reply_author ) || $reply_id == 0 ) return;
 
 				// Get balance
-				$balance = $this->core->get_users_cred( $reply_author );
+				$balance = $this->core->get_users_cred( $reply_author, $this->mycred_type );
 
 				// Layout
 				$layout = $this->core->plural() . ': ' . $this->core->format_creds( $balance );
-				$layout = apply_filters( 'mycred_bbp_authors_balance', $layout, $balance, $reply_author );
+				$layout = apply_filters( 'mycred_bbp_authors_balance', $layout, $balance, $reply_author, $this->mycred_type );
 				echo '<div class="mycred-balance">' . $layout . '</div>';
 			}
 
@@ -369,14 +383,14 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * Reched Daily Limit
 			 * Checks if a user has reached their daily limit.
 			 * @since 1.2
-			 * @version 1.1.1
+			 * @version 1.2
 			 */
 			public function reached_daily_limit( $user_id, $limit ) {
 				// No limit used
 				if ( $this->prefs[ $limit ]['limit'] == 0 ) return false;
 
 				$today = date_i18n( 'Y-m-d' );
-				$current = (array) get_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, true );
+				$current = $this->get_users_limit( $user_id, $limit );
 				if ( empty( $current ) || ! array_key_exists( $today, $current ) )
 					$current[ $today ] = 0;
 
@@ -385,17 +399,30 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			}
 
 			/**
+			 * Get Users Limit
+			 * @since 1.4
+			 * @version 1.0
+			 */
+			public function get_users_limit( $user_id, $limit ) {
+				$key = 'mycred_bbp_limits_' . $limit;
+				if ( ! $this->is_main_type )
+					$key .= '_' . $this->mycred_type;
+
+				return (array) get_user_meta( $user_id, $key, true );
+			}
+
+			/**
 			 * Update Daily Limit
 			 * Updates a given users daily limit.
 			 * @since 1.2
-			 * @version 1.1.1
+			 * @version 1.2
 			 */
 			public function update_daily_limit( $user_id, $limit, $remove = false ) {
 				// No limit used
 				if ( $this->prefs[ $limit ]['limit'] == 0 ) return;
 
 				$today = date_i18n( 'Y-m-d' );
-				$current = (array) get_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, true );
+				$current = $this->get_users_limit( $user_id, $limit );
 				if ( empty( $current ) || ! array_key_exists( $today, $current ) )
 					$current[ $today ] = 0;
 
@@ -404,7 +431,11 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				else
 					$current[ $today ] = $current[ $today ]-1;
 
-				update_user_meta( $user_id, 'mycred_bbp_limits_' . $limit, $current );
+				$key = 'mycred_bbp_limits_' . $limit;
+				if ( ! $this->is_main_type )
+					$key .= '_' . $this->mycred_type;
+
+				update_user_meta( $user_id, $key, $current );
 			}
 
 			/**
@@ -429,124 +460,124 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( ! isset( $prefs['new_reply']['limit'] ) )
 					$prefs['new_reply']['limit'] = 0; ?>
 
-					<!-- Creds for New Forums -->
-					<label for="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Forum', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_forum']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'new_forum', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'log' ) ); ?>" value="<?php echo $prefs['new_forum']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<!-- Creds for Deleting Forums -->
-					<label for="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Forum Deletion', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_forum']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'delete_forum', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'log' ) ); ?>" value="<?php echo $prefs['delete_forum']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<!-- Creds for New Topic -->
-					<label for="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Topic', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'new_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'log' ) ); ?>" value="<?php echo $prefs['new_topic']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'new_topic' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic' => 'author' ) ); ?>" <?php checked( $prefs['new_topic']['author'], 1 ); ?> value="1" />
-							<label for="<?php echo $this->field_id( array( 'new_topic' => 'author' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Forum authors can receive %_plural% for creating new topics.', 'mycred' ) ); ?></label>
-						</li>
-					</ol>
-					<!-- Creds for Deleting Topic -->
-					<label for="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_topic']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'delete_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'log' ) ); ?>" value="<?php echo $prefs['delete_topic']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<!-- Creds for Faved Topic -->
-					<label for="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Favorited Topic', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'fav_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'log' ) ); ?>" value="<?php echo $prefs['fav_topic']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['limit'] ); ?>" size="8" /></div>
-							<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
-						</li>
-					</ol>
-					<!-- Creds for New Reply -->
-					<label for="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Reply', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'new_reply', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'log' ) ); ?>" value="<?php echo $prefs['new_reply']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( array( 'new_reply' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply' => 'author' ) ); ?>" <?php checked( $prefs['new_reply']['author'], 1 ); ?> value="1" />
-							<label for="<?php echo $this->field_id( array( 'new_reply' => 'author' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Topic authors can receive %_plural% for replying to their own Topic', 'mycred' ) ); ?></label>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['limit'] ); ?>" size="8" /></div>
-							<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<input type="checkbox" name="<?php echo $this->field_name( 'show_points_in_reply' ); ?>" id="<?php echo $this->field_id( 'show_points_in_reply' ); ?>" <?php checked( $prefs['show_points_in_reply'], 1 ); ?> value="1" /> <label for="<?php echo $this->field_id( 'show_points_in_reply' ); ?>"><?php echo $this->core->template_tags_general( __( 'Show users %_plural% balance in replies', 'mycred' ) ); ?>.</label>
-						</li>
-					</ol>
-					<!-- Creds for Deleting Reply -->
-					<label for="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
-					<ol id="">
-						<li>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_reply']['creds'] ); ?>" size="8" /></div>
-						</li>
-						<li class="empty">&nbsp;</li>
-						<li>
-							<label for="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
-							<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>" value="<?php echo $prefs['delete_reply']['log']; ?>" class="long" /></div>
-							<span class="description"><?php _e( 'Available template tags: General, Post', 'mycred' ); ?></span>
-						</li>
-					</ol>
-<?php			unset( $this );
+<!-- Creds for New Forums -->
+<label for="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Forum', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_forum']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'new_forum', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_forum', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_forum', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['new_forum']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+</ol>
+<!-- Creds for Deleting Forums -->
+<label for="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Forum Deletion', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_forum']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'delete_forum', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_forum', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_forum', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['delete_forum']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<!-- Creds for New Topic -->
+<label for="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Topic', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_topic']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'new_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['new_topic']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<input type="checkbox" name="<?php echo $this->field_name( array( 'new_topic' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'new_topic' => 'author' ) ); ?>" <?php checked( $prefs['new_topic']['author'], 1 ); ?> value="1" />
+		<label for="<?php echo $this->field_id( array( 'new_topic' => 'author' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Forum authors can receive %_plural% for creating new topics.', 'mycred' ) ); ?></label>
+	</li>
+</ol>
+<!-- Creds for Deleting Topic -->
+<label for="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_topic']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'delete_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_topic', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['delete_topic']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<!-- Creds for Faved Topic -->
+<label for="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Favorited Topic', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'fav_topic', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['fav_topic']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'fav_topic', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'fav_topic', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['fav_topic']['limit'] ); ?>" size="8" /></div>
+		<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
+	</li>
+</ol>
+<!-- Creds for New Reply -->
+<label for="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for New Reply', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'new_reply', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['new_reply']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'post' ) ); ?></span>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<input type="checkbox" name="<?php echo $this->field_name( array( 'new_reply' => 'author' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply' => 'author' ) ); ?>" <?php checked( $prefs['new_reply']['author'], 1 ); ?> value="1" />
+		<label for="<?php echo $this->field_id( array( 'new_reply' => 'author' ) ); ?>"><?php echo $this->core->template_tags_general( __( 'Topic authors can receive %_plural% for replying to their own Topic', 'mycred' ) ); ?></label>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>"><?php _e( 'Daily Limit', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'new_reply', 'limit' ) ); ?>" id="<?php echo $this->field_id( array( 'new_reply', 'limit' ) ); ?>" value="<?php echo $this->core->number( $prefs['new_reply']['limit'] ); ?>" size="8" /></div>
+		<span class="description"><?php _e( 'Use zero for unlimited', 'mycred' ); ?></span>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<input type="checkbox" name="<?php echo $this->field_name( 'show_points_in_reply' ); ?>" id="<?php echo $this->field_id( 'show_points_in_reply' ); ?>" <?php checked( $prefs['show_points_in_reply'], 1 ); ?> value="1" /> <label for="<?php echo $this->field_id( 'show_points_in_reply' ); ?>"><?php echo $this->core->template_tags_general( __( 'Show users %_plural% balance in replies', 'mycred' ) ); ?>.</label>
+	</li>
+</ol>
+<!-- Creds for Deleting Reply -->
+<label for="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" class="subheader"><?php echo $this->core->template_tags_general( __( '%plural% for Topic Deletion', 'mycred' ) ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'creds' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'creds' ) ); ?>" value="<?php echo $this->core->number( $prefs['delete_reply']['creds'] ); ?>" size="8" /></div>
+	</li>
+	<li class="empty">&nbsp;</li>
+	<li>
+		<label for="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>"><?php _e( 'Log template', 'mycred' ); ?></label>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( array( 'delete_reply', 'log' ) ); ?>" id="<?php echo $this->field_id( array( 'delete_reply', 'log' ) ); ?>" value="<?php echo esc_attr( $prefs['delete_reply']['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
+	</li>
+</ol>
+<?php
 			}
 
 			/**

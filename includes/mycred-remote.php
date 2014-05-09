@@ -30,7 +30,7 @@ if ( !class_exists( 'myCRED_Remote' ) ) {
 		function __construct( $key = NULL ) {
 			$this->handle_magic();
 
-			$this->core = mycred_get_settings();
+			$this->core = mycred();
 			$this->key = $key;
 
 			$this->method = $_SERVER['REQUEST_METHOD'];
