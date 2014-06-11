@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,6 @@ myCRED is an adaptive points management system that lets you award / charge your
 == Description ==
 
 **Important**
-If you are updating from a previous version to 1.4, please read this [short guide](http://mycred.me/news/1-4-is-now-available/) before updating.
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
@@ -24,12 +23,12 @@ I am here to help where ever I can but please remember that right now this is a 
 
 You are welcome to post your issues or questions under the "Support" tab but remember that  **my**CRED has it's own [online forum](http://mycred.me/support/forums/) along with [F.A.Q.](http://mycred.me/about/faq/) page and an online [support page](http://mycred.me/support/).
 
-**Hooks**
+**About Hooks**
 
 **my**CRED hooks are instances where you award or deduct points from a user. By default you can award point for: registrations, logins, content publishing, commenting, clicking on links and viewing YouTube videos. You can find more information on built-in hooks [here](http://mycred.me/about/hooks/).
 
 
-**Add-ons**
+**About Add-ons**
 
 **my**CRED add-ons allows you to enable more complex features that is not just about awarding / deducting points. Features include: [Sell Content](http://mycred.me/add-ons/sell-content/) with points, [Buy points](http://mycred.me/add-ons/buycred/) for real money, [Transfer](http://mycred.me/add-ons/transfer/) points between users, award [ranks](http://mycred.me/add-ons/ranks/) according to points balances. You can find a complete list of [built-in](http://mycred.me/add-on-types/built-in/) and [premium](http://mycred.me/add-on-types/premium/) add-ons [here](http://mycred.me/add-ons/).
 
@@ -103,8 +102,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.4.5 =
-Bug fixes for import / export of balances and log resets based on point types.
+= 1.4.6 =
+Improvement of Email Notifications, Invite Anyone and bug fixes.
 
 == Other Notes ==
 
@@ -120,18 +119,27 @@ Bug fixes for import / export of balances and log resets based on point types.
 * Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
 * Spanish - Rob Row [Website](http://robertrowshan.com)
 * Russian - Skladchik
+* Chinese - Changmeng Hu
+* Portuguese - Guilherme
 
 
 == Changelog ==
 
+= 1.4.6 =
+* FIX - Ranks on Multisites are not working when master template is not enabled.
+* FIX - buyCRED Purchases of custom point type is not getting logged correctly.
+* FIX - BuddyPress Media plugin support restored.
+* FIX - Removed stray unused variable in rank function.
+* FIX - Added missing Cron check in banking add-on.
+* NEW - Chinese Translation.
+* NEW - Portuguese (Brazil) Translation.
+* NEW - Added support for custom translations via the wp-content/languages/ folder.
+* NEW - On BuddyPress sites, invited users does not give points to the inviter until the account has been activated (if used).
+* NEW - Email Notifications can not be set to be sent hourly, daily or immediately (default).
+* NEW - Added new mycred_email_subscriptions shortcode to allow users to unsubscribe from email notifications.
+
 = 1.4.5 =
-* FIX - Balance importer is skipping existing users.
-* FIX - When using decimals and custom point types, all custom types lack decimals.
-* FIX - Resetting log for custom point types resets main point type instead.
-* FIX - When exporting a custom point type, the main point type is exported instead.
-* FIX - BuddyPress Balance sorting not using proper logic for overrides.
-* FIX - BuddyPress history page label not supporting %label% to show point type.
-* UPDATE - Balance Importer now supports import of custom point types. 
+http://mycred.me/support/changelog/
 
 = 1.4.4 =
 http://mycred.me/support/changelog/
