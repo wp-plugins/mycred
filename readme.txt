@@ -3,15 +3,13 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
-
-**Important**
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
@@ -72,7 +70,7 @@ myCRED points can be whole numbers or use up to 20 decimals.
 
 = Does myCRED support Multiple Point Types? =
 
-Yes! myCRED as of version 1.4 officially supports multiple point types. You can setup an unlimited number of point types with it's own settings, available hooks and log page for each administration. Note that add-ons have limited support. Please consult the myCRED website for more inforamtion.
+Yes! myCRED as of version 1.4 officially supports multiple point types. You can setup an unlimited number of point types with it's own settings, available hooks and log page for each administration. Note that add-ons have limited support. Please consult the myCRED website for more information.
 
 = Can users use points to pay for items in my store? =
 
@@ -102,8 +100,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.4.6 =
-Improvement of Email Notifications, Invite Anyone and bug fixes.
+= 1.4.7 =
+Important bug fixes for 1.4.6 users!
 
 == Other Notes ==
 
@@ -125,18 +123,17 @@ Improvement of Email Notifications, Invite Anyone and bug fixes.
 
 == Changelog ==
 
+= 1.4.7 =
+* FIX - Enforce fix for Email Notifications Cron bug.
+* FIX - Custom point type is not being imported via the Balance Importer.
+* FIX - Sell Content add-on uses incorrect logic for author check.
+* FIX - Renamed coupon code array key to prevent some themes from injecting html elements inside our own shortcode elements.
+* UPDATED - Portuguese (Brazil) language.
+* NEW - Added new mycred_content_sale_count shortcode to show a posts total number of sales.
+* NEW - Added new mycred_profit_share_sell_content filter to adjust the share percentage for the Sell Content add-on.
+
 = 1.4.6 =
-* FIX - Ranks on Multisites are not working when master template is not enabled.
-* FIX - buyCRED Purchases of custom point type is not getting logged correctly.
-* FIX - BuddyPress Media plugin support restored.
-* FIX - Removed stray unused variable in rank function.
-* FIX - Added missing Cron check in banking add-on.
-* NEW - Chinese Translation.
-* NEW - Portuguese (Brazil) Translation.
-* NEW - Added support for custom translations via the wp-content/languages/ folder.
-* NEW - On BuddyPress sites, invited users does not give points to the inviter until the account has been activated (if used).
-* NEW - Email Notifications can not be set to be sent hourly, daily or immediately (default).
-* NEW - Added new mycred_email_subscriptions shortcode to allow users to unsubscribe from email notifications.
+http://mycred.me/support/changelog/
 
 = 1.4.5 =
 http://mycred.me/support/changelog/
