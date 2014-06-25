@@ -5,7 +5,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Settings class
  * @see http://codex.mycred.me/classes/mycred_settings/
  * @since 0.1
- * @version 1.4
+ * @version 1.4.1
  */
 if ( ! class_exists( 'myCRED_Settings' ) ) :
 	class myCRED_Settings {
@@ -29,7 +29,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 
 			// Load Settings
 			$option_id = 'mycred_pref_core';
-			if ( $type != 'mycred_default' )
+			if ( $type != 'mycred_default' && $type != '' )
 				$option_id .= '_' . $type;
 
 			$this->core = mycred_get_option( $option_id, $this->defaults() );
@@ -1771,20 +1771,60 @@ endif;
  * @param $type (string), optional cred type to check for
  * @returns zero if user id is not set or if no total were found, else returns creds
  * @since 1.2
- * @version 1.1
+ * @version 1.3
  */
 if ( ! function_exists( 'mycred_get_users_total' ) ) :
 	function mycred_get_users_total( $user_id = '', $type = 'mycred_default' )
 	{
-		if ( empty( $user_id ) ) return 0;
+		if ( $user_id == '' ) return 0;
+
+		if ( $type == '' ) $type = 'mycred_default';
+		$mycred = mycred( $type );
+
+		$key = $type;
+		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_central_logging )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= '_total';
+
+		$total = get_user_meta( $user_id, $key, true );
+		if ( $total == '' ) {
+			$total = mycred_query_users_total( $user_id, $type );
+			update_user_meta( $user_id, $key, $total );
+		}
+
+		$total = apply_filters( 'mycred_get_users_total', $total, $user_id, $type, $key );
+		return $mycred->number( $total );
+	}
+endif;
+
+/**
+ * Query Users Total
+ * Queries the database for the users total acculimated points.
+ *
+ * @param $user_id (int), required user id
+ * @param $type (string), required point type
+ * @since 1.4.7
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_query_users_total' ) ) :
+	function mycred_query_users_total( $user_id, $type = 'mycred_default' )
+	{
+		global $wpdb;
 
 		$mycred = mycred( $type );
-		if ( empty( $type ) ) $type = $mycred->get_cred_id();
 
-		$total = get_user_meta( $user_id, $type . '_total', true );
-		if ( empty( $total ) ) $total = $mycred->get_users_cred( $user_id, $type );
+		$total = $wpdb->get_var( $wpdb->prepare( "
+			SELECT SUM( creds ) 
+			FROM {$mycred->log_table} 
+			WHERE user_id = %d
+				AND ( ( creds > 0 ) OR ( creds < 0 AND ref = 'manual' ) )
+				AND ctype = %s;", $user_id, $type ) );
 
-		return $mycred->number( $total );
+		if ( $total === NULL )
+			$total = 0;
+
+		return apply_filters( 'mycred_query_users_total', $total, $user_id, $type, $mycred );
 	}
 endif;
 
@@ -1797,32 +1837,33 @@ endif;
  * @param $mycred (myCRED_Settings object), required myCRED settings object
  * @returns zero if user id is not set or if no total were found, else returns total
  * @since 1.2
- * @version 1.1
+ * @version 1.3
  */
 if ( ! function_exists( 'mycred_update_users_total' ) ) :
 	function mycred_update_users_total( $type = 'mycred_default', $request = NULL, $mycred = NULL )
 	{
 		if ( $request === NULL || ! is_object( $mycred ) || ! isset( $request['user_id'] ) || ! isset( $request['amount'] ) ) return false;
-		if ( empty( $type ) ) $type = $mycred->get_cred_id();
 
-		do_action( 'mycred_update_users_total', $request, $type, $mycred );
+		if ( $type == '' )
+			$type = $mycred->get_cred_id();
+
+		$key = $type;
+		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_central_logging )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= '_total';
 
 		$amount = $mycred->number( $request['amount'] );
-		$user_id = $request['user_id'];
-		$users_total = get_user_meta( $user_id, $type . '_total', true );
-		if ( empty( $users_total ) ) {
-			global $wpdb;
-			$users_total = $wpdb->get_var( $wpdb->prepare( "
-				SELECT SUM( creds ) 
-				FROM {$mycred->log_table} 
-				WHERE user_id = %d
-					AND ( ( creds > 0 ) OR ( creds < 0 AND ref = %s ) )
-					AND ctype = %s;", $user_id, 'manual', $type ) );
-		}
+		$user_id = absint( $request['user_id'] );
+
+		$users_total = get_user_meta( $user_id, $key, true );
+		if ( $users_total == '' )
+			$users_total = mycred_query_users_total( $user_id, $type );
 
 		$new_total = $mycred->number( $users_total+$amount );
-		update_user_meta( $user_id, $type . '_total', $new_total );
-		return $new_total;
+		update_user_meta( $user_id, $key, $new_total );
+
+		return apply_filters( 'mycred_update_users_total', $new_total, $type, $request, $mycred );
 	}
 endif;
 

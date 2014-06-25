@@ -136,7 +136,7 @@ if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
  * myCRED Shortcode: mycred_leaderboard
  * @see http://codex.mycred.me/shortcodes/mycred_leaderboard/
  * @since 0.1
- * @version 1.3.2
+ * @version 1.3.3
  */
 if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 	function mycred_render_leaderboard( $atts, $content = '' )
@@ -178,7 +178,7 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 		if ( ! empty( $leaderboard ) ) {
 
 			// Check if current user is in the leaderboard
-			if ( $current && is_user_logged_in() ) {
+			if ( $current == 1 && is_user_logged_in() ) {
 
 				// Find the current user in the leaderboard
 				foreach ( $leaderboard as $position => $user ) {
@@ -237,7 +237,7 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 			$leaderboard = NULL;
 
 			// Current user is not in list but we want to show his position
-			if ( ! $in_list && is_user_logged_in() ) {
+			if ( ! $in_list && $current == 1 && is_user_logged_in() ) {
 
 				// Flush previous query
 				$wpdb->flush();
@@ -303,13 +303,14 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
  * myCRED Shortcode: mycred_my_ranking
  * @see http://codex.mycred.me/shortcodes/mycred_my_ranking/
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 	function mycred_render_my_ranking( $atts )
 	{
 		extract( shortcode_atts( array(
-			'user_id'  => NULL
+			'user_id'  => NULL,
+			'ctype'    => 'mycred_default'
 		), $atts ) );
 		
 		// If no id is given
@@ -319,8 +320,34 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 			// Get current user id
 			$user_id = get_current_user_id();
 		}
-		
-		return mycred_leaderboard_position( $user_id );
+
+		// If no type is given
+		if ( $ctype == '' )
+			$ctype = 'mycred_default';
+
+		global $wpdb;
+
+		// Get a complete leaderboard with just user IDs
+		$full_leaderboard = $wpdb->get_results( $wpdb->prepare( "
+			SELECT u.ID 
+			FROM {$wpdb->users} u
+			INNER JOIN {$wpdb->usermeta} um
+				ON ( u.ID = um.user_id )
+			WHERE um.meta_key = %s  
+			ORDER BY um.meta_value+0 DESC;", $ctype ), 'ARRAY_A' );
+
+		$position = 0;
+		if ( ! empty( $full_leaderboard ) ) {
+
+			// Get current users position
+			$current_position = array_search( array( 'ID' => $user_id ), $full_leaderboard );
+			$position = $current_position+1;
+
+		}
+
+		$full_leaderboard = NULL;
+
+		return apply_filters( 'mycred_get_leaderboard_position', $position, $user_id, $ctype );
 	}
 }
 

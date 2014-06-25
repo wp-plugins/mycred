@@ -253,7 +253,7 @@ LEFT JOIN {$wpdb->usermeta}
 		 * Customize User Columns Content
 		 * @filter 'mycred_user_row_actions'
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		public function custom_user_column_content( $value, $column_name, $user_id ) {
 			global $mycred_types;
@@ -267,8 +267,20 @@ LEFT JOIN {$wpdb->usermeta}
 
 			$user = get_userdata( $user_id );
 
+			// Show balance
 			$ubalance = $mycred->get_users_cred( $user_id, $column_name );
 			$balance = '<div id="mycred-user-' . $user_id . '-balance-' . $column_name . '">' . $mycred->before . ' <span>' . $mycred->format_number( $ubalance ) . '</span> ' . $mycred->after . '</div>';
+
+			// Show total
+			if ( isset( $mycred->rank['base'] ) && $mycred->rank['base'] == 'total' ) {
+				$key = $column_name;
+				if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_central_logging )
+					$key .= '_' . $GLOBALS['blog_id'];
+
+				$total = get_user_meta( $user_id, $key . '_total', true );
+				if ( $total != '' )
+					$balance .= '<small style="display:block;">' . sprintf( __( 'Total: %s', 'mycred' ), $mycred->format_number( $total ) ) . '</small>';
+			}
 
 			$page = 'myCRED';
 			if ( $column_name != 'mycred_default' )
@@ -281,6 +293,7 @@ LEFT JOIN {$wpdb->usermeta}
 
 			$rows = apply_filters( 'mycred_user_row_actions', $row, $user_id, $mycred );
 			$balance .= $this->row_actions( $rows );
+
 			return $balance;
 		}
 
@@ -377,7 +390,7 @@ LEFT JOIN {$wpdb->usermeta}
 </td>
 </tr>
 <?php
-		if ( IS_PROFILE_PAGE ) return;
+			if ( IS_PROFILE_PAGE ) return;
 
 			$mycred_types = mycred_get_types();
 			

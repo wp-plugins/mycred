@@ -179,7 +179,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 				'name'        => __( 'Email Notices', 'mycred' ),
 				'description' => __( 'Create email notices for any type of myCRED instance.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/email-notices/',
-				'version'     => '1.2',
+				'version'     => '1.3',
 				'author'      => 'Gabriel S Merovingi',
 				'author_url'  => 'http://www.merovingi.com',
 				'path'        => myCRED_ADDONS_DIR . 'email-notices/myCRED-addon-email-notices.php'

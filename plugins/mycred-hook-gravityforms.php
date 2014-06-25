@@ -3,7 +3,7 @@
 /**
  * Gravity Forms
  * @since 1.4
- * @version 1.0
+ * @version 1.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
 
@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Gravity Forms Hook
 	 * @since 1.4
-	 * @version 1.0
+	 * @version 1.1
 	 */
 	if ( ! class_exists( 'myCRED_Gravity_Forms' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Gravity_Forms extends myCRED_Hook {
@@ -52,21 +52,50 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Successful Form Submission
 			 * @since 1.4
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function form_submission( $lead, $form ) {
 				// Login is required
-				if ( ! is_user_logged_in() ) return;
+				if ( ! is_user_logged_in() || ! isset( $lead['form_id'] ) ) return;
 
-				$form_id = $form['id'];
-				if ( ! isset( $this->prefs[ $form['id'] ] ) || ! $this->prefs[ $form['id'] ]['creds'] != 0 ) return;
+				// Prep
+				$user_id = absint( $lead['created_by'] );
+				$form_id = absint( $lead['form_id'] );
 
+				// Make sure form is setup and user is not excluded
+				if ( ! isset( $this->prefs[ $form_id ] ) || $this->core->exclude_user( $user_id ) ) return;
+
+				// Default values
+				$amount = $this->prefs[ $form_id ]['creds'];
+				$entry = $this->prefs[ $form_id ]['log'];
+
+				// See if the form contains myCRED fields that override these defaults
+				if ( isset( $form['fields'] ) && ! empty( $form['fields'] ) ) {
+					foreach ( (array) $form['fields'] as $field ) {
+
+						// Amount override
+						if ( $field['label'] == 'mycred_amount' ) {
+							$amount = $this->core->number( $field['defaultValue'] );
+						}
+
+						// Entry override
+						if ( $field['label'] == 'mycred_entry' ) {
+							$entry = sanitize_text_field( $field['defaultValue'] );
+						}
+
+					}
+				}
+
+				// Amount can not be zero
+				if ( $amount == 0 ) return;
+
+				// Execute
 				$this->core->add_creds(
 					'gravity_form_submission',
-					get_current_user_id(),
-					$this->prefs[ $form['id'] ]['creds'],
-					$this->prefs[ $form['id'] ]['log'],
-					$form['id'],
+					$user_id,
+					$amount,
+					$entry,
+					$form_id,
 					'',
 					$this->mycred_type
 				);

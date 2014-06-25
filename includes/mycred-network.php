@@ -153,7 +153,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		/**
 		 * Network Settings Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page_settings() {
 			// Security
@@ -170,7 +170,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 		<?php
 			
 			// Inform user that myCRED has not yet been setup
-			$setup = get_blog_option( 1, 'mycred_version', false );
+			$setup = get_blog_option( 1, 'mycred_setup_completed', false );
 			if ( $setup === false )
 				echo '<div class="error"><p>' . sprintf( __( 'Note! %s has not yet been setup.', 'mycred' ), $name ) . '</p></div>';
 

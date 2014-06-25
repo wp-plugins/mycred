@@ -27,7 +27,7 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 		 * Compat
 		 * Check to make sure we reach minimum requirements for this plugin to work propery.
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function compat() {
 			global $wpdb;
@@ -47,6 +47,10 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 			$sql_version = $wpdb->db_version();
 			if ( version_compare( $sql_version, '5.0', '<' ) )
 				$message[] = __( 'myCRED requires SQL 5.0 or higher. Version detected: ', 'mycred' ) . ' ' . $sql_version;
+
+			// mcrypt library check (if missing, this will cause a fatal error)
+			if ( ! function_exists( 'mcrypt_get_iv_size' ) )
+				$message[] = __( 'The mcrypt PHP library must be enabled in order to use this plugin! Please check your PHP configuration or contact your host and ask them to enable it for you!', 'mycred' );
 
 			// Not empty $message means there are issues
 			if ( ! empty( $message ) ) {

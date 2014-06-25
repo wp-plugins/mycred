@@ -3,7 +3,7 @@
 /**
  * rtMedia
  * @since 1.4
- * @version 1.0
+ * @version 1.0.1
  */
 if ( defined( 'myCRED_VERSION' ) ) {
 
@@ -70,7 +70,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * New Media
 			 * @since 1.4
-			 * @version 1.0
+			 * @version 1.0.1
 			 */
 			public function new_media( $media_ids, $file_object, $uploaded ) {
 				// Check for exclusion
@@ -81,22 +81,22 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					// Get media details from id
 					$model = new RTMediaModel();
 					$media = $model->get_media( array( 'id' => $id ), 0, 1 );
-					if ( ! isset( $media->media_type ) ) continue;
+					if ( ! isset( $media[0]->media_type ) ) continue;
 
 					// If this media type awards zero, bail
-					if ( $this->prefs['new_media'][ $media->media_type ] == $this->core->zero() ) continue;
+					if ( $this->prefs['new_media'][ $media[0]->media_type ] == $this->core->zero() ) continue;
 
 					// Make sure this is unique
-					if ( $this->core->has_entry( $media->media_type . '_upload', $media->media_author, $id ) ) continue;
+					if ( $this->core->has_entry( $media[0]->media_type . '_upload', $media[0]->media_author, $id ) ) continue;
 
 					// Execute
 					$this->core->add_creds(
-						$media->media_type . '_upload',
-						$media->media_author,
-						$this->prefs['new_media'][ $media->media_type ],
-						$this->prefs['new_media'][ $media->media_type . '_log' ],
+						$media[0]->media_type . '_upload',
+						$media[0]->media_author,
+						$this->prefs['new_media'][ $media[0]->media_type ],
+						$this->prefs['new_media'][ $media[0]->media_type . '_log' ],
 						$id,
-						array( 'ref_type' => 'media', 'attachment_id' => $media->media_id ),
+						array( 'ref_type' => 'media', 'attachment_id' => $media[0]->media_id ),
 						$this->mycred_type
 					);
 

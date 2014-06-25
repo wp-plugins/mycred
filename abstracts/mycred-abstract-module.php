@@ -326,11 +326,11 @@ if ( ! class_exists( 'myCRED_Module' ) ) {
 		/**
 		 * Add Admin Menu Item
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		function add_menu() {
 			// Network Setting for Multisites
-			if ( mycred_override_settings() && $GLOBALS['blog_id'] > 1 && substr( $this->screen_id, 0, 6 ) == 'myCRED' ) return;
+			if ( mycred_override_settings() && $GLOBALS['blog_id'] > 1 && substr( $this->screen_id, 0, 6 ) == 'myCRED' && strlen( $this->screen_id ) > 6 ) return;
 
 			if ( ! empty( $this->labels ) && ! empty( $this->screen_id ) ) {
 				// Menu Slug

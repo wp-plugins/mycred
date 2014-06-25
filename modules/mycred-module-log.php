@@ -641,7 +641,7 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 
 			$log->search(); ?>
 
-		<input type="hidden" name="page" value="mycred_my_history" />
+		<input type="hidden" name="page" value="<?php echo $_GET['page']; ?>" />
 		<?php do_action( 'mycred_above_my_log_table', $this ); ?>
 
 		<div class="tablenav top">

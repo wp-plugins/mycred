@@ -109,7 +109,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				if ( $this->args['ref_id'] != NULL ) {
 					$ref_ids = explode( ',', $this->args['ref_id'] );
 					if ( count( $ref_ids ) > 1 ) {
-						$ref_id_count = $ref_id_count-1;
+						$ref_id_count = count( $ref_ids )-1;
 						$wheres[] = 'ref_id IN (%d' . str_repeat( ',%d', $ref_id_count ) . ')';
 						foreach ( $ref_ids as $ref_id )
 							$prep[] = (int) sanitize_text_field( $ref_id );

@@ -5,11 +5,9 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * Dashboard Widget: Overview
  * @see https://codex.wordpress.org/Example_Dashboard_Widget
  * @since 1.3.3
- * @version 1.2
+ * @version 1.2.1
  */
-if ( function_exists( 'mycred_is_admin' ) && mycred_is_admin() )
-	add_action( 'wp_dashboard_setup', array( 'myCRED_Dashboard_Widget_Overview', 'init' ) );
-
+add_action( 'wp_dashboard_setup', array( 'myCRED_Dashboard_Widget_Overview', 'init' ) );
 if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 	class myCRED_Dashboard_Widget_Overview {
 
@@ -19,6 +17,8 @@ if ( ! class_exists( 'myCRED_Dashboard_Widget_Overview' ) ) {
 		 * Init Widget
 		 */
 		public static function init() {
+			if ( ! current_user_can( apply_filters( 'mycred_overview_capability', 'edit_users' ) ) ) return;
+
 			// Add widget
 			wp_add_dashboard_widget(
 				self::wid,
