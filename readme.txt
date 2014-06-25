@@ -101,7 +101,7 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 == Upgrade Notice ==
 
 = 1.4.7 =
-Important bug fixes for 1.4.6 users!
+Important bug fixes for myCRED.
 
 == Other Notes ==
 
