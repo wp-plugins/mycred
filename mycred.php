@@ -3,7 +3,7 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.4.5
+ * Version: 1.4.7
  * Tags: points, tokens, credit, management, reward, charge, buddypress, bbpress, jetpack, woocommerce, marketpress, wp e-commerce, gravity forms, simplepress
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -20,7 +20,7 @@
  * BuddyPress Compatible: yes
  * Forum URI: http://mycred.me/support/forums/
  */
-define( 'myCRED_VERSION',      '1.4.5' );
+define( 'myCRED_VERSION',      '1.4.7' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -177,7 +177,7 @@ endif;
 /**
  * myCRED Plugin Startup
  * @since 1.3
- * @version 1.1
+ * @version 1.2
  */
 if ( ! function_exists( 'mycred_plugin_start_up' ) ) :
 	function mycred_plugin_start_up()
@@ -190,6 +190,8 @@ if ( ! function_exists( 'mycred_plugin_start_up' ) ) :
 		require_once( myCRED_INCLUDES_DIR . 'mycred-shortcodes.php' );
 
 		// Load Translation
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'mycred' );
+		load_textdomain( 'mycred', WP_LANG_DIR . "/mycred/mycred-$locale.mo" );
 		load_plugin_textdomain( 'mycred', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
 		// Adjust the plugin links
@@ -384,7 +386,7 @@ endif;
 /**
  * Adjust the Tool Bar
  * @since 1.3
- * @version 1.3
+ * @version 1.3.1
  */
 if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 	function mycred_hook_into_toolbar( $wp_admin_bar )
@@ -456,12 +458,13 @@ if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 				'href'   => false
 			) );
 
-			$wp_admin_bar->add_menu( array(
-				'parent' => 'mycred-account',
-				'id'     => 'mycred-account-history-' . $id,
-				'title'  => $mycred_history_label,
-				'href'   => $mycred_history_url
-			) );
+			if ( isset( $mycred->buddypress['visibility']['history'] ) && $mycred->buddypress['visibility']['history'] )
+				$wp_admin_bar->add_menu( array(
+					'parent' => 'mycred-account',
+					'id'     => 'mycred-account-history-' . $id,
+					'title'  => $mycred_history_label,
+					'href'   => $mycred_history_url
+				) );
 
 			$my_balance_label = str_replace( $type_label, '%label%', $my_balance_label );
 			$mycred_history_label = str_replace( $type_label, '%label%', $mycred_history_label );
