@@ -129,26 +129,26 @@ Badges, improved buyCRED and tons more!
 == Changelog ==
 
 = 1.5 =
-NEW - buyCRED now supports sales of multiple point types at the same time.
-TWEAK - buyCRED now saves a pending payment that users can cancel or pay later via the mycred_buy_pending shortcode.
-NEW - Profile / Balance editor.
-NEW - Option to override the buyCRED gateway exchange rate on a user level basis.
-NEW - Option to exclude users from their profile.
-NEW - New shortcode mycred_exchange which lets your users exchange one point type for another.
-FIX - When creating a new point type, the first time this point types settings are saved, the "Exclude" checkboxes get checked.
-FIX - Incorrect logic for the Affiliate Hook.
-NEW - Added new Badges add-on.
-TWEAK - If a signup needs to be verified in BuddyPress, the affiliates hook will award points first when the new registration has been verified.
-TWEAK - If a signup needs to be verified in BuddyPress, the registration hook will award points first when the new registration has been verified.
-TWEAK - Leaderboard shortcode and widget now supports being based on either your users current balance or most points gained by reference.
-NEW - The mycred_my_ranking shortcode now has a new attribute that allows you to set what to return if a user is not in the list.
-NEW - Added new mycred_decline_store_purchase filter to all supported shopping carts allowing third-parties to decline store purchases using the myCRED gateway for any custom reason.
-FIX - Adjusted the log editor javascript to better handle html code in log entries.
-NEW - Added new hook for daily site visits.
-NEW - Added new Hook for sharing content on social media sites via the ShareThis plugin.
-TWEAK - Added option to override a users interest rate for the Banking add-on along with excluding users based on user ID or role.
-NEW - Re-wrote the transfer shortcode to use a form to submit making customisations easier. You no longer need to replace the transfer.js file.
-NEW - Added option to transfer shortcode to override the button label.
+* NEW - buyCRED now supports sales of multiple point types at the same time.
+* TWEAK - buyCRED now saves a pending payment that users can cancel or pay later via the mycred_buy_pending shortcode.
+* NEW - Profile / Balance editor.
+* NEW - Option to override the buyCRED gateway exchange rate on a user level basis.
+* NEW - Option to exclude users from their profile.
+* NEW - New shortcode mycred_exchange which lets your users exchange one point type for another.
+* FIX - When creating a new point type, the first time this point types settings are saved, the "Exclude" checkboxes get checked.
+* FIX - Incorrect logic for the Affiliate Hook.
+* NEW - Added new Badges add-on.
+* TWEAK - If a signup needs to be verified in BuddyPress, the affiliates hook will award points first when the new registration has been verified.
+* TWEAK - If a signup needs to be verified in BuddyPress, the registration hook will award points first when the new registration has been verified.
+* TWEAK - Leaderboard shortcode and widget now supports being based on either your users current balance or most points gained by reference.
+* NEW - The mycred_my_ranking shortcode now has a new attribute that allows you to set what to return if a user is not in the list.
+* NEW - Added new mycred_decline_store_purchase filter to all supported shopping carts allowing third-parties to decline store purchases using the myCRED gateway for any custom reason.
+* FIX - Adjusted the log editor javascript to better handle html code in log entries.
+* NEW - Added new hook for daily site visits.
+* NEW - Added new Hook for sharing content on social media sites via the ShareThis plugin.
+* TWEAK - Added option to override a users interest rate for the Banking add-on along with excluding users based on user ID or role.
+* NEW - Re-wrote the transfer shortcode to use a form to submit making customisations easier. You no longer need to replace the transfer.js file.
+* NEW - Added option to transfer shortcode to override the button label.
 
 
 = 1.4.7 =
