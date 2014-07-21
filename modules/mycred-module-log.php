@@ -325,7 +325,7 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 			if ( ! $this->is_main_type )
 				$settings_key .= '_' . $this->mycred_type;
 
-			$per_page = get_user_meta( get_current_user_id(), $settings_key, true );
+			$per_page = mycred_get_user_meta( get_current_user_id(), $settings_key, '', true );
 			if ( $per_page == '' ) $per_page = 10;
 
 			// Prep
@@ -578,7 +578,7 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 			if ( ! $this->is_main_type )
 				$settings_key .= '_' . $this->mycred_type;
 
-			$per_page = get_user_meta( get_current_user_id(), $settings_key, true );
+			$per_page = mycred_get_user_meta( get_current_user_id(), $settings_key, '', true );
 			if ( $per_page == '' ) $per_page = 10;
 
 			$args = array(

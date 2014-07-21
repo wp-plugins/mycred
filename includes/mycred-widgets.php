@@ -277,7 +277,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 			$instance = $old_instance;
 
 			$instance['title'] = trim( $new_instance['title'] );
-			$instance['type'] = trim( $new_instance['type'] );
+			$instance['type'] = sanitize_key( $new_instance['type'] );
 
 			$instance['cred_format'] = trim( $new_instance['cred_format'] );
 
@@ -306,7 +306,7 @@ if ( ! class_exists( 'myCRED_Widget_Balance' ) ) {
 /**
  * Widget: Leaderboard
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 	class myCRED_Widget_Leaderboard extends WP_Widget {
@@ -345,7 +345,8 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 			$args = array(
 				'number'   => $instance['number'],
 				'template' => $instance['text'],
-				'type'     => $instance['type']
+				'type'     => $instance['type'],
+				'based_on' => $instance['based_on']
 			);
 
 			if ( isset( $instance['order'] ) )
@@ -366,7 +367,7 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 				echo $after_title;
 			}
 
-			echo mycred_render_leaderboard( $args );
+			echo mycred_render_shortcode_leaderboard( $args );
 
 			// Footer
 			echo $after_widget;
@@ -380,6 +381,7 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 			// Defaults
 			$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Leaderboard', 'mycred' );
 			$type = isset( $instance['type'] ) ? $instance['type'] : 'mycred_default';
+			$based_on = isset( $instance['based_on'] ) ? esc_attr( $instance['based_on'] ) : 'balance';
 
 			$number = isset( $instance['number'] ) ? abs( $instance['number'] ) : 5;
 			$show_visitors = isset( $instance['show_visitors'] ) ? $instance['show_visitors'] : 0;
@@ -387,7 +389,7 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 			$offset = isset( $instance['offset'] ) ? esc_attr( $instance['offset'] ) : 0;
 			$order = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC';
 			$current = isset( $instance['current'] ) ? $instance['current'] : 0;
-			
+
 			$mycred = mycred( $type );
 			$mycred_types = mycred_get_types(); ?>
 
@@ -404,6 +406,12 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 		<?php else : ?>
 			<?php mycred_types_select_from_dropdown( $this->get_field_name( 'type' ), $this->get_field_id( 'type' ), $type ); ?>
 		<?php endif; ?>
+
+		<p class="myCRED-widget-field">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'based_on' ) ); ?>"><?php _e( 'Based On', 'mycred' ); ?>:</label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'based_on' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'based_on' ) ); ?>" type="text" value="<?php echo esc_attr( $based_on ); ?>" />
+			<small><?php _e( 'Use "balance" to base the leaderboard on your users current balances or use a specific reference.', 'mycred' ); ?> <a href="http://codex.mycred.me/reference-guide/log-references/" target="_blank"><?php _e( 'Reference Guide', 'mycred' ); ?></a></small>
+		</p>
 
 		<p class="myCRED-widget-field">
 			<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'show_visitors' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'show_visitors' ) ); ?>" value="1"<?php checked( $show_visitors, 1 ); ?> class="checkbox" /> 
@@ -455,7 +463,8 @@ if ( ! class_exists( 'myCRED_Widget_Leaderboard' ) ) {
 			$instance = $old_instance;
 			$instance['number'] = (int) $new_instance['number'];
 			$instance['title'] = trim( $new_instance['title'] );
-			$instance['type'] = trim( $new_instance['type'] );
+			$instance['type'] = sanitize_key( $new_instance['type'] );
+			$instance['based_on'] = sanitize_key( $new_instance['based_on'] );
 
 			$instance['show_visitors'] = ( isset( $new_instance['show_visitors'] ) ) ? $new_instance['show_visitors'] : 0;
 			

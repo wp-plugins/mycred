@@ -27,7 +27,7 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 		 * Compat
 		 * Check to make sure we reach minimum requirements for this plugin to work propery.
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function compat() {
 			global $wpdb;
@@ -35,8 +35,8 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 			$message = array();
 			// WordPress check
 			$wp_version = $GLOBALS['wp_version'];
-			if ( version_compare( $wp_version, '3.5', '<' ) )
-				$message[] = __( 'myCRED requires WordPress 3.5 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
+			if ( version_compare( $wp_version, '3.8', '<' ) && ! defined( 'MYCRED_FOR_OLDER_WP' ) )
+				$message[] = __( 'myCRED requires WordPress 3.8 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
 
 			// PHP check
 			$php_version = phpversion();

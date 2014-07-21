@@ -41,7 +41,7 @@ div.overview-module-wrap { margin: 0; padding: 0; }
 div.overview-module-wrap div.module-title { line-height: 48px; height: 48px; font-size: 18px; border-bottom: 1px solid #eee; }
 div.overview-module-wrap div.module-title a { float: right; padding-right: 12px; }
 div.overview-module-wrap div.module-title .type-icon { display: block; width: 48px; height: 48px; float: left; }
-div.overview-module-wrap div.module-title .type-icon { background-repeat: no-repeat; background-image: url(<?php echo plugins_url( 'assets/images/admin-icons.png', myCRED_THIS ); ?>); background-position: 0px -432px; }
+div.overview-module-wrap div.module-title .type-icon { background-repeat: no-repeat; background-image: url(<?php echo plugins_url( 'assets/images/admin-icons.png', myCRED_THIS ); ?>); background-position: 0px -480px; }
 
 div.overview-module-wrap div.mycred-type { border-top: 1px solid #ddd; }
 div.overview-module-wrap div.mycred-type.first { border-top: none; }

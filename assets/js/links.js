@@ -21,11 +21,6 @@ jQuery(function($) {
 				console.log( data );
 				if ( target == 'self' || target == '_self' )
 					window.location.href = href;
-			},
-			error      : function( jqXHR, textStatus, errorThrown ) {
-				// Debug
-				//console.log( jqXHR );
-				//console.log( 'textStatus: ' + textStatus + ' | errorThrown: ' + errorThrown );
 			}
 		});
 	};
@@ -37,7 +32,7 @@ jQuery(function($) {
 			target = 'self';
 		}
 		
-		mycred_click( $(this).attr( 'href' ), $(this).text(), target, $(this).attr( 'data-key' ) );
+		mycred_click( $(this).attr( 'href' ), $(this).text(), target, $(this).attr( 'data-token' ) );
 		
 		if ( target == 'self' || target == '_self' ) return false;
 	});

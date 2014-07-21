@@ -8,7 +8,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_my_rank' ) ) {
+if ( ! function_exists( 'mycred_render_my_rank' ) ) :
 	function mycred_render_my_rank( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -37,7 +37,7 @@ if ( ! function_exists( 'mycred_render_my_rank' ) ) {
 		if ( empty( $show ) ) return;
 		return '<div class="mycred-my-rank">' . implode( ' ', $show ) . '</div>';
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_users_of_rank
@@ -46,7 +46,7 @@ if ( ! function_exists( 'mycred_render_my_rank' ) ) {
  * @since 1.1
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_render_users_of_rank' ) ) {
+if ( ! function_exists( 'mycred_render_users_of_rank' ) ) :
 	function mycred_render_users_of_rank( $atts, $row_template = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -113,7 +113,7 @@ if ( ! function_exists( 'mycred_render_users_of_rank' ) ) {
 		
 		return do_shortcode( $output );
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_users_of_all_ranks
@@ -122,7 +122,7 @@ if ( ! function_exists( 'mycred_render_users_of_rank' ) ) {
  * @since 1.1
  * @version 1.0.1
  */
-if ( ! function_exists( 'mycred_render_users_of_all_ranks' ) ) {
+if ( ! function_exists( 'mycred_render_users_of_all_ranks' ) ) :
 	function mycred_render_users_of_all_ranks( $atts, $row_template = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -185,7 +185,7 @@ if ( ! function_exists( 'mycred_render_users_of_all_ranks' ) ) {
 		
 		return $output;
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_list_ranks
@@ -194,7 +194,7 @@ if ( ! function_exists( 'mycred_render_users_of_all_ranks' ) ) {
  * @since 1.1.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_rank_list' ) ) {
+if ( ! function_exists( 'mycred_render_rank_list' ) ) :
 	function mycred_render_rank_list( $atts, $content = NULL )
 	{
 		extract( shortcode_atts( array(
@@ -226,5 +226,5 @@ if ( ! function_exists( 'mycred_render_rank_list' ) ) {
 		
 		return $output;
 	}
-}
+endif;
 ?>

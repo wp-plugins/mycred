@@ -6,7 +6,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * NETbilling Payment Gateway
  * @see http://secure.netbilling.com/public/docs/merchant/public/directmode/directmode3protocol.html
  * @since 0.1
- * @version 1.1
+ * @version 1.2
  */
 if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 	class myCRED_NETbilling extends myCRED_Payment_Gateway {
@@ -19,6 +19,11 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		function __construct( $gateway_prefs ) {
 			global $netbilling_errors;
 
+			$types = mycred_get_types();
+			$default_exchange = array();
+			foreach ( $types as $type => $label )
+				$default_exchange[ $type ] = 1;
+
 			parent::__construct( array(
 				'id'               => 'netbilling',
 				'label'            => 'NETbilling',
@@ -28,8 +33,9 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 					'account'          => '',
 					'site_tag'         => '',
 					'item_name'        => __( 'Purchase of myCRED %plural%', 'mycred' ),
-					'exchange'         => 1,
-					'cryptokey'        => ''
+					'exchange'         => $default_exchange,
+					'cryptokey'        => '',
+					'currency'         => 'USD'
 				)
 			), $gateway_prefs );
 		}
@@ -52,11 +58,6 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 			$crypto_check = md5( $this->prefs['cryptokey'] . $_REQUEST['Ecom_Cost_Total'] . $_REQUEST['Ecom_Receipt_Description'] );
 			if ( $crypto_check != $_REQUEST['Ecom_Ezic_Security_HashValue_MD5'] )
 				$result = false;
-			
-			if ( ! $result )
-				$this->new_log_entry( ' > ' . __( 'Invalid Call', 'mycred' ) );
-			else
-				$this->new_log_entry( sprintf( __( 'Caller verified as "%s"', 'mycred' ), $this->id ) );
 
 			return $result;
 		}
@@ -64,92 +65,58 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		/**
 		 * Process
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function process() {
-			$outcome = 'FAILED';
-			$valid_call = false;
-			$valid_sale = false;
-
-			$this->start_log();
 			
-			// VALIDATION OF CALL
-			$required_fields = array(
-				'Ecom_Ezic_AccountAndSitetag',
-				'Ecom_UserData_salesdata',
-				'Ecom_Ezic_Response_TransactionID',
-				'Ecom_Receipt_Description',
-				'Ecom_Cost_Total',
-				'Ecom_Ezic_Security_HashValue_MD5',
-				'Ecom_Ezic_Response_StatusCode',
-				'Ecom_Ezic_Response_AuthCode'
-			);
+			// Required fields
+			if ( isset( $_REQUEST['Ecom_UserData_salesdata'] ) && isset( $_REQUEST['Ecom_Ezic_Response_TransactionID'] ) && isset( $_REQUEST['Ecom_Cost_Total'] ) ) {
 
-			// All required fields exists
-			if ( $this->IPN_has_required_fields( $required_fields ) ) {
+				// Get Pending Payment
+				$pending_post_id = sanitize_key( $_REQUEST['Ecom_UserData_salesdata'] );
+				$pending_payment = $this->get_pending_payment( $pending_post_id );
+				if ( $pending_payment !== false ) {
 
-				// Validate call
-				if ( $this->IPN_is_valid_call() ) {
+					// Verify Call with PayPal
+					if ( $this->IPN_is_valid_call() ) {
 
-					$valid_call = true;
-					
-					// Validate sale
-					$sales_data = false;
-					$sales_data = $this->IPN_is_valid_sale( 'Ecom_UserData_salesdata', 'Ecom_Cost_Total', 'Ecom_Ezic_Response_TransactionID' );
-					if ( $sales_data !== false ) {
+						$errors = false;
+						$new_call = array();
 
-						$valid_sale = true;
-						$this->new_log_entry( __( 'Sales Data is Valid', 'mycred' ) );
+						// Check amount paid
+						if ( $_REQUEST['Ecom_Cost_Total'] != $pending_payment['cost'] ) {
+							$new_call[] = sprintf( __( 'Price mismatch. Expected: %s Received: %s', 'mycred' ), $pending_payment['cost'], $_REQUEST['Ecom_Cost_Total'] );
+							$errors = true;
+						}
 
-					}
+						// Check status
+						if ( $_REQUEST['Ecom_Ezic_Response_StatusCode'] != 1 ) {
+							$new_call[] = sprintf( __( 'Payment not completed. Received: %s', 'mycred' ), $_REQUEST['Ecom_Ezic_Response_StatusCode'] );
+							$errors = true;
+						}
 
-					else $this->new_log_entry( __( 'Failed to validate sale', 'mycred' ) );
+						// Credit payment
+						if ( $errors === false ) {
 
-				}
-
-			}
-			
-			else $this->new_log_entry( __( 'Failed to verify caller', 'mycred' ) );
-
-			// EXECUTION
-			if ( $valid_call === true && $valid_sale === true ) {
-
-				// Finally check payment
-				if ( $_REQUEST['Ecom_Ezic_Response_StatusCode'] == 1 ) {
+							// If account is credited, delete the post and it's comments.
+							if ( $this->complete_payment( $pending_payment, $_REQUEST['Ecom_Ezic_Response_TransactionID'] ) )
+								wp_delete_post( $pending_post_id, true );
+							else
+								$new_call[] = __( 'Failed to credit users account.', 'mycred' );
 							
-					$this->new_log_entry( sprintf( __( 'Attempting to credit %s to users account', 'mycred' ), $this->core->plural() ) );
 
-					$data = array(
-						'txn_id'     => $_REQUEST['Ecom_Ezic_Response_TransactionID'],
-						'auth_code'  => $_REQUEST['Ecom_Ezic_Response_AuthCode'],
-						'name'       => $_REQUEST['Ecom_BillTo_Postal_Name_First'] . ' ' . $_REQUEST['Ecom_BillTo_Postal_Name_Last'],
-						'sales_data' => implode( '|', $sales_data )
-					);
-
-					// Add creds
-					if ( $this->complete_payment( $sales_data[0], $sales_data[1], $sales_data[2], $data ) ) {
-
-						$this->new_log_entry( sprintf( __( '%s was successfully credited to users account', 'mycred' ), $this->core->format_creds( $sales_data[2] ) ) );
-						$outcome = 'COMPLETED';
-
-						do_action( "mycred_buycred_{$this->id}_approved", $this->processing_log, $_REQUEST );
+						}
+						
+						// Log Call
+						if ( ! empty( $new_call ) )
+							$this->log_call( $pending_post_id, $new_call );
 
 					}
-
-					else $this->new_log_entry( __( 'Failed to credit the users account', 'mycred' ) );
+					
 				}
-				
-				else $this->new_log_entry( __( 'Purchase not paid', 'mycred' ) );
-
-			}
-			else {
-				$this->new_log_entry( __( 'Hanging up on caller', 'mycred' ) );
-				do_action( "mycred_buycred_{$this->id}_error", $this->processing_log, $_REQUEST );
+			
 			}
 
-			$this->save_log_entry( $_REQUEST['Ecom_Ezic_Response_TransactionID'], $outcome );
-
-			do_action( "mycred_buycred_{$this->id}_end", $this->processing_log, $_REQUEST );
 		}
 
 		/**
@@ -166,54 +133,55 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.3
 		 */
 		public function buy() {
 			if ( ! isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
 			$home = get_bloginfo( 'url' );
-			$token = $this->create_token();
+
+			// Type
+			$type = $this->get_point_type();
+			$mycred = mycred( $type );
 
 			// Amount
-			$amount = $this->core->number( $_REQUEST['amount'] );
+			$amount = $mycred->number( $_REQUEST['amount'] );
 			$amount = abs( $amount );
 
 			// Get Cost
-			$cost = $this->get_cost( $amount );
+			$cost = $this->get_cost( $amount, $type );
+
+			$to = $this->get_to();
+			$from = $this->current_user_id;
+
+			// Revisiting pending payment
+			if ( isset( $_REQUEST['revisit'] ) ) {
+				$this->transaction_id = strtoupper( $_REQUEST['revisit'] );
+			}
+			else {
+				$post_id = $this->add_pending_payment( array( $to, $from, $amount, $cost, 'USD', $type ) );
+				$this->transaction_id = get_the_title( $post_id );
+			}
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();
 
 			// Cancel page
-			$cancel_url = $this->get_cancelled();
+			$cancel_url = $this->get_cancelled( $this->transaction_id );
 
-			// Return to a url
-			if ( isset( $_REQUEST['return_to'] ) ) {
-				$thankyou_url = $_REQUEST['return_to'];
-				$cancel_url = $_REQUEST['return_to'];
-			}
-
-			$to = $this->get_to();
-			$from = $this->current_user_id;
-
-			// Let others play
-			$extra = apply_filters( 'mycred_netbilling_extra', '', $cost, $from, $to, $this->prefs, $this->core );
-			unset( $_REQUEST );
+			// Item Name
+			$item_name = str_replace( '%number%', $amount, $this->prefs['item_name'] );
+			$item_name = $mycred->template_tags_general( $item_name );
 
 			// Hidden form fields
-			$this_purchase = (string) $to . '|' . $from . '|' . $amount . '|' . $cost . '|USD|' . $token . '|' . $extra;
-
-			$item_name = str_replace( '%number%', $amount, $this->prefs['item_name'] );
-			$item_name = $this->core->template_tags_general( $item_name );
-
 			$hidden_fields = array(
 				'Ecom_Ezic_AccountAndSitetag'         => $this->prefs['account'] . ':' . $this->prefs['site_tag'],
 				'Ecom_Ezic_Payment_AuthorizationType' => 'SALE',
 				'Ecom_Receipt_Description'            => $item_name,
 				'Ecom_Ezic_Fulfillment_ReturnMethod'  => 'POST',
 				'Ecom_Cost_Total'                     => $cost,
-				'Ecom_UserData_salesdata'             => $this->encode_sales_data( $this_purchase ),
+				'Ecom_UserData_salesdata'             => $this->transaction_id,
 				'Ecom_Ezic_Fulfillment_ReturnURL'     => $thankyou_url,
 				'Ecom_Ezic_Fulfillment_GiveUpURL'     => $cancel_url,
 				'Ecom_Ezic_Security_HashValue_MD5'    => md5( $this->prefs['cryptokey'] . $cost . $item_name ),
@@ -235,7 +203,7 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		 * @since 0.1
 		 * @version 1.1
 		 */
-		function preferences( $buy_creds = NULL ) {
+		function preferences() {
 			$prefs = $this->prefs; ?>
 
 <label class="subheader" for="<?php echo $this->field_id( 'account' ); ?>"><?php _e( 'Account ID', 'mycred' ); ?></label>
@@ -264,11 +232,9 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		<span class="description"><?php _e( 'Description of the item being purchased by the user.', 'mycred' ); ?></span>
 	</li>
 </ol>
-<label class="subheader" for="<?php echo $this->field_id( 'exchange' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% Exchange Rate', 'mycred' ) ); ?></label>
+<label class="subheader"><?php _e( 'Exchange Rates', 'mycred' ); ?></label>
 <ol>
-	<li>
-		<div class="h2"><?php echo $this->core->format_creds( 1 ); ?> = <input type="text" name="<?php echo $this->field_name( 'exchange' ); ?>" id="<?php echo $this->field_id( 'exchange' ); ?>" value="<?php echo $prefs['exchange']; ?>" size="3" /> <span id="mycred-gateway-netbilling-currency">USD</span></div>
-	</li>
+	<?php $this->exchange_rate_setup(); ?>
 </ol>
 <label class="subheader"><?php _e( 'Postback CGI URL', 'mycred' ); ?></label>
 <ol>
@@ -283,7 +249,7 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 		/**
 		 * Sanatize Prefs
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function sanitise_preferences( $data ) {
 			$new_data = array();
@@ -293,15 +259,24 @@ if ( ! class_exists( 'myCRED_NETbilling' ) ) {
 			$new_data['site_tag']  = sanitize_text_field( $data['site_tag'] );
 			$new_data['cryptokey'] = sanitize_text_field( $data['cryptokey'] );
 			$new_data['item_name'] = sanitize_text_field( $data['item_name'] );
-			$new_data['exchange']  = ( ! empty( $data['exchange'] ) ) ? $data['exchange'] : 1;
 
 			// If exchange is less then 1 we must start with a zero
-			if ( $new_data['exchange'] != 1 && in_array( substr( $new_data['exchange'], 0, 1 ), array( '.', ',' ) ) )
-				$new_data['exchange'] = (float) '0' . $new_data['exchange'];
+			if ( isset( $data['exchange'] ) ) {
+				foreach ( (array) $data['exchange'] as $type => $rate ) {
+					if ( $rate != 1 && in_array( substr( $rate, 0, 1 ), array( '.', ',' ) ) )
+						$data['exchange'][ $type ] = (float) '0' . $rate;
+				}
+			}
+			$new_data['exchange'] = $data['exchange'];
 
 			return $new_data;
 		}
-		
+
+		/**
+		 * Validate CC
+		 * @since 1.3
+		 * @version 1.0
+		 */
 		protected function validate_cc( $data = array() ) {
 			$errors = array();
 

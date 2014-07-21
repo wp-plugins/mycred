@@ -6,19 +6,16 @@
  * @requires jQuery UI
  * @requires jQuery Autocomplete
  * @since 0.1
- * @version 1.2
+ * @version 1.3
  */
 jQuery(function($){
 	// Transfer function
-	var transfer_creds = function( to, creds, label, point ) {
+	var transfer_creds = function( submitted_form, label ) {
 		$.ajax({
 			type : "POST",
 			data : {
 				action    : 'mycred-transfer-creds',
-				sender    : myCRED.user_id,
-				recipient : to,
-				amount    : creds,
-				type      : point,
+				form      : submitted_form,
 				token     : myCRED.token
 			},
 			dataType : "JSON",
@@ -26,13 +23,13 @@ jQuery(function($){
 			// Before we start
 			beforeSend : function() {
 				// Prevent users from clicking multiple times
-				$('.mycred-click').attr( 'value', myCRED.working );
-				$('.mycred-click').attr( 'disabled', 'disabled' );
+				$( '.mycred-click' ).val( myCRED.working );
+				$( '.mycred-click' ).attr( 'disabled', 'disabled' );
 			},
 			// On Successful Communication
 			success    : function( data ) {
-				$('.mycred-click').attr( 'value', label );
-				$('.mycred-click').removeAttr( 'disabled' );
+				$( '.mycred-click' ).val( label );
+				$( '.mycred-click' ).removeAttr( 'disabled' );
 				// Security token could not be verified.
 				if ( data == 'error_1' ) {
 					alert( myCRED.error_1 );
@@ -84,7 +81,7 @@ jQuery(function($){
 	// Autocomplete
 	// @api http://api.jqueryui.com/autocomplete/
 	var cache = {};
-	$('input.mycred-autofill').autocomplete({
+	$( 'input.mycred-autofill' ).autocomplete({
 		minLength: 2,
 		source: function( request, response ) {
 			var term = request.term;
@@ -114,19 +111,21 @@ jQuery(function($){
 	});
 	
 	// Attempt Transfer
-	$('.mycred-click').click(function(){
+	$( '.mycred-click' ).click(function(){
+
+		// The form
+		var the_form = $(this).parent().parent().parent();
+
 		// To:
 		var receipient = $(this).parent().prev().children( 'div' ).children( 'input' ).val();
 
 		// Amount:
 		var creds = $(this).prev().children( 'input[name=mycred-transfer-amount]' ).val();
 
-		// Type:
-		var point_type = $(this).prev().children( 'input[name=mycred-transfer-type]' ).val();
-
 		// If elements are not emepty attempt transfer
 		if ( receipient != '' && creds != '' ) {
-			transfer_creds( receipient, creds, $(this).attr( 'value' ), point_type );
+			transfer_creds( the_form.serialize(), $(this).val() );
 		}
+
 	});
 });

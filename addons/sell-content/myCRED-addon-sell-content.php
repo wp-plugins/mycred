@@ -2,7 +2,7 @@
 /**
  * Addon: Sell Content
  * Addon URI: http://mycred.me/add-ons/sell-content/
- * Version: 1.3
+ * Version: 1.4
  * Description: This add-on allows you to sell posts, pages or any public post types on your website. You can either sell the entire content or using our shortcode, sell parts of your content allowing you to offer "teasers".
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -46,8 +46,8 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 						'expire'                => 0
 					),
 					'logs'        => array(
-						'buy'  => __( 'Purchase of %link_with_title%', 'mycred' ),
-						'sell' => __( 'Sale of %link_with_title%', 'mycred' )
+						'buy'  => 'Purchase of %link_with_title%',
+						'sell' => 'Sale of %link_with_title%'
 					)
 				),
 				'add_to_core' => true
@@ -66,31 +66,103 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 		/**
 		 * Load
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function module_init() {
 			$this->make_purchase();
 			$this->exp_title = apply_filters( 'mycred_sell_exp_title', __( 'Hours', 'mycred' ) );
 
-			add_filter( 'the_content',                array( $this, 'the_content' ), 30       );
+			add_filter( 'the_content',                array( $this, 'the_content' ), 30  );
 			
-			add_shortcode( 'mycred_sell_this',        array( $this, 'render_shortcode' )      );
-			add_shortcode( 'mycred_sell_this_ajax',   array( $this, 'render_ajax_shortcode' ) );
-			add_shortcode( 'mycred_sales_history', 	  array( $this, 'render_sales_history' )  );
+			add_shortcode( 'mycred_sell_this',          array( $this, 'render_shortcode' ) );
+			add_shortcode( 'mycred_sell_this_ajax',     array( $this, 'render_ajax_shortcode' ) );
+			add_shortcode( 'mycred_sales_history', 	    array( $this, 'render_sales_history' ) );
+			add_shortcode( 'mycred_content_sale_count', array( $this, 'render_no_of_sales' ) );
 
-			add_action( 'add_meta_boxes',             array( $this, 'add_metabox' )           );
-			add_action( 'save_post',                  array( $this, 'save_metabox' )          );
+			add_action( 'add_meta_boxes',             array( $this, 'add_metabox' ) );
+			add_action( 'save_post',                  array( $this, 'save_metabox' ) );
 
-			add_action( 'mycred_admin_enqueue',       array( $this, 'admin_enqueue' )         );
-			add_action( 'mycred_front_enqueue',       array( $this, 'front_enqueue' )         );
-			add_action( 'wp_footer',                  array( $this, 'footer' )                );
-			add_action( 'wp_ajax_mycred-buy-content', array( $this, 'make_purchase_ajax' )    );
+			add_action( 'mycred_admin_enqueue',       array( $this, 'admin_enqueue' ) );
+			add_action( 'mycred_front_enqueue',       array( $this, 'front_enqueue' ) );
+			add_action( 'wp_footer',                  array( $this, 'footer' ) );
+			add_action( 'wp_ajax_mycred-buy-content', array( $this, 'make_purchase_ajax' ) );
+			
+			add_action( 'mycred_edit_profile',        array( $this, 'user_level_profit_shares' ), 20, 2 );
+			add_action( 'mycred_edit_profile_action', array( $this, 'save_user_override' ) );
+			add_action( 'mycred_admin_notices',       array( $this, 'update_profile_notice' ) );
+		}
+
+		/**
+		 * User Level Override
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		function user_level_profit_shares( $user, $type ) {
+			if ( $this->sell_content['pay'] != 'author' || $this->sell_content['type'] != $type ) return;
+			
+			$users_share = mycred_get_user_meta( $user->ID, 'mycred_sell_content_share_' . $type, '', true );
+
+?>
+
+<h3>Sell Content</h3>
+<table class="form-table">
+	<tr>
+		<th scope="row"><?php _e( 'Profit Share', 'mycred' ); ?></th>
+		<td>
+			<input type="text" name="mycred_adjust_users_profitshare[share]" id="mycred-adjust-users-profit-share" value="<?php echo $users_share; ?>" placeholder="<?php echo $this->sell_content['pay_percent']; ?>" size="8" /> %<br />
+			<span class="description"><?php _e( 'Leave empty to use the default value.', 'mycred' ); ?></span>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"></th>
+		<td><?php submit_button( __( 'Save Profit Share', 'mycred' ), 'primary medium', 'mycred_adjust_users_profitshare_run', false ); ?></td>
+	</tr>
+</table>
+<?php
+		}
+
+		/**
+		 * Save Override
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		function save_user_override() {
+
+			if ( isset( $_POST['mycred_adjust_users_profitshare_run'] ) && isset( $_POST['mycred_adjust_users_profitshare'] ) ) {
+
+				$ctype = sanitize_key( $_GET['ctype'] );
+				$user_id = absint( $_GET['user_id'] );
+
+				$share = $_POST['mycred_adjust_users_profitshare']['share'];
+				if ( isfloat( $share ) )
+					$share = (float) $share;
+				else
+					$share = (int) $share;
+
+				mycred_update_user_meta( $user_id, 'mycred_sell_content_share_' . $ctype, '', $share );
+				wp_safe_redirect( add_query_arg( array( 'result' => 'sell_content_share' ) ) );
+				exit;
+
+			}
+
+		}
+
+		/**
+		 * Override Update Notice
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		function update_profile_notice() {
+
+			if ( isset( $_GET['page'] ) && $_GET['page'] == 'mycred-edit-balance' && isset( $_GET['result'] ) && $_GET['result'] == 'sell_content_share' )
+				echo '<div class="updated"><p>' . __( 'Profit Share override saved', 'mycred' ) . '</p></div>';
+
 		}
 
 		/**
 		 * Make Purchase
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.3
 		 */
 		public function make_purchase() {
 			global $mycred_content_purchase;
@@ -100,11 +172,11 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 			if ( ! isset( $_POST['mycred_purchase_token'] ) || ! isset( $_POST['mycred_purchase'] ) || ! isset( $_POST['mycred_purchase']['action'] ) || ! isset( $_POST['mycred_purchase']['author'] ) || ! isset( $_POST['mycred_purchase']['post_id'] ) || ! isset( $_POST['mycred_purchase']['post_type'] ) || ! isset( $_POST['mycred_purchase']['user_id'] ) ) return;
 			if ( ! wp_verify_nonce( $_POST['mycred_purchase_token'], 'buy-content' ) ) return;
 
-			$action = $_POST['mycred_purchase']['action'];
-			$post_id = $_POST['mycred_purchase']['post_id'];
-			$post_type = $_POST['mycred_purchase']['post_type'];
-			$user_id = $_POST['mycred_purchase']['user_id'];
-			$author = $_POST['mycred_purchase']['author'];
+			$action = sanitize_key( $_POST['mycred_purchase']['action'] );
+			$post_id = absint( $_POST['mycred_purchase']['post_id'] );
+			$post_type = sanitize_key( $_POST['mycred_purchase']['post_type'] );
+			$user_id = absint( $_POST['mycred_purchase']['user_id'] );
+			$author = absint( $_POST['mycred_purchase']['author'] );
 
 			$sell_content = $this->sell_content;
 			$prefs = $this->get_sale_prefs( $post_id );
@@ -114,46 +186,48 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 
 			if ( is_user_logged_in() && ! $this->user_paid( $user_id, $post_id ) && $this->user_can_buy( $user_id, $prefs['price'] ) ) {
 				// Charge
-				$log = $sell_content['logs']['buy'];
-				$data = array(
-					'ref_type'    => 'post',
-					'purchase_id' => 'TXID' . date_i18n( 'U' ),
-					'seller'      => $author
-				);
 				$this->core->add_creds(
 					'buy_content',
 					$user_id,
 					0-$prefs['price'],
-					$log,
+					$sell_content['logs']['buy'],
 					$post_id,
-					$data,
+					array(
+						'ref_type'    => 'post',
+						'purchase_id' => 'TXID' . date_i18n( 'U' ),
+						'seller'      => $author
+					),
 					$this->mycred_type
 				);
 
 				do_action( 'mycred_sell_content_purchase_ready', $request );
 
-				// Pay
+				// Payout
 				if ( $sell_content['pay'] == 'author' ) {
-					$content_price = $prefs['price'];
-					// If we are paying the author less then 100%
-					if ( (int) $sell_content['pay_percent'] != 100 ) {
-						$percent = (int) $sell_content['pay_percent']/100;
-						$price = $percent*$content_price;
-						$content_price = number_format( $price, $this->core->format['decimals'], '.', '' );
-					}
-					$log = $sell_content['logs']['sell'];
-					$data = array(
-						'ref_type'    => 'post',
-						'purchase_id' => 'TXID' . date_i18n( 'U' ),
-						'buyer'       => $user_id
-					);
+
+					// Check if author has a custom share
+					$users_share = mycred_get_user_meta( $author, 'mycred_sell_content_share_' . $this->mycred_type, '', true );
+					if ( $users_share == '' )
+						$users_share = $sell_content['pay_percent'];
+
+					if ( isfloat( $users_share ) )
+						$users_share = (float) $users_share;
+					else
+						$users_share = (int) $users_share;
+
+					$payout = ( $users_share / 100 ) * $prefs['price'];
+
 					$this->core->add_creds(
 						'buy_content',
 						$author,
-						$content_price,
-						$log,
+						$payout,
+						$sell_content['logs']['sell'],
 						$post_id,
-						$data,
+						array(
+							'ref_type'    => 'post',
+							'purchase_id' => 'TXID' . date_i18n( 'U' ),
+							'buyer'       => $user_id
+						),
 						$this->mycred_type
 					);
 				}
@@ -166,7 +240,7 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 		/**
 		 * Make Purchase AJAX
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.3
 		 */
 		public function make_purchase_ajax() {
 			// We must be logged in
@@ -185,23 +259,19 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 
 			if ( ! $this->user_paid( $user_id, $post_id ) && $this->user_can_buy( $user_id, $prefs['price'] ) ) {
 				$post = get_post( $post_id );
-				$author = $post->post_author;
-				$post_type = $post->post_type;
 
 				// Charge
-				$log = $sell_content['logs']['buy'];
-				$data = array(
-					'ref_type'    => 'post',
-					'purchase_id' => 'TXID' . date_i18n( 'U' ),
-					'seller'      => $author
-				);
 				$this->core->add_creds(
 					'buy_content',
 					$user_id,
 					0-$prefs['price'],
-					$log,
+					$sell_content['logs']['buy'],
 					$post_id,
-					$data,
+					array(
+						'ref_type'    => 'post',
+						'purchase_id' => 'TXID' . date_i18n( 'U' ),
+						'seller'      => $post->post_author
+					),
 					$this->mycred_type
 				);
 
@@ -210,26 +280,29 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 
 				// Pay
 				if ( $sell_content['pay'] == 'author' ) {
-					$content_price = $prefs['price'];
-					// If we are paying the author less then 100%
-					if ( (int) $sell_content['pay_percent'] != 100 ) {
-						$percent = (int) $sell_content['pay_percent']/100;
-						$price = $percent*$content_price;
-						$content_price = number_format( $price, $this->core->format['decimals'], '.', '' );
-					}
-					$log = $sell_content['logs']['sell'];
-					$data = array(
-						'ref_type'    => 'post',
-						'purchase_id' => 'TXID' . date_i18n( 'U' ),
-						'buyer'       => $user_id
-					);
+					// Check if author has a custom share
+					$users_share = mycred_get_user_meta( $post->post_author, 'mycred_sell_content_share_' . $this->mycred_type, '', true );
+					if ( $users_share == '' )
+						$users_share = $sell_content['pay_percent'];
+
+					if ( isfloat( $users_share ) )
+						$users_share = (float) $users_share;
+					else
+						$users_share = (int) $users_share;
+
+					$payout = ( $users_share / 100 ) * $prefs['price'];
+
 					$this->core->add_creds(
 						'buy_content',
-						$author,
-						$content_price,
-						$log,
+						$post->post_author,
+						$payout,
+						$sell_content['logs']['sell'],
 						$post_id,
-						$data,
+						array(
+							'ref_type'    => 'post',
+							'purchase_id' => 'TXID' . date_i18n( 'U' ),
+							'buyer'       => $user_id
+						),
 						$this->mycred_type
 					);
 				}
@@ -255,25 +328,7 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		public function admin_enqueue() {
-			wp_register_style(
-				'mycred-buy-edit',
-				plugins_url( 'css/edit.css', myCRED_SELL ),
-				false,
-				myCRED_SELL_VERSION . '.1',
-				'all'
-			);
-
-			$screen = get_current_screen();
-			$sell_content = $this->sell_content;
-			$post_types = $sell_content['post_types'];
-			if ( ! empty( $post_types ) ) {
-				$pts = explode( ',', $post_types );
-				if ( ! in_array( $screen->id , $pts ) ) return;
-
-				wp_enqueue_style( 'mycred-buy-edit' );
-			}
-		}
+		public function admin_enqueue() { }
 
 		/**
 		 * Enqueue Front
@@ -285,7 +340,7 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 
 			wp_register_script(
 				'mycred-buy-content',
-				plugins_url( 'js/buy-content.js', myCRED_SELL ),
+				plugins_url( 'assets/js/buy-content.js', myCRED_SELL ),
 				array( 'jquery' ),
 				myCRED_SELL_VERSION . '.1',
 				true
@@ -408,26 +463,34 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 			<span class="description"><?php _e( 'Use zero for permanent sales.', 'mycred' ); ?></span>
 		</li>
 	</ol>
-	<label class="subheader" for="<?php echo $this->field_id( array( 'templates' => 'visitors' ) ); ?>"><?php _e( 'Sale Template for non members', 'mycred' ); ?></label>
+	<label class="subheader" for="<?php echo $this->field_id( array( 'templates' => 'visitors' ) ); ?>"><?php _e( 'Templates', 'mycred' ); ?></label>
 	<ol id="myCRED-buy-template-visitors">
 		<li>
-			<textarea rows="10" cols="50" name="<?php echo $this->field_name( array( 'templates' => 'visitors' ) ); ?>" id="<?php echo $this->field_id( array( 'templates' => 'visitors' ) ); ?>" class="large-text code"><?php echo esc_attr( $sell_content['templates']['visitors'] ); ?></textarea>
+			<p><strong><?php _e( 'For Visitors', 'mycred' ); ?></strong></p>
+			<?php wp_editor( $sell_content['templates']['visitors'], $this->field_id( array( 'templates' => 'visitors' ) ), array(
+						'textarea_name' => $this->field_name( array( 'templates' => 'visitors' ) ),
+						'textarea_rows' => 6
+					) ); ?>
 			<span class="description"><?php _e( 'Do <strong>not</strong> use the %buy_button% in this template as a user must be logged in to buy content!', 'mycred' ); ?><br />
 			<?php echo $this->core->available_template_tags( array( 'general', 'post' ), '%price%' ); ?></span>
 		</li>
-	</ol>
-	<label class="subheader" for="<?php echo $this->field_id( array( 'templates' => 'members' ) ); ?>"><?php _e( 'Sale Template for members', 'mycred' ); ?></label>
-	<ol id="myCRED-buy-template-members">
+		<li class="empty">&nbsp;</li>
 		<li>
-			<textarea rows="10" cols="50" name="<?php echo $this->field_name( array( 'templates' => 'members' ) ); ?>" id="<?php echo $this->field_id( array( 'templates' => 'members' ) ); ?>" class="large-text code"><?php echo esc_attr( $sell_content['templates']['members'] ); ?></textarea>
+			<p><strong><?php _e( 'For Members', 'mycred' ); ?></strong></p>
+			<?php wp_editor( $sell_content['templates']['members'], $this->field_id( array( 'templates' => 'members' ) ), array(
+						'textarea_name' => $this->field_name( array( 'templates' => 'members' ) ),
+						'textarea_rows' => 6
+					) ); ?>
 			<span class="description"><?php _e( 'Your template must contain the %buy_button% tag for purchases to work!', 'mycred' ); ?><br />
 			<?php echo $this->core->available_template_tags( array( 'general', 'post' ), '%buy_button%, %price%' ); ?></span>
 		</li>
-	</ol>
-	<label class="subheader" for="<?php echo $this->field_id( array( 'templates' => 'cantafford' ) ); ?>"><?php _e( 'Insufficient funds template', 'mycred' ); ?></label>
-	<ol id="myCRED-buy-template-insufficient">
+		<li class="empty">&nbsp;</li>
 		<li>
-			<textarea rows="10" cols="50" name="<?php echo $this->field_name( array( 'templates' => 'cantafford' ) ); ?>" id="<?php echo $this->field_id( array( 'templates' => 'cantafford' ) ); ?>" class="large-text code"><?php echo esc_attr( $sell_content['templates']['cantafford'] ); ?></textarea>
+			<p><strong><?php _e( 'For members that can not afford to buy', 'mycred' ); ?></strong></p>
+			<?php wp_editor( $sell_content['templates']['cantafford'], $this->field_id( array( 'templates' => 'cantafford' ) ), array(
+						'textarea_name' => $this->field_name( array( 'templates' => 'cantafford' ) ),
+						'textarea_rows' => 6
+					) ); ?>
 			<span class="description"><?php _e( 'Your template must contain the %buy_button% tag for purchases to work!', 'mycred' ); ?><br />
 			<?php echo $this->core->available_template_tags( array( 'general', 'post' ), '%buy_button%, %price%' ); ?></span>
 		</li>
@@ -511,7 +574,7 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 		 * 
 		 * @return (array) sales settings
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function get_sale_prefs( $post_id ) {
 			$sell_content = $this->sell_content;
@@ -519,7 +582,7 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 				$sell_content['defaults']['expire'] = 0;
 
 			$prefs = get_post_meta( $post_id, 'myCRED_sell_content', true );
-			if ( empty( $prefs ) ) {
+			if ( $prefs == '' ) {
 				$sales_data = array(
 					'status'       => 'disabled',
 					'price'        => $sell_content['defaults']['price'],
@@ -534,13 +597,13 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 				$sales_data = $prefs;
 			}
 
-			return $sales_data;
+			return apply_filters( 'mycred_sell_content_post_prefs', $sales_data, $post_id, $this );
 		}
 
 		/**
 		 * Sell Meta Box
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function metabox( $post ) {
 			// Make sure add-on has been setup
@@ -577,30 +640,39 @@ if ( ! class_exists( 'myCRED_Sell_Content_Module' ) ) {
 			$op = (bool) $sell_content['defaults']['overwrite_price'];
 			$ob = (bool) $sell_content['defaults']['overwrite_buttonlabel']; ?>
 
-<p><input type="checkbox" name="mycred_sell_this" id="mycred-sell-this"<?php checked( $status, 'enabled' ); ?> value="enabled" /><label for="mycred-sell-this"><?php echo __( 'Enable sale of this ', 'mycred' ) . $post_type . '.'; ?></label></p>
-<div id="mycred-sale-settings " style="<?php echo $style; ?>">
+<style type="text/css">
+#mycred_sell_content .inside { margin: 0; padding: 0; }
+#mycred_sell_content .inside p { padding: 0 12px; }
+#mycred_sell_content .inside ul { margin: 12px 0 0 0; border-top: 1px solid #ccc; }
+#mycred_sell_content .inside ul li { padding: 8px 12px 12px 12px; border-bottom: 1px solid #ccc; margin: 0 0 0 0; }
+#mycred_sell_content .inside ul li label { font-weight: bold; display: block; }
+#mycred_sell_content .inside ul li.disabled { color: #ccc; }
+input[name="myCRED_sell_content[button_label]"] { width: 100%; }
+</style>
+<p><label for="mycred-sell-this"><input type="checkbox" name="mycred_sell_this" id="mycred-sell-this"<?php checked( $status, 'enabled' ); ?> value="enabled" /> <?php printf( __( 'Enable sale of this %s', 'mycred' ), $post_type ); ?></label></p>
+<div id="mycred-sale-settings" style="<?php echo $style; ?>">
 	<input type="hidden" name="mycred-sell-this-token" value="<?php echo wp_create_nonce( 'mycred-sell-this' ); ?>" />
 	<input type="hidden" name="mycred-sell-this-status" value="<?php echo $status; ?>" />
 	<ul>
-		<li>
+		<li<?php if ( $op === false && ! $admin ) echo ' class="disabled"'; ?>>
 			<label for="mycred-buy-prefs-"><?php _e( 'Price', 'mycred' ); ?></label>
-			<div class="formated"><?php echo $this->core->before; ?> <input type="text" name="myCRED_sell_content[price]" id="mycred-buy-prefs-price" value="<?php echo $sales_data['price']; ?>" <?php if ( $op === false && !$admin ) echo 'disabled="disabled" class="disabled"'; ?> size="5" /> <?php echo $this->core->after; ?></div>
+			<div class="formated"><?php echo $this->core->before; ?> <input type="text" name="myCRED_sell_content[price]" id="mycred-buy-prefs-price" value="<?php echo $sales_data['price']; ?>" <?php if ( $op === false && ! $admin ) echo 'disabled="disabled" class="disabled"'; ?> size="12" /> <?php echo $this->core->after; ?></div>
 		</li>
-		<li>
+		<li<?php if ( $ob === false && ! $admin ) echo ' class="disabled"'; ?>>
 			<label for="mycred-buy-prefs-"><?php _e( 'Button Label', 'mycred' ); ?></label>
-			<input type="text" name="myCRED_sell_content[button_label]" id="mycred-buy-prefs-" value="<?php echo $sales_data['button_label']; ?>" <?php if ( $ob === false && !$admin ) echo 'disabled="disabled" class="disabled"'; ?> />
+			<input type="text" name="myCRED_sell_content[button_label]" id="mycred-buy-prefs-button" value="<?php echo $sales_data['button_label']; ?>" <?php if ( $ob === false && ! $admin ) echo 'disabled="disabled" class="disabled"'; ?> />
 		</li>
-		<li>
+		<li<?php if ( $op === false && ! $admin ) echo ' class="disabled"'; ?>>
 			<label for="mycred-buy-prefs-"><?php _e( 'Purchase expires after', 'mycred' ); ?></label>
-			<div class="formated"><input type="text" name="myCRED_sell_content[expire]" id="mycred-buy-prefs-expire" value="<?php echo $sales_data['expire']; ?>" <?php if ( $op === false && !$admin ) echo 'disabled="disabled" class="disabled"'; ?> size="5" /> <?php echo $this->exp_title; ?></div>
+			<div class="formated"><input type="text" name="myCRED_sell_content[expire]" id="mycred-buy-prefs-expire" value="<?php echo $sales_data['expire']; ?>" <?php if ( $op === false && ! $admin ) echo 'disabled="disabled" class="disabled"'; ?> size="12" /> <?php echo $this->exp_title; ?></div>
 		</li>
 	</ul>
 </div>
 <div class="clear"></div>
 <script type="text/javascript">//<![CDATA[
 jQuery(function($) {
-	$('#mycred-sell-this').click(function(){
-		$('#mycred-sale-settings').toggle();
+	$( '#mycred-sell-this' ).click(function(){
+		$( '#mycred-sale-settings' ).toggle();
 	});
 });//]]>
 </script>
@@ -739,14 +811,14 @@ jQuery(function($) {
 		 * @param $post_id (int) required post id
 		 * @returns (bool) true or false
 		 * @since 0.1
-		 * @version 1.3.1
+		 * @version 1.3.2
 		 */
 		public function user_paid( $user_id, $post_id ) {
 			// Admins can view
 			if ( $this->core->can_edit_plugin( $user_id ) || $this->core->can_edit_creds( $user_id ) ) return true;
 			// Authors can view
 			$the_post = get_post( $post_id );
-			if ( ! isset( $the_post->post_author ) && $the_post->post_author == $user_id ) return true;
+			if ( ! isset( $the_post->post_author ) || $the_post->post_author == $user_id ) return true;
 
 			global $wpdb;
 			
@@ -1100,7 +1172,7 @@ jQuery(function($) {
 		 * Render Sales History Shortcode
 		 * @see http://mycred.me/shortcodes/mycred_sales_history/
 		 * @since 1.0.9
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function render_sales_history( $atts ) {
 			extract( shortcode_atts( array(
@@ -1134,18 +1206,17 @@ jQuery(function($) {
 			}
 			
 			// Query
-			$sql = "
+			$results = $wpdb->get_results( $wpdb->prepare( "
 				SELECT * 
 				FROM {$this->core->log_table} 
 				WHERE user_id = %d 
 					AND ref = %s 
 					AND ctype = %s 
-				ORDER BY time;";
-			$results = $wpdb->get_results( $wpdb->prepare( $sql, $user_id, 'buy_content', $this->mycred_type ) );
-			$rows = array();
+				ORDER BY time;", $user_id, 'buy_content', $this->mycred_type ) );
 			
 			// Results
-			if ( $wpdb->num_rows > 0 ) {
+			$rows = array();
+			if ( ! empty( $results ) ) {
 				foreach ( $results as $item ) {
 					// Row
 					$row = '<span class="item-link"><a href="' . get_permalink( $item->ref_id ) . '">' . get_the_title( $item->ref_id ) . '</a></span>';
@@ -1173,7 +1244,36 @@ jQuery(function($) {
 
 			return $output;
 		}
-		
+
+		/**
+		 * Shortcode: Number of Sales
+		 * @since 1.4.7
+		 * @version 1.0
+		 */
+		function render_no_of_sales( $atts ) {
+
+			extract( shortcode_atts( array(
+				'post_id' => NULL
+			), $atts ) );
+
+			if ( $post_id === NULL )
+				$post_id = $this->get_post_ID();
+
+			global $wpdb;
+
+			$total = $wpdb->get_var( "
+				SELECT COUNT( * ) 
+				FROM {$this->core->log_table} 
+				WHERE ref = 'buy_content' 
+					AND creds < 0 
+					AND ref_id = {$post_id};" );
+
+			if ( $total === NULL )
+				$total = 0;
+
+			return apply_filters( 'mycred_content_sales_count', $total, $post_id );
+		}
+
 		/**
 		 * Support for Email Notices
 		 * @since 1.1

@@ -148,7 +148,7 @@ if ( ! class_exists( 'myCRED_Banking_Module' ) ) {
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function admin_page() {
 			// Security
@@ -166,7 +166,7 @@ if ( ! class_exists( 'myCRED_Banking_Module' ) ) {
 <div class="wrap" id="myCRED-wrap">
 	<h2><?php echo sprintf( __( '%s Banking', 'mycred' ), mycred_label() ); ?></h2>
 	<p><?php echo $this->core->template_tags_general( __( 'Setup recurring payouts or offer / charge interest on user account balances.', 'mycred' ) ); ?></p>
-	<?php if ( defined( 'DISABLE_WP_CRON' ) ) : ?>
+	<?php if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) : ?>
 
 	<p><strong><?php _e( 'WP-Cron deactivation detected!', 'mycred' ); ?></strong></p>
 	<p><?php _e( 'Warning! This add-on requires WP - Cron to work.', 'mycred' ); ?></p>

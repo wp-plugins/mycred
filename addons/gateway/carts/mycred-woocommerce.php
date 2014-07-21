@@ -7,7 +7,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * Custom Payment Gateway for WooCommerce.
  * @see http://docs.woothemes.com/document/payment-gateway-api/
  * @since 0.1
- * @version 1.3.1
+ * @version 1.3.2
  */
 if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 	/**
@@ -34,7 +34,7 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 				$this->method_description = __( 'Let users pay using their myCRED balance.', 'mycred' );
 
 				$this->mycred_type = $this->get_option( 'point_type' );
-				if ( $this->mycred_type === NULL )
+				if ( $this->mycred_type === NULL || $this->mycred_type == '' )
 					$this->mycred_type = 'mycred_default';
 
 				$this->mycred = mycred( $this->mycred_type );
@@ -203,7 +203,7 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 			/**
 			 * Process Payment
 			 * @since 0.1
-			 * @version 1.2
+			 * @version 1.3
 			 */
 			function process_payment( $order_id ) {
 				global $woocommerce;
@@ -225,12 +225,23 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 				$order = new WC_Order( $order_id );
 
 				// Cost
-				$cost = $this->mycred->apply_exchange_rate( $order->order_total, $this->exchange_rate );
+				if ( $this->use_exchange() )
+					$cost = $this->mycred->apply_exchange_rate( $order->order_total, $this->exchange_rate );
+				else
+					$cost = $order->order_total;
+
 				$cost = apply_filters( 'mycred_woo_order_cost', $cost, $order, false, $this );
 
 				// Check funds
 				if ( $this->mycred->get_users_cred( $cui, $this->mycred_type ) < $cost ) {
-					$woocommerce->add_error( $this->mycred->template_tags_general( __( 'Insufficient funds. Please try a different payment option.', 'mycred' ) ) );
+					wc_add_notice( __( 'Insufficient funds.', 'mycred' ), 'error' );
+					return;
+				}
+
+				// Let others decline a store order
+				$decline = apply_filters( 'mycred_decline_store_purchase', false, $order, $this );
+				if ( $decline !== false ) {
+					wc_add_notice( $decline, 'error' );
 					return;
 				}
 
@@ -372,7 +383,7 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 	 * - Users balance is too low
 	 *
 	 * @since 0.1
-	 * @version 1.1
+	 * @version 1.2
 	 */
 	add_filter( 'woocommerce_available_payment_gateways', 'mycred_woo_available_gateways' );
 	function mycred_woo_available_gateways( $gateways )
@@ -403,7 +414,12 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 		global $woocommerce;
 
 		// Calculate cost in CREDs
-		$cost = $mycred->apply_exchange_rate( $mycred->number( $woocommerce->cart->total ), $gateways['mycred']->get_option( 'exchange_rate' ) );
+		$currency = get_woocommerce_currency();
+		if ( $currency != 'MYC' )
+			$cost = $mycred->apply_exchange_rate( $woocommerce->cart->total, $gateways['mycred']->get_option( 'exchange_rate' ) );
+		else
+			$cost = $woocommerce->cart->total;
+
 		$cost = apply_filters( 'mycred_woo_order_cost', $cost, $woocommerce->cart, true, $mycred );
 
 		// Check if we have enough points
@@ -471,7 +487,7 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 	 * Add CRED Cost
 	 * Appends the cost in myCRED format.
 	 * @since 0.1
-	 * @version 1.1
+	 * @version 1.2
 	 */
 	add_action( 'woocommerce_review_order_after_order_total', 'mycred_woo_after_order_total' );
 	add_action( 'woocommerce_cart_totals_after_order_total', 'mycred_woo_after_order_total' );
@@ -505,9 +521,9 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 		if ( $currency != 'MYC' ) {
 
 			// Apply Exchange Rate
-			$rate = $available_gateways['mycred']->get_option( 'exchange_rate' );
-			$mycred_cost = $mycred->apply_exchange_rate( $woocommerce->cart->total, $rate );
-			$mycred_cost = apply_filters( 'mycred_woo_order_cost', $mycred_cost, $woocommerce->cart, true, $available_gateways['mycred'] ); ?>
+			$cost = $mycred->apply_exchange_rate( $woocommerce->cart->total, $available_gateways['mycred']->get_option( 'exchange_rate' ) );
+
+			$cost = apply_filters( 'mycred_woo_order_cost', $cost, $woocommerce->cart, true, $mycred ); ?>
 
 			<tr class="total">
 				<th><strong><?php echo $mycred->template_tags_general( $available_gateways['mycred']->get_option( 'total_label' ) ); ?></strong></th>
@@ -516,18 +532,17 @@ if ( ! function_exists( 'mycred_init_woo_gateway' ) ) {
 
 			// Balance
 			$balance = $mycred->get_users_cred( $cui, $type );
-			$balance = $mycred->number( $balance );
 
 			// Insufficient Funds
-			if ( $balance < $mycred_cost ) { ?>
+			if ( $balance < $cost ) { ?>
 
-					<strong class="mycred-low-funds" style="color:red;"><?php echo $mycred->format_creds( $mycred_cost ); ?></strong> 
+					<strong class="mycred-low-funds" style="color:red;"><?php echo $mycred->format_creds( $cost ); ?></strong> 
 <?php
 			}
 			// Funds exist
 			else { ?>
 
-					<strong class="mycred-funds"><?php echo $mycred->format_creds( $mycred_cost ); ?></strong> 
+					<strong class="mycred-funds"><?php echo $mycred->format_creds( $cost ); ?></strong> 
 <?php
 			} ?>
 

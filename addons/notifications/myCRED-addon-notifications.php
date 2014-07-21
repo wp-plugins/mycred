@@ -36,7 +36,7 @@ if ( ! class_exists( 'myCRED_Notifications_Module' ) ) {
 				'add_to_core' => true
 			) );
 			
-			add_filter( 'mycred_add', array( $this, 'mycred_add' ), 999, 3 );
+			add_filter( 'mycred_add', array( $this, 'mycred_add' ), 999, 2 );
 		}
 
 		/**
@@ -118,16 +118,18 @@ if ( ! class_exists( 'myCRED_Notifications_Module' ) ) {
 		/**
 		 * myCRED Add
 		 * @since 1.2.3
-		 * @version 1.1.1
+		 * @version 1.2
 		 */
-		public function mycred_add( $reply, $request, $mycred ) {
+		public function mycred_add( $reply, $request ) {
 			if ( $reply === false ) return $reply;
+
+			$mycred = mycred( $request['type'] );
 
 			$template = $this->notifications['template'];
 			$template = str_replace( '%entry%', $request['entry'], $template );
 			$template = str_replace( '%amount%', $request['amount'], $template );
-			$template = $this->core->template_tags_amount( $template, $request['amount'] );
-			$template = $this->core->parse_template_tags( $template, (object) $request );
+			$template = $mycred->template_tags_amount( $template, $request['amount'] );
+			$template = $mycred->parse_template_tags( $template, (object) $request );
 			$template = apply_filters( 'mycred_notifications_note', $template, $request, $mycred );
 
 			if ( ! empty( $template ) )

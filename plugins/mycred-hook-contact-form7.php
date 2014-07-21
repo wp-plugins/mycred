@@ -76,18 +76,22 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Successful Form Submission
 			 * @since 0.1
-			 * @version 1.2
+			 * @version 1.3
 			 */
 			public function form_submission( $cf7_form ) {
 				// Login is required
 				if ( ! is_user_logged_in() ) return;
+
+				// Check for exclusions
+				$user_id = get_current_user_id();
+				if ( $this->core->exclude_user( $user_id ) ) return;
 
 				$form_id = $cf7_form->id;
 				if ( ! isset( $this->prefs[ $form_id ] ) || ! $this->prefs[ $form_id ]['creds'] != 0 ) return;
 
 				$this->core->add_creds(
 					'contact_form_submission',
-					get_current_user_id(),
+					$user_id,
 					$this->prefs[ $form_id ]['creds'],
 					$this->prefs[ $form_id ]['log'],
 					$form_id,

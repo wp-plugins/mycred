@@ -5,7 +5,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Skrill class
  * Skrill (Moneybookers) - Payment Gateway
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! class_exists( 'myCRED_Skrill' ) ) {
 	class myCRED_Skrill extends myCRED_Payment_Gateway {
@@ -14,6 +14,11 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		 * Construct
 		 */
 		function __construct( $gateway_prefs ) {
+			$types = mycred_get_types();
+			$default_exchange = array();
+			foreach ( $types as $type => $label )
+				$default_exchange[ $type ] = 1;
+
 			parent::__construct( array(
 				'id'               => 'skrill',
 				'label'            => 'Skrill Payment',
@@ -28,7 +33,7 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 					'confirmation_note' => '',
 					'email_receipt'     => 0,
 					'item_name'         => __( 'Purchase of myCRED %plural%', 'mycred' ),
-					'exchange'          => 1
+					'exchange'          => $default_exchange
 				)
 			), $gateway_prefs );
 			
@@ -73,7 +78,7 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		 * IPN - Is Valid Call
 		 * Replaces the default check
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function IPN_is_valid_call() {
 			$result = true;
@@ -85,103 +90,70 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 			if ( $_POST['pay_to_email'] != trim( $this->prefs['account'] ) )
 				$result = false;
 
-			if ( ! $result )
-				$this->new_log_entry( ' > ' . __( 'Invalid Call', 'mycred' ) );
-			else
-				$this->new_log_entry( sprintf( __( 'Caller verified as "%s"', 'mycred' ), $this->id ) );
-
 			return $result;
 		}
 
 		/**
 		 * Process Handler
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function process() {
-			$outcome = 'FAILED';
-			$valid_call = false;
-			$valid_sale = false;
-
-			$this->start_log();
 			
-			// VALIDATION OF CALL
-			$required_fields = array(
-				'merchant_id',
-				'transaction_id',
-				'amount',
-				'currency',
-				'status',
-				'md5sig',
-				'sales_data',
-				'pay_to_email'
-			);
+			// Required fields
+			if ( isset( $_POST['sales_data'] ) && isset( $_POST['transaction_id'] ) && isset( $_POST['amount'] ) ) {
 
-			// All required fields exists
-			if ( $this->IPN_has_required_fields( $required_fields, 'POST' ) ) {
+				// Get Pending Payment
+				$pending_post_id = sanitize_key( $_POST['sales_data'] );
+				$pending_payment = $this->get_pending_payment( $pending_post_id );
+				if ( $pending_payment !== false ) {
 
-				// Validate call
-				if ( $this->IPN_is_valid_call() ) {
+					// Verify Call with PayPal
+					if ( $this->IPN_is_valid_call() ) {
 
-					$valid_call = true;
-					
-					// Validate sale
-					$sales_data = false;
-					$sales_data = $this->IPN_is_valid_sale( 'sales_data', 'amount', 'transaction_id' );
-					if ( $sales_data !== false ) {
+						$errors = false;
+						$new_call = array();
 
-						$valid_sale = true;
-						$this->new_log_entry( __( 'Sales Data is Valid', 'mycred' ) );
+						// Check amount paid
+						if ( $_POST['amount'] != $pending_payment['cost'] ) {
+							$new_call[] = sprintf( __( 'Price mismatch. Expected: %s Received: %s', 'mycred' ), $pending_payment['cost'], $_POST['amount'] );
+							$errors = true;
+						}
 
-					}
+						// Check currency
+						if ( $_POST['currency'] != $pending_payment['currency'] ) {
+							$new_call[] = sprintf( __( 'Currency mismatch. Expected: %s Received: %s', 'mycred' ), $pending_payment['currency'], $_POST['currency'] );
+							$errors = true;
+						}
 
-					else $this->new_log_entry( __( 'Failed to validate sale', 'mycred' ) );
+						// Check status
+						if ( $_POST['status'] != '2' ) {
+							$new_call[] = sprintf( __( 'Payment not completed. Received: %s', 'mycred' ), $_POST['status'] );
+							$errors = true;
+						}
 
-				}
+						// Credit payment
+						if ( $errors === false ) {
 
-			}
-			
-			else $this->new_log_entry( __( 'Failed to verify caller', 'mycred' ) );
-
-			// EXECUTION
-			if ( $valid_call === true && $valid_sale === true ) {
-
-				// Finally check payment
-				if ( $_POST['status']  == '2' ) {
+							// If account is credited, delete the post and it's comments.
+							if ( $this->complete_payment( $pending_payment, $_POST['transaction_id'] ) )
+								wp_delete_post( $pending_post_id, true );
+							else
+								$new_call[] = __( 'Failed to credit users account.', 'mycred' );
 							
-					$this->new_log_entry( sprintf( __( 'Attempting to credit %s to users account', 'mycred' ), $this->core->plural() ) );
 
-					$data = array(
-						'transaction_id' => $_POST['transaction_id'],
-						'skrill_ref'     => $_POST['mb_transaction_id'],
-						'md5'            => $_POST['md5sig'],
-						'sales_data'     => implode( '|', $sales_data )
-					);
-
-					// Add creds
-					if ( $this->complete_payment( $sales_data[0], $sales_data[1], $sales_data[2], $data ) ) {
-
-						$this->new_log_entry( sprintf( __( '%s was successfully credited to users account', 'mycred' ), $this->core->format_creds( $sales_data[2] ) ) );
-						$outcome = 'COMPLETED';
-
-						do_action( "mycred_buycred_{$this->id}_approved", $this->processing_log, $_REQUEST );
+						}
+						
+						// Log Call
+						if ( ! empty( $new_call ) )
+							$this->log_call( $pending_post_id, $new_call );
 
 					}
-
-					else $this->new_log_entry( __( 'Failed to credit the users account', 'mycred' ) );
+					
 				}
-				
-				else $this->new_log_entry( __( 'Purchase not paid', 'mycred' ) );
-
-			}
-			else {
-				$this->new_log_entry( __( 'Hanging up on caller', 'mycred' ) );
-				do_action( "mycred_buycred_{$this->id}_error", $this->processing_log, $_REQUEST );
+			
 			}
 
-			$this->save_log_entry( $_POST['transaction_id'], $outcome );
-
-			do_action( "mycred_buycred_{$this->id}_end", $this->processing_log, $_REQUEST );
 		}
 
 		/**
@@ -201,46 +173,48 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		/**
 		 * Buy Handler
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.2
 		 */
 		public function buy() {
 			if ( ! isset( $this->prefs['account'] ) || empty( $this->prefs['account'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
-			$token = $this->create_token();
-
 			// Location
 			$location = 'https://www.moneybookers.com/app/payment.pl';
 
-			// Finance
-			$currency = $this->prefs['currency'];
+			// Type
+			$type = $this->get_point_type();
+			$mycred = mycred( $type );
 
 			// Amount
-			$amount = $this->core->number( $_REQUEST['amount'] );
+			$amount = $mycred->number( $_REQUEST['amount'] );
 			$amount = abs( $amount );
 
 			// Get Cost
-			$cost = $this->get_cost( $amount );
+			$cost = $this->get_cost( $amount, $type );
+
+			$to = $this->get_to();
+			$from = $this->current_user_id;
+
+			// Revisiting pending payment
+			if ( isset( $_REQUEST['revisit'] ) ) {
+				$this->transaction_id = strtoupper( $_REQUEST['revisit'] );
+			}
+			else {
+				$post_id = $this->add_pending_payment( array( $to, $from, $amount, $cost, $this->prefs['currency'], $type ) );
+				$this->transaction_id = get_the_title( $post_id );
+			}
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();
 
 			// Cancel page
-			$cancel_url = $this->get_cancelled();
-
-			$to = $this->get_to();
-			$from = $this->current_user_id;
-
-			$transaction_id = 'BUYCRED' . date_i18n( 'U' ) . $to . $from;
-
-			// Let others play
-			$extra = apply_filters( 'mycred_skrill_extra', '', $amount, $from, $to, $this->prefs, $this->core );
-			unset( $_REQUEST );
+			$cancel_url = $this->get_cancelled( $this->transaction_id );
 
 			// Start constructing merchant details
 			$hidden_fields = array(
 				'pay_to_email'    => $this->prefs['account'],
-				'transaction_id'  => $transaction_id,
+				'transaction_id'  => $this->transaction_id,
 				'return_url'      => $thankyou_url,
 				'cancel_url'      => $cancel_url,
 				'status_url'      => $this->callback_url(),
@@ -249,40 +223,39 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 			);
 
 			// Customize Checkout Page
-			if ( isset( $this->prefs['account_title'] ) && !empty( $this->prefs['account_title'] ) )
+			if ( isset( $this->prefs['account_title'] ) && ! empty( $this->prefs['account_title'] ) )
 				$hidden_fields = array_merge_recursive( $hidden_fields, array(
-					'recipient_description' => $this->core->template_tags_general( $this->prefs['account_title'] )
+					'recipient_description' => $mycred->template_tags_general( $this->prefs['account_title'] )
 				) );
 
-			if ( isset( $this->prefs['account_logo'] ) && !empty( $this->prefs['account_logo'] ) )
+			if ( isset( $this->prefs['account_logo'] ) && ! empty( $this->prefs['account_logo'] ) )
 				$hidden_fields = array_merge_recursive( $hidden_fields, array(
 					'logo_url'              => $this->prefs['account_logo']
 				) );
 
-			if ( isset( $this->prefs['confirmation_note'] ) && !empty( $this->prefs['confirmation_note'] ) )
+			if ( isset( $this->prefs['confirmation_note'] ) && ! empty( $this->prefs['confirmation_note'] ) )
 				$hidden_fields = array_merge_recursive( $hidden_fields, array(
-					'confirmation_note'     => $this->core->template_tags_general( $this->prefs['confirmation_note'] )
+					'confirmation_note'     => $mycred->template_tags_general( $this->prefs['confirmation_note'] )
 				) );
 
 			// If we want an email receipt for purchases
-			if ( isset( $this->prefs['email_receipt'] ) && !empty( $this->prefs['email_receipt'] ) )
+			if ( isset( $this->prefs['email_receipt'] ) && ! empty( $this->prefs['email_receipt'] ) )
 				$hidden_fields = array_merge_recursive( $hidden_fields, array(
 					'status_url2'           => $this->prefs['account']
 				) );
 
-			// Sale Details
-			// to|from|amount|cost|currency|token|extra
-			$sales_data = $to . '|' . $from . '|' . $amount . '|' . $cost . '|' . $currency . '|' . $token . '|' . $extra;
+			// Item Name
 			$item_name = str_replace( '%number%', $amount, $this->prefs['item_name'] );
+			$item_name = $mycred->template_tags_general( $item_name );
+
+			// Hidden form fields
 			$sale_details = array(
 				'merchant_fields'     => 'sales_data',
-				'sales_data'          => $this->encode_sales_data( $sales_data ),
-
+				'sales_data'          => $this->transaction_id,
 				'amount'              => $cost,
-				'currency'            => $currency,
-
+				'currency'            => $this->prefs['currency'],
 				'detail1_description' => __( 'Product:', 'mycred' ),
-				'detail1_text'        => $this->core->template_tags_general( $item_name )
+				'detail1_text'        => $item_name
 			);
 			$hidden_fields = array_merge_recursive( $hidden_fields, $sale_details );
 
@@ -312,7 +285,7 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		 * @since 0.1
 		 * @version 1.0
 		 */
-		function preferences( $buy_creds = NULL ) {
+		function preferences() {
 			add_filter( 'mycred_dropdown_currencies', array( $this, 'skrill_currencies' ) );
 			$prefs = $this->prefs; ?>
 
@@ -343,11 +316,9 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		<span class="description"><?php _e( 'Description of the item being purchased by the user.', 'mycred' ); ?></span>
 	</li>
 </ol>
-<label class="subheader" for="<?php echo $this->field_id( 'exchange' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% Exchange Rate', 'mycred' ) ); ?></label>
+<label class="subheader"><?php _e( 'Exchange Rates', 'mycred' ); ?></label>
 <ol>
-	<li>
-		<div class="h2"><?php echo $this->core->format_creds( 1 ); ?> = <input type="text" name="<?php echo $this->field_name( 'exchange' ); ?>" id="<?php echo $this->field_id( 'exchange' ); ?>" value="<?php echo $prefs['exchange']; ?>" size="3" /> <span id="mycred-gateway-skrill-currency"><?php echo ( empty( $prefs['currency'] ) ) ? __( 'Select currency', 'mycred' ) : $prefs['currency']; ?></span></div>
-	</li>
+	<?php $this->exchange_rate_setup(); ?>
 </ol>
 <label class="subheader" for="<?php echo $this->field_id( 'email_receipt' ); ?>"><?php _e( 'Confirmation Email', 'mycred' ); ?></label>
 <ol>
@@ -384,7 +355,7 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 		/**
 		 * Sanatize Prefs
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitise_preferences( $data ) {
 			$new_data = array();
@@ -395,14 +366,18 @@ if ( ! class_exists( 'myCRED_Skrill' ) ) {
 			$new_data['word']              = sanitize_text_field( $data['word'] );
 			$new_data['email_receipt']     = ( isset( $data['email_receipt'] ) ) ? 1 : 0;
 			$new_data['item_name']         = sanitize_text_field( $data['item_name'] );
-			$new_data['exchange']          = ( ! empty( $data['exchange'] ) ) ? $data['exchange'] : 1;
 			$new_data['account_title']     = substr( $data['account_title'], 0, 30 );
 			$new_data['account_logo']      = sanitize_text_field( $data['account_logo'] );
 			$new_data['confirmation_note'] = substr( $data['confirmation_note'], 0, 240 );
 
 			// If exchange is less then 1 we must start with a zero
-			if ( $new_data['exchange'] != 1 && in_array( substr( $new_data['exchange'], 0, 1 ), array( '.', ',' ) ) )
-				$new_data['exchange'] = (float) '0' . $new_data['exchange'];
+			if ( isset( $data['exchange'] ) ) {
+				foreach ( (array) $data['exchange'] as $type => $rate ) {
+					if ( $rate != 1 && in_array( substr( $rate, 0, 1 ), array( '.', ',' ) ) )
+						$data['exchange'][ $type ] = (float) '0' . $rate;
+				}
+			}
+			$new_data['exchange'] = $data['exchange'];
 
 			return $new_data;
 		}

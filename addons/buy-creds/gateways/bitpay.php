@@ -5,7 +5,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * myCRED_Bitpay class
  * BitPay (Bitcoins) - Payment Gateway
  * @since 1.4
- * @version 1.0
+ * @version 1.1
  */
 if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 	class myCRED_Bitpay extends myCRED_Payment_Gateway {
@@ -14,6 +14,11 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		 * Construct
 		 */
 		function __construct( $gateway_prefs ) {
+			$types = mycred_get_types();
+			$default_exchange = array();
+			foreach ( $types as $type => $label )
+				$default_exchange[ $type ] = 1;
+
 			parent::__construct( array(
 				'id'               => 'bitpay',
 				'label'            => 'Bitpay',
@@ -21,7 +26,7 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 				'defaults'         => array(
 					'api_key'          => '',
 					'currency'         => 'USD',
-					'exchange'         => 1,
+					'exchange'         => $default_exchange,
 					'item_name'        => __( 'Purchase of myCRED %plural%', 'mycred' ),
 					'speed'            => 'high',
 					'notifications'    => 1
@@ -32,89 +37,64 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		/**
 		 * Process
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function process() {
-			$outcome = 'FAILED';
-			$valid_call = false;
-			$valid_sale = false;
-
-			$this->start_log();
 			
-			// VALIDATION OF CALL
-			$required_fields = array(
-				'postData',
-				'price',
-				'currency',
-				'status',
-				'id',
-				'btcPrice'
-			);
+			// Required fields
+			if ( isset( $_POST['postData'] ) && isset( $_POST['id'] ) && isset( $_POST['price'] ) ) {
 
-			// All required fields exists
-			if ( $this->IPN_has_required_fields( $required_fields, 'POST' ) ) {
+				// Get Pending Payment
+				$pending_post_id = sanitize_key( $_POST['postData'] );
+				$pending_payment = $this->get_pending_payment( $pending_post_id );
+				if ( $pending_payment !== false ) {
 
-				// Validate call
-				if ( $this->IPN_is_valid_call() ) {
+					// Verify Call with PayPal
+					if ( $this->IPN_is_valid_call() ) {
 
-					$valid_call = true;
-					
-					// Validate sale
-					$sales_data = false;
-					$sales_data = $this->IPN_is_valid_sale( 'postData', 'price', 'id' );
-					if ( $sales_data !== false ) {
+						$errors = false;
+						$new_call = array();
 
-						$valid_sale = true;
-						$this->new_log_entry( __( 'Sales Data is Valid', 'mycred' ) );
+						// Check amount paid
+						if ( $_POST['price'] != $pending_payment['cost'] ) {
+							$new_call[] = sprintf( __( 'Price mismatch. Expected: %s Received: %s', 'mycred' ), $pending_payment['cost'], $_POST['price'] );
+							$errors = true;
+						}
 
-					}
+						// Check currency
+						if ( $_POST['currency'] != $pending_payment['currency'] ) {
+							$new_call[] = sprintf( __( 'Currency mismatch. Expected: %s Received: %s', 'mycred' ), $pending_payment['currency'], $_POST['currency'] );
+							$errors = true;
+						}
 
-					else $this->new_log_entry( __( 'Failed to validate sale', 'mycred' ) );
+						// Check status
+						if ( $_POST['status'] != 'paid' ) {
+							$new_call[] = sprintf( __( 'Payment not completed. Received: %s', 'mycred' ), $_POST['status'] );
+							$errors = true;
+						}
 
-				}
+						// Credit payment
+						if ( $errors === false ) {
 
-			}
-
-			else $this->new_log_entry( __( 'Failed to verify caller', 'mycred' ) );
-
-			// EXECUTION
-			if ( $valid_call === true && $valid_sale === true ) {
-
-				// Finally check payment
-				if ( $_POST['status'] == 'paid' ) {
+							// If account is credited, delete the post and it's comments.
+							if ( $this->complete_payment( $pending_payment, $_POST['id'] ) )
+								wp_delete_post( $pending_post_id, true );
+							else
+								$new_call[] = __( 'Failed to credit users account.', 'mycred' );
 							
-					$this->new_log_entry( sprintf( __( 'Attempting to credit %s to users account', 'mycred' ), $this->core->plural() ) );
 
-					$data = array(
-						'txn_id'       => $_POST['id'],
-						'bitcoin'      => $_POST['payer_id'],
-						'sales_data'   => implode( '|', $sales_data )
-					);
-
-					// Add creds
-					if ( $this->complete_payment( $sales_data[0], $sales_data[1], $sales_data[2], $data ) ) {
-
-						$this->new_log_entry( sprintf( __( '%s was successfully credited to users account', 'mycred' ), $this->core->format_creds( $sales_data[2] ) ) );
-						$outcome = 'COMPLETED';
-
-						do_action( "mycred_buycred_{$this->id}_approved", $this->processing_log, $_REQUEST );
+						}
+						
+						// Log Call
+						if ( ! empty( $new_call ) )
+							$this->log_call( $pending_post_id, $new_call );
 
 					}
-
-					else $this->new_log_entry( __( 'Failed to credit the users account', 'mycred' ) );
+					
 				}
-				
-				else $this->new_log_entry( __( 'Purchase not paid', 'mycred' ) );
-
-			}
-			else {
-				$this->new_log_entry( __( 'Hanging up on caller', 'mycred' ) );
-				do_action( "mycred_buycred_{$this->id}_error", $this->processing_log, $_REQUEST );
+			
 			}
 
-			$this->save_log_entry( $_POST['id'], $outcome );
-
-			do_action( "mycred_buycred_{$this->id}_end", $this->processing_log, $_REQUEST );
 		}
 
 		/**
@@ -124,6 +104,11 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		 */
 		public function returning() { }
 
+		/**
+		 * Create Invoice
+		 * @since 1.4
+		 * @version 1.0
+		 */
 		public function create_invoice( $args ) {
 			$data = json_encode( $args );
 
@@ -168,55 +153,56 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		/**
 		 * Buy Creds
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function buy() {
 			if ( ! isset( $this->prefs['api_key'] ) || empty( $this->prefs['api_key'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
-			$token = $this->create_token();
+			// Type
+			$type = $this->get_point_type();
+			$mycred = mycred( $type );
 
 			// Amount
-			$amount = $this->core->number( $_REQUEST['amount'] );
+			$amount = $mycred->number( $_REQUEST['amount'] );
 			$amount = abs( $amount );
 
 			// Get Cost
-			$cost = $this->get_cost( $amount );
+			$cost = $this->get_cost( $amount, $type );
+
+			$to = $this->get_to();
+			$from = $this->current_user_id;
+
+			// Revisiting pending payment
+			if ( isset( $_REQUEST['revisit'] ) ) {
+				$this->transaction_id = strtoupper( $_REQUEST['revisit'] );
+			}
+			else {
+				$post_id = $this->add_pending_payment( array( $to, $from, $amount, $cost, $this->prefs['currency'], $type ) );
+				$this->transaction_id = get_the_title( $post_id );
+			}
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();
 
 			// Cancel page
-			$cancel_url = $this->get_cancelled();
+			$cancel_url = $this->get_cancelled( $this->transaction_id );
 
-			// Return to a url
-			if ( isset( $_REQUEST['return_to'] ) ) {
-				$thankyou_url = $_REQUEST['return_to'];
-				$cancel_url = $_REQUEST['return_to'];
-			}
-
-			$to = $this->get_to();
-			$from = $this->current_user_id;
-
-			// Let others play
-			$extra = apply_filters( 'mycred_bitpay_extra', '', $cost, $from, $to, $this->prefs, $this->core );
-			unset( $_REQUEST );
-
-			// Hidden form fields
-			// to|from|amount|cost|currency|token|extra
-			$sales_data = $to . '|' . $from . '|' . $amount . '|' . $cost . '|' . $this->prefs['currency'] . '|' . $token . '|' . $extra;
+			// Item Name
 			$item_name = str_replace( '%number%', $amount, $this->prefs['item_name'] );
+			$item_name = $mycred->template_tags_general( $item_name );
 
 			$from_user = get_userdata( $from );
 
+			// Hidden form fields
 			$request = $this->create_invoice( array(
 				'apiKey'            => $this->prefs['api_key'],
 				'transactionSpeed'  => $this->prefs['speed'],
-				'price'             => number_format( $cost, 2, '.', '' ),
+				'price'             => $cost,
 				'currency'          => $this->prefs['currency'],
 				'notificationURL'   => $this->callback_url(),
 				'fullNotifications' => ( $this->prefs['notifications'] ) ? true : false,
-				'posData'           => $this->encode_sales_data( $sales_data ),
+				'posData'           => $this->transaction_id,
 				'buyerName'         => $from_user->first_name . ' ' . $from_user->last_name,
 				'itemDesc'          => $item_name
 			) );
@@ -232,7 +218,7 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 
 			// Request success
 			else {
-				$this->get_page_header( __( 'Processing payment &hellip;', 'mycred' )); ?>
+				$this->get_page_header( __( 'Processing payment &hellip;', 'mycred' ) ); ?>
 
 <div class="continue-forward" style="text-align:center;">
 	<p>&nbsp;</p>
@@ -254,12 +240,9 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		 * @since 1.4
 		 * @version 1.0
 		 */
-		function preferences( $buy_creds = NULL ) {
+		function preferences() {
 			$prefs = $this->prefs; ?>
 
-<?php if ( ! is_ssl() ) : ?>
-<p><strong style="color:red;"><?php _e( 'Warning! - Bitpay requires your website to use SSL in order to notify you of confirmed payments! Without SSL your website will not receive updates!', 'mycred' ); ?></strong></p>
-<?php endif; ?>
 <label class="subheader" for="<?php echo $this->field_id( 'api_key' ); ?>"><?php _e( 'API Key', 'mycred' ); ?></label>
 <ol>
 	<li>
@@ -280,11 +263,9 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		<span class="description"><?php _e( 'Description of the item being purchased by the user.', 'mycred' ); ?></span>
 	</li>
 </ol>
-<label class="subheader" for="<?php echo $this->field_id( 'exchange' ); ?>"><?php echo $this->core->template_tags_general( __( '%plural% Exchange Rate', 'mycred' ) ); ?></label>
+<label class="subheader"><?php _e( 'Exchange Rates', 'mycred' ); ?></label>
 <ol>
-	<li>
-		<div class="h2"><?php echo $this->core->format_creds( 1 ); ?> = <input type="text" name="<?php echo $this->field_name( 'exchange' ); ?>" id="<?php echo $this->field_id( 'exchange' ); ?>" value="<?php echo $prefs['exchange']; ?>" size="3" /> <span id="mycred-gateway-paypal-currency"><?php echo ( empty( $prefs['currency'] ) ) ? __( 'Select currency', 'mycred' ) : $prefs['currency']; ?></span></div>
-	</li>
+	<?php $this->exchange_rate_setup(); ?>
 </ol>
 <label class="subheader" for="<?php echo $this->field_id( 'speed' ); ?>"><?php _e( 'Transaction Speed', 'mycred' ); ?></label>
 <ol>
@@ -335,9 +316,25 @@ if ( ! class_exists( 'myCRED_Bitpay' ) ) {
 		/**
 		 * Sanatize Prefs
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function sanitise_preferences( $data ) {
+
+			$new_data['api_key'] = sanitize_text_field( $data['api_key'] );
+			$new_data['currency'] = sanitize_text_field( $data['currency'] );
+			$new_data['item_name'] = sanitize_text_field( $data['item_name'] );
+			$new_data['speed'] = sanitize_text_field( $data['speed'] );
+			$new_data['notifications'] = sanitize_text_field( $data['notifications'] );
+
+			// If exchange is less then 1 we must start with a zero
+			if ( isset( $data['exchange'] ) ) {
+				foreach ( (array) $data['exchange'] as $type => $rate ) {
+					if ( $rate != 1 && in_array( substr( $rate, 0, 1 ), array( '.', ',' ) ) )
+						$data['exchange'][ $type ] = (float) '0' . $rate;
+				}
+			}
+			$new_data['exchange'] = $data['exchange'];
+
 			return $data;
 		}
 	}

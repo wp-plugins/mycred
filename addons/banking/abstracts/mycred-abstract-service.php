@@ -6,7 +6,7 @@ if ( !defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.2
  * @version 1.0
  */
-if ( !class_exists( 'myCRED_Service' ) ) {
+if ( ! class_exists( 'myCRED_Service' ) ) {
 	abstract class myCRED_Service {
 
 		// Service ID
@@ -22,7 +22,7 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 		 * Construct
 		 */
 		function __construct( $args = array(), $service_prefs = NULL ) {
-			if ( !empty( $args ) ) {
+			if ( ! empty( $args ) ) {
 				foreach ( $args as $key => $value ) {
 					$this->$key = $value;
 				}
@@ -34,16 +34,16 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 			// Grab settings
 			if ( $service_prefs !== NULL ) {
 				// Assign prefs if set
-				if ( isset( $service_prefs[$this->id] ) )
-					$this->prefs = $service_prefs[$this->id];
+				if ( isset( $service_prefs[ $this->id]  ) )
+					$this->prefs = $service_prefs[ $this->id ];
 
 				// Defaults must be set
-				if ( !isset( $this->defaults ) || empty( $this->defaults ) )
+				if ( ! isset( $this->defaults ) || empty( $this->defaults ) )
 					$this->defaults = array();
 			}
 
 			// Apply default settings if needed
-			if ( !empty( $this->defaults ) )
+			if ( ! empty( $this->defaults ) )
 				$this->prefs = wp_parse_args( $this->prefs, $this->defaults );
 		}
 
@@ -297,8 +297,8 @@ if ( !class_exists( 'myCRED_Service' ) ) {
 				foreach ( $data as $num => $user_id ) {
 					$user_id = intval( $user_id );
 					if ( isset( $this->prefs['excludes'] ) ) {
-						if ( !empty( $this->prefs['excludes'] ) ) {
-							if ( !is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
+						if ( ! empty( $this->prefs['excludes'] ) ) {
+							if ( ! is_array( $this->prefs['excludes'] ) ) $excludes = explode( ',', $this->prefs['excludes'] );
 							if ( in_array( $user_id, $excludes )  ) unset( $data[ $num ] );
 						}
 					}

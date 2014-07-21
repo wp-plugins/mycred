@@ -144,7 +144,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 				'error_4'   => __( 'Transaction declined by recipient.', 'mycred' ),
 				'error_5'   => __( 'Incorrect amount. Please try again.', 'mycred' ),
 				'error_6'   => __( 'This myCRED Add-on has not yet been setup! No transfers are allowed until this has been done!', 'mycred' ),
-				'error_7'   => __( 'Insufficient funds. Please enter a lower amount.', 'mycred' ),
+				'error_7'   => __( 'Insufficient Funds. Please try a lower amount.', 'mycred' ),
 				'error_8'   => __( 'Transfer Limit exceeded.', 'mycred' )
 			) );
 
@@ -188,7 +188,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 			if ( ! isset( $settings['types'] ) )
 				$settings['types'] = $this->default_prefs['types']; ?>
 
-<h4><div class="icon icon-active"></div><?php echo $this->core->template_tags_general( __( 'Transfer %plural%', 'mycred' ) ); ?></h4>
+<h4><div class="icon icon-active"></div><?php _e( 'Transfers', 'mycred' ); ?></h4>
 <div class="body" style="display:none;">
 	<?php if ( count( $mycred_types ) > 1 ) : ?>
 
@@ -257,9 +257,8 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 
 		<li class="empty">&nbsp;</li>
 		<li>
-			<label for="<?php echo $this->field_id( array( 'limit' => 'amount' ) ); ?>"><?php _e( 'Maximum Amount', 'mycred' ); ?></label>
+			<label for="<?php echo $this->field_id( array( 'limit' => 'amount' ) ); ?>"><?php _e( 'Limit Amount', 'mycred' ); ?></label>
 			<div class="h2"><?php echo $before; ?> <input type="text" name="<?php echo $this->field_name( array( 'limit' => 'amount' ) ); ?>" id="<?php echo $this->field_id( array( 'limit' => 'amount' ) ); ?>" value="<?php echo $this->core->number( $settings['limit']['amount'] ); ?>" size="8" /> <?php echo $after; ?></div>
-			<span class="description"><?php _e( 'This amount is ignored if no limits are imposed.', 'mycred' ); ?></span>
 		</li>
 	</ol>
 	<label class="subheader"><?php _e( 'Form Templates', 'mycred' ); ?></label>
@@ -345,29 +344,44 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 		/**
 		 * AJAX Transfer Creds
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.3
 		 */
 		public function ajax_call_transfer() {
 			// Security
 			if ( ! check_ajax_referer( 'mycred-transfer-creds', 'token', false ) )
 				die( json_encode( 'error_1' ) );
 
+			parse_str( $_POST['form'], $post );
+			unset( $_POST );
+
 			// Required
-			if ( ! isset( $_POST['recipient'] ) || ! isset( $_POST['sender'] ) || ! isset( $_POST['amount'] ) )
-				die( json_encode( 'error_2' ) );
+			if ( ! isset( $post['mycred-transfer-to'] ) || ! isset( $post['mycred-transfer-amount'] ) )
+				die( json_encode( $post ) );
 
 			// Prep
-			$to = $_POST['recipient'];
-			$from = $_POST['sender'];
-			$amount = abs( $_POST['amount'] );
+			$to = $post['mycred-transfer-to'];
+
+			if ( ! isset( $post['mycred-sender'] ) )
+				$from = get_current_user_id();
+			else {
+				$from = absint( $post['mycred-sender'] );
+				$from_user = get_userdata( $from );
+				if ( $from_user === false ) die( -1 );
+			}
+
+			$ref = 'transfer';
+			if ( isset( $post['mycred-transfer-ref'] ) )
+				$ref = sanitize_key( $post['mycred-transfer-ref'] );
+
+			$amount = abs( $post['mycred-transfer-amount'] );
 
 			// Type
 			$mycred_types = mycred_get_types();
-			$type = 'mycred_default';
-			if ( isset( $_POST['type'] ) && in_array( $_POST['type'], $mycred_types ) )
-				$type = sanitize_text_field( $_POST['type'] );
+			$type = '';
+			if ( isset( $post['mycred-transfer-type'] ) && array_key_exists( $post['mycred-transfer-type'], $mycred_types ) )
+				$type = sanitize_text_field( $post['mycred-transfer-type'] );
 
-			if ( empty( $type ) )
+			if ( $type == '' )
 				$type = 'mycred_default';
 
 			$mycred = mycred( $type );
@@ -406,14 +420,14 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 			$after_transfer = $transfer;
 
 			// Let others play before we execute the transfer
-			do_action( 'mycred_transfer_ready', $prefs, $this->core, $type );
+			do_action( 'mycred_transfer_ready', $post, $prefs, $this->core, $type );
 
 			// Generate Transaction ID for our records
 			$transaction_id = 'TXID' . date_i18n( 'U' ) . $from;
 
 			// First take the amount from the sender
 			$mycred->add_creds(
-				'transfer',
+				$ref,
 				$from,
 				0-$amount,
 				$prefs['logs']['sending'],
@@ -432,7 +446,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 
 			// Then add the amount to the receipient
 			$mycred->add_creds(
-				'transfer',
+				$ref,
 				$recipient_id,
 				$amount,
 				$prefs['logs']['receiving'],
@@ -442,7 +456,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 			);
 
 			// Let others play once transaction is completed
-			do_action( 'mycred_transfer_completed', $prefs, $this->core, $type );
+			do_action( 'mycred_transfer_completed', $post, $prefs, $this->core, $type );
 
 			// Return the good news
 			die( json_encode( 'ok' ) );
@@ -685,10 +699,12 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 
 		// Get Attributes
 		extract( shortcode_atts( array(
-			'charge_from'  => NULL,
-			'pay_to'       => NULL,
+			'button'       => '',
+			'charge_from'  => '',
+			'pay_to'       => '',
 			'show_balance' => 0,
 			'show_limit'   => 0,
+			'ref'          => '',
 			'placeholder'  => '',
 			'types'        => $pref['types'],
 			'excluded'     => ''
@@ -706,7 +722,11 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 		}
 
 		// Who to charge
-		if ( $charge_from === NULL ) $charge_from = get_current_user_id();
+		$chat_other = false;
+		if ( $charge_from == '' ) {
+			$charge_other = true;
+			$charge_from = get_current_user_id();
+		}
 
 		// Point Types
 		if ( ! is_array( $types ) )
@@ -724,7 +744,7 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 			// Make sure user is not excluded
 			if ( $mycred->exclude_user( $charge_from ) ) return '';
 
-			$status = mycred_user_can_transfer( $charge_from, NULL );
+			$status = mycred_user_can_transfer( $charge_from, NULL, 'mycred_default', $ref );
 			$my_balance = $mycred->get_users_cred( $charge_from );
 
 			// Error. Not enough creds
@@ -757,7 +777,7 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 				$points = mycred( $point_type );
 				if ( $points->exclude_user( $charge_from ) ) continue;
 				
-				$status = mycred_user_can_transfer( $charge_from, NULL, $point_type );
+				$status = mycred_user_can_transfer( $charge_from, NULL, $point_type, $ref );
 				if ( in_array( $status, array( 'low', 'limit' ) ) ) continue;
 				
 				$available_types[] = $point_type;
@@ -784,10 +804,10 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 		$to_input = '<input type="text" name="mycred-transfer-to" value="" class="mycred-autofill" placeholder="' . $placeholder . '" />';
 
 		// If recipient is set, pre-populate it with the recipients details
-		if ( $pay_to !== NULL ) {
+		if ( $pay_to != '' ) {
 			$user = get_user_by( 'id', $pay_to );
 			if ( $user !== false ) {
-				$value = $user->user_login;
+				$value = $user->display_name;
 				if ( isset( $user->$pref['autofill'] ) )
 					$value = $user->$pref['autofill'];
 
@@ -832,10 +852,14 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 			$extras[] = $mycred->template_tags_general( $limit_text );
 		}
 
+		if ( $button == '' )
+			$button = $pref['templates']['button'];
+
 		// Main output
 		ob_start(); ?>
 
-<div class="mycred-transfer-cred-wrapper">
+<div class="mycred-transfer-cred-wrapper"<?php if ( $ref != '' ) echo ' id="transfer-form-' . $ref . '"'; ?>>
+	<form method="post" action="">
 	<ol>
 		<li class="mycred-send-to">
 			<label><?php _e( 'To:', 'mycred' ); ?></label>
@@ -846,7 +870,9 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 		<li class="mycred-send-amount">
 			<label><?php _e( 'Amount:', 'mycred' ); ?></label>
 			<div class="transfer-amount"><?php echo $before; ?><input type="text" class="short" name="mycred-transfer-amount" value="<?php echo $mycred->zero(); ?>" size="8" /><?php echo $after . ' ' . $type_input; ?></div> 
-			<input type="button" class="button large button-large mycred-click" value="<?php echo $pref['templates']['button']; ?>" />
+			<input type="button" class="button button-primary button-large mycred-click btn btn-primary btn-lg"<?php if( $pay_to == get_current_user_id() ) echo ' disabled="disabled"'; ?> value="<?php echo $button; ?>" />
+			<?php if ( $charge_other ) : ?><input type="hidden" name="mycred-charge-other" value="<?php absint( $charge_from ); ?>" /><?php endif; ?>
+			<?php if ( $ref != '' ) : ?><input type="hidden" name="mycred-transfer-ref" value="<?php echo $ref; ?>" /><?php endif; ?>
 			<?php do_action( 'mycred_transfer_form_amount', $atts, $pref ); ?>
 
 		</li>
@@ -860,6 +886,7 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 <?php	} ?>
 
 	</ol>
+	</form>
 	<div class="clear clearfix clr"></div>
 </div>
 <?php
@@ -883,9 +910,12 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
  * @version 1.2
  */
 if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
-	function mycred_user_can_transfer( $user_id = NULL, $amount = NULL, $type = 'mycred_default' )
+	function mycred_user_can_transfer( $user_id = NULL, $amount = NULL, $type = 'mycred_default', $ref = 'mycred_transactions' )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
+
+		if ( $ref == '' )
+			$ref = 'mycred_transactions';
 
 		// Grab Settings (from main type where the settings are saved)
 		$mycred = mycred();
@@ -906,10 +936,10 @@ if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
 		// Account Limit
 		// The lowest amount a user can have on their account. By default, this
 		// is zero. But you can override this via the mycred_transfer_acc_limit hook.
-		$account_limit = $mycred->number( apply_filters( 'mycred_transfer_acc_limit', $zero ) );
+		$account_limit = $mycred->number( apply_filters( 'mycred_transfer_acc_limit', $zero, $type ) );
 
 		// Check if users balance is below the account limit
-		if ( $balance <= $account_limit ) return 'low';
+		if ( $balance < $account_limit ) return 'low';
 
 		// If there are no limits, return the current balance
 		if ( $pref['limit']['limit'] == 'none' ) return $balance;
@@ -920,7 +950,7 @@ if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
 		$max = $mycred->number( $pref['limit']['amount'] );
 
 		// Get users "limit log"
-		$history = mycred_get_users_transfer_history( $user_id );
+		$history = mycred_get_users_transfer_history( $user_id, $type, $ref );
 
 		// Get Current amount
 		$current = $mycred->number( $history['amount'] );
@@ -932,7 +962,7 @@ if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
 				mycred_update_users_transfer_history( $user_id, array(
 					'frame'  => $today,
 					'amount' => $mycred->zero()
-				), $type );
+				), $type, $ref );
 				$current = $zero;
 			}
 		}
@@ -944,7 +974,7 @@ if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
 				mycred_update_users_transfer_history( $user_id, array(
 					'frame'  => $this_week,
 					'amount' => $mycred->zero()
-				), $type );
+				), $type, $ref );
 				$current = $zero;
 			}
 		}
@@ -970,17 +1000,19 @@ if ( ! function_exists( 'mycred_user_can_transfer' ) ) {
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_get_users_transfer_history' ) ) {
-	function mycred_get_users_transfer_history( $user_id, $type = 'mycred_default' )
+	function mycred_get_users_transfer_history( $user_id, $type = 'mycred_default', $key = 'mycred_transactions' )
 	{
-		$key = 'mycred_transactions';
-		if ( $type != 'mycred_default' && ! empty( $type ) )
+		if ( $key == '' )
+			$key = 'mycred_transactions';
+
+		if ( $type != 'mycred_default' && $type != '' )
 			$key .= '_' . $type;
 
 		$default = array(
 			'frame'  => '',
 			'amount' => 0
 		);
-		return mycred_apply_defaults( $default, get_user_meta( $user_id, $key, true ) );
+		return mycred_apply_defaults( $default, mycred_get_user_meta( $user_id, $key, '', true ) );
 	}
 }
 
@@ -990,10 +1022,12 @@ if ( ! function_exists( 'mycred_get_users_transfer_history' ) ) {
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_update_users_transfer_history' ) ) {
-	function mycred_update_users_transfer_history( $user_id, $history, $type = 'mycred_default' )
+	function mycred_update_users_transfer_history( $user_id, $history, $type = 'mycred_default', $key = 'mycred_transactions' )
 	{
-		$key = 'mycred_transactions';
-		if ( $type != 'mycred_default' && ! empty( $type ) )
+		if ( $key == '' )
+			$key = 'mycred_transactions';
+
+		if ( $type != 'mycred_default' && $type != '' )
 			$key .= '_' . $type;
 
 		// Get current history
@@ -1009,7 +1043,7 @@ if ( ! function_exists( 'mycred_update_users_transfer_history' ) ) {
 		// Update
 		else $new_history = mycred_apply_defaults( $current, $history );
 
-		update_user_meta( $user_id, $key, $new_history );
+		mycred_update_user_meta( $user_id, $key, '', $new_history );
 	}
 }
 ?>

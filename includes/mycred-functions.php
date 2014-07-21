@@ -27,6 +27,8 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 			$this->use_master_template = mycred_override_settings();
 			$this->use_central_logging = mycred_centralize_log();
 
+			if ( $type == '' || $type == NULL ) $type = 'mycred_default';
+
 			// Load Settings
 			$option_id = 'mycred_pref_core';
 			if ( $type != 'mycred_default' && $type != '' )
@@ -40,7 +42,8 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 				}
 			}
 
-			$this->cred_id = $type;
+			if ( $type != '' )
+				$this->cred_id = $type;
 
 			if ( defined( 'MYCRED_LOG_TABLE' ) )
 				$this->log_table = MYCRED_LOG_TABLE;
@@ -219,7 +222,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 			else
 				$layout = $before . $prefix . $creds . $suffix . $after;
 
-			return apply_filters( 'mycred_format_creds', $layout, $creds, $this->core );
+			return apply_filters( 'mycred_format_creds', $layout, $creds, $this );
 		}
 
 		/**
@@ -445,7 +448,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 			elseif ( $ref_id === false && is_object( $data ) && isset( $data->ID ) )
 				$user = $data;
 			// User array is passed on though $data
-			elseif ( $ref_id === false && is_array( $data ) || array_key_exists( 'ID', $data ) ) {
+			elseif ( $ref_id === false && is_array( $data ) || array_key_exists( 'ID', (array) $data ) ) {
 				$user = new StdClass();
 				foreach ( $data as $key => $value ) {
 					if ( $key == 'login' )
@@ -473,6 +476,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 				global $wp_rewrite;
 				$url = get_bloginfo( 'url' ) . '/' . $wp_rewrite->author_base . '/' . urlencode( $user->user_login ) . '/';
 			}
+			$url = apply_filters( 'mycred_users_profile_url', $url, $user );
 
 			$content = str_replace( '%display_name%',       $user->display_name, $content );
 			$content = str_replace( '%user_profile_url%',   $url, $content );
@@ -832,7 +836,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 		 * @version 1.0
 		 */
 		public function get_cred_id() {
-			if ( ! isset( $this->cred_id ) || empty( $this->cred_id ) )
+			if ( ! isset( $this->cred_id ) || $this->cred_id == '' )
 				$this->cred_id = 'mycred_default';
 
 			return $this->cred_id;
@@ -858,26 +862,23 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 		 * @param $type (string), optional cred type to check for
 		 * @returns zero if user id is not set or if no creds were found, else returns amount
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.4
 		 */
-		public function get_users_cred( $user_id = '', $type = '' ) {
-			if ( empty( $user_id ) ) return $this->zero();
+		public function get_users_cred( $user_id = NULL, $type = NULL ) {
+			if ( $user_id === NULL ) return $this->zero();
 
-			if ( empty( $type ) ) $type = $this->get_cred_id();
+			$types = mycred_get_types();
+			if ( $type === NULL || ! array_key_exists( $type, $types ) ) $type = $this->get_cred_id();
 
-			// Handle multisites without centralized log
-			if ( $this->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->use_central_logging )
-				$type .= '_' . $GLOBALS['blog_id'];
-
-			$balance = get_user_meta( $user_id, $type, true );
-			if ( empty( $balance ) ) $balance = $this->zero();
+			$balance = mycred_get_user_meta( $user_id, $type, '', true );
+			if ( $balance == '' ) $balance = $this->zero();
 
 			// Let others play
 			$balance = apply_filters( 'mycred_get_users_cred', $balance, $this, $user_id, $type );
 
 			return $this->number( $balance );
 		}
-		public function get_users_balance( $user_id = '', $type = '' ) {
+		public function get_users_balance( $user_id = NULL, $type = NULL ) {
 			return $this->get_users_cred( $user_id, $type );
 		}
 
@@ -911,7 +912,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 				$type .= '_' . $GLOBALS['blog_id'];
 
 			// Update creds
-			update_user_meta( $user_id, $type, $new_balance );
+			mycred_update_user_meta( $user_id, $type, '', $new_balance );
 
 			// Let others play
 			do_action( 'mycred_update_user_balance', $user_id, $current_balance, $amount, $type );
@@ -1171,7 +1172,8 @@ endif;
  * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_types' ) ) :
-	function mycred_get_types() {
+	function mycred_get_types()
+	{
 		$types = array();
 
 		$available_types = mycred_get_option( 'mycred_types', array( 'mycred_default' => mycred_label() ) );
@@ -1199,7 +1201,8 @@ endif;
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_types_select_from_dropdown' ) ) :
-	function mycred_types_select_from_dropdown( $name = '', $id = '', $selected = '', $return = false, $extra = '' ) {
+	function mycred_types_select_from_dropdown( $name = '', $id = '', $selected = '', $return = false, $extra = '' )
+	{
 		$types = mycred_get_types();
 
 		$output = '';
@@ -1235,7 +1238,8 @@ endif;
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_types_select_from_checkboxes' ) ) :
-	function mycred_types_select_from_checkboxes( $name = '', $id = '', $selected_values = array(), $return = false ) {
+	function mycred_types_select_from_checkboxes( $name = '', $id = '', $selected_values = array(), $return = false )
+	{
 		$types = mycred_get_types();
 
 		$output = '';
@@ -1304,7 +1308,8 @@ endif;
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_get_option' ) ) :
-	function mycred_get_option( $option_id, $default = array() ) {
+	function mycred_get_option( $option_id, $default = array() )
+	{
 		if ( is_multisite() ) {
 			if ( mycred_override_settings() )
 				$settings = get_blog_option( 1, $option_id, $default );
@@ -1327,7 +1332,8 @@ endif;
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_update_option' ) ) :
-	function mycred_update_option( $option_id, $value = '' ) {
+	function mycred_update_option( $option_id, $value = '' )
+	{
 		if ( is_multisite() ) {
 			if ( mycred_override_settings() )
 				update_blog_option( 1, $option_id, $value );
@@ -1337,6 +1343,74 @@ if ( ! function_exists( 'mycred_update_option' ) ) :
 		else {
 			update_option( $option_id, $value );
 		}
+	}
+endif;
+
+/**
+ * Get User Meta
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_user_meta' ) ) :
+	function mycred_get_user_meta( $user_id, $key, $end = '', $unique = true )
+	{
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= $end;
+
+		return get_user_meta( $user_id, $key, $unique );
+	}
+endif;
+
+/**
+ * Add User Meta
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_add_user_meta' ) ) :
+	function mycred_add_user_meta( $user_id, $key, $end = '', $value = '' )
+	{
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= $end;
+
+		return add_user_meta( $user_id, $key, $value );
+	}
+endif;
+
+/**
+ * Update User Meta
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_update_user_meta' ) ) :
+	function mycred_update_user_meta( $user_id, $key, $end = '', $value = '' )
+	{
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= $end;
+
+		return update_user_meta( $user_id, $key, $value );
+	}
+endif;
+
+/**
+ * Delete User Meta
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_delete_user_meta' ) ) :
+	function mycred_delete_user_meta( $user_id, $key, $end = '' )
+	{
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		$key .= $end;
+
+		return delete_user_meta( $user_id, $key );
 	}
 endif;
 
@@ -1363,12 +1437,12 @@ endif;
  * Returns the name given to creds.
  * @param $signular (boolean) option to return the plural version, returns singular by default
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_name' ) ) :
-	function mycred_name( $singular = true )
+	function mycred_name( $singular = true, $type = 'mycred_default' )
 	{
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		if ( $singular )
 			return $mycred->singular();
 		else
@@ -1399,12 +1473,12 @@ endif;
  * @param $user_id (int), optional user id to check, defaults to current user
  * @returns true or false
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_is_admin' ) ) :
-	function mycred_is_admin( $user_id = NULL )
+	function mycred_is_admin( $user_id = NULL, $type = 'mycred_default' )
 	{
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
 		if ( $mycred->can_edit_creds( $user_id ) || $mycred->can_edit_plugin( $user_id ) ) return true;
@@ -1419,12 +1493,12 @@ endif;
  * @see http://codex.mycred.me/functions/mycred_exclude_user/
  * @param $user_id (int), optional user to check, defaults to current user
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_exclude_user' ) ) :
-	function mycred_exclude_user( $user_id = NULL )
+	function mycred_exclude_user( $user_id = NULL, $type = 'mycred_default' )
 	{
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 		return $mycred->exclude_user( $user_id );
 	}
@@ -1437,14 +1511,17 @@ endif;
  * @param $user_id (int) user id
  * @return users balance (int|float)
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_users_cred' ) ) :
-	function mycred_get_users_cred( $user_id = NULL, $type = '' )
+	function mycred_get_users_cred( $user_id = NULL, $type = 'mycred_default' )
 	{
 		if ( $user_id === NULL ) $user_id = get_current_user_id();
 
-		$mycred = mycred();
+		if ( $type == '' )
+			$type = 'mycred_default';
+
+		$mycred = mycred( $type );
 		return $mycred->get_users_cred( $user_id, $type );
 	}
 endif;
@@ -1456,14 +1533,14 @@ endif;
  * @param $user_id (int), required user id
  * @return users balance (string) or false if no user id is given
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_users_fcred' ) ) :
-	function mycred_get_users_fcred( $user_id = NULL, $type = '' )
+	function mycred_get_users_fcred( $user_id = NULL, $type = 'mycred_default' )
 	{
 		if ( $user_id === NULL ) return false;
 
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		$cred = $mycred->get_users_cred( $user_id, $type );
 		return $mycred->format_creds( $cred );
 	}
@@ -1485,12 +1562,12 @@ endif;
 /**
  * Format Number
  * @since 1.3.3
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_format_number' ) ) :
-	function mycred_format_number( $value = NULL )
+	function mycred_format_number( $value = NULL, $type = 'mycred_default' )
 	{
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		if ( $value === NULL )
 			return $mycred->zero();
 
@@ -1504,9 +1581,9 @@ endif;
  * @version 1.0
  */
 if ( ! function_exists( 'mycred_format_creds' ) ) :
-	function mycred_format_creds( $value = NULL )
+	function mycred_format_creds( $value = NULL, $type = 'mycred_default' )
 	{
-		$mycred = mycred();
+		$mycred = mycred( $type );
 		if ( $value === NULL ) $mycred->zero();
 
 		return $mycred->format_creds( $value );
@@ -1533,10 +1610,10 @@ if ( ! function_exists( 'mycred_add' ) ) :
 	function mycred_add( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' )
 	{
 		// $ref, $user_id and $cred is required
-		if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
+		if ( $ref == '' || $user_id == '' || $amount == '' ) return false;
 
-		$mycred = mycred();
-		if ( empty( $type ) ) $type = $mycred->get_cred_id();
+		if ( $type == '' ) $type = $mycred->get_cred_id();
+		$mycred = mycred( $type );
 
 		// Add creds
 		return $mycred->add_creds( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
@@ -1630,13 +1707,13 @@ endif;
  * @param $order (string) order to return ASC or DESC
  * @filter mycred_count_all_refs
  * @since 1.3.3
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_count_all_ref_instances' ) ) :
 	function mycred_count_all_ref_instances( $number = 5, $order = 'DESC', $type = 'mycred_default' )
 	{
 		global $wpdb;
-		$mycred = mycred();
+		$mycred = mycred( $type );
 
 		if ( $number == '-1' )
 			$limit = '';
@@ -1781,19 +1858,13 @@ if ( ! function_exists( 'mycred_get_users_total' ) ) :
 		if ( $type == '' ) $type = 'mycred_default';
 		$mycred = mycred( $type );
 
-		$key = $type;
-		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_central_logging )
-			$key .= '_' . $GLOBALS['blog_id'];
-
-		$key .= '_total';
-
-		$total = get_user_meta( $user_id, $key, true );
+		$total = mycred_get_user_meta( $user_id, $type, '_total', true );
 		if ( $total == '' ) {
 			$total = mycred_query_users_total( $user_id, $type );
-			update_user_meta( $user_id, $key, $total );
+			mycred_update_user_meta( $user_id, $type, '_total', $total );
 		}
 
-		$total = apply_filters( 'mycred_get_users_total', $total, $user_id, $type, $key );
+		$total = apply_filters( 'mycred_get_users_total', $total, $user_id, $type );
 		return $mycred->number( $total );
 	}
 endif;
@@ -1847,21 +1918,15 @@ if ( ! function_exists( 'mycred_update_users_total' ) ) :
 		if ( $type == '' )
 			$type = $mycred->get_cred_id();
 
-		$key = $type;
-		if ( $mycred->is_multisite && $GLOBALS['blog_id'] > 1 && ! $mycred->use_central_logging )
-			$key .= '_' . $GLOBALS['blog_id'];
-
-		$key .= '_total';
-
 		$amount = $mycred->number( $request['amount'] );
 		$user_id = absint( $request['user_id'] );
 
-		$users_total = get_user_meta( $user_id, $key, true );
+		$users_total = mycred_get_user_meta( $user_id, $type, '_total', true );
 		if ( $users_total == '' )
 			$users_total = mycred_query_users_total( $user_id, $type );
 
 		$new_total = $mycred->number( $users_total+$amount );
-		update_user_meta( $user_id, $key, $new_total );
+		mycred_update_user_meta( $user_id, $type, '_total', $new_total );
 
 		return apply_filters( 'mycred_update_users_total', $new_total, $type, $request, $mycred );
 	}
@@ -2011,6 +2076,245 @@ if ( ! function_exists( 'mycred_install_log' ) ) :
 			add_option( 'mycred_version_db', '1.0' );
 
 		return true;
+	}
+endif;
+
+/**
+ * Get Exchange Rates
+ * Returns the exchange rates for point types
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_exchange_rates' ) ) :
+	function mycred_get_exchange_rates( $point_type = '' )
+	{
+		$types = mycred_get_types();
+
+		$default = array();
+		foreach ( $types as $type => $label ) {
+			if ( $type == $point_type ) continue;
+			$default[ $type ] = 0;
+		}
+
+		$settings = mycred_get_option( 'mycred_pref_exchange_' . $point_type, $default );
+		$settings = mycred_apply_defaults( $default, $settings );
+
+		return $settings;
+
+	}
+endif;
+
+/**
+ * Create Encrypted Token
+ * Converts an array of data into an encrypted string.
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_create_token' ) ) :
+	function mycred_create_token( $string = '' )
+	{
+		if ( is_array( $string ) )
+			$string = implode( ':', $string );
+
+		$protect = mycred_protect();
+
+		return apply_filters( 'mycred_create_token', $protect->do_encode( $string ), $string );
+
+	}
+endif;
+
+/**
+ * Verify Encrypted Token
+ * Will either return an array of data that have been decrypted or
+ * false if the string is invalid. Also checks the number of variables in the array.
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_verify_token' ) ) :
+	function mycred_verify_token( $string = '', $length = 1 )
+	{
+		$reply = false;
+
+		$protect = mycred_protect();
+
+		$decoded = $protect->do_decode( $string );
+		$array = explode( ':', $decoded );
+		if ( count( $array ) == $length )
+			$reply = $array;
+
+		return apply_filters( 'mycred_verify_token', $reply, $string, $length );
+
+	}
+endif;
+
+/**
+ * Get All References
+ * Returns an array of references currently existing in the log
+ * for a particular point type. Will return false if empty.
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_all_references' ) ) :
+	function mycred_get_all_references()
+	{
+		// Hooks
+		$hooks = array(
+			'registration'       => __( 'Website Resitration', 'mycred' ),
+			'site_visit'         => __( 'Website Visit', 'mycred' ),
+			'logging_in'         => __( 'Logging in', 'mycred' ),
+			'publishing_content' => __( 'Publishing Content', 'mycred' ),
+			'approved_comment'   => __( 'Approved Comment', 'mycred' ),
+			'unapproved_comment' => __( 'Unapproved Comment', 'mycred' ),
+			'spam_comment'       => __( 'SPAM Comment', 'mycred' ),
+			'deleted_comment'    => __( 'Deleted Comment', 'mycred' ),
+			'link_click'         => __( 'Link Click', 'mycred' ),
+			'watching_video'     => __( 'Watching Video', 'mycred' ),
+			'visitor_referral'   => __( 'Visitor Referral', 'mycred' ),
+			'signup_referral'    => __( 'Signup Referral', 'mycred' )
+		);
+
+		if ( class_exists( 'BuddyPress' ) ) {
+			$hooks['new_profile_update']     = __( 'New Profile Update', 'mycred' );
+			$hooks['upload_avatar']          = __( 'Avatar Upload', 'mycred' );
+			$hooks['new_friendship']         = __( 'New Friendship', 'mycred' );
+			$hooks['ended_friendship']       = __( 'Ended Friendship', 'mycred' );
+			$hooks['new_comment']            = __( 'New Profile Comment', 'mycred' );
+			$hooks['comment_deletion']       = __( 'Profile Comment Deletion', 'mycred' );
+			$hooks['new_message']            = __( 'New Message', 'mycred' );
+			$hooks['sending_gift']           = __( 'Sending Gift', 'mycred' );
+			$hooks['creation_of_new_group']  = __( 'New Group', 'mycred' );
+			$hooks['deletion_of_group']      = __( 'Deleted Group', 'mycred' );
+			$hooks['new_group_forum_topic']  = __( 'New Group Forum Topic', 'mycred' );
+			$hooks['edit_group_forum_topic'] = __( 'Edit Group Forum Topic', 'mycred' );
+			$hooks['new_group_forum_post']   = __( 'New Group Forum Post', 'mycred' );
+			$hooks['edit_group_forum_post']  = __( 'Edit Group Forum Post', 'mycred' );
+			$hooks['joining_group']          = __( 'Joining Group', 'mycred' );
+			$hooks['leaving_group']          = __( 'Leaving Group', 'mycred' );
+			$hooks['upload_group_avatar']    = __( 'New Group Avatar', 'mycred' );
+			$hooks['new_group_comment']      = __( 'New Group Comment', 'mycred' );
+		}
+
+		if ( function_exists( 'bpa_init' ) || function_exists( 'bpgpls_init' ) ) {
+			$hooks['photo_upload'] = __( 'Photo Upload', 'mycred' );
+			$hooks['video_upload'] = __( 'Video Upload', 'mycred' );
+			$hooks['music_upload'] = __( 'Music Upload', 'mycred' );
+		}
+		
+		if ( function_exists( 'bp_links_setup_root_component' ) ) {
+			$hooks['new_link'] = __( 'New Link', 'mycred' );
+			$hooks['link_voting'] = __( 'Link Voting', 'mycred' );
+			$hooks['update_link'] = __( 'Link Update', 'mycred' );
+		}
+
+		if ( class_exists( 'bbPress' ) ) {
+			$hooks['new_forum'] = __( 'New Forum (bbPress)', 'mycred' );
+			$hooks['new_forum_topic'] = __( 'New Forum Topic (bbPress)', 'mycred' );
+			$hooks['topic_favorited'] = __( 'Favorited Topic (bbPress)', 'mycred' );
+			$hooks['new_forum_reply'] = __( 'New Topic Reply (bbPress)', 'mycred' );
+		}
+		
+		if ( function_exists( 'wpcf7' ) )
+			$hooks['contact_form_submission'] = __( 'Form Submission (Contact Form 7)', 'mycred' );
+
+		if ( class_exists( 'GFForms' ) )
+			$hooks['gravity_form_submission'] = __( 'Form Submission (Gravity Form)', 'mycred' );
+
+		if ( defined( 'SFTOPICS' ) ) {
+			$hooks['new_forum_topic'] = __( 'New Forum Topic (SimplePress)', 'mycred' );
+			$hooks['new_topic_post'] = __( 'New Forum Post (SimplePress)', 'mycred' );
+		}
+
+		if ( function_exists( 'vote_poll' ) )
+			$hooks['poll_voting'] = __( 'Poll Voting', 'mycred' );
+
+		if ( function_exists( 'invite_anyone_init' ) ) {
+			$hooks['sending_an_invite'] = __( 'Sending an Invite', 'mycred' );
+			$hooks['accepting_an_invite'] = __( 'Accepting an Invite', 'mycred' );
+		}
+
+		// Addons
+		if ( class_exists( 'myCRED_Banking_Module' ) )
+			$addons['payout'] = __( 'Banking Payout', 'mycred' );
+
+		if ( class_exists( 'myCRED_buyCRED_Module' ) ) {
+			$addons['buy_creds_width_paypal_standard'] = __( 'buyCRED Purchase (PayPal Standard)', 'mycred' );
+			$addons['buy_creds_with_skrill']           = __( 'buyCRED Purchase (Skrill)', 'mycred' );
+			$addons['buy_creds_with_zombaio']          = __( 'buyCRED Purchase (Zombaio)', 'mycred' );
+			$addons['buy_creds_with_netbilling']       = __( 'buyCRED Purchase (NETBilling)', 'mycred' );
+			$addons['buy_creds_with_bitpay']           = __( 'buyCRED Purchase (BitPay)', 'mycred' );
+			$addons = apply_filters( 'mycred_buycred_refs', $addons );
+		}
+
+		if ( class_exists( 'myCRED_Coupons_Module' ) )
+			$addons['coupon'] = __( 'Coupon Purchase', 'mycred' );
+
+		if ( class_exists( 'WC_Gateway_myCRED' ) ) {
+			$addons['woocommerce_payment'] = __( 'Store Purchase (WooCommerce)', 'mycred' );
+			$addons['marketpress_payment'] = __( 'Store Purchase (MarketPress)', 'mycred' );
+			$addons['wpecom_payment']      = __( 'Store Purchase (WP E-Commerce)', 'mycred' );
+			$addons = apply_filters( 'mycred_gateway_refs', $addons );
+		}
+
+		if ( defined( 'EVENT_ESPRESSO_VERSION' ) ) {
+			$addons['event_payment']   = __( 'Event Payment (Event Espresso)', 'mycred' );
+			$addons['event_sale']      = __( 'Event Sale (Event Espresso)', 'mycred' );
+		}
+		
+		if ( defined( 'EM_VERSION' ) ) {
+			$addons['ticket_purchase'] = __( 'Event Payment (Events Manager)', 'mycred' );
+			$addons['ticket_sale']     = __( 'Event Sale (Events Manager)', 'mycred' );
+		}
+
+		if ( class_exists( 'myCRED_Sell_Content_Module' ) )
+			$addons['buy_content'] = __( 'Content Purchase / Sale', 'mycred' );
+
+		if ( class_exists( 'myCRED_Transfer_Module' ) )
+			$addons['transfer'] = __( 'Transfer', 'mycred' );
+
+		$references = array_merge( $hooks, $addons );
+
+		return apply_filters( 'mycred_all_references', $references );
+	}
+endif;
+
+/**
+ * Get Used References
+ * Returns an array of references currently existing in the log
+ * for a particular point type. Will return false if empty.
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_get_used_references' ) ) :
+	function mycred_get_used_references( $type = 'mycred_default' )
+	{
+		$references = wp_cache_get( 'mycred_references' );
+
+		if ( false === $references ) {
+			global $wpdb;
+
+			$mycred = mycred( $type );
+			$references = $wpdb->get_col( $wpdb->prepare( "
+				SELECT DISTINCT ref 
+				FROM {$mycred->log_table} 
+				WHERE ref != ''
+					AND ctype = %s;", $type ) );
+
+			if ( $references ) wp_cache_set( 'mycred_references', $references );
+		}
+
+		return apply_filters( 'mycred_used_references', $references );
+	}
+endif;
+
+/**
+ * Is Float?
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'isfloat' ) ) :
+	function isfloat( $f )
+	{
+		return ( $f == (string)(float) $f );
 	}
 endif;
 ?>

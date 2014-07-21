@@ -83,7 +83,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					if ( ! $this->is_main_type )
 						$key .= '_' . $this->mycred_type;
 
-					$user_log = get_user_meta( $user_id, $key, true );
+					$user_log = mycred_get_user_meta( $user_id, $key, '', true );
 					if ( empty( $user_log['sent'] ) ) $user_log['sent'] = 0;
 					// Return if limit is reached
 					if ( $user_log['sent'] >= $this->prefs['send_invite']['limit'] ) return;
@@ -103,7 +103,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				// Update limit
 				if ( $this->prefs['send_invite']['limit'] != 0 ) {
 					$user_log['sent'] = $user_log['sent']+1;
-					update_user_meta( $user_id, $key, $user_log );
+					mycred_update_user_meta( $user_id, $key, '', $user_log );
 				}
 			}
 
@@ -155,7 +155,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						if ( ! $this->is_main_type )
 							$key .= '_' . $this->mycred_type;
 
-						$user_log = get_user_meta( $inviter_id, $key, true );
+						$user_log = mycred_get_user_meta( $inviter_id, $key, '', true );
 						if ( empty( $user_log['accepted'] ) ) $user_log['accepted'] = 0;
 						// Continue to next inviter if limit is reached
 						if ( $user_log['accepted'] >= $this->prefs['accept_invite']['limit'] ) continue;
@@ -195,7 +195,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 					// Update Limit
 					if ( $this->prefs['accept_invite']['limit'] != 0 ) {
 						$user_log['accepted'] = $user_log['accepted']+1;
-						update_user_meta( $inviter_id, $key, $user_log );
+						mycred_update_user_meta( $inviter_id, $key, '', $user_log );
 					}
 				}
 			}

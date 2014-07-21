@@ -232,7 +232,14 @@ if ( ! function_exists( 'mycred_init_marketpress_gateway' ) ) {
 					);
 					return;
 				}
-			
+
+				// Let others decline a store order
+				$decline = apply_filters( 'mycred_decline_store_purchase', false, $cart, $this );
+				if ( $decline !== false ) {
+					$mp->cart_checkout_error( $decline );
+					return;
+				}
+
 				// Create MarketPress order
 				$order_id = $mp->generate_order_id();
 				$payment_info['gateway_public_name'] = $this->public_name;
@@ -351,7 +358,7 @@ if ( ! function_exists( 'mycred_init_marketpress_gateway' ) ) {
 					'profit_share_log'     => __( 'Product Sale: %post_title%', 'mycred' ),
 					'instructions'         => __( 'Pay using your account balance.', 'mycred' ),
 					'confirmation'         => __( 'TOTAL amount has been deducted from your account. Your current balance is: %balance_f%', 'mycred' ),
-					'lowfunds'             => __( 'Insufficient funds. Please select another form of payment. Your current balance is: %balance_f%', 'mycred' ),
+					'lowfunds'             => __( 'Insufficient funds.', 'mycred' ),
 					'visitors'             => __( 'You must be logged in to pay with %_plural%. Please <a href="%login_url_here%">login</a>.', 'mycred' ),
 					'email'                => $settings['email']['new_order_txt']
 				), ( isset( $settings['gateways']['mycred'] ) ) ? $settings['gateways']['mycred'] : array() ); ?>

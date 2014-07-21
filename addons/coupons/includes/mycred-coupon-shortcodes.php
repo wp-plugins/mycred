@@ -6,7 +6,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * @filter mycred_get_coupon_by_code
  * @action mycred_load_coupon
  * @since 1.4
- * @version 1.0
+ * @version 1.0.1
  */
 if ( ! function_exists( 'mycred_render_shortcode_load_coupon' ) ) :
 	function mycred_render_shortcode_load_coupon( $atts, $content = NULL ) {
@@ -28,8 +28,8 @@ if ( ! function_exists( 'mycred_render_shortcode_load_coupon' ) ) :
 		// On submits
 		if ( isset( $_POST['mycred_coupon_load']['token'] ) && wp_verify_nonce( $_POST['mycred_coupon_load']['token'], 'mycred-load-coupon' . $user_id ) ) {
 
-			$coupon = mycred_get_coupon_post( $_POST['mycred_coupon_load']['code'] );
-			$load = mycred_use_coupon( $_POST['mycred_coupon_load']['code'], $user_id );
+			$coupon = mycred_get_coupon_post( $_POST['mycred_coupon_load']['couponkey'] );
+			$load = mycred_use_coupon( $_POST['mycred_coupon_load']['couponkey'], $user_id );
 
 			// Coupon does not exist
 			if ( $load === 'missing' )
@@ -67,7 +67,7 @@ if ( ! function_exists( 'mycred_render_shortcode_load_coupon' ) ) :
 	<form action="" method="post">
 		<p>
 			<label for="mycred-coupon-code">' . __( 'Coupon', 'mycred' ) . '</label><br />
-			<input type="text" name="mycred_coupon_load[code]" id="mycred-coupon-code" value="" /> 
+			<input type="text" name="mycred_coupon_load[couponkey]" id="mycred-coupon-couponkey" value="" /> 
 			<input type="hidden" name="mycred_coupon_load[token]" value="' . wp_create_nonce( 'mycred-load-coupon' . $user_id ) . '" />
 			<input type="submit" class="btn btn-primary btn-large button button-large button-primary" value="' . __( 'Apply Coupon', 'mycred' ) . '" />
 		</p>

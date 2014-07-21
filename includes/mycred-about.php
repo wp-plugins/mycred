@@ -75,54 +75,53 @@ function mycred_about_page() {
 	<h1><?php printf( __( 'Welcome to %s %s', 'mycred' ), $name, myCRED_VERSION ); ?></h1>
 	<?php mycred_about_header( $name ); ?>
 
-	<h4><strong>Important!</strong> Make sure you re-save your myCRED Settings and Hook settings by visiting both pages and clicking "Save Changes" even if you make no changes in your current settings. Version 1.4 also requires you to re-save all myCRED Widget settings in order to add support for multiple point types.</h4>
 	<div class="changelog">
 		<h3>New Features</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4>Multiple Point Types</h4>
-				<p>No longer are you bound to use only one point type! New in 1.4 is the built in multiple point types system. Visit the Settings page to add any number of point types.</p>
+				<h4>User Overview</h4>
+				<p>While editing a users profile in the admin area, you can now also gain better access to their point type balances along with the option to override their exchange rates or sale profits.</p>
 			</div>
 			<div class="last-feature">
-				<h4><?php echo $mycred->template_tags_general( '%plural% for Referrals Hook!' ); ?></h4>
-				<p><?php echo $mycred->template_tags_general( 'Based on the most popular myCRED Tutorial, you will find a new Referral hook allowing you to give %_plural% for visit or signup referrals!' ); ?></p>
+				<h4>buyCRED Payments</h4>
+				<p>buyCRED has been improved to save every purchase request your users make allowing them to pay at a later stage or cancel a payment along with buying multiple point types!</p>
 			</div>
 		</div>
 		<h3>Add-on News</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4>Coupons</h4>
-				<p>The new Coupons add-on allows you to setup your own coupons that users can redeem via the new [mycred_get_coupon_by_code] shortcode. Coupons can have a global and/or a user limit with an optional minimum or maximum balance requirement in order to use!</p>
+				<h4>Badges</h4>
+				<p>Similar to ranks, badges are based on a users actions and not their balance. You can award badges for any myCRED action taken on your website like sending BuddyPress messages, logging in or even transfers.</p>
 			</div>
 			<div class="last-feature">
-				<h4>Removed Add-ons</h4>
-				<p>In 1.4 the BuddyPress and Import add-ons have been removed and instead been integrated into myCRED. If you have BuddyPress enabled, the BuddyPress features are automatically enabled while you can find the Import add-on now under Tools > Import in the admin menu to the left.</p>
+				<h4>Transfer Add-on</h4>
+				<p>In 1.5 the transfer add-on has been adjusted to make it easier for you to customize it by adding custom fields. No need to replace the transfer script any longer!</p>
 			</div>
 		</div>
 		<h3>Added Support</h3>
 		<div class="feature-section col two-col">
 			<div>
-				<h4><a href="http://disqus.com/" target="_blank">Disqus</a></h4>
-				<p>myCRED now has built-in support for Disqus comments! Please remember that in order for points to be awarded, comments must be synced and comment authors must use the email they have registered on your website!</p>
+				<h4><a href="https://wordpress.org/plugins/share-this/" target="_blank">ShareThis</a></h4>
+				<p>Award points for users sharing your websites content on popular social media sites like Facebook and Twitter! Requires the ShareThis plugin to be installed and setup!</p>
 			</div>
 			<div class="last-feature">
-				<h4><a href="http://www.gravityforms.com/" target="_blank">Gravity Forms</a></h4>
-				<p>Just like with Contact Form 7, you can now award / deduct points from your users for submitting forms managed by Gavity Forms!</p>
+				<h4>Site Visits</h4>
+				<p>The new Site Visit hook allows you to award points for users visiting your website on a daily basis.</p>
 			</div>
 		</div>
 		<h3>Improvements</h3>
 		<div class="feature-section col three-col">
 			<div>
-				<h4>The Log</h4>
-				<p>The myCRED log now supports paginations, inline editing and/or removal of individual log entries. Gone are the days where you are stuck with your current log entries!</p>
+				<h4>Leaderboard</h4>
+				<p>You can now create leaderboards based on your users actions and not just their balance! Both the mycred_leaderboard shortcode and widget has been updated.</p>
 			</div>
 			<div>
-				<h4>Leaderboard</h4>
-				<p>The myCRED Leaderboard feature has been updated and improved to handle larger user bases. Note that in 1.4 the Leaderboard will be updated automatically and you can no longer select specific update intervals.</p>
+				<h4>Exchange</h4>
+				<p>The new myCRED Exchange shortcode allows your users to exchange one point type for another at a rate of your choosing.</p>
 			</div>
 			<div class="last-feature">
-				<h4>New Wallet Widget</h4>
-				<p>If you have more then one point type setup, you gain access to the new myCRED Wallet Widget which you can use to show your users point balances in a single widget.</p>
+				<h4>Easier to Exclude</h4>
+				<p>As of 1.5, you can not exclude users from using any point type directly from their profiles in the admin area.</p>
 			</div>
 		</div>
 		<p style="text-align:right;">Want to help further development of <strong>my</strong>CRED? <a href="http://mycred.me/about/support-mycred/" target="_blank">Here is a list</a> of things you can do to help!</p>

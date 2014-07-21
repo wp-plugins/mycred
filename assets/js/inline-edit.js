@@ -96,7 +96,7 @@ jQuery(function($) {
 					current_el.text( response.data );
 					amount_el.val( '' );
 					entry_el.val( '' );
-					$( 'div#mycred-user-' + user_id + '-balance-' + type_el.val() + ' span' ).text( response.data );
+					$( 'div#mycred-user-' + user_id + '-balance-' + type_el.val() + ' span' ).empty().html( response.data );
 				}
 				else {
 					if ( response.data.error == 'ERROR_1' ) {

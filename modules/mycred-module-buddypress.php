@@ -363,10 +363,10 @@ if ( ! class_exists( 'myCRED_BuddyPress_Module' ) ) {
 			$settings = $this->buddypress;
 
 			$balance_locations = array(
-				''            => __( 'Do not show.', 'mycred' ),
-				'top'         => __( 'Include in Profile Header.', 'mycred' ),
+				''            => __( 'Do not show', 'mycred' ),
+				'top'         => __( 'Include in Profile Header', 'mycred' ),
 				'profile_tab' => __( 'Include under the "Profile" tab', 'mycred' ),
-				'both'        => __( 'Include under the "Profile" tab and Profile Header.', 'mycred' )
+				'both'        => __( 'Include under the "Profile" tab and Profile Header', 'mycred' )
 			);
 
 			$history_locations = array(
@@ -382,7 +382,7 @@ if ( ! class_exists( 'myCRED_BuddyPress_Module' ) ) {
 				}
 			} ?>
 
-<h4><div class="icon icon-hook icon-active"></div><label><?php _e( 'BuddyPress', 'mycred' ); ?></label></h4>
+<h4><div class="icon icon-hook icon-active"></div><label>BuddyPress</label></h4>
 <div class="body" style="display:none;">
 	<?php do_action( 'mycred_bp_before_settings', $this ); ?>
 

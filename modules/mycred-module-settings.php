@@ -237,7 +237,7 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 		 * Delete Users Log Entries
 		 * Will remove a given users log entries.
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function action_delete_users_log_entries( $user_id ) {
 			global $wpdb;
@@ -245,7 +245,7 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 			$wpdb->delete(
 				$this->core->log_table,
 				array( 'user_id' => $user_id, 'ctype' => $this->mycred_type ),
-				array( '%d' )
+				array( '%d', '%s' )
 			);
 		}
 
@@ -330,7 +330,7 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 	<h2><?php echo sprintf( __( '%s Settings', 'mycred' ), mycred_label() ); ?> <?php echo myCRED_VERSION; ?></h2>
 	<?php $this->update_notice(); ?>
 
-	<p><?php echo sprintf( __( 'Adjust your core or add-on settings. Follow us on: %s %s', 'mycred' ), $facebook, $google ); ?></p>
+	<p><?php _e( 'Adjust your core or add-on settings.', 'mycred' ); ?><span id="mycred-social-media"><?php echo $facebook . $google; ?></span></p>
 	<form method="post" action="options.php">
 		<?php settings_fields( $this->settings_name ); ?>
 
@@ -413,7 +413,7 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 						<input type="checkbox" name="<?php echo $this->field_name( 'delete_user' ); ?>" id="<?php echo $this->field_id( 'delete_user' ); ?>" <?php checked( $delete_user, 1 ); ?> value="1" /><label for="<?php echo $this->field_id( 'delete_user' ); ?>"><?php _e( 'Delete log entries when user is deleted.', 'mycred' ); ?></label>
 					</li>
 				</ol>
-				<?php do_action( 'mycred_core_prefs', $this ); ?>
+				<?php do_action( 'mycred_core_prefs' . $action_hook, $this ); ?>
 
 			</div>
 <?php
@@ -461,10 +461,10 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 			</div>
 			<?php do_action( 'mycred_after_management_prefs' . $action_hook, $this ); ?>
 			
-			<?php
+<?php
 
-			if ( isset( $this->mycred_type ) && $this->mycred_type == 'mycred_default' ) :
-				$types = mycred_get_types(); ?>
+			$types = mycred_get_types();
+			if ( isset( $this->mycred_type ) && $this->mycred_type == 'mycred_default' ) : ?>
 
 			<h4><div class="icon single"></div><label><?php _e( 'Point Types', 'mycred' ); ?></label></h4>
 			<div class="body" style="display:none;">
@@ -532,7 +532,11 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 					</li>
 				</ol>
 			</div>
-<?php		endif; ?>
+<?php
+
+			endif;
+
+?>
 
 			<?php do_action( 'mycred_after_core_prefs' . $action_hook, $this ); ?>
 
@@ -667,8 +671,8 @@ if ( ! class_exists( 'myCRED_Settings_Module' ) ) {
 
 			// Excludes
 			$new_data['exclude'] = array(
-				'plugin_editors' => ( isset( $post['exclude']['plugin_editors'] ) ) ? 1 : 0,
-				'cred_editors'   => ( isset( $post['exclude']['cred_editors'] ) ) ? 1 : 0,
+				'plugin_editors' => ( isset( $post['exclude']['plugin_editors'] ) ) ? $post['exclude']['plugin_editors'] : 0,
+				'cred_editors'   => ( isset( $post['exclude']['cred_editors'] ) ) ? $post['exclude']['cred_editors'] : 0,
 				'list'           => sanitize_text_field( $post['exclude']['list'] )
 			);
 

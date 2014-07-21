@@ -9,7 +9,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * @since 1.0.9
  * @version 1.2.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) :
 	function mycred_render_shortcode_my_balance( $atts )
 	{
 		extract( shortcode_atts( array(
@@ -28,12 +28,12 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 			if ( $login !== NULL ) {
 				if ( $wrapper )
 					$output .= '<div class="mycred-not-logged-in">';
-				
+
 				$output .= $login;
-				
+
 				if ( $wrapper )
 					$output .= '</div>';
-				
+
 				return $output;
 			}
 			return;
@@ -46,7 +46,7 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 
 		if ( ! empty( $type ) )
 			$mycred->cred_id = $type;
-	
+
 		if ( $wrapper )
 			$output .= '<div class="mycred-my-balance-wrapper">';
 
@@ -54,9 +54,9 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 		if ( ! empty( $title ) ) {
 			if ( ! empty( $title_el ) )
 				$output .= '<' . $title_el . '>';
-			
+
 			$output .= $title;
-			
+
 			if ( ! empty( $title_el ) )
 				$output .= '</' . $title_el . '>';
 		}
@@ -64,19 +64,19 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
 		// Balance
 		if ( ! empty( $balance_el ) )
 			$output .= '<' . $balance_el . '>';
-		
+
 		$balance = $mycred->get_users_cred( $user_id, $type );
 		$output .= $mycred->format_creds( $balance );
-		
+
 		if ( ! empty( $balance_el ) )
 			$output .= '</' . $balance_el . '>';
-		
+
 		if ( $wrapper )
 			$output .= '</div>';
 
 		return $output;
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_history
@@ -85,8 +85,9 @@ if ( ! function_exists( 'mycred_render_shortcode_my_balance' ) ) {
  * @since 1.0.9
  * @version 1.1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
-	function mycred_render_shortcode_history( $atts ) {
+if ( ! function_exists( 'mycred_render_shortcode_history' ) ) :
+	function mycred_render_shortcode_history( $atts )
+	{
 		extract( shortcode_atts( array(
 			'user_id'   => NULL,
 			'number'    => NULL,
@@ -130,22 +131,23 @@ if ( ! function_exists( 'mycred_render_shortcode_history' ) ) {
 		$log->reset_query();
 		return $result;
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_leaderboard
  * @see http://codex.mycred.me/shortcodes/mycred_leaderboard/
  * @since 0.1
- * @version 1.3.3
+ * @version 1.4
  */
-if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
-	function mycred_render_leaderboard( $atts, $content = '' )
+if ( ! function_exists( 'mycred_render_shortcode_leaderboard' ) ) :
+	function mycred_render_shortcode_leaderboard( $atts, $content = '' )
 	{
 		extract( shortcode_atts( array(
 			'number'   => '-1',
 			'order'    => 'DESC',
 			'offset'   => 0,
 			'type'     => 'mycred_default',
+			'based_on' => 'balance',
 			'wrap'     => 'li',
 			'template' => '#%position% %user_profile_link% %cred_f%',
 			'nothing'  => __( 'Leaderboard is empty.', 'mycred' ),
@@ -160,14 +162,30 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 		else
 			$limit = '';
 
+		$mycred = mycred( $type );
+
 		global $wpdb;
-		$leaderboard = $wpdb->get_results( $wpdb->prepare( apply_filters( 'mycred_ranking_sql', "
-			SELECT DISTINCT u.ID, um.meta_value AS cred 
-			FROM {$wpdb->users} u
-			INNER JOIN {$wpdb->usermeta} um
-				ON ( u.ID = um.user_id )
-			WHERE um.meta_key = %s  
-			ORDER BY um.meta_value+0 {$order} {$limit};", $atts ), $type ), 'ARRAY_A' );
+
+		// Leaderboard based on balance
+		$based_on = sanitize_text_field( $based_on );
+
+		if ( $based_on == 'balance' )
+			$SQL = $wpdb->prepare( "
+				SELECT DISTINCT u.ID, um.meta_value AS cred 
+				FROM {$wpdb->users} u
+				INNER JOIN {$wpdb->usermeta} um
+					ON ( u.ID = um.user_id )
+				WHERE um.meta_key = %s  
+				ORDER BY um.meta_value+0 {$order} {$limit};", $type );
+		else
+			$SQL = $wpdb->prepare( "
+				SELECT DISTINCT user_id AS ID, SUM( creds ) AS cred 
+				FROM {$mycred->log_table} 
+				WHERE ref = %s 
+				GROUP BY user_id 
+				ORDER BY SUM( creds ) {$order} {$limit};", $based_on );
+
+		$leaderboard = $wpdb->get_results( apply_filters( 'mycred_ranking_sql', $SQL ), 'ARRAY_A' );
 
 		$output = '';
 		$in_list = false;
@@ -243,13 +261,23 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 				$wpdb->flush();
 
 				// Get a complete leaderboard with just user IDs
-				$full_leaderboard = $wpdb->get_results( $wpdb->prepare( "
-					SELECT u.ID 
-					FROM {$wpdb->users} u
-					INNER JOIN {$wpdb->usermeta} um
-						ON ( u.ID = um.user_id )
-					WHERE um.meta_key = %s  
-					ORDER BY um.meta_value+0 {$order};", $type ), 'ARRAY_A' );
+				if ( $based_on == 'balance' )
+					$full_SQL = $wpdb->prepare( "
+						SELECT DISTINCT u.ID 
+						FROM {$wpdb->users} u
+						INNER JOIN {$wpdb->usermeta} um
+							ON ( u.ID = um.user_id )
+						WHERE um.meta_key = %s  
+						ORDER BY um.meta_value+0 {$order};", $type );
+				else
+					$full_SQL = $wpdb->prepare( "
+						SELECT DISTINCT user_id AS ID, SUM( creds ) AS cred 
+						FROM {$mycred->log_table} 
+						WHERE ref = %s 
+						GROUP BY user_id 
+						ORDER BY SUM( creds ) {$order} {$limit};", $based_on );
+
+				$full_leaderboard = $wpdb->get_results( $full_SQL, 'ARRAY_A' );
 
 				if ( ! empty( $full_leaderboard ) ) {
 
@@ -297,22 +325,24 @@ if ( ! function_exists( 'mycred_render_leaderboard' ) ) {
 
 		return do_shortcode( apply_filters( 'mycred_leaderboard', $output, $atts ) );
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_my_ranking
  * @see http://codex.mycred.me/shortcodes/mycred_my_ranking/
  * @since 0.1
- * @version 1.3
+ * @version 1.4
  */
-if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
-	function mycred_render_my_ranking( $atts )
+if ( ! function_exists( 'mycred_render_shortcode_my_ranking' ) ) :
+	function mycred_render_shortcode_my_ranking( $atts )
 	{
 		extract( shortcode_atts( array(
 			'user_id'  => NULL,
-			'ctype'    => 'mycred_default'
+			'ctype'    => 'mycred_default',
+			'based_on' => 'balance',
+			'missing'  => 0
 		), $atts ) );
-		
+
 		// If no id is given
 		if ( $user_id === NULL ) {
 			// Current user must be logged in for this shortcode to work
@@ -325,16 +355,30 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 		if ( $ctype == '' )
 			$ctype = 'mycred_default';
 
+		$mycred = mycred( $ctype );
+
 		global $wpdb;
 
+		$based_on = sanitize_text_field( $based_on );
+
 		// Get a complete leaderboard with just user IDs
-		$full_leaderboard = $wpdb->get_results( $wpdb->prepare( "
-			SELECT u.ID 
-			FROM {$wpdb->users} u
-			INNER JOIN {$wpdb->usermeta} um
-				ON ( u.ID = um.user_id )
-			WHERE um.meta_key = %s  
-			ORDER BY um.meta_value+0 DESC;", $ctype ), 'ARRAY_A' );
+		if ( $based_on == 'balance' )
+			$full_SQL = $wpdb->prepare( "
+				SELECT DISTINCT u.ID 
+				FROM {$wpdb->users} u
+				INNER JOIN {$wpdb->usermeta} um
+					ON ( u.ID = um.user_id )
+				WHERE um.meta_key = %s  
+				ORDER BY um.meta_value+0 {$order};", $ctype );
+		else
+			$full_SQL = $wpdb->prepare( "
+				SELECT DISTINCT user_id AS ID, SUM( creds ) AS cred 
+				FROM {$mycred->log_table} 
+				WHERE ref = %s 
+				GROUP BY user_id 
+				ORDER BY SUM( creds ) {$order} {$limit};", $based_on );
+
+		$full_leaderboard = $wpdb->get_results( $full_SQL, 'ARRAY_A' );
 
 		$position = 0;
 		if ( ! empty( $full_leaderboard ) ) {
@@ -344,12 +388,13 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
 			$position = $current_position+1;
 
 		}
+		else $position = $missing;
 
 		$full_leaderboard = NULL;
 
 		return apply_filters( 'mycred_get_leaderboard_position', $position, $user_id, $ctype );
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_give
@@ -361,7 +406,7 @@ if ( ! function_exists( 'mycred_render_my_ranking' ) ) {
  * @since 1.1
  * @version 1.1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_give' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_give' ) ) :
 	function mycred_render_shortcode_give( $atts )
 	{
 		if ( ! is_user_logged_in() ) return;
@@ -374,18 +419,18 @@ if ( ! function_exists( 'mycred_render_shortcode_give' ) ) {
 			'limit'   => 0,
 			'type'    => 'mycred_default'
 		), $atts ) );
-		
+
 		if ( $amount === NULL )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
 
 		if ( empty( $log ) )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
-		
+
 		$mycred = mycred();
-		
+
 		if ( empty( $user_id ) )
 			$user_id = get_current_user_id();
-		
+
 		// Check for exclusion
 		if ( $mycred->exclude_user( $user_id ) ) return;
 
@@ -404,7 +449,7 @@ if ( ! function_exists( 'mycred_render_shortcode_give' ) ) {
 			$type
 		);
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_link
@@ -419,11 +464,11 @@ if ( ! function_exists( 'mycred_render_shortcode_give' ) ) {
  * @since 1.1
  * @version 1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_link' ) ) :
 	function mycred_render_shortcode_link( $atts, $content = ''	 )
 	{
 		global $mycred_link_points;
-		
+
 		$atts = shortcode_atts( array(
 			'id'       => '',
 			'rel'      => '',
@@ -465,11 +510,8 @@ if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
 		}
 
 		// Add key
-		require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
-		$protect = new myCRED_Protect();
-		$data = $atts['amount'] . ':' . $atts['ctype'] . ':' . $atts['id'];
-		$key = $protect->do_encode( $data );
-		$attr[] = 'data-key="' . $key . '"';
+		$token = mycred_create_token( array( $atts['amount'], $atts['ctype'], $atts['id'] ) );
+		$attr[] = 'data-token="' . $token . '"';
 
 		// Make sure jQuery script is called
 		$mycred_link_points = true;
@@ -477,7 +519,7 @@ if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
 		// Return result
 		return '<a ' . implode( ' ', $attr ) . '>' . $content . '</a>';
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_send
@@ -487,7 +529,7 @@ if ( ! function_exists( 'mycred_render_shortcode_link' ) ) {
  * @since 1.1
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_send' ) ) :
 	function mycred_render_shortcode_send( $atts, $content = NULL )
 	{
 		if ( ! is_user_logged_in() ) return;
@@ -499,7 +541,7 @@ if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
 			'ref'    => 'gift',
 			'type'   => 'mycred_default'
 		), $atts ) );
-		
+
 		// Amount is required
 		if ( $amount === NULL )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Amount missing!', 'mycred' );
@@ -507,48 +549,49 @@ if ( ! function_exists( 'mycred_render_shortcode_send' ) ) {
 		// Recipient is required
 		if ( empty( $to ) )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'User ID missing for recipient.', 'mycred' );
-		
+
 		// Log template is required
 		if ( empty( $log ) )
 			return '<strong>' . __( 'error', 'mycred' ) . '</strong> ' . __( 'Log Template Missing!', 'mycred' );
-		
+
 		if ( $to == 'author' ) {
 			// You can not use this outside the loop
 			$author = get_the_author_meta( 'ID' );
 			if ( empty( $author ) ) $author = $GLOBALS['post']->post_author;
 			$to = $author;
 		}
-		
+
 		global $mycred_sending_points;
-		
+
 		$mycred = mycred( $type );
 		$user_id = get_current_user_id();
-		
+
 		// Make sure current user or recipient is not excluded!
 		if ( $mycred->exclude_user( $to ) || $mycred->exclude_user( $user_id ) ) return;
-		
+
 		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
 		$balance = $mycred->get_users_cred( $user_id, $type );
 		$amount = $mycred->number( $amount );
-		
-		// Insufficient Funds	
+
+		// Insufficient Funds
 		if ( $balance-$amount < $account_limit ) return;
-		
+
 		// We are ready!
 		$mycred_sending_points = true;
 
 		return '<input type="button" class="mycred-send-points-button" data-to="' . $to . '" data-ref="' . $ref . '" data-log="' . $log . '" data-amount="' . $amount . '" data-type="' . $type . '" value="' . $mycred->template_tags_general( $content ) . '" />';
 	}
-}
+endif;
 
 /**
  * Load myCRED Send Points Footer
  * @since 0.1
  * @version 1.2
  */
-if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
+if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) :
 	add_action( 'wp_footer', 'mycred_send_shortcode_footer' );
-	function mycred_send_shortcode_footer() {
+	function mycred_send_shortcode_footer()
+	{
 		global $mycred_sending_points;
 
 		if ( $mycred_sending_points === true ) {
@@ -571,16 +614,17 @@ if ( ! function_exists( 'mycred_send_shortcode_footer' ) ) {
 			wp_enqueue_script( 'mycred-send-points' );
 		}
 	}
-}
+endif;
 
 /**
  * myCRED Send Points Ajax
  * @since 0.1
  * @version 1.3
  */
-if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
+if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) :
 	add_action( 'wp_ajax_mycred-send-points', 'mycred_shortcode_send_points_ajax' );
-	function mycred_shortcode_send_points_ajax() {
+	function mycred_shortcode_send_points_ajax()
+	{
 		// We must be logged in
 		if ( ! is_user_logged_in() ) die();
 
@@ -591,17 +635,17 @@ if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 		$type = 'mycred_default';
 		if ( isset( $_POST['type'] ) )
 			$type = sanitize_text_field( $type );
-		
+
 		if ( ! array_key_exists( $type, $mycred_types ) ) die();
 
 		$mycred = mycred( $type );
 		$user_id = get_current_user_id();
-			
+
 		$account_limit = (int) apply_filters( 'mycred_transfer_acc_limit', 0 );
 		$balance = $mycred->get_users_cred( $user_id, $type );
 		$amount = $mycred->number( $_POST['amount'] );
 		$new_balance = $balance-$amount;
-			
+
 		// Insufficient Funds
 		if ( $new_balance < $account_limit )
 			die();
@@ -614,7 +658,7 @@ if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 		// Else everything is fine
 		else
 			$reply = 'done';
-			
+
 		// First deduct points
 		$mycred->add_creds(
 			trim( $_POST['reference'] ),
@@ -625,7 +669,7 @@ if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 			array( 'ref_type' => 'user' ),
 			$type
 		);
-			
+
 		// Then add to recipient
 		$mycred->add_creds(
 			trim( $_POST['reference'] ),
@@ -636,11 +680,11 @@ if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
 			array( 'ref_type' => 'user' ),
 			$type
 		);
-			
+
 		// Share the good news
 		wp_send_json( $reply );
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_video
@@ -650,7 +694,7 @@ if ( ! function_exists( 'mycred_shortcode_send_points_ajax' ) ) {
  * @since 1.2
  * @version 1.1.1
  */
-if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
+if ( ! function_exists( 'mycred_render_shortcode_video' ) ) :
 	function mycred_render_shortcode_video( $atts )
 	{
 		global $mycred_video_points;
@@ -679,8 +723,7 @@ if ( ! function_exists( 'mycred_render_shortcode_video' ) ) {
 		$video_id = str_replace( '-', '__', $id );
 
 		// Create key
-		$protect = mycred_protect();
-		$key = $protect->do_encode( 'youtube:' . $video_id . ':' . $amount . ':' . $logic . ':' . $interval );
+		$key = mycred_create_token( array( 'youtube', $video_id, $amount, $logic, $interval ) );
 
 		if ( ! isset( $mycred_video_points ) || ! is_array( $mycred_video_points ) )
 			$mycred_video_points = array();
@@ -722,7 +765,7 @@ function mycred_vvideo_v<?php echo $video_id; ?>( state ) {
 		// Return the shortcode output
 		return apply_filters( 'mycred_video_output', $output, $atts );
 	}
-}
+endif;
 
 /**
  * myCRED Shortcode: mycred_total_balance
@@ -733,9 +776,9 @@ function mycred_vvideo_v<?php echo $video_id; ?>( state ) {
  * @since 1.4.3
  * @version 1.0
  */
-if ( ! function_exists( 'mycred_render_shortcode_total' ) ) {
-	function mycred_render_shortcode_total( $atts, $content = '' ) {
-		
+if ( ! function_exists( 'mycred_render_shortcode_total' ) ) :
+	function mycred_render_shortcode_total( $atts, $content = '' )
+	{
 		extract( shortcode_atts( array(
 			'user_id' => NULL,
 			'types'   => 'mycred_default',
@@ -779,7 +822,7 @@ if ( ! function_exists( 'mycred_render_shortcode_total' ) ) {
 		$total = 0;
 		foreach ( $_types as $type ) {
 			// Get the balance for this type
-			$balance = get_user_meta( $user_id, $type, true );
+			$balance = mycred_get_user_meta( $user_id, $type, '', true );
 			// Continue if the balance is not set
 			if ( empty( $balance ) ) continue;
 
@@ -793,5 +836,224 @@ if ( ! function_exists( 'mycred_render_shortcode_total' ) ) {
 		// Return formatted
 		return apply_filters( 'mycred_total_balances_output', mycred_format_creds( $total ), $atts );
 	}
-}
+endif;
+
+/**
+ * myCRED Shortcode: mycred_exchange
+ * This shortcode will return an exchange form allowing users to
+ * exchange one point type for another.
+ * @see http://codex.mycred.me/shortcodes/mycred_exchange/
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_render_shortcode_exchange' ) ) :
+	function mycred_render_shortcode_exchange( $atts, $content = '' )
+	{
+		if ( ! is_user_logged_in() ) return $content;
+
+		extract( shortcode_atts( array(
+			'from' => '',
+			'to'   => '',
+			'rate' => 1,
+			'min'  => 1
+		), $atts ) );
+
+		if ( $from == '' || $to == '' ) return '';
+
+		$types = mycred_get_types();
+		if ( ! array_key_exists( $from, $types ) || ! array_key_exists( $to, $types ) ) return __( 'Point types not found.', 'mycred' );
+
+		$user_id = get_current_user_id();
+
+		$mycred_from = mycred( $from );
+		if ( $mycred_from->exclude_user( $user_id ) )
+			return sprintf( __( 'You are excluded from using %s.', 'mycred' ), $mycred_from->plural() );
+
+		$balance = $mycred_from->get_users_balance( $user_id, $from );
+		if ( $balance < $mycred_from->number( $min ) )
+			return __( 'Your balance is too low to use this feature.', 'mycred' );
+
+		$mycred_to = mycred( $to );
+		if ( $mycred_to->exclude_user( $user_id ) )
+			return sprintf( __( 'You are excluded from using %s.', 'mycred' ), $mycred_to->plural() );
+
+		global $mycred_exchange;
+
+		$token = mycred_create_token( array( $from, $to, $user_id, $rate, $min ) );
+
+		ob_start(); ?>
+
+<style type="text/css">
+#mycred-exchange table tr td { width: 50%; }
+#mycred-exchange table tr td label { display: block; font-weight: bold; font-size: 12px; }
+#mycred-exchange { margin-bottom: 24px; }
+.alert-success { color: green; }
+.alert-warning { color: red; }
+</style>
+<div class="mycred-exchange">
+	<form action="" method="post">
+		<h3><?php printf( __( 'Convert <span>%s</span> to <span>%s</span>', 'mycred' ), $mycred_from->plural(), $mycred_to->plural() ); ?></h3>
+
+		<?php if ( isset( $mycred_exchange['message'] ) ) : ?>
+		<div class="alert alert-<?php if ( $mycred_exchange['success'] ) echo 'success'; else echo 'warning'; ?>"><?php echo $mycred_exchange['message']; ?></div>
+		<?php endif; ?>
+
+		<table class="table">
+			<tr>
+				<td colspan="2">
+					<label><?php printf( __( 'Your current %s balance', 'mycred' ), $mycred_from->singular() ); ?></label>
+					<p><?php echo $mycred_from->format_creds( $balance ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="mycred-exchange-amount"><?php _e( 'Amount', 'mycred' ); ?></label>
+					<input type="text" size="12" value="0" id="mycred-exchange-amount" name="mycred_exchange[amount]" />
+					<?php if ( $min != 0 ) : ?><p><small><?php printf( __( 'Minimum %s', 'mycred' ), $mycred_from->format_creds( $min ) ); ?></small></p><?php endif; ?>
+				</td>
+				<td>
+					<label for="exchange-rate"><?php _e( 'Exchange Rate', 'mycred' ); ?></label>
+					<p><?php printf( __( '1 %s = <span class="rate">%s</span> %s', 'mycred' ), $mycred_from->singular(), $rate, $mycred_to->plural() ); ?></p>
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="mycred_exchange[token]" value="<?php echo $token; ?>" />
+		<input type="hidden" name="mycred_exchange[nonce]" value="<?php echo wp_create_nonce( 'mycred-exchange' ); ?>" />
+		<input type="submit" class="btn btn-primary button button-primary" value="<?php _e( 'Exchange', 'mycred' ); ?>" />
+		<div class="clear clearfix"></div>
+	</form>
+</div>
+<?php
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return apply_filters( 'mycred_exchange_output', $output, $atts );
+	}
+endif;
+
+/**
+ * Run Exchange
+ * Intercepts and executes exchange requests.
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_run_exchange' ) ) :
+	add_filter( 'mycred_init', 'mycred_run_exchange' );
+	function mycred_run_exchange()
+	{
+		if ( ! isset( $_POST['mycred_exchange']['nonce'] ) || ! wp_verify_nonce( $_POST['mycred_exchange']['nonce'], 'mycred-exchange' ) ) return;
+
+		// Decode token
+		$token = mycred_verify_token( $_POST['mycred_exchange']['token'], 5 );
+		if ( $token === false ) return;
+
+		global $mycred_exchange;
+		list ( $from, $to, $user_id, $rate, $min ) = $token;
+
+		// Check point types
+		$types = mycred_get_types();
+		if ( ! array_key_exists( $from, $types ) || ! array_key_exists( $to, $types ) ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => __( 'Point types not found.', 'mycred' )
+			);
+			return;
+		}
+
+		$user_id = get_current_user_id();
+
+		// Check for exclusion
+		$mycred_from = mycred( $from );
+		if ( $mycred_from->exclude_user( $user_id ) ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => sprintf( __( 'You are excluded from using %s.', 'mycred' ), $mycred_from->plural() )
+			);
+			return;
+		}
+
+		// Check balance
+		$balance = $mycred_from->get_users_balance( $user_id, $from );
+		if ( $balance < $mycred_from->number( $min ) ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => __( 'Your balance is too low to use this feature.', 'mycred' )
+			);
+			return;
+		}
+
+		// Check for exclusion
+		$mycred_to = mycred( $to );
+		if ( $mycred_to->exclude_user( $user_id ) ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => sprintf( __( 'You are excluded from using %s.', 'mycred' ), $mycred_to->plural() )
+			);
+			return;
+		}
+
+		// Prep Amount
+		$amount = abs( $_POST['mycred_exchange']['amount'] );
+		$amount = $mycred_from->number( $amount );
+
+		// Make sure we are sending more then minimum
+		if ( $amount < $min ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => sprintf( __( 'You must exchange at least %s!', 'mycred' ), $mycred_from->format_creds( $min ) )
+			);
+			return;
+		}
+
+		// Make sure we have enough points
+		if ( $amount > $balance ) {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => __( 'Insufficient Funds. Please try a lower amount.', 'mycred' )
+			);
+			return;
+		}
+
+		// Let others decline
+		$reply = apply_filters( 'mycred_decline_exchange', false, compact( 'from', 'to', 'user_id', 'rate', 'min', 'amount' ) );
+		if ( $reply === false ) {
+
+			$mycred_from->add_creds(
+				'exchange',
+				$user_id,
+				0-$amount,
+				sprintf( __( 'Exchange from %s', 'mycred' ), $mycred_from->plural() ),
+				0,
+				array( 'from' => $from, 'rate' => $rate, 'min' => $min ),
+				$from
+			);
+
+			$exchanged = $mycred_to->number( ( $amount * $rate ) );
+
+			$mycred_to->add_creds(
+				'exchange',
+				$user_id,
+				$exchanged,
+				sprintf( __( 'Exchange to %s', 'mycred' ), $mycred_to->plural() ),
+				0,
+				array( 'to' => $to, 'rate' => $rate, 'min' => $min ),
+				$to
+			);
+
+			$mycred_exchange = array(
+				'success' => true,
+				'message' => sprintf( __( 'You have successfully exchanged %s into %s.', 'mycred' ), $mycred_from->format_creds( $amount ), $mycred_to->format_creds( $exchanged ) )
+			);
+
+		}
+		else {
+			$mycred_exchange = array(
+				'success' => false,
+				'message' => $reply
+			);
+			return;
+		}
+
+	}
+endif;
 ?>

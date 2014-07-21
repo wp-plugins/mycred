@@ -452,25 +452,10 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 		 * Get References
 		 * Returns all available references in the database.
 		 * @since 0.1
-		 * @version 1.0.1
+		 * @version 1.1
 		 */
 		public function get_refs( $req = array() ) {
-			$refs = wp_cache_get( 'mycred_references' );
-
-			if ( false === $refs ) {
-				global $wpdb;
-
-				$refs = $wpdb->get_col( $wpdb->prepare( "
-					SELECT log.ref 
-					FROM {$this->core->log_table} log 
-					WHERE %s <> %s
-						AND ctype = %s;", 'ref', '', $this->args['ctype'] ) );
-
-				if ( $refs ) {
-					$refs = array_unique( $refs );
-					wp_cache_set( 'mycred_references', $refs );
-				}
-			}
+			$refs = mycred_get_used_references( $this->args['ctype'] );
 
 			foreach ( $refs as $i => $ref ) {
 				if ( ! empty( $req ) && ! in_array( $ref, $req ) )

@@ -2,7 +2,7 @@
 /**
  * Addon: Ranks
  * Addon URI: http://mycred.me/add-ons/ranks/
- * Version: 1.2
+ * Version: 1.3
  * Description: Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank. 
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -115,7 +115,6 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 		 * @version 1.1
 		 */
 		public function module_admin_init() {
-			add_action( 'admin_print_styles-edit-mycred_rank',    array( $this, 'ranks_page_header' ) );
 			add_filter( 'manage_mycred_rank_posts_columns',       array( $this, 'adjust_column_headers' ) );
 			add_action( 'manage_mycred_rank_posts_custom_column', array( $this, 'adjust_column_content' ), 10, 2 );
 
@@ -283,7 +282,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 			);
 
 			// Rewrite
-			if ( $this->rank['public'] && !empty( $this->rank['slug'] ) ) {
+			if ( $this->rank['public'] && ! empty( $this->rank['slug'] ) ) {
 				$args['rewrite'] = array( 'slug' => $this->rank['slug'] );
 			}
 			register_post_type( 'mycred_rank', apply_filters( 'mycred_register_ranks', $args ) );
@@ -292,7 +291,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 		/**
 		 * AJAX: Calculate Totals
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function calculate_totals() {
 			// Security
@@ -305,15 +304,36 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 			FROM {$this->core->log_table} 
 			GROUP BY user_id;", 'manual' ), $this ) );
 
-			$total_key = apply_filters( 'mycred_ranks_total_key', 'mycred_default_total', $this );
+			// Get total key
+			$total_key = 'mycred_default';
+			if ( $this->core->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->core->use_central_logging ) {
+				$total_key .= '_' . $GLOBALS['blog_id'];
+
+				// Clean up old keys
+				$wpdb->delete(
+					$wpdb->usermeta,
+					array( 'meta_key' => $total_key ),
+					array( '%s' )
+				);
+			}
+			$total_key .= '_total';
+
+			// Clean up old keys
+			$wpdb->delete(
+				$wpdb->usermeta,
+				array( 'meta_key' => $total_key ),
+				array( '%s' )
+			);
+
+			$total_key = apply_filters( 'mycred_ranks_total_key', $total_key, $this );
 
 			$count = 0;
 			if ( $users ) {
 				foreach ( $users as $user ) {
 					if ( $user->total == 0 ) continue;
 
-					update_user_meta( $user->ID, $total_key, $user->total );
-					mycred_find_users_rank( $user->ID, true, 0, $total_key );
+					mycred_update_user_meta( $user->ID, 'mycred_default', '_total', $user->total );
+					mycred_find_users_rank( $user->ID, true, 0 );
 
 					$count = $count+1;
 				}
@@ -329,7 +349,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 		 * Balance Adjustment
 		 * Check if users rank should change.
 		 * @since 1.1
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		public function update_balance( $user_id, $current_balance, $amount, $type ) {
 			if ( $type != 'mycred_default' ) return;
@@ -337,6 +357,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 			if ( $this->rank['base'] == 'total' ) {
 				$total = mycred_get_users_total( $user_id );
 				$balance = $this->core->number( $total+$amount );
+				mycred_update_users_total( $type, compact( 'user_id', 'amount' ), $this->core );
 			}
 			else {
 				$balance = $this->core->number( $current_balance+$amount );
@@ -344,7 +365,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 
 			$balance_format = '%d';
 			if ( isset( $this->core->format['decimals'] ) && $this->core->format['decimals'] > 0 )
-				$balance_format = '%f';
+				$balance_format = 'CAST( %f AS DECIMAL( 10, ' . $this->core->format['decimals'] . ' ) )';
 
 			global $wpdb;
 
@@ -370,7 +391,11 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 				else
 					do_action( 'mycred_find_users_rank', $user_id, $rank_id );
 
-				update_user_meta( $user_id, 'mycred_rank', $rank_id );
+				$rank_meta_key = 'mycred_rank';
+				if ( is_multisite() && ! mycred_override_settings() )
+					$rank_meta_key .= $GLOBALS['blog_id'];
+
+				mycred_update_user_meta( $user_id, 'mycred_rank', '', $rank_id );
 			}
 		}
 
@@ -517,25 +542,22 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 		/**
 		 * Adjust Post Updated Messages
 		 * @since 1.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function post_updated_messages( $messages ) {
 			global $post;
 
 			$messages['mycred_rank'] = array(
 				0 => '',
-				1 => sprintf( __( 'Rank Updated. View <a href="%1$s">All Ranks</a>.', 'mycred' ), admin_url( 'edit.php?post_type=mycred_rank' ) ),
+				1 => __( 'Rank Updated.', 'mycred' ),
 				2 => '',
 				3 => '',
-				4 => sprintf( __( 'Rank Updated. View <a href="%1$s">All Ranks</a>.', 'mycred' ), admin_url( 'edit.php?post_type=mycred_rank' ) ),
+				4 => __( 'Rank Updated.', 'mycred' ),
 				5 => false,
-				6 => __( 'Rank Activated', 'mycred' ),
+				6 => __( 'Rank Enabled', 'mycred' ),
 				7 => __( 'Rank Saved', 'mycred' ),
-				8 => sprintf( __( 'Rank Submitted for approval. View <a href="%1$s">All Ranks</a>.', 'mycred' ), admin_url( 'edit.php?post_type=mycred_rank' ) ),
-				9 => sprintf(
-					__( 'Rank scheduled for: <strong>%1$s</strong>.', 'mycred' ),
-					date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) )
-					),
+				8 => __( 'Rank Updated.', 'mycred' ),
+				9 => __( 'Rank Updated.', 'mycred' ),
 				10 => ''
 			);
 
@@ -711,7 +733,7 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 		}
 
 		/**
-		 * Save Email Notice Details
+		 * Save Rank Details
 		 * @since 1.1
 		 * @version 1.1
 		 */

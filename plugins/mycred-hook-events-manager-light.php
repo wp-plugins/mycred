@@ -25,7 +25,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 	/**
 	 * Events Manager Hook
 	 * @since 1.1
-	 * @version 1.0
+	 * @version 1.2
 	 */
 	if ( ! class_exists( 'myCRED_Hook_Events_Manager' ) && class_exists( 'myCRED_Hook' ) ) {
 		class myCRED_Hook_Events_Manager extends myCRED_Hook {
@@ -52,12 +52,10 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			/**
 			 * Run
 			 * @since 1.1
-			 * @version 1.0
+			 * @version 1.1
 			 */
 			public function run() {
-				if ( $this->prefs['attend']['creds'] != 0 && get_option( 'dbem_bookings_approval' ) != 0 )
-					add_filter( 'em_bookings_add',   array( $this, 'new_booking' ), 10, 2 );
-
+				add_filter( 'em_bookings_add',       array( $this, 'new_booking' ), 10, 2 );
 				add_filter( 'em_booking_set_status', array( $this, 'adjust_booking' ), 10, 2 );
 			}
 
@@ -65,26 +63,28 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * New Booking
 			 * When users can make their own bookings.
 			 * @since 1.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function new_booking( $result, $booking ) {
-				$user_id = $booking->person->id;
-				// Check for exclusion
-				if ( $this->core->exclude_user( $user_id ) ) return $result;
+				// If bookings get automatically approved and booking was successfully added, add points
+				if ( get_option( 'dbem_bookings_approval' ) == 0 && $result === true ) {
 
-				// Successfull Booking
-				if ( $result === true ) {
-					// Execute
+					// Check for exclusion
+					if ( $this->core->exclude_user( $booking->person_id ) ) return $result;
+
+					// Successfull Booking
 					$this->core->add_creds(
 						'event_booking',
-						$user_id,
+						$booking->person_id,
 						$this->prefs['attend']['creds'],
 						$this->prefs['attend']['log'],
 						$booking->event->post_id,
 						array( 'ref_type' => 'post' ),
 						$this->mycred_type
 					);
+
 				}
+
 				return $result;
 			}
 
@@ -93,7 +93,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 			 * Incase an administrator needs to approve bookings first or if booking gets
 			 * cancelled.
 			 * @since 1.1
-			 * @version 1.1
+			 * @version 1.2
 			 */
 			public function adjust_booking( $result, $booking ) {
 				$user_id = $booking->person->id;
@@ -133,6 +133,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 						$this->mycred_type
 					);
 				}
+
 				return $result;
 			}
 

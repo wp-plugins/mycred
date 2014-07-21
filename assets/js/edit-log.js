@@ -3,7 +3,7 @@
  * These scripts are used to edit or delete entries
  * in the myCRED Log.
  * @since 1.4
- * @version 1.0
+ * @version 1.1
  */
 jQuery(function($) {
 
@@ -173,14 +173,11 @@ jQuery(function($) {
 
 				if ( response.success ) {
 					effected_row.addClass( 'updated-row' );
-
-					effected_row.children( 'td.column-entry' ).children( 'div.raw' ).empty();
-					effected_row.children( 'td.column-entry' ).children( 'div.raw' ).text( response.data.new_entry_raw );
+					effected_row.children( 'td.column-entry' ).children( 'div.raw' ).empty().html( response.data.new_entry_raw );
 
 					$( '#edit-mycred-log-entry #mycred-raw-entry' ).val( response.data.new_entry );
 
-					effected_row.children( 'td.column-entry' ).children( 'div.entry' ).empty();
-					effected_row.children( 'td.column-entry' ).children( 'div.entry' ).text( response.data.new_entry );
+					effected_row.children( 'td.column-entry' ).children( 'div.entry' ).empty().html( response.data.new_entry );
 
 					$( '#edit-mycred-log-entry #mycred-new-entry' ).val( response.data.new_entry_raw );
 
@@ -207,4 +204,75 @@ jQuery(function($) {
 		mycred_update_log_entry( $(this).next().val(), $( 'input#mycred-new-entry' ).val(), $(this) );
 	});
 
+	/* global setUserSetting, ajaxurl, commonL10n, alert, confirm, toggleWithKeyboard, pagenow */
+	var showNotice, adminMenu, columns, validateForm, screenMeta;
+
+	// Removed in 3.3.
+	// (perhaps) needed for back-compat
+	adminMenu = {
+		init : function() {},
+		fold : function() {},
+		restoreMenuState : function() {},
+		toggle : function() {},
+		favorites : function() {}
+	};
+
+	// show/hide/save table columns
+	columns = {
+		init : function() {
+			var that = this;
+			$('.hide-column-tog', '#adv-settings').click( function() {
+				var $t = $(this), column = $t.val();
+				if ( $t.prop('checked') )
+					that.checked(column);
+				else
+					that.unchecked(column);
+
+				columns.saveManageColumnsState();
+			});
+		},
+
+		saveManageColumnsState : function() {
+			var hidden = this.hidden();
+			$.post(ajaxurl, {
+				action: 'hidden-columns',
+				hidden: hidden,
+				screenoptionnonce: $('#screenoptionnonce').val(),
+				page: pagenow
+			});
+		},
+
+		checked : function(column) {
+			$('.' + column).show();
+			this.colSpanChange(+1);
+		},
+
+		unchecked : function(column) {
+			$('.' + column).hide();
+			this.colSpanChange(-1);
+		},
+
+		hidden : function() {
+			return $('.manage-column').filter(':hidden').map(function() { return this.id; }).get().join(',');
+		},
+
+		useCheckboxesForHidden : function() {
+			this.hidden = function(){
+				return $('.hide-column-tog').not(':checked').map(function() {
+					var id = this.id;
+					return id.substring( id, id.length - 5 );
+				}).get().join(',');
+			};
+		},
+
+		colSpanChange : function(diff) {
+			var $t = $('table').find('.colspanchange'), n;
+			if ( !$t.length )
+				return;
+			n = parseInt( $t.attr('colspan'), 10 ) + diff;
+			$t.attr('colspan', n.toString());
+		}
+	};
+
+	$(document).ready(function(){columns.init();});
 });

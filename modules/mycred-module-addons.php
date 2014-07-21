@@ -136,17 +136,28 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 		/**
 		 * Get Addons
 		 * @since 0.1
-		 * @version 1.4
+		 * @version 1.5
 		 */
 		public function get( $save = false ) {
 			$installed = array();
 
+			// Badges Add-on
+			$installed['badges'] = array(
+				'name'        => 'Badges',
+				'description' => __( 'Give your users badges based on their interaction with your website.', 'mycred' ),
+				'addon_url'   => 'http://mycred.me/add-ons/badges/',
+				'version'     => '1.0',
+				'author'      => 'Gabriel S Merovingi',
+				'author_url'  => 'http://www.merovingi.com',
+				'path'        => myCRED_ADDONS_DIR . 'badges/myCRED-addon-badges.php'
+			);
+
 			// Banking Add-on
 			$installed['banking'] = array(
-				'name'        => __( 'Banking', 'mycred' ),
+				'name'        => 'Banking',
 				'description' => __( 'Setup recurring payouts or offer / charge interest on user account balances.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/banking/',
-				'version'     => '1.0',
+				'version'     => '1.1',
 				'author'      => 'Gabriel S Merovingi',
 				'author_url'  => 'http://www.merovingi.com',
 				'path'        => myCRED_ADDONS_DIR . 'banking/myCRED-addon-banking.php'
@@ -157,7 +168,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 				'name'        => '<strong>buy</strong>CRED',
 				'description' => __( 'The <strong>buy</strong>CRED Add-on allows your users to buy points using PayPal, Skrill (Moneybookers) or NETbilling. <strong>buy</strong>CRED can also let your users buy points for other members.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/buycred/',
-				'version'     => '1.2',
+				'version'     => '1.4',
 				'author'      => 'Gabriel S Merovingi',
 				'author_url'  => 'http://www.merovingi.com',
 				'path'        => myCRED_ADDONS_DIR . 'buy-creds/myCRED-addon-buy-creds.php'
@@ -165,7 +176,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Coupons Add-on
 			$installed['coupons'] = array(
-				'name'        => __( 'Coupons', 'mycred' ),
+				'name'        => 'Coupons',
 				'description' => __( 'The coupons add-on allows you to create coupons that users can use to add points to their accounts.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/coupons/',
 				'version'     => '1.0',
@@ -176,7 +187,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Email Notices Add-on
 			$installed['email-notices'] = array(
-				'name'        => __( 'Email Notices', 'mycred' ),
+				'name'        => 'Email Notice',
 				'description' => __( 'Create email notices for any type of myCRED instance.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/email-notices/',
 				'version'     => '1.3',
@@ -187,7 +198,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Gateway Add-on
 			$installed['gateway'] = array(
-				'name'        => __( 'Gateway', 'mycred' ),
+				'name'        => 'Gateway',
 				'description' => __( 'Let your users pay using their <strong>my</strong>CRED points balance. Supported Carts: WooCommerce, MarketPress and WP E-Commerce. Supported Event Bookings: Event Espresso and Events Manager (free & pro).', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/gateway/',
 				'version'     => '1.4',
@@ -198,7 +209,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Notifications Add-on
 			$installed['notifications'] = array(
-				'name'        => __( 'Notifications', 'mycred' ),
+				'name'        => 'Notifications',
 				'description' => __( 'Create pop-up notifications for when users gain or loose points.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/notifications/',
 				'version'     => '1.1',
@@ -210,10 +221,10 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Ranks Add-on
 			$installed['ranks'] = array(
-				'name'        => __( 'Ranks', 'mycred' ),
+				'name'        => 'Ranks',
 				'description' => __( 'Create ranks for users reaching a certain number of %_plural% with the option to add logos for each rank.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/ranks/',
-				'version'     => '1.2',
+				'version'     => '1.3',
 				'author'      => 'Gabriel S Merovingi',
 				'author_url'  => 'http://www.merovingi.com',
 				'path'        => myCRED_ADDONS_DIR . 'ranks/myCRED-addon-ranks.php'
@@ -221,7 +232,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Sell Content Add-on
 			$installed['sell-content'] = array(
-				'name'        => __( 'Sell Content', 'mycred' ),
+				'name'        => 'Sell Content',
 				'description' => __( 'This add-on allows you to sell posts, pages or any public post types on your website. You can either sell the entire content or using our shortcode, sell parts of your content allowing you to offer "teasers".', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/sell-content/',
 				'version'     => '1.2.1',
@@ -232,7 +243,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Transfer Add-on
 			$installed['transfer'] = array(
-				'name'        => __( 'Transfers', 'mycred' ),
+				'name'        => 'Transfers',
 				'description' => __( 'Allow your users to send or "donate" points to other members by either using the mycred_transfer shortcode or the myCRED Transfer widget.', 'mycred' ),
 				'addon_url'   => 'http://mycred.me/add-ons/transfer/',
 				'version'     => '1.2',
@@ -361,7 +372,7 @@ if ( ! class_exists( 'myCRED_Addons_Module' ) ) {
 
 			// Pro URL
 			if ( isset( $data['pro_url'] ) && ! empty( $data['pro_url'] ) )
-				$info[] = '<a href="' . $data['pro_url'] . '" target="_blank">' . __( 'Get Pro', 'mycred' ) . '</a>';
+				$info[] = '<a href="' . $data['pro_url'] . '" target="_blank" style="color:red;">' . __( 'Get Pro', 'mycred' ) . '</a>';
 
 			if ( ! empty( $info ) )
 				return implode( ' | ', $info );

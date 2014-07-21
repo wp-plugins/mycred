@@ -45,21 +45,16 @@ if ( ! class_exists( 'myCRED_Network_Module' ) ) {
 		/**
 		 * Add Network Menu Items
 		 * @since 0.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function add_menu() {
-			global $wp_version;
-			$menu_icon = 'dashicons-star-filled';
-			if ( version_compare( $wp_version, '3.8', '<' ) )
-				$menu_icon = '';
-
 			$pages[] = add_menu_page(
 				__( 'myCRED', 'mycred' ),
 				__( 'myCRED', 'mycred' ),
 				'manage_network_options',
 				'myCRED_Network',
 				'',
-				$menu_icon
+				'dashicons-star-filled'
 			);
 			$pages[] = add_submenu_page(
 				'myCRED_Network',
@@ -107,13 +102,6 @@ if ( ! class_exists( 'myCRED_Network_Module' ) ) {
 			$image = plugins_url( 'assets/images/logo-menu.png', myCRED_THIS ); ?>
 
 <style type="text/css">
-<?php if ( version_compare( $wp_version, '3.8', '<' ) ) : ?>
-#icon-myCRED, .icon32-posts-mycred_email_notice, .icon32-posts-mycred_rank { background-image: url(<?php echo apply_filters( 'mycred_icon', plugins_url( 'assets/images/cred-icon32.png', myCRED_THIS ) ); ?>); }
-#adminmenu .toplevel_page_myCRED_Network div.wp-menu-image { background-image: url(<?php echo $image; ?>); background-position: 1px -28px; }
-#adminmenu .toplevel_page_myCRED_Network:hover div.wp-menu-image, 
-#adminmenu .toplevel_page_myCRED_Network.current div.wp-menu-image, 
-#adminmenu .toplevel_page_myCRED_Network .wp-menu-open div.wp-menu-image { background-position: 1px 0; }
-<?php endif; ?>
 h4:before { float:right; padding-right: 12px; font-size: 14px; font-weight: normal; color: silver; }
 h4.ui-accordion-header.ui-state-active:before { content: "<?php _e( 'click to close', 'mycred' ); ?>"; }
 h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' ); ?>"; }
@@ -162,11 +150,11 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			global $mycred_network;
 
 			$prefs = mycred_get_settings_network();
-			$name = apply_filters( 'mycred_label', myCRED_NAME ); ?>
+			$name = mycred_label(); ?>
 
 	<div class="wrap" id="myCRED-wrap">
 		<div id="icon-myCRED" class="icon32"><br /></div>
-		<h2> <?php echo sprintf( __( '%s Network', 'mycred' ), mycred_label() ); ?></h2>
+		<h2> <?php echo sprintf( __( '%s Network', 'mycred' ), $name ); ?></h2>
 		<?php
 			
 			// Inform user that myCRED has not yet been setup

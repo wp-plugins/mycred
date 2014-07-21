@@ -3,13 +3,13 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.4.7
+ * Version: 1.5
  * Tags: points, tokens, credit, management, reward, charge, buddypress, bbpress, jetpack, woocommerce, marketpress, wp e-commerce, gravity forms, simplepress
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
  * Author Email: support@mycred.me
- * Requires at least: WP 3.5
- * Tested up to: WP 3.9.1
+ * Requires at least: WP 3.8
+ * Tested up to: WP 4.0
  * Text Domain: mycred
  * Domain Path: /lang
  * License: GPLv2 or later
@@ -20,7 +20,7 @@
  * BuddyPress Compatible: yes
  * Forum URI: http://mycred.me/support/forums/
  */
-define( 'myCRED_VERSION',      '1.4.7' );
+define( 'myCRED_VERSION',      '1.5' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -72,7 +72,7 @@ if ( ! function_exists( 'mycred_load' ) ) :
 		require_once( myCRED_INCLUDES_DIR . 'mycred-log.php' );
 		require_once( myCRED_INCLUDES_DIR . 'mycred-network.php' );
 		require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
-		include_once( myCRED_INCLUDES_DIR . '/mycred-update.php' );
+		include_once( myCRED_INCLUDES_DIR . 'mycred-update.php' );
 
 		// Bail now if the setup needs to run
 		if ( is_mycred_ready() === false ) return;
@@ -177,7 +177,7 @@ endif;
 /**
  * myCRED Plugin Startup
  * @since 1.3
- * @version 1.2
+ * @version 1.5
  */
 if ( ! function_exists( 'mycred_plugin_start_up' ) ) :
 	function mycred_plugin_start_up()
@@ -259,6 +259,12 @@ if ( ! function_exists( 'mycred_plugin_start_up' ) ) :
 		if ( function_exists( 'rtmedia_autoloader' ) )
 			require_once( myCRED_PLUGINS_DIR . 'mycred-hook-buddypress-media.php' );
 
+		if ( function_exists( 'install_ShareThis' ) )
+			require_once( myCRED_PLUGINS_DIR . 'mycred-hook-sharethis.php' );
+
+		if ( class_exists( 'WooCommerce' ) )
+			require_once( myCRED_PLUGINS_DIR . 'mycred-hook-woocommerce.php' );
+
 		// Load hooks
 		require_once( myCRED_MODULES_DIR . 'mycred-module-hooks.php' );
 		foreach ( $mycred_types as $type => $title ) {
@@ -282,6 +288,11 @@ if ( ! function_exists( 'mycred_plugin_start_up' ) ) :
 			$mycred_modules['mycred_default']['buddypress']->load();
 		}
 
+		// Load admin
+		require_once( myCRED_INCLUDES_DIR . 'mycred-admin.php' );
+		$admin = new myCRED_Admin();
+		$admin->load();
+
 		do_action( 'mycred_pre_init' );
 	}
 endif;
@@ -289,7 +300,7 @@ endif;
 /**
  * Init
  * @since 1.3
- * @version 1.1
+ * @version 1.2
  */
 if ( ! function_exists( 'mycred_init' ) ) :
 	function mycred_init()
@@ -304,12 +315,13 @@ if ( ! function_exists( 'mycred_init' ) ) :
 
 		// Shortcodes
 		add_shortcode( 'mycred_history',       'mycred_render_shortcode_history' );
-		add_shortcode( 'mycred_leaderboard',   'mycred_render_leaderboard' );
-		add_shortcode( 'mycred_my_ranking',    'mycred_render_my_ranking' );
+		add_shortcode( 'mycred_leaderboard',   'mycred_render_shortcode_leaderboard' );
+		add_shortcode( 'mycred_my_ranking',    'mycred_render_shortcode_my_ranking' );
 		add_shortcode( 'mycred_my_balance',    'mycred_render_shortcode_my_balance' );
 		add_shortcode( 'mycred_give',          'mycred_render_shortcode_give' );
 		add_shortcode( 'mycred_send',          'mycred_render_shortcode_send' );
 		add_shortcode( 'mycred_total_balance', 'mycred_render_shortcode_total' );
+		add_shortcode( 'mycred_exchange',      'mycred_render_shortcode_exchange' );
 
 		// Let others play
 		do_action( 'mycred_init' );
@@ -340,16 +352,12 @@ endif;
 /**
  * Admin Init
  * @since 1.3
- * @version 1.1
+ * @version 1.2
  */
 if ( ! function_exists( 'mycred_admin_init' ) ) :
 	function mycred_admin_init()
 	{
-		// Load admin
-		require_once( myCRED_INCLUDES_DIR . 'mycred-admin.php' );
-		$admin = new myCRED_Admin();
-		$admin->load();
-
+		// Dashboard Overview
 		require_once( myCRED_INCLUDES_DIR . 'mycred-overview.php' );
 
 		// Register importers
@@ -373,20 +381,21 @@ endif;
 /**
  * Remove About Page
  * @since 1.3.2
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_admin_head' ) ) :
 	function mycred_admin_head()
 	{
 		remove_submenu_page( 'index.php', 'mycred' );
 		remove_submenu_page( 'index.php', 'mycred-credit' );
+		remove_submenu_page( 'users.php', 'mycred-edit-balance' );
 	}
 endif;
 
 /**
  * Adjust the Tool Bar
  * @since 1.3
- * @version 1.3.1
+ * @version 1.4
  */
 if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 	function mycred_hook_into_toolbar( $wp_admin_bar )
@@ -396,6 +405,15 @@ if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 		$user_id = get_current_user_id();
 
 		global $bp, $mycred, $mycred_types;
+
+		// Start by making sure we have usable point types
+		$usable = 0;
+		foreach ( $mycred_types as $type => $type_label ) {
+			$point_type = mycred( $type );
+			if ( ! $point_type->exclude_user( $user_id ) )
+				$usable ++;
+		}
+		if ( $usable == 0 ) return;
 
 		$main_label = __( 'Balance', 'mycred' );
 		if ( count( $mycred_types ) == 1 )
@@ -471,14 +489,8 @@ if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 
 		}
 
-		if ( $counter == 0 ) {
-			$wp_admin_bar->add_menu( array(
-				'parent' => 'mycred-account',
-				'id'     => 'mycred-account-nothing',
-				'title'  => __( 'No balances available.', 'mycred' ),
-				'href'   => false
-			) );
-		}
+		if ( $counter == 0 )
+			$wp_admin_bar->remove_menu( array( 'id' => 'mycred-account' ) );
 
 		// Let others play
 		do_action( 'mycred_tool_bar', $wp_admin_bar, $mycred );
@@ -657,7 +669,7 @@ if ( ! function_exists( 'mycred_enqueue_admin' ) ) :
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'title'   => __( 'Edit Log Entry', 'mycred' ),
 				'close'   => __( 'Close', 'mycred' ),
-				'working' => __( 'Updating...', 'mycred' ),
+				'working' => __( 'Processing...', 'mycred' ),
 				'messages' => array(
 					'delete_row'  => __( 'Are you sure you want to delete this log entry? This can not be undone!', 'mycred' ),
 					'updated_row' => __( 'Log entry updated', 'mycred' )
@@ -737,10 +749,10 @@ if ( ! function_exists( 'mycred_plugin_description_links' ) ) :
 			return $links;
 		}
 
-		$links[] = '<a href="' . admin_url( 'index.php?page=mycred' ) . '">' . __( 'About', 'mycred' ) . '</a>';
-		$links[] = '<a href="http://mycred.me/support/tutorials/" target="_blank">' . __( 'Tutorials', 'mycred' ) . '</a>';
-		$links[] = '<a href="http://codex.mycred.me/" target="_blank">' . __( 'Codex', 'mycred' ) . '</a>';
-		$links[] = '<a href="http://mycred.me/store/" target="_blank">' . __( 'Store', 'mycred' ) . '</a>';
+		$links[] = '<a href="' . admin_url( 'index.php?page=mycred' ) . '">About</a>';
+		$links[] = '<a href="http://mycred.me/support/tutorials/" target="_blank">Tutorials</a>';
+		$links[] = '<a href="http://codex.mycred.me/" target="_blank">Codex</a>';
+		$links[] = '<a href="http://mycred.me/store/" target="_blank">Store</a>';
 
 		return $links;
 	}
@@ -770,3 +782,4 @@ if ( ! function_exists( 'mycred_reset_key' ) ) :
 		$protect->reset_key();
 	}
 endif;
+

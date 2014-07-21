@@ -128,11 +128,11 @@ if ( class_exists( 'WP_Importer' ) ) {
 
 						$method = trim( $_POST['method'] );
 						if ( $method == 'add' ) {
-							$current_balance = get_user_meta( $user->ID, $point_type, true );
+							$current_balance = mycred_get_user_meta( $user->ID, $point_type, '', true );
 							$balance = $current_balance+$balance;
 						}
 						
-						update_user_meta( $user->ID, $point_type, $balance );
+						mycred_update_user_meta( $user->ID, $point_type, '', $balance );
 						
 						if ( ! empty( $log_entry ) ) {
 							$wpdb->insert(

@@ -89,6 +89,13 @@ if ( ! class_exists( 'myCRED_Hooks_Module' ) ) {
 				'callback'     => array( 'myCRED_Hook_Registration' )
 			);
 
+			// Site Visits
+			$installed['site_visit'] = array(
+				'title'        => __( '%plural% for daily visits', 'mycred' ),
+				'description'  => __( 'Award %_plural% for users visiting your website on a daily basis.', 'mycred' ),
+				'callback'     => array( 'myCRED_Hook_Site_Visits' )
+			);
+
 			// Logins
 			$installed['logging_in'] = array(
 				'title'       => __( '%plural% for logins', 'mycred' ),
@@ -255,7 +262,7 @@ if ( ! class_exists( 'myCRED_Hooks_Module' ) ) {
 /**
  * Hook for registrations
  * @since 0.1
- * @version 1.0
+ * @version 1.1
  */
 if ( ! class_exists( 'myCRED_Hook_Registration' ) ) {
 	class myCRED_Hook_Registration extends myCRED_Hook {
@@ -276,11 +283,23 @@ if ( ! class_exists( 'myCRED_Hook_Registration' ) ) {
 		/**
 		 * Run
 		 * @since 0.1
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function run() {
-			if ( $this->prefs['creds'] != 0 )
+			if ( function_exists( 'buddypress' ) && apply_filters( 'bp_core_signup_send_activation_key', true ) )
+				add_action( 'bp_core_activated_user', array( $this, 'verified_signup' ) );
+			else
 				add_action( 'user_register', array( $this, 'registration' ) );
+		}
+
+		/**
+		 * Signup Veification
+		 * If BuddyPress signup verification is used, we award points first now.
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		public function verified_signup( $user_id ) {
+			$this->registration( $user_id );
 		}
 
 		/**
@@ -328,6 +347,100 @@ if ( ! class_exists( 'myCRED_Hook_Registration' ) ) {
 	<li>
 		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo esc_attr( $prefs['log'] ); ?>" class="long" /></div>
 		<span class="description"><?php echo $this->available_template_tags( array( 'general', 'user' ) ); ?></span>
+	</li>
+</ol>
+<?php
+		}
+	}
+}
+
+/**
+ * Hook for site visits
+ * @since 1.5
+ * @version 1.0
+ */
+if ( ! class_exists( 'myCRED_Hook_Site_Visits' ) ) {
+	class myCRED_Hook_Site_Visits extends myCRED_Hook {
+
+		/**
+		 * Construct
+		 */
+		function __construct( $hook_prefs, $type = 'mycred_default' ) {
+			parent::__construct( array(
+				'id'       => 'site_visit',
+				'defaults' => array(
+					'creds'   => 1,
+					'log'     => '%plural% for site visit'
+				)
+			), $hook_prefs, $type );
+		}
+
+		/**
+		 * Run
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		public function run() {
+			// Make sure user is logged in. Also to prevent unneccery db queries we
+			// check to make sure the user does not have the cookie.
+			if ( is_user_logged_in() && ! isset( $_COOKIE['mycred_site_visit'] ) )
+				add_action( 'mycred_init', array( $this, 'visit' ) );
+		}
+
+		/**
+		 * Visit Hook
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		public function visit() {
+			// Current User ID
+			$user_id = get_current_user_id();
+
+			// Set cookie to prevent db queries again today.
+			$lifespan = (int) ( 24*3600 ) - ( date_i18n( 'H' ) * 3600 + date_i18n( 'i' ) * 60 + date_i18n( 's' ) );
+			setcookie( 'mycred_site_visit', 1, $lifespan );
+
+			// Make sure user is not excluded
+			if ( $this->core->exclude_user( $user_id ) === true ) return;
+
+			// Store todays date as an integer
+			$today = (int) apply_filter( 'mycred_site_visit_id', date_i18n( 'Ynj' ) );
+			$data = '';
+
+			// Make sure this is unique
+			if ( $this->core->has_entry( 'site_visit', $user_id, $today, $data, $this->mycred_type ) ) return;
+
+			// Execute
+			$this->core->add_creds(
+				'site_visit',
+				$user_id,
+				$this->prefs['creds'],
+				$this->prefs['log'],
+				$today,
+				$data,
+				$this->mycred_type
+			);
+		}
+
+		/**
+		 * Preference for Site Visit Hook
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		public function preferences() {
+			$prefs = $this->prefs; ?>
+
+<label class="subheader"><?php echo $this->core->plural(); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'creds' ); ?>" id="<?php echo $this->field_id( 'creds' ); ?>" value="<?php echo $this->core->number( $prefs['creds'] ); ?>" size="8" /></div>
+	</li>
+</ol>
+<label class="subheader"><?php _e( 'Log template', 'mycred' ); ?></label>
+<ol>
+	<li>
+		<div class="h2"><input type="text" name="<?php echo $this->field_name( 'log' ); ?>" id="<?php echo $this->field_id( 'log' ); ?>" value="<?php echo esc_attr( $prefs['log'] ); ?>" class="long" /></div>
+		<span class="description"><?php echo $this->available_template_tags( array( 'general' ) ); ?></span>
 	</li>
 </ol>
 <?php
@@ -443,9 +556,9 @@ if ( ! class_exists( 'myCRED_Hook_Logging_In' ) ) {
 			$limit = apply_filters( 'mycred_hook_login_min_limit', 60 );
 
 			if ( ! $this->is_main_type )
-				$past = get_user_meta( $user_id, 'mycred_last_login_' . $this->mycred_type, true );
+				$past = mycred_get_user_meta( $user_id, 'mycred_last_login_' . $this->mycred_type, '', true );
 			else
-				$past = get_user_meta( $user_id, 'mycred_last_login', true );
+				$past = mycred_get_user_meta( $user_id, 'mycred_last_login', '', true );
 
 			if ( $past == '' )
 				$past = $now-$limit;
@@ -496,9 +609,9 @@ if ( ! class_exists( 'myCRED_Hook_Logging_In' ) ) {
 				$new_timestamp = $now;
 
 			if ( ! $this->is_main_type )
-				update_user_meta( $user_id, 'mycred_last_login_' . $this->mycred_type, $new_timestamp );
+				mycred_update_user_meta( $user_id, 'mycred_last_login_' . $this->mycred_type, '', $new_timestamp );
 			else
-				update_user_meta( $user_id, 'mycred_last_login', $new_timestamp );
+				mycred_update_user_meta( $user_id, 'mycred_last_login', '', $new_timestamp );
 
 			return true;
 		}
@@ -773,7 +886,7 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 		 */
 		public function new_comment( $comment_id, $comment_status ) {
 			// Marked SPAM
-			if ( $comment_status === 'spam' )
+			if ( $comment_status == 'spam' )
 				$this->comment_transitions( 'spam', 'unapproved', $comment_id );
 
 			// Approved comment
@@ -820,7 +933,7 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 			if ( $comment === NULL ) return;
 
 			// Ignore Pingbacks or Trackbacks
-			if ( ! empty( $comment->comment_type ) ) return;
+			if ( $comment->comment_type != '' ) return;
 
 			// Logged out users miss out
 			if ( $comment->user_id == 0 ) return;
@@ -830,7 +943,7 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 			
 			// Get content author
 			$content_author = NULL;
-			if ( isset( $comment->comment_post_ID ) || ! empty( $comment->comment_post_ID ) ) {
+			if ( isset( $comment->comment_post_ID ) || $comment->comment_post_ID != '' ) {
 				$post = get_post( (int) $comment->comment_post_ID );
 				$content_author = $post->post_author;
 			}
@@ -969,9 +1082,9 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 
 				// Grab limit
 				if ( ! $this->is_main_type )
-					$limit = get_user_meta( $user_id, 'mycred_comment_limit_post_' . $this->mycred_type, true );
+					$limit = mycred_get_user_meta( $user_id, 'mycred_comment_limit_post_' . $this->mycred_type, '', true );
 				else
-					$limit = get_user_meta( $user_id, 'mycred_comment_limit_post', true );
+					$limit = mycred_get_user_meta( $user_id, 'mycred_comment_limit_post', '', true );
 
 				// Apply default if none exist
 				if ( empty( $limit ) ) $limit = array( $post_id => $post_limit );
@@ -989,9 +1102,9 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 
 				// Save
 				if ( ! $this->is_main_type )
-					update_user_meta( $user_id, 'mycred_comment_limit_post_' . $this->mycred_type, $limit );
+					mycred_update_user_meta( $user_id, 'mycred_comment_limit_post_' . $this->mycred_type, '', $limit );
 				else
-					update_user_meta( $user_id, 'mycred_comment_limit_post', $limit );
+					mycred_update_user_meta( $user_id, 'mycred_comment_limit_post', '', $limit );
 
 			}
 
@@ -1001,9 +1114,9 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 
 				// Grab limit
 				if ( ! $this->is_main_type )
-					$limit = get_user_meta( $user_id, 'mycred_comment_limit_day_' . $this->mycred_type, true );
+					$limit = mycred_get_user_meta( $user_id, 'mycred_comment_limit_day_' . $this->mycred_type, '', true );
 				else
-					$limit = get_user_meta( $user_id, 'mycred_comment_limit_day', true );
+					$limit = mycred_get_user_meta( $user_id, 'mycred_comment_limit_day', '', true );
 
 				// Apply default if none exist
 				if ( empty( $limit ) ) $limit = array();
@@ -1025,9 +1138,9 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 
 				// Save
 				if ( ! $this->is_main_type )
-					update_user_meta( $user_id, 'mycred_comment_limit_day_' . $this->mycred_type, $limit );
+					mycred_update_user_meta( $user_id, 'mycred_comment_limit_day_' . $this->mycred_type, '', $limit );
 				else
-					update_user_meta( $user_id, 'mycred_comment_limit_day', $limit );
+					mycred_update_user_meta( $user_id, 'mycred_comment_limit_day', '', $limit );
 
 			}
 
@@ -1272,7 +1385,7 @@ if ( ! class_exists( 'myCRED_Hook_Click_Links' ) ) {
 		/**
 		 * AJAX Call Handler
 		 * @since 1.1
-		 * @version 1.3.2
+		 * @version 1.4
 		 */
 		public function ajax_call_link_points() {
 			// We must be logged in
@@ -1287,12 +1400,13 @@ if ( ! class_exists( 'myCRED_Hook_Click_Links' ) ) {
 			// Check if user should be excluded
 			if ( $this->core->exclude_user( $user_id ) ) die( json_encode( 200 ) );
 
-			// Key
+			// Token
 			if ( ! isset( $_POST['key'] ) ) die( json_encode( 300 ) );
-			require_once( myCRED_INCLUDES_DIR . 'mycred-protect.php' );
-			$protect = new myCRED_Protect();
-			list ( $amount, $type, $id ) = $test = array_pad( explode( ':', $protect->do_decode( $_POST['key'] ) ), 3, '' );
-			if ( $amount == '' || $type == '' || $id == '' ) die( json_encode( $test ) );
+			$token = mycred_verify_token( $_POST['key'], 3 );
+			if ( $token === false ) die( json_encode( 305 ) );
+
+			list ( $amount, $type, $id ) = $token;
+			if ( $amount == '' || $type == '' || $id == '' ) die( json_encode( 310 ) );
 
 			// Bail now if this was not intenteded for this type
 			if ( $type != $this->mycred_type ) return;
@@ -1517,8 +1631,10 @@ if ( ! class_exists( 'myCRED_Hook_Video_Views' ) ) {
 			// Decode the key giving us the video shortcode setup
 			// This will prevent users from manipulating the shortcode output
 			$protect = mycred_protect();
-			$setup = $protect->do_decode( $_POST['setup'] );
-			list ( $source, $video_id, $amount, $logic, $interval ) = array_pad( explode( ':', $setup ), 5, '' );
+			$setup = mycred_verify_token( $_POST['setup'], 5 );
+			if ( $setup === false ) die();
+
+			list ( $source, $video_id, $amount, $logic, $interval ) = $setup;
 
 			// Required
 			if ( empty( $source ) || empty( $video_id ) ) die();
@@ -1789,7 +1905,7 @@ jQuery(function($){
 /**
  * Hook for affiliations
  * @since 1.4
- * @version 1.0
+ * @version 1.1
  */
 if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 	class myCRED_Hook_Affiliate extends myCRED_Hook {
@@ -1865,6 +1981,11 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 			// Points for signups
 			if ( $this->prefs['signup']['creds'] != 0 )
 				add_action( 'user_register', array( $this, 'site_signup' ) );
+
+			// Hook into user activation
+			if ( function_exists( 'buddypress' ) && apply_filters( 'bp_core_signup_send_activation_key', true ) )
+				add_action( 'bp_core_activated_user', array( $this, 'verified_signup' ) );
+
 		}
 
 		/**
@@ -1954,7 +2075,7 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 		/**
 		 * Visits
 		 * @since 1.4
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function site_visits() {
 			// Required
@@ -1966,7 +2087,7 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 
 				// Attempt to get the users IP
 				$IP = apply_filters( 'mycred_affiliate_IP', $_SERVER['REMOTE_ADDR'] );
-				if ( ! empty( $IP ) && $IP != '0.0.0.0' ) {
+				if ( $IP != '' && $IP != '0.0.0.0' ) {
 
 					// If points are awarded for visitor referrals
 					$time = time();
@@ -1981,15 +2102,15 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 							$this->mycred_type
 						);
 
-					// If we allow signups, we set a cookie now
-					if ( $this->prefs['signup']['creds'] != 0 )
-						setcookie( 'signup_ref', $_GET[ $this->ref_key ], apply_filters( 'mycred_affiliate_cookie', ( time()+3600*24 ) ) );
-
 				}
 
 			}
 
-			setcookie( 'mycred_ref', $_GET[ $this->ref_key ], ( time()+3600*24 ) );
+			setcookie( 'mycred_ref', $_GET[ $this->ref_key ], apply_filters( 'mycred_affiliate_cookie', ( time()+3600*24 ), false ) );
+
+			// If we allow signups, we set a cookie now
+			if ( $this->prefs['signup']['creds'] != 0 )
+				setcookie( 'signup_ref', $_GET[ $this->ref_key ], apply_filters( 'mycred_affiliate_cookie', ( time()+3600*24 ), true ) );
 
 			// Let others play
 			do_action( 'mycred_affiliate_visit', $user_id, $IP, $this );
@@ -2020,18 +2141,55 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 
 			// If points are awarded for visitor referrals
 			if ( $this->ref_counts( $user_id, $IP, 'signup' ) )
-				$this->core->add_creds(
-					'signup_referral',
-					$user_id,
-					$this->prefs['signup']['creds'],
-					$this->prefs['signup']['log'],
-					$new_user_id,
-					$IP,
-					$this->mycred_type
-				);
+
+				// Award when users account gets activated
+				if ( function_exists( 'buddypress' ) && apply_filters( 'bp_core_signup_send_activation_key', true ) ) {
+					mycred_add_user_meta( $new_user_id, 'referred_by', '', $user_id );
+					mycred_add_user_meta( $new_user_id, 'referred_by_IP', '', $IP );
+				}
+				// Award now
+				else {
+					$this->core->add_creds(
+						'signup_referral',
+						$user_id,
+						$this->prefs['signup']['creds'],
+						$this->prefs['signup']['log'],
+						$new_user_id,
+						$IP,
+						$this->mycred_type
+					);
+				}
 
 			// Let others play
 			do_action( 'mycred_affiliate_signup', $new_user_id, $user_id, $this );
+		}
+
+		/**
+		 * Verified Signup
+		 * If signups need to be verified, award points now.
+		 * @since 1.5
+		 * @version 1.0
+		 */
+		public function verified_signup( $user_id ) {
+			// Check if there is a referral
+			$referred_by = mycred_get_user_meta( $user_id, 'referred_by', '', true );
+			$referred_by_IP = mycred_get_user_meta( $user_id, 'referred_by_IP', '', true );
+			if ( $referred_by == '' || $referred_by_IP == '' ) return;
+
+			// Award
+			$this->core->add_creds(
+				'signup_referral',
+				$referred_by,
+				$this->prefs['signup']['creds'],
+				$this->prefs['signup']['log'],
+				$user_id,
+				$referred_by_IP,
+				$this->mycred_type
+			);
+
+			// Clean up
+			mycred_delete_user_meta( $user_id, 'referred_by' );
+			mycred_delete_user_meta( $user_id, 'referred_by_IP' );
 		}
 
 		/**
@@ -2076,12 +2234,12 @@ if ( ! class_exists( 'myCRED_Hook_Affiliate' ) ) {
 				break;
 				case 'numeric' :
 
-					$ref_id = get_user_meta( $user_id, 'mycred_affiliate_link', true );
+					$ref_id = mycred_get_user_meta( $user_id, 'mycred_affiliate_link', '', true );
 					if ( empty( $ref_id ) ) {
 						$counter = absint( get_option( 'mycred_affiliate_counter', 0 ) );
 						$number = $counter+1;
 						update_option( 'mycred_affiliate_counter', $number );
-						update_user_meta( $user_id, 'mycred_affiliate_link', $number );
+						mycred_update_user_meta( $user_id, 'mycred_affiliate_link', '', $number );
 						$ref_id = $number;
 					}
 

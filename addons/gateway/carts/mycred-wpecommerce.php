@@ -208,10 +208,11 @@ if ( ! function_exists( 'mycred_init_wpecom_construct_gateway' ) ) {
 					}
 				}
 
-				// Exit on errors
-				if ( apply_filters( 'mycred_wpcom_validate', $error ) !== false ) {
+				// Let others decline a store order
+				$decline = apply_filters( 'mycred_decline_store_purchase', $error, $purchase_log, $this );
+				if ( $decline !== false ) {
 					wpsc_delete_customer_meta( 'selected_gateway' );
-					$this->set_error_message( $error );
+					$this->set_error_message( $decline );
 					$purchase_log->delete( $this->purchase_id );
 					unset( $_SESSION['WpscGatewayErrorMessage'] );
 					$this->return_to_checkout();

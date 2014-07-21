@@ -408,7 +408,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( ! $this->is_main_type )
 					$key .= '_' . $this->mycred_type;
 
-				return (array) get_user_meta( $user_id, $key, true );
+				return (array) mycred_get_user_meta( $user_id, $key, '', true );
 			}
 
 			/**
@@ -435,7 +435,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( ! $this->is_main_type )
 					$key .= '_' . $this->mycred_type;
 
-				update_user_meta( $user_id, $key, $current );
+				mycred_update_user_meta( $user_id, $key, '', $current );
 			}
 
 			/**

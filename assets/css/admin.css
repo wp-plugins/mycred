@@ -28,6 +28,8 @@ body.version-3-8 #myCRED-wrap .h2 { line-height: 15px; font-size: 18px; }
 body.version-3-8 #myCRED-wrap .h2.description { line-height: 22px; }
 body.version-3-8 #myCRED-wrap .h2 input[type="text"] { font-size: 14px; }
 #myCRED-wrap .h2 input[type="text"], #myCRED-wrap .h2 input[type="password"] { line-height: inherit; }
+#mycred-social-media { display: block; float: right; }
+#mycred-social-media a { margin-left: 12px; }
 
 /* Accordion */
 #myCRED-wrap #accordion { margin: 24px 0; padding: 0; float: none; clear: both; }
@@ -71,11 +73,14 @@ body.version-3-8 #myCRED-wrap #accordion .ui-accordion-header { border-top: 1px 
 #myCRED-wrap #accordion h4 .remote { background-position: 0 -384px; }
 #myCRED-wrap #accordion h4 .remote.icon-active { background-position: -48px -384px; }
 
-#myCRED-wrap #accordion h4 .single { background-position: 0 -432px; }
-#myCRED-wrap #accordion h4 .multi { background-position: -48px -432px; }
+#myCRED-wrap #accordion h4 .site_visit { background-position: 0 -432px; }
+#myCRED-wrap #accordion h4 .site_visit.icon-active { background-position: -48px -432px; }
 
-#myCRED-wrap #accordion h4 .core { background-position: 0 -480px; }
-#myCRED-wrap #accordion h4 .core.icon-active { background-position: -48px -480px; }
+#myCRED-wrap #accordion h4 .single { background-position: 0 -480px; }
+#myCRED-wrap #accordion h4 .multi { background-position: -48px -480px; }
+
+#myCRED-wrap #accordion h4 .core { background-position: 0 -528px; }
+#myCRED-wrap #accordion h4 .core.icon-active { background-position: -48px -528px; }
 
 #myCRED-wrap #accordion>div { margin: 0; padding: 24px 48px 12px 48px; }
 #myCRED-wrap #accordion>div>p { margin-top: 0; }

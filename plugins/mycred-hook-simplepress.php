@@ -265,7 +265,7 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( ! $this->is_main_type )
 					$key .= '_' . $this->mycred_type;
 
-				$current = get_user_meta( $user_id, $key, true );
+				$current = mycred_get_user_meta( $user_id, $key, '', true );
 				if ( empty( $current ) || ! array_key_exists( $today, (array) $current ) ) $current[$today] = 0;
 				if ( $current[ $today ] < $this->prefs[ $id ]['limit'] ) return false;
 				return true;
@@ -287,13 +287,13 @@ if ( defined( 'myCRED_VERSION' ) ) {
 				if ( ! $this->is_main_type )
 					$key .= '_' . $this->mycred_type;
 
-				$current = get_user_meta( $user_id, $key, true );
+				$current = mycred_get_user_meta( $user_id, $key, '', true );
 				if ( empty( $current ) || ! array_key_exists( $today, (array) $current ) )
 					$current[ $today ] = 0;
 
 				$current[ $today ] = $current[ $today ]+1;
 
-				update_user_meta( $user_id, $key, $current );
+				mycred_update_user_meta( $user_id, $key, '', $current );
 			}
 
 			/**

@@ -4,9 +4,9 @@
  * @since 1.2
  * @version 1.1
  */
-if ( !defined( 'myCRED_VERSION' ) ) exit;
+if ( ! defined( 'myCRED_VERSION' ) ) exit;
 
-if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
+if ( ! class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 	class myCRED_Banking_Service_Interest extends myCRED_Service {
 
 		/**
@@ -156,7 +156,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					if ( $balance == 0 ) continue;
 					
 					// Get past interest
-					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
+					$past_interest = mycred_get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', '', true );
 					if ( empty( $past_interest ) ) $past_interest = 0;
 					
 					// Min Balance Limit
@@ -173,7 +173,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					$interest = round( $interest, 2 );
 					
 					// Save interest
-					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', $interest );
+					mycred_update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', '', $interest );
 				}
 			}
 		}
@@ -226,7 +226,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					$user_id = intval( $user_id );
 										
 					// Get past interest
-					$past_interest = get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', true );
+					$past_interest = mycred_get_user_meta( $user_id, $this->core->get_cred_id() . '_comp', '', true );
 					if ( empty( $past_interest ) || $past_interest == 0 ) continue;
 					
 					// Pay / Charge
@@ -238,7 +238,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					);
 					
 					// Reset past interest
-					update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', 0 );
+					mycred_update_user_meta( $user_id, $this->core->get_cred_id() . '_comp', '', 0 );
 				}
 			}
 		}
@@ -248,20 +248,20 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 		 * Saves the given preference id for rates.
 		 * from the active list.
 		 * @since 1.2
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function save( $id, $now ) {
 			if ( !isset( $this->prefs[ $id ] ) ) return;
 			$this->prefs[ $id ] = $now;
 
 			// Get Bank settings
-			$bank = get_option( 'mycred_pref_bank' );
+			$bank = mycred_get_option( 'mycred_pref_bank' );
 			
 			// Update settings
 			$bank['service_prefs'][$this->id] = $this->prefs;
 
 			// Save new settings
-			update_option( 'mycred_pref_bank', $bank );
+			mycred_update_option( 'mycred_pref_bank', $bank );
 		}
 
 		/**
@@ -291,7 +291,7 @@ if ( !class_exists( 'myCRED_Banking_Service_Interest' ) ) {
 					<label class="subheader"><?php _e( 'Minimum Balance', 'mycred' ); ?></label>
 					<ol>
 						<li>
-							<div class="h2"><?php if ( !empty( $this->core->before ) ) echo $this->core->before . ' '; ?><input type="text" name="<?php echo $this->field_name( 'min_balance' ); ?>" id="<?php echo $this->field_id( 'min_balance' ); ?>" value="<?php echo $this->core->format_number( $prefs['min_balance'] ); ?>" size="8" /><?php if ( !empty( $this->core->after ) ) echo ' ' . $this->core->after; ?></div>
+							<div class="h2"><?php if ( $this->core->before != '' ) echo $this->core->before . ' '; ?><input type="text" name="<?php echo $this->field_name( 'min_balance' ); ?>" id="<?php echo $this->field_id( 'min_balance' ); ?>" value="<?php echo $this->core->format_number( $prefs['min_balance'] ); ?>" size="8" /><?php if ( $this->core->after != '' ) echo ' ' . $this->core->after; ?></div>
 							<span class="description"><?php _e( 'The minimum requires balance for interest to apply.', 'mycred' ); ?></span>
 						</li>
 					</ol>

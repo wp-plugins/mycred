@@ -388,7 +388,7 @@ if ( ! class_exists( 'myCRED_Module' ) ) {
 
 			if ( $_REQUEST['wp_screen_options']['option'] == $settings_key ) {
 				$value = absint( $_REQUEST['wp_screen_options']['value'] );
-				update_user_meta( get_current_user_id(), $settings_key, $value );
+				mycred_update_user_meta( get_current_user_id(), $settings_key, '', $value );
 			}
 		}
 
@@ -524,7 +524,7 @@ h4.ui-accordion-header:before { content: "<?php _e( 'click to open', 'mycred' );
 			if ( $this->add_to_core === true )
 				$name = '[' . $this->module_name . ']' . $name;
 
-			if ( ! empty( $this->option_id ) )
+			if ( $this->option_id != '' )
 				return $this->option_id . $name;
 			else
 				return 'mycred_pref_core' . $name;

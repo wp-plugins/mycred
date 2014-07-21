@@ -82,7 +82,7 @@ if ( ! class_exists( 'myCRED_Zombaio' ) ) {
 		 * IPN - Is Valid Call
 		 * Replaces the default check
 		 * @since 1.4
-		 * @version 1.0
+		 * @version 1.1
 		 */
 		public function IPN_is_valid_call() {
 			$result = true;
@@ -99,23 +99,16 @@ if ( ! class_exists( 'myCRED_Zombaio' ) ) {
 			if ( $_GET['SiteID'] != $this->prefs['site_id'] )
 				$result = false;
 
-			if ( ! $result )
-				$this->new_log_entry( ' > ' . __( 'Invalid Call', 'mycred' ) );
-			else
-				$this->new_log_entry( sprintf( __( 'Caller verified as "%s"', 'mycred' ), $this->id ) );
-
 			return $result;
 		}
 
 		/**
 		 * Handle IPN Call
 		 * @since 1.1
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function handle_call() {
 			$outcome = 'FAILED';
-			$valid_call = false;
-			$valid_sale = false;
 
 			// ZOA Validation
 			if ( isset( $_GET['username'] ) && substr( $_GET['username'], 0, 4 ) == 'Test' ) {
@@ -126,143 +119,113 @@ if ( ! class_exists( 'myCRED_Zombaio' ) ) {
 				die;
 			}
 
-			// In case this is a true Zombaio call but for other actions, return now
-			// to allow other plugins to take over.
-			if ( isset( $_GET['Action'] ) && $_GET['Action'] != 'user.addcredits' )
-				return;
+			// Required fields
+			if ( isset( $_GET['ZombaioGWPass'] ) && isset( $_GET['SiteID'] ) && isset( $_GET['Action'] ) && isset( $_GET['Credits'] ) && isset( $_GET['TransactionID'] ) && isset( $_GET['Identifier'] ) ) {
 
-			$this->start_log();
+				// In case this is a true Zombaio call but for other actions, return now
+				// to allow other plugins to take over.
+				if ( $_GET['Action'] != 'user.addcredits' )
+					return;
 
-			// VALIDATION OF CALL
-			$required_fields = array(
-				'ZombaioGWPass',
-				'SiteID',
-				'Action',
-				'Credits',
-				'TransactionID',
-				'Identifier'
-			);
+				// Get Pending Payment
+				$pending_post_id = sanitize_key( $_GET['Identifier'] );
+				$pending_payment = $this->get_pending_payment( $pending_post_id );
+				if ( $pending_payment !== false ) {
 
-			// All required fields exists
-			if ( $this->IPN_has_required_fields( $required_fields ) ) {
+					// Validate call
+					if ( $this->IPN_is_valid_call() ) {
 
-				// Validate call
-				if ( $this->IPN_is_valid_call( $site_id ) ) {
+						$errors = false;
+						$new_call = array();
 
-					$valid_call = true;
-					
-					$this->new_log_entry( __( 'Checking Transaction ID', 'mycred' ) );
+						// Make sure transaction is unique
+						if ( ! $this->transaction_id_is_unique( $_GET['TransactionID'] ) ) {
+							$new_call[] = sprintf( __( 'Duplicate transaction. Received: %s', 'mycred' ), $_GET['TransactionID'] );
+							$errors = true;
+						}
 
-					if ( ( $this->sandbox_mode && $_GET['TransactionID'] == '0000' ) || $this->transaction_id_is_unique( $_GET['TransactionID'] ) ) {
-						$valid_sale = true;
+						// Live transaction during testing
+						if ( $this->sandbox_mode && $_GET['TransactionID'] != '0000' ) {
+							$new_call[] = sprintf( __( 'Live transaction while debug mode is enabled! Received: %s', 'mycred' ), $_GET['TransactionID'] );
+							$errors = true;
+						}
+
+						// Credit payment
+						if ( $errors === false ) {
+
+							// Type
+							$type = $pending_payment['ctype'];
+							$mycred = mycred( $type );
+
+							// Amount
+							$amount = $mycred->number( $_GET['Credits'] );
+							$pending_payment['amount'] = $amount;
+
+							// Get Cost
+							$cost = $this->get_cost( $amount, $type );
+							$pending_payment['cost'] = $cost;
+
+							// If account is credited, delete the post and it's comments.
+							if ( $this->complete_payment( $pending_payment, $_GET['TransactionID'] ) ) {
+								wp_delete_post( $pending_post_id, true );
+								$outcome = 'COMPLETED';
+							}
+							else
+								$new_call[] = __( 'Failed to credit users account.', 'mycred' );
+
+						}
+						
+						// Log Call
+						if ( ! empty( $new_call ) )
+							$this->log_call( $pending_post_id, $new_call );
+
 					}
 
-					else $this->new_log_entry( ' > ' . __( 'Duplicate Transaction ID', 'mycred' ) );
-
 				}
 
 			}
-
-			else $this->new_log_entry( __( 'Failed to verify caller', 'mycred' ) );
-
-			// EXECUTION
-			if ( $valid_call === true && $valid_sale === true ) {
-
-				$this->new_log_entry( sprintf( __( 'Attempting to credit %s to users account', 'mycred' ), $this->core->plural() ) );
-
-				list( $buyer_id, $payer_id ) = explode( '|', $_GET['Identifier'] );
-
-				if ( $this->sandbox_mode && $_GET['TransactionID'] == '0000' ) {
-					$sales_data = array(
-						$buyer_id,
-						$payer_id,
-						$_GET['Credits'],
-						'',
-						'USD',
-						'#'
-					);
-				}
-				else {
-					$sales_data = array(
-						$buyer_id,
-						$payer_id,
-						$_GET['Credits'],
-						( isset( $_GET['Amount'] ) ) ? $_GET['Amount'] : '',
-						( isset( $_GET['Amount_Currency'] ) ) ? $_GET['Amount_Currency'] : '',
-						'#'
-					);
-				}
-
-				$visitor_ip = ( isset( $_GET['VISITOR_IP']  ) ) ? $_GET['VISITOR_IP'] : 'missing';
-				$data = array(
-					'transaction_id' => $_GET['TransactionID'],
-					'site_id'        => $_GET['SiteID'],
-					'visitor_ip'     => $visitor_ip,
-					'sales_data'     => implode( '|', $sales_data )
-				);
-
-				// Add creds
-				if ( $this->complete_payment( $buyer_id, $payer_id, $_GET['Credits'], $data ) ) {
-
-					$this->new_log_entry( sprintf( __( '%s was successfully credited to users account', 'mycred' ), $this->core->format_creds( $_GET['Credits'] ) ) );
-					$outcome = 'COMPLETED';
-
-					do_action( "mycred_buycred_{$this->id}_approved", $this->processing_log, $_REQUEST );
-
-				}
-
-				else $this->new_log_entry( __( 'Failed to credit the users account', 'mycred' ) );
-
-			}
-			else {
-				$this->new_log_entry( __( 'Hanging up on caller', 'mycred' ) );
-				do_action( "mycred_buycred_{$this->id}_error", $this->processing_log, $_REQUEST );
-			}
-
-			$this->save_log_entry( $_GET['TransactionID'], $outcome );
-
-			do_action( "mycred_buycred_{$this->id}_end", $this->processing_log, $_REQUEST );
 
 			if ( $outcome == 'COMPLETED' )
-				echo 'OK';
+				die( 'OK' );
 			else
-				echo 'ERROR';
-
-			die;
+				die( 'ERROR' );
 		}
 
 		/**
 		 * Buy Handler
 		 * @since 1.1
-		 * @version 1.0.1
+		 * @version 1.2
 		 */
 		public function buy() {
 			if ( ! isset( $this->prefs['site_id'] ) || empty( $this->prefs['site_id'] ) )
 				wp_die( __( 'Please setup this gateway before attempting to make a purchase!', 'mycred' ) );
 
-			$token = $this->create_token();
-
 			// Construct location
 			$location = 'https://secure.zombaio.com/?' . $this->prefs['site_id'] . '.' . $this->prefs['pricing_id'] . '.' . $this->prefs['lang'];
+
+			// Type
+			$type = $this->get_point_type();
+
+			$to = $this->get_to();
+			$from = $this->current_user_id;
+
+			// Revisiting pending payment
+			if ( isset( $_REQUEST['revisit'] ) ) {
+				$this->transaction_id = strtoupper( $_REQUEST['revisit'] );
+			}
+			else {
+				$post_id = $this->add_pending_payment( array( $to, $from, '-', '-', 'USD', $type ) );
+				$this->transaction_id = get_the_title( $post_id );
+			}
 
 			// Thank you page
 			$thankyou_url = $this->get_thankyou();
 
 			// Cancel page
-			$cancel_url = $this->get_cancelled();
-
-			// Return to a url
-			if ( isset( $_REQUEST['return_to'] ) ) {
-				$thankyou_url = $_REQUEST['return_to'];
-				$cancel_url = $_REQUEST['return_to'];
-			}
-
-			$to = $this->get_to();
-			$from = $this->current_user_id;
-			unset( $_REQUEST );
+			$cancel_url = $this->get_cancelled( $this->transaction_id );
 
 			$hidden_fields = array(
-				'identifier'    => $to . '|' . $from,
+				'identifier'    => $post_id,
 				'approve_url'   => $thankyou_url,
 				'decline_url'   => $cancel_url
 			);
@@ -282,7 +245,7 @@ if ( ! class_exists( 'myCRED_Zombaio' ) ) {
 		 * @since 1.1
 		 * @version 1.0
 		 */
-		function preferences( $buy_creds = NULL ) {
+		function preferences() {
 			$prefs = $this->prefs; ?>
 
 <label class="subheader" for="<?php echo $this->field_id( 'site_id' ); ?>"><?php _e( 'Site ID', 'mycred' ); ?></label>
