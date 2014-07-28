@@ -3,17 +3,13 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
-
-** Important! myCRED 1.5 requires WordPress 3.8 or higher! Websites using WordPress 3.5 or higher would need to use version 1.4.7. **
-
-** Premium buyCRED Gateway users must disable their premium gateways before updating myCRED! Please update to the latest version before enabling them again! **
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
@@ -104,8 +100,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.5 =
-Badges, improved buyCRED and tons more!
+= 1.5.1 =
+Important bug fixes.
 
 
 == Other Notes ==
@@ -128,28 +124,25 @@ Badges, improved buyCRED and tons more!
 
 == Changelog ==
 
-= 1.5 =
-* NEW - buyCRED now supports sales of multiple point types at the same time.
-* TWEAK - buyCRED now saves a pending payment that users can cancel or pay later via the mycred_buy_pending shortcode.
-* NEW - Profile / Balance editor.
-* NEW - Option to override the buyCRED gateway exchange rate on a user level basis.
-* NEW - Option to exclude users from their profile.
-* NEW - New shortcode mycred_exchange which lets your users exchange one point type for another.
-* FIX - When creating a new point type, the first time this point types settings are saved, the "Exclude" checkboxes get checked.
-* FIX - Incorrect logic for the Affiliate Hook.
-* NEW - Added new Badges add-on.
-* TWEAK - If a signup needs to be verified in BuddyPress, the affiliates hook will award points first when the new registration has been verified.
-* TWEAK - If a signup needs to be verified in BuddyPress, the registration hook will award points first when the new registration has been verified.
-* TWEAK - Leaderboard shortcode and widget now supports being based on either your users current balance or most points gained by reference.
-* NEW - The mycred_my_ranking shortcode now has a new attribute that allows you to set what to return if a user is not in the list.
-* NEW - Added new mycred_decline_store_purchase filter to all supported shopping carts allowing third-parties to decline store purchases using the myCRED gateway for any custom reason.
-* FIX - Adjusted the log editor javascript to better handle html code in log entries.
-* NEW - Added new hook for daily site visits.
-* NEW - Added new Hook for sharing content on social media sites via the ShareThis plugin.
-* TWEAK - Added option to override a users interest rate for the Banking add-on along with excluding users based on user ID or role.
-* NEW - Re-wrote the transfer shortcode to use a form to submit making customisations easier. You no longer need to replace the transfer.js file.
-* NEW - Added option to transfer shortcode to override the button label.
+= 1.5.1 =
+* FIX - Bad logic for management locks out the option to "Empty log".
+* FIX - Log export to CSV for search results are not working.
+* FIX - Misspelled "Registration" fix. (thanks Jesus Cardenas)
+* FIX - Calculate totals uses incorrect meta_key search. (thanks Jim)
+* FIX - Ranks on Multisites saves the users total under an incorrect meta key.
+* FIX - "No Rank" is shown on multisites when the Master Template feature is enabled.
+* FIX - Points history in toolbar not showing for those who do not use BuddyPress.
+* FIX - rtMedia Hook is not awarding / deducting points for media deletions.
+* FIX - mycred_total_balance is not counting multiple point types correctly.
+* FIX - Transfer form showing all point types instead of the selected ones.
+* FIX - buyCRED Update script should not run if buyCRED is not enabled.
+* TWEAK - Adjusted the transfer script to add support for custom error messages.
+* NEW - Hook for content views.
+* FIX - Email Notifications are not sent for general balance changes.
+* FIX - Email Notifications are not sent on servers where wp_mail is restricted.
 
+= 1.5 =
+http://mycred.me/support/changelog/
 
 = 1.4.7 =
 http://mycred.me/support/changelog/2/
