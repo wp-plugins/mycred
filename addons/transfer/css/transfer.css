@@ -16,6 +16,7 @@
 .mycred-transfer-cred-wrapper ol li.mycred-send-amount { width: 60%; }
 .widget .mycred-transfer-cred-wrapper ol li.mycred-send-amount { width: 100%; }
 .mycred-transfer-cred-wrapper ol li.mycred-send-details span:empty { display: none; }
+.mycred-transfer-cred-wrapper .mycred-click { float: right; }
 
 .mycred-transfer-cred-wrapper ol li label { display: block; }
 .mycred-transfer-cred-wrapper ol li input[type="text"] { width: 90%; }

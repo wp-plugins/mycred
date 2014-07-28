@@ -1,12 +1,12 @@
 /**
  * myCRED Transfer jQuery
- * Handles transfer requests and autocomplete of user login names.
+ * Handles transfer requests and autocomplete of recipient search.
  *
  * @requires jQuery
  * @requires jQuery UI
  * @requires jQuery Autocomplete
  * @since 0.1
- * @version 1.3
+ * @version 1.4
  */
 jQuery(function($){
 	// Transfer function
@@ -30,45 +30,25 @@ jQuery(function($){
 			success    : function( data ) {
 				$( '.mycred-click' ).val( label );
 				$( '.mycred-click' ).removeAttr( 'disabled' );
-				// Security token could not be verified.
-				if ( data == 'error_1' ) {
-					alert( myCRED.error_1 );
-				}
-				// Communications error.
-				else if ( data == 'error_2' ) {
-					alert( myCRED.error_2 );
-				}
-				// Recipient not found.
-				else if ( data == 'error_3' ) {
-					alert( myCRED.error_3 );
-				}
-				// Trying to send to excluded user.
-				else if ( data == 'error_4' ) {
-					alert( myCRED.error_4 );
-				}
-				// Incorrect amount.
-				else if ( data == 'error_5' ) {
-					alert( myCRED.error_5 );
-				}
-				// This myCRED Add-on has not yet been setup!
-				else if ( data == 'error_6' ) {
-					alert( myCRED.error_6 );
-				}
-				// Insufficient funds.
-				else if ( data == 'error_7' ) {
-					alert( myCRED.error_7 );
-				}
-				// Transfer Limit exceeded.
-				else if ( data == 'error_8' ) {
-					alert( myCRED.error_8 );
-				}
-				// Transfer Completed.
+
+				// Error
+				if ( myCRED[ data ] !== undefined )
+					alert( myCRED[ data ] );
+
+				// Completed
 				else if ( data == 'ok' ) {
 					alert( myCRED.completed );
 
+					// If reload is set
 					if ( myCRED.reload == '1' )
 						location.reload();
 				}
+
+				// WP Nonce no longer valid / we have been logged out
+				else if ( data == '-1' || data == 0 )
+					location.reload();
+
+				// All else
 				else {
 					$('.mycred-click').attr( 'value', data );
 					if ( myCRED.reload == '1' )

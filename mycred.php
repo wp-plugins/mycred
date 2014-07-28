@@ -3,7 +3,7 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.5
+ * Version: 1.5.1
  * Tags: points, tokens, credit, management, reward, charge, buddypress, bbpress, jetpack, woocommerce, marketpress, wp e-commerce, gravity forms, simplepress
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -20,7 +20,7 @@
  * BuddyPress Compatible: yes
  * Forum URI: http://mycred.me/support/forums/
  */
-define( 'myCRED_VERSION',      '1.5' );
+define( 'myCRED_VERSION',      '1.5.1' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 
@@ -395,7 +395,7 @@ endif;
 /**
  * Adjust the Tool Bar
  * @since 1.3
- * @version 1.4
+ * @version 1.4.1
  */
 if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 	function mycred_hook_into_toolbar( $wp_admin_bar )
@@ -456,7 +456,7 @@ if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 
 			$bp_query = '';
 			if ( $type != 'mycred_default' )
-				$bp_query = '?type=' . $type;
+				$bp_query = '?show-ctype=' . $type;
 
 			if ( isset( $mycred->buddypress['history_url'] ) && function_exists( 'bp_loggedin_user_domain' ) )
 				$mycred_history_url = bp_loggedin_user_domain() . $mycred->buddypress['history_url'] . '/' . $bp_query;
@@ -476,7 +476,7 @@ if ( ! function_exists( 'mycred_hook_into_toolbar' ) ) :
 				'href'   => false
 			) );
 
-			if ( isset( $mycred->buddypress['visibility']['history'] ) && $mycred->buddypress['visibility']['history'] )
+			if ( ( function_exists( 'bp_loggedin_user_domain' ) && isset( $mycred->buddypress['visibility']['history'] ) && $mycred->buddypress['visibility']['history'] ) || ( ! function_exists( 'bp_loggedin_user_domain' ) ) || $mycred->can_edit_creds() )
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'mycred-account',
 					'id'     => 'mycred-account-history-' . $id,

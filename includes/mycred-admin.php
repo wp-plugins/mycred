@@ -340,7 +340,7 @@ if ( ! class_exists( 'myCRED_Admin' ) ) {
 		 * @version 1.3
 		 */
 		public function sort_by_points( $query ) {
-			if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) return;
+			if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ! function_exists( 'get_current_screen' ) ) return;
 			$screen = get_current_screen();
 			if ( $screen === NULL || $screen->id != 'users' ) return;
 
@@ -391,7 +391,7 @@ if ( ! class_exists( 'myCRED_Admin' ) ) {
 		 * Customize User Columns Content
 		 * @filter 'mycred_user_row_actions'
 		 * @since 0.1
-		 * @version 1.3.1
+		 * @version 1.3.2
 		 */
 		public function custom_user_column_content( $value, $column_name, $user_id ) {
 			global $mycred_types;
@@ -410,11 +410,8 @@ if ( ! class_exists( 'myCRED_Admin' ) ) {
 			$balance = '<div id="mycred-user-' . $user_id . '-balance-' . $column_name . '">' . $mycred->before . ' <span>' . $mycred->format_number( $ubalance ) . '</span> ' . $mycred->after . '</div>';
 
 			// Show total
-			if ( isset( $mycred->rank['base'] ) && $mycred->rank['base'] == 'total' ) {
-				$total = mycred_get_user_meta( $user_id, $column_name, '_total', true );
-				if ( $total != '' )
-					$balance .= '<small style="display:block;">' . sprintf( __( 'Total: %s', 'mycred' ), $mycred->format_number( $total ) ) . '</small>';
-			}
+			$total = mycred_query_users_total( $user_id, $column_name );
+			$balance .= '<small style="display:block;">' . sprintf( __( 'Total: %s', 'mycred' ), $mycred->format_number( $total ) ) . '</small>';
 
 			$page = 'myCRED';
 			if ( $column_name != 'mycred_default' )
@@ -750,7 +747,7 @@ jQuery(function($) {
 		 * Admin Footer
 		 * Inserts the Inline Edit Form modal.
 		 * @since 1.2
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		public function admin_footer() {
 			$screen = get_current_screen();
@@ -759,7 +756,9 @@ jQuery(function($) {
 			if ( $this->core->can_edit_creds() && ! $this->core->can_edit_plugin() )
 				$req = '(<strong>' . __( 'required', 'mycred' ) . '</strong>)'; 
 			else
-				$req = '(' . __( 'optional', 'mycred' ) . ')'; ?>
+				$req = '(' . __( 'optional', 'mycred' ) . ')';
+
+			ob_start(); ?>
 
 <div id="edit-mycred-balance" style="display: none;">
 	<div class="mycred-adjustment-form">
@@ -777,6 +776,12 @@ jQuery(function($) {
 	<div class="clear"></div>
 </div>
 <?php
+
+			$content = ob_get_contents();
+			ob_end_clean();
+
+			echo apply_filters( 'mycred_admin_inline_editor', $content );
+
 		}
 	}
 }

@@ -33,7 +33,7 @@ if ( ! function_exists( 'mycred_update_to_onefive' ) ) :
 		}
 
 		// 1.5 Update
-		if ( version_compare( $version, '1.5', '<' ) ) {
+		if ( version_compare( $version, '1.5', '<' ) && class_exists( 'myCRED_buyCRED_Module' ) ) {
 			// Update buyCRED Settings
 			$type_set = 'mycred_default';
 			$setup = mycred_get_option( 'mycred_pref_core', false );
@@ -62,8 +62,9 @@ if ( ! function_exists( 'mycred_update_to_onefive' ) ) :
 				add_option( 'mycred_buycred_reset', 'true' );
 			}
 		}
-
-		
+		else {
+			delete_option( 'mycred_buycred_reset' );
+		}
 
 		// Update complted
 		update_option( 'mycred_version', myCRED_VERSION );

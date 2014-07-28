@@ -151,16 +151,13 @@ function mycred_about_credit_page() {
 				<h4>Bug Finders</h4>
 				<p>Users who have taken the time to report bugs helping me improve this plugin.</p>
 				<ul>
-					<li><a href="http://mycred.me/members/seamtv/">seamtv</a></li>
-					<li><a href="http://mycred.me/members/joebethepro-com/">joe</a></li>
-					<li><a href="http://mycred.me/members/gogott/">gogott</a></li>
-					<li><a href="http://mycred.me/members/geegee/">Christian S</a></li>
-					<li><a href="http://mycred.me/members/keisermedia/">Lucas Keiser</a></li>
-					<li><a href="http://mycred.me/members/ebf/">Boab</a></li>
-					<li><a href="http://mycred.me/members/threadsgeneration/">Gabriel Galvão</a></li>
-					<li><a href="http://mycred.me/members/dvdbrazil/">Dvdbrazil</a></li>
-					<li><a href="http://mycred.me/members/bobblefruit/">Dean</a></li>
-					<li><a href="http://mycred.me/members/sl21/">sl21</a></li>
+					<li><a href="http://mycred.me/community/jommy99/">John Moore</a></li>
+					<li><a href="http://mycred.me/community/keisermedia/">Lucas Keiser</a></li>
+					<li><a href="http://mycred.me/community/lionelbernard/">Siargao</a></li>
+					<li><a href="http://mycred.me/community/woekerzee/">woekerzee</a></li>
+					<li><a href="http://mycred.me/community/jmaubert75/">JM AUBERT</a></li>
+					<li><a href="http://mycred.me/community/NUHISON/">David J</a></li>
+					<li><a href="http://mycred.me/community/shmoo/">Shmoo</a></li>
 				</ul>
 			</div>
 			<div class="last-feature">
@@ -172,6 +169,7 @@ function mycred_about_credit_page() {
 					<li><a href="http://www.merovingi.com/">Gabriel S Merovingi</a> <em>( Swedish )</em></li>
 					<li><a href="http://robertrowshan.com/">Rob Row</a> <em>( Spanish )</em></li>
 					<li>Skladchik <em>( Russian )</em></li>
+					<lo>Guilherme <em>( Portuguese - Brazil )</em></li>
 				</ul>
 			</div>
 		</div>

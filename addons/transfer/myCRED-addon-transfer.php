@@ -344,7 +344,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 		/**
 		 * AJAX Transfer Creds
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.4
 		 */
 		public function ajax_call_transfer() {
 			// Security
@@ -419,11 +419,13 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 			// All good
 			$after_transfer = $transfer;
 
-			// Let others play before we execute the transfer
-			do_action( 'mycred_transfer_ready', $post, $prefs, $this->core, $type );
-
 			// Generate Transaction ID for our records
 			$transaction_id = 'TXID' . date_i18n( 'U' ) . $from;
+
+			// Let others play before we execute the transfer
+			do_action( 'mycred_transfer_ready', $transaction_id, $post, $prefs, $this->core, $type );
+
+			$data = apply_filters( 'mycred_transfer_data', array( 'ref_type' => 'user', 'tid' => $transaction_id ), $transaction_id, $post, $prefs, $type );
 
 			// First take the amount from the sender
 			$mycred->add_creds(
@@ -432,7 +434,7 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 				0-$amount,
 				$prefs['logs']['sending'],
 				$recipient_id,
-				array( 'ref_type' => 'user', 'tid' => $transaction_id ),
+				$data,
 				$type
 			);
 
@@ -451,12 +453,12 @@ if ( ! class_exists( 'myCRED_Transfer_Module' ) ) {
 				$amount,
 				$prefs['logs']['receiving'],
 				$from,
-				array( 'ref_type' => 'user', 'tid' => $transaction_id ),
+				$data,
 				$type
 			);
 
 			// Let others play once transaction is completed
-			do_action( 'mycred_transfer_completed', $post, $prefs, $this->core, $type );
+			do_action( 'mycred_transfer_completed', $transaction_id, $post, $prefs, $this->core, $type );
 
 			// Return the good news
 			die( json_encode( 'ok' ) );
@@ -686,7 +688,7 @@ if ( ! class_exists( 'myCRED_Widget_Transfer' ) ) {
  * @attribute $show_balance (bool) set to true to show current users balance, defaults to true
  * @attribute $show_limit (bool) set to true to show current users limit. If limit is set to 'none' and $show_limit is set to true nothing will be returned
  * @since 0.1
- * @version 1.2
+ * @version 1.4
  */
 if ( ! function_exists( 'mycred_transfer_render' ) ) {
 	function mycred_transfer_render( $atts, $content = NULL )
@@ -780,7 +782,7 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 				$status = mycred_user_can_transfer( $charge_from, NULL, $point_type, $ref );
 				if ( in_array( $status, array( 'low', 'limit' ) ) ) continue;
 				
-				$available_types[] = $point_type;
+				$available_types[ $point_type ] = $points->plural();
 			}
 
 			// User does not have access
@@ -815,7 +817,7 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 			}
 		}
 
-		if ( count( $clean ) == 1 && in_array( 'mycred_default', $clean ) ) {
+		if ( count( $clean ) == 1 && array_key_exists( 'mycred_default', $clean ) ) {
 			if ( ! empty( $mycred->before ) )
 				$before = $mycred->before . ' ';
 			else
@@ -831,10 +833,15 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 		}
 
 		// Select Point type
-		if ( count( $clean ) == 1 )
+		if ( count( $available_types ) == 1 )
 			$type_input = '<input type="hidden" name="mycred-transfer-type" value="' . $clean[0] . '" />';
-		else
-			$type_input = mycred_types_select_from_dropdown( 'mycred-transfer-type', 'mycred-transfer-type', array(), true );
+		else {
+			$type_input = '<select name="mycred-transfer-type" id="mycred-transfer-type" class="form-control">';
+			foreach ( $available_types as $type => $plural ) {
+				$type_input .= '<option value="' . $type . '">' . $plural . '</option>';
+			}
+			$type_input .= '</select>';
+		}
 
 		$extras = array();
 
@@ -860,32 +867,41 @@ if ( ! function_exists( 'mycred_transfer_render' ) ) {
 
 <div class="mycred-transfer-cred-wrapper"<?php if ( $ref != '' ) echo ' id="transfer-form-' . $ref . '"'; ?>>
 	<form method="post" action="">
-	<ol>
-		<li class="mycred-send-to">
-			<label><?php _e( 'To:', 'mycred' ); ?></label>
-			<div class="transfer-to"><?php echo $to_input; ?></div>
-			<?php do_action( 'mycred_transfer_form_to', $atts, $pref ); ?>
 
-		</li>
-		<li class="mycred-send-amount">
-			<label><?php _e( 'Amount:', 'mycred' ); ?></label>
-			<div class="transfer-amount"><?php echo $before; ?><input type="text" class="short" name="mycred-transfer-amount" value="<?php echo $mycred->zero(); ?>" size="8" /><?php echo $after . ' ' . $type_input; ?></div> 
-			<input type="button" class="button button-primary button-large mycred-click btn btn-primary btn-lg"<?php if( $pay_to == get_current_user_id() ) echo ' disabled="disabled"'; ?> value="<?php echo $button; ?>" />
-			<?php if ( $charge_other ) : ?><input type="hidden" name="mycred-charge-other" value="<?php absint( $charge_from ); ?>" /><?php endif; ?>
-			<?php if ( $ref != '' ) : ?><input type="hidden" name="mycred-transfer-ref" value="<?php echo $ref; ?>" /><?php endif; ?>
-			<?php do_action( 'mycred_transfer_form_amount', $atts, $pref ); ?>
+		<?php do_action( 'mycred_transfer_form_start', $atts, $pref ); ?>
 
-		</li>
-<?php	if ( ! empty( $extras ) ) { ?>
+		<ol>
+			<li class="mycred-send-to">
+				<label><?php _e( 'To:', 'mycred' ); ?></label>
+				<div class="transfer-to"><?php echo $to_input; ?></div>
+				<?php do_action( 'mycred_transfer_form_to', $atts, $pref ); ?>
 
-		<li class="mycred-transfer-info">
-			<p><?php echo implode( '</p><p>', $extras ); ?></p>
-			<?php do_action( 'mycred_transfer_form_extra', $atts, $pref ); ?>
+			</li>
+			<li class="mycred-send-amount">
+				<label><?php _e( 'Amount:', 'mycred' ); ?></label>
+				<div class="transfer-amount"><?php echo $before; ?><input type="text" class="short" name="mycred-transfer-amount" value="<?php echo $mycred->zero(); ?>" size="8" /><?php echo $after . ' ' . $type_input; ?></div> 
+				<input type="button" class="button button-primary button-large mycred-click btn btn-primary btn-lg"<?php if( $pay_to == get_current_user_id() ) echo ' disabled="disabled"'; ?> value="<?php echo $button; ?>" />
+				<?php if ( $charge_other ) : ?><input type="hidden" name="mycred-charge-other" value="<?php absint( $charge_from ); ?>" /><?php endif; ?>
+				<?php if ( $ref != '' ) : ?><input type="hidden" name="mycred-transfer-ref" value="<?php echo $ref; ?>" /><?php endif; ?>
+				<?php do_action( 'mycred_transfer_form_amount', $atts, $pref ); ?>
 
-		</li>
-<?php	} ?>
+			</li>
 
-	</ol>
+			<?php if ( ! empty( $extras ) ) { ?>
+
+			<li class="mycred-transfer-info">
+				<p><?php echo implode( '</p><p>', $extras ); ?></p>
+				<?php do_action( 'mycred_transfer_form_extra', $atts, $pref ); ?>
+
+			</li>
+
+			<?php } ?>
+
+		</ol>
+
+		<?php do_action( 'mycred_transfer_form_end', $atts, $pref ); ?>
+
+		<div class="clear clearfix"></div>
 	</form>
 	<div class="clear clearfix clr"></div>
 </div>

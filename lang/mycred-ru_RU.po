@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: myCRED\n"
 "Report-Msgid-Bugs-To: http://mycred.me\n"
 "POT-Creation-Date: 2014-03-20 14:26+0100\n"
-"PO-Revision-Date: Mon Jul 21 2014 13:10:01 GMT+0200 (CEST)\n"
+"PO-Revision-Date: Mon Jul 28 2014 14:18:37 GMT+0200 (CEST)\n"
 "Last-Translator: Gabriel <gabriel.s@merovingi.com>\n"
 "Language-Team: LANGUAGE <support@mycred.me>\n"
 "Language: Russian\n"
@@ -132,7 +132,7 @@ msgid "This Hook has no settings"
 msgstr "Это средство не имеет настроек"
 
 #: ../abstracts/mycred-abstract-hook.php:157 ../modules/mycred-module-hooks.php:
-#: 1305
+#: 1562
 msgid "No limit"
 msgstr "Нет ограничений"
 
@@ -180,7 +180,7 @@ msgid "click to open"
 msgstr "кликнуть, чтобы открыть"
 
 #: ../abstracts/mycred-abstract-module.php:472 ../addons/banking/myCRED-addon-
-#: banking.php:163 ../addons/buy-creds/myCRED-addon-buy-creds.php:847
+#: banking.php:163 ../addons/buy-creds/myCRED-addon-buy-creds.php:849
 msgid "Settings Updated"
 msgstr "Настройки обновлены"
 
@@ -422,10 +422,10 @@ msgstr ""
 "установить количество желаемых циклов платежей. "
 
 #: ../addons/banking/myCRED-addon-banking.php:156 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:837 ../addons/buy-creds/myCRED-addon-buy-creds.php:933 ..
+#: addon-buy-creds.php:839 ../addons/buy-creds/myCRED-addon-buy-creds.php:935 ..
 #: includes/mycred-admin.php:573 ../includes/mycred-network.php:148 ..
-#: modules/mycred-module-addons.php:277 ../modules/mycred-module-hooks.php:164 ..
-#: modules/mycred-module-log.php:322 ../modules/mycred-module-log.php:575 ..
+#: modules/mycred-module-addons.php:277 ../modules/mycred-module-hooks.php:171 ..
+#: modules/mycred-module-log.php:324 ../modules/mycred-module-log.php:577 ..
 #: modules/mycred-module-settings.php:312
 msgid "Access Denied"
 msgstr "Ошибка Доступа"
@@ -452,12 +452,12 @@ msgid "Warning! This add-on requires WP - Cron to work."
 msgstr "Предупреждение! Этот модуль требует WP - утилиту Cron для работы."
 
 #: ../addons/banking/myCRED-addon-banking.php:188 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:871 ../modules/mycred-module-hooks.php:189
+#: addon-buy-creds.php:873 ../modules/mycred-module-hooks.php:196
 msgid "Enable"
 msgstr "Разрешить"
 
 #: ../addons/banking/myCRED-addon-banking.php:201 ../modules/mycred-module-hooks.
-#: php:204
+#: php:211
 msgid "Update Changes"
 msgstr "Обновить изменения"
 
@@ -532,8 +532,8 @@ msgstr "Минимальный требуемый баланс для приме
 #: addons/gateway/carts/mycred-marketpress.php:424 ..
 #: addons/gateway/carts/mycred-woocommerce.php:98 ../addons/gateway/carts/mycred-
 #: woocommerce.php:164 ../addons/gateway/carts/mycred-wpecommerce.php:368 ..
-#: modules/mycred-module-hooks.php:633 ../modules/mycred-module-hooks.php:1503 ..
-#: modules/mycred-module-hooks.php:1845 ../plugins/mycred-hook-badgeOS.php:115 ..
+#: modules/mycred-module-hooks.php:890 ../modules/mycred-module-hooks.php:1760 ..
+#: modules/mycred-module-hooks.php:2102 ../plugins/mycred-hook-badgeOS.php:115 ..
 #: plugins/mycred-hook-badgeOS.php:117 ../plugins/mycred-hook-badgeOS.php:126 ..
 #: plugins/mycred-hook-events-manager-light.php:154 ../plugins/mycred-hook-
 #: events-manager-light.php:167 ../plugins/mycred-hook-gd-star-rating.php:109 ..
@@ -574,10 +574,10 @@ msgstr "Заплатить пользователям"
 
 #: ../addons/banking/services/mycred-bank-service-payouts.php:222 ../addons/buy-
 #: creds/myCRED-addon-buy-creds.php:300 ../addons/buy-creds/myCRED-addon-buy-
-#: creds.php:1518 ../addons/buy-creds/myCRED-addon-buy-creds.php:1595 ..
+#: creds.php:1520 ../addons/buy-creds/myCRED-addon-buy-creds.php:1597 ..
 #: addons/buy-creds/abstracts/mycred-abstract-payment-gateway.php:562 ..
 #: includes/mycred-admin.php:726 ../includes/mycred-admin.php:769 ..
-#: includes/mycred-shortcodes.php:910
+#: includes/mycred-shortcodes.php:907
 msgid "Amount"
 msgstr "Количество"
 
@@ -587,7 +587,7 @@ msgstr "Не может быть нулевым. "
 
 #: ../addons/banking/services/mycred-bank-service-payouts.php:228 ..
 #: addons/banking/services/mycred-bank-service-payouts.php:241 ../modules/mycred-
-#: module-hooks.php:1860
+#: module-hooks.php:2117
 msgid "Interval"
 msgstr "Промежуток"
 
@@ -680,7 +680,7 @@ msgid "Edit Pending Payment"
 msgstr ""
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:264 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:1629
+#: addon-buy-creds.php:1631
 msgid "No pending payments found"
 msgstr ""
 
@@ -689,23 +689,23 @@ msgid "Not found in Trash"
 msgstr ""
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:297 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:986 ../addons/buy-creds/myCRED-addon-buy-creds.php:1593
+#: addon-buy-creds.php:988 ../addons/buy-creds/myCRED-addon-buy-creds.php:1595
 msgid "Transaction ID"
 msgstr "Код трансакции "
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:299 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:982
+#: addon-buy-creds.php:984
 msgid "Buyer"
 msgstr ""
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:301 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:1596 ../addons/buy-creds/abstracts/mycred-abstract-payment-
+#: addon-buy-creds.php:1598 ../addons/buy-creds/abstracts/mycred-abstract-payment-
 #: gateway.php:563
 msgid "Cost"
 msgstr "Цена"
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:302 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:981 ../addons/buy-creds/myCRED-addon-buy-creds.php:1594 ..
+#: addon-buy-creds.php:983 ../addons/buy-creds/myCRED-addon-buy-creds.php:1596 ..
 #: includes/mycred-overview.php:166 ../includes/mycred-overview.php:173
 msgid "Gateway"
 msgstr "Шлюз"
@@ -723,7 +723,7 @@ msgid "buyCRED Purchase Log"
 msgstr "приобрести журнал покупок CRED"
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:423 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:656 ../addons/buy-creds/myCRED-addon-buy-creds.php:843
+#: addon-buy-creds.php:656 ../addons/buy-creds/myCRED-addon-buy-creds.php:845
 msgid "Purchase Log"
 msgstr "Журнал покупки"
 
@@ -807,167 +807,167 @@ msgid "Allow users to buy %_plural% for content authors."
 msgstr "Разрешить пользователям покупать %_plural%  для авторов контента."
 
 #: ../addons/buy-creds/myCRED-addon-buy-creds.php:671 ../modules/mycred-module-
-#: hooks.php:2495
+#: hooks.php:2752
 msgid "Available Shortcodes"
 msgstr "Доступные короткие коды"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:751
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:753
 #, php-format
 msgid "%s Exchange Rate"
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:757 ../addons/sell-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:759 ../addons/sell-
 #: content/myCRED-addon-sell-content.php:113
 msgid "Leave empty to use the default value."
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:765
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:767
 msgid "Save Exchange Rates"
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:822
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:824
 msgid "Exchange rate override saved"
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:825
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:827
 msgid "Payment completed"
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:843
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:845
 #, php-format
 msgid "%s Payment Gateways"
 msgstr "%s Способы оплаты"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:843 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:990
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:845 ../addons/buy-creds/myCRED-
+#: addon-buy-creds.php:992
 msgid "buyCRED Settings"
 msgstr "настройки buyCRED"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:864
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:866
 msgid "Test Mode"
 msgstr "Тестовый режим"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:866
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:868
 msgid "Enabled"
 msgstr "Включено"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:869
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:871
 msgid "Disabled"
 msgstr "Отключено"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:879
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:881
 msgid "Sandbox Mode"
 msgstr "Режим изолированной программной среды."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:882
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:884
 msgid "Enable for test purchases."
 msgstr "Разрешить тестовые покупки."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:899 ../addons/gateway/event-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:901 ../addons/gateway/event-
 #: booking/mycred-eventespresso3.php:502 ../modules/mycred-module-settings.php:544
 msgid "Update Settings"
 msgstr "Настройки обновлений"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:900
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:902
 msgid "More Gateways"
 msgstr ""
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:983 ../includes/mycred-log.php:
-#: 625
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:985 ../includes/mycred-log.php:
+#: 634
 msgid "Date"
 msgstr "Дата "
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:985
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:987
 msgid "Payed"
 msgstr "Оплачено"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:990
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:992
 msgid "<strong>buy</strong>CRED Purchase Log"
 msgstr "<strong>купить</strong>CRED журнал покупки"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:990 ../addons/gateway/event-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:992 ../addons/gateway/event-
 #: booking/mycred-eventespresso3.php:367
 msgid "Gateway Settings"
 msgstr "Настройки шлюза"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1166 ../addons/sell-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1168 ../addons/sell-
 #: content/myCRED-addon-sell-content.php:1184
 msgid "No purchases found"
 msgstr "Покупок не обнаружено"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1236 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:1349
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1238 ../addons/buy-creds/myCRED-
+#: addon-buy-creds.php:1351
 msgid "This Add-on needs to setup before you can use this shortcode."
 msgstr ""
 "Это расширение необходимо установить перед началом использования этого "
 "короткого номера."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1255 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:1368
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1257 ../addons/buy-creds/myCRED-
+#: addon-buy-creds.php:1370
 msgid "No gateways installed."
 msgstr "Нет установленных шлюзов."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1256 ../addons/buy-creds/myCRED-
-#: addon-buy-creds.php:1369
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1258 ../addons/buy-creds/myCRED-
+#: addon-buy-creds.php:1371
 msgid "Gateway does not exist."
 msgstr "Шлюз не существует."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1304
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1306
 msgid "Yourself"
 msgstr "Самостоятельно"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1370
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1372
 msgid "No active gateways found."
 msgstr "Активных шлюзов не обнаружено."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1371
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1373
 msgid "The selected gateway is not active."
 msgstr "Выбранный шлюз не активен."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1418
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1420
 #, php-format
 msgid "Buy with %gateway%"
 msgstr "Приобрести с %gateway%"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1424 ../addons/sell-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1426 ../addons/sell-
 #: content/myCRED-addon-sell-content.php:44
 msgid "Buy Now"
 msgstr "Купить сейчас"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1469
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1471
 msgid "No users found"
 msgstr "Пользователи не найдены"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1479
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1481
 msgid "To"
 msgstr "До"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1496
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1498
 msgid "Select Amount"
 msgstr "Выбать количество "
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1520
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1522
 msgid "min."
 msgstr "мин."
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1528
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1530
 msgid "Select Gateway"
 msgstr "Выбрать шлюз"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1569 ../addons/gateway/event-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1571 ../addons/gateway/event-
 #: booking/mycred-eventespresso3.php:27 ../addons/gateway/event-booking/mycred-
 #: eventsmanager-pro.php:39 ../addons/gateway/event-booking/mycred-eventsmanager.
 #: php:35
 msgid "Pay Now"
 msgstr "Оплатить сейчас"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1570 ../includes/mycred-install.
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1572 ../includes/mycred-install.
 #: php:515
 msgid "Cancel"
 msgstr "Отменить"
 
-#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1597 ../addons/ranks/myCRED-
-#: addon-ranks.php:990 ../modules/mycred-module-log.php:368 ../modules/mycred-
+#: ../addons/buy-creds/myCRED-addon-buy-creds.php:1599 ../addons/ranks/myCRED-
+#: addon-ranks.php:990 ../modules/mycred-module-log.php:370 ../modules/mycred-
 #: module-settings.php:440 ../modules/mycred-module-settings.php:455
 msgid "Actions"
 msgstr "Действия"
@@ -1411,9 +1411,9 @@ msgstr "Страница оформления заказа"
 
 #: ../addons/buy-creds/gateways/skrill.php:332 ../addons/gateway/carts/mycred-
 #: woocommerce.php:86 ../addons/ranks/myCRED-addon-ranks.php:788 ..
-#: addons/transfer/myCRED-addon-transfer.php:651 ../includes/mycred-widgets.php:
+#: addons/transfer/myCRED-addon-transfer.php:653 ../includes/mycred-widgets.php:
 #: 197 ../includes/mycred-widgets.php:397 ../includes/mycred-widgets.php:596 ..
-#: modules/mycred-module-hooks.php:2460
+#: modules/mycred-module-hooks.php:2717
 msgid "Title"
 msgstr "Название"
 
@@ -1604,8 +1604,8 @@ msgid "Usage"
 msgstr "Применение"
 
 #: ../addons/coupons/myCRED-addon-coupons.php:159 ../addons/transfer/myCRED-addon-
-#: transfer.php:243 ../modules/mycred-module-hooks.php:1219 ../modules/mycred-
-#: module-hooks.php:1510
+#: transfer.php:243 ../modules/mycred-module-hooks.php:1476 ../modules/mycred-
+#: module-hooks.php:1767
 msgid "Limits"
 msgstr "Ограничения"
 
@@ -1618,7 +1618,7 @@ msgid "not yet used"
 msgstr "еще не использовано"
 
 #: ../addons/coupons/myCRED-addon-coupons.php:198 ../modules/mycred-module-hooks.
-#: php:1950
+#: php:2207
 msgid "Total"
 msgstr "Общее "
 
@@ -2068,7 +2068,7 @@ msgstr "Отправить"
 
 #: ../addons/email-notices/myCRED-addon-email-notices.php:755 ../addons/email-
 #: notices/myCRED-addon-email-notices.php:884 ../includes/mycred-admin.php:764 ..
-#: includes/mycred-log.php:624 ../modules/mycred-module-log.php:540
+#: includes/mycred-log.php:633 ../modules/mycred-module-log.php:542
 msgid "User"
 msgstr "Пользователь"
 
@@ -2319,7 +2319,7 @@ msgstr "Сколько стоит 1%_singular%  в %currency%?"
 #: addons/gateway/carts/mycred-wpecommerce.php:357 ../addons/gateway/event-
 #: booking/mycred-eventespresso3.php:450 ../addons/gateway/event-booking/mycred-
 #: eventsmanager-pro.php:499 ../addons/gateway/event-booking/mycred-eventsmanager.
-#: php:578 ../includes/mycred-shortcodes.php:915
+#: php:578 ../includes/mycred-shortcodes.php:912
 msgid "Exchange Rate"
 msgstr "Курс валют"
 
@@ -2747,7 +2747,7 @@ msgid "Reject"
 msgstr "Отклонить"
 
 #: ../addons/gateway/event-booking/mycred-eventsmanager-pro.php:374 ..
-#: modules/mycred-module-log.php:500 ../modules/mycred-module-settings.php:488 ..
+#: modules/mycred-module-log.php:502 ../modules/mycred-module-settings.php:488 ..
 #: modules/mycred-module-settings.php:507
 msgid "Delete"
 msgstr "Удалить"
@@ -3193,11 +3193,11 @@ msgstr "Убрать все ранги"
 msgid "Assign Ranks to Users"
 msgstr "Назначить ранги пользователям"
 
-#: ../addons/ranks/includes/mycred-rank-functions.php:197
+#: ../addons/ranks/includes/mycred-rank-functions.php:229
 msgid "mycred_get_users_rank() : Missing required user id"
 msgstr "mycred_get_users_rank() : Отсутствует необходимый id пользователя"
 
-#: ../addons/ranks/includes/mycred-rank-functions.php:207
+#: ../addons/ranks/includes/mycred-rank-functions.php:238
 msgid "no rank"
 msgstr "нет рангов"
 
@@ -3382,7 +3382,7 @@ msgid "You have exceeded your %limit% transfer limit."
 msgstr "Вы превысили ваш %limit% лимит передачи."
 
 #: ../addons/transfer/myCRED-addon-transfer.php:45 ../includes/mycred-functions.
-#: php:2272
+#: php:2291
 msgid "Transfer"
 msgstr "Передать"
 
@@ -3421,7 +3421,7 @@ msgstr ""
 "это не будет выполнено!"
 
 #: ../addons/transfer/myCRED-addon-transfer.php:147 ../includes/mycred-shortcodes.
-#: php:1012
+#: php:1009
 msgid "Insufficient Funds. Please try a lower amount."
 msgstr ""
 
@@ -3564,49 +3564,49 @@ msgstr ""
 "Текст показывается, когда пользователь исчерпал свой лимит перевода (если "
 "используется). Оставить пустым, чтобы скрыть. Элементы HTML запрещаются!"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:574
+#: ../addons/transfer/myCRED-addon-transfer.php:576
 msgid "Allow transfers between users."
 msgstr "Разрешить переводы между пользователями."
 
-#: ../addons/transfer/myCRED-addon-transfer.php:576
+#: ../addons/transfer/myCRED-addon-transfer.php:578
 #, php-format
 msgid "(%s) Transfer"
 msgstr "(%s) Перевод"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:590
+#: ../addons/transfer/myCRED-addon-transfer.php:592
 msgid "The myCRED Transfer add-on has not yet been setup!"
 msgstr "Расширение myCRED Transfer еще не было установлено!"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:645
+#: ../addons/transfer/myCRED-addon-transfer.php:647
 msgid "Transfer %plural%"
 msgstr "Передать %plural%"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:656
+#: ../addons/transfer/myCRED-addon-transfer.php:658
 msgid "Show users balance"
 msgstr "Показать баланс пользователя"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:660
+#: ../addons/transfer/myCRED-addon-transfer.php:662
 msgid "Show users limit"
 msgstr "Показать лимит пользователя"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:796
+#: ../addons/transfer/myCRED-addon-transfer.php:798
 msgid "username"
 msgstr "имя пользователя"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:798
+#: ../addons/transfer/myCRED-addon-transfer.php:800
 msgid "email"
 msgstr "email"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:800
+#: ../addons/transfer/myCRED-addon-transfer.php:802
 #, php-format
 msgid "recipients %s"
 msgstr "получатели %s"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:865
+#: ../addons/transfer/myCRED-addon-transfer.php:875
 msgid "To:"
 msgstr "До:"
 
-#: ../addons/transfer/myCRED-addon-transfer.php:871
+#: ../addons/transfer/myCRED-addon-transfer.php:881
 msgid "Amount:"
 msgstr "Сумма:"
 
@@ -3627,33 +3627,39 @@ msgstr ""
 msgid "Users excluded"
 msgstr ""
 
-#: ../includes/mycred-admin.php:232
+#: ../includes/mycred-admin.php:207
+msgid ""
+"All buyCRED Payment Gateways have been disabled! Please check your exchange "
+"rate settings and update all premium payment gateways!"
+msgstr ""
+
+#: ../includes/mycred-admin.php:235
 msgid "User is excluded"
 msgstr "Пользователь исключен"
 
-#: ../includes/mycred-admin.php:237
+#: ../includes/mycred-admin.php:240
 msgid "Log Entry can not be empty"
 msgstr "Поле входа в журнал не может быть пустым"
 
-#: ../includes/mycred-admin.php:241
+#: ../includes/mycred-admin.php:244
 msgid "Amount can not be zero"
 msgstr "Сумма не может быть равна нулю"
 
-#: ../includes/mycred-admin.php:262
+#: ../includes/mycred-admin.php:265
 msgid "Failed to update this uses balance."
 msgstr "Ошибка обновления баланса пользователя."
 
-#: ../includes/mycred-admin.php:401
+#: ../includes/mycred-admin.php:404
 msgid "Excluded"
 msgstr "Исключено"
 
-#: ../includes/mycred-admin.php:413
+#: ../includes/mycred-admin.php:414
 #, php-format
 msgid "Total: %s"
 msgstr ""
 
-#: ../includes/mycred-admin.php:422 ../modules/mycred-module-log.php:250 ..
-#: modules/mycred-module-log.php:251
+#: ../includes/mycred-admin.php:422 ../modules/mycred-module-log.php:252 ..
+#: modules/mycred-module-log.php:253
 msgid "History"
 msgstr "История"
 
@@ -3785,287 +3791,299 @@ msgstr "и"
 msgid "Available Template Tags:"
 msgstr "Доступные теги шаблонов:"
 
-#: ../includes/mycred-functions.php:1651
+#: ../includes/mycred-functions.php:1655
 msgid "Entire Log"
 msgstr "Весь журнал"
 
-#: ../includes/mycred-functions.php:1656 ../includes/mycred-functions.php:1657
+#: ../includes/mycred-functions.php:1660 ../includes/mycred-functions.php:1661
 msgid "Displayed Rows"
 msgstr "Показанные ряды"
 
-#: ../includes/mycred-functions.php:1661
+#: ../includes/mycred-functions.php:1665
 msgid "Search Results"
 msgstr "Искать результаты"
 
-#: ../includes/mycred-functions.php:1662
+#: ../includes/mycred-functions.php:1666
 msgid "My Entire Log"
 msgstr "Мой полный журнал"
 
-#: ../includes/mycred-functions.php:1782
+#: ../includes/mycred-functions.php:1786
 msgid "ref empty"
 msgstr "образец пустой"
 
-#: ../includes/mycred-functions.php:1790
+#: ../includes/mycred-functions.php:1794
 msgid "incorrect user id format"
 msgstr "неверный формат id пользователя"
 
-#: ../includes/mycred-functions.php:1803
+#: ../includes/mycred-functions.php:1807
 msgid "incorrect unix timestamp (from):"
 msgstr "неправильная временная отметка операционной системы (от):"
 
-#: ../includes/mycred-functions.php:1812
+#: ../includes/mycred-functions.php:1816
 msgid "incorrect unix timestamp (to):"
 msgstr "неправильная временная отметка операционной системы (до):"
 
-#: ../includes/mycred-functions.php:2162
-msgid "Website Resitration"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2163
-msgid "Website Visit"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2164
-msgid "Logging in"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2165
-msgid "Publishing Content"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2166 ../modules/mycred-module-hooks.php:1168
-msgid "Approved Comment"
-msgstr "Комментарий одобрен"
-
-#: ../includes/mycred-functions.php:2167
-msgid "Unapproved Comment"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2168
-msgid "SPAM Comment"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2169
-msgid "Deleted Comment"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2170
-msgid "Link Click"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2171
-msgid "Watching Video"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2172
-msgid "Visitor Referral"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2173
-msgid "Signup Referral"
-msgstr ""
-
-#: ../includes/mycred-functions.php:2177
-msgid "New Profile Update"
-msgstr ""
-
 #: ../includes/mycred-functions.php:2178
-msgid "Avatar Upload"
+msgid "Website Registration"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2179
-msgid "New Friendship"
+msgid "Website Visit"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2180
-msgid "Ended Friendship"
+msgid "Viewing Content (Member)"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2181
-msgid "New Profile Comment"
+msgid "Viewing Content (Author)"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2182
-msgid "Profile Comment Deletion"
+msgid "Logging in"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2183
-msgid "New Message"
+msgid "Publishing Content"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2184
-msgid "Sending Gift"
-msgstr ""
+#: ../includes/mycred-functions.php:2184 ../modules/mycred-module-hooks.php:1425
+msgid "Approved Comment"
+msgstr "Комментарий одобрен"
 
 #: ../includes/mycred-functions.php:2185
-msgid "New Group"
+msgid "Unapproved Comment"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2186
-msgid "Deleted Group"
+msgid "SPAM Comment"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2187
-msgid "New Group Forum Topic"
+msgid "Deleted Comment"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2188
-msgid "Edit Group Forum Topic"
+msgid "Link Click"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2189
-msgid "New Group Forum Post"
+msgid "Watching Video"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2190
-msgid "Edit Group Forum Post"
+msgid "Visitor Referral"
 msgstr ""
 
 #: ../includes/mycred-functions.php:2191
+msgid "Signup Referral"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2195
+msgid "New Profile Update"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2196
+msgid "Avatar Upload"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2197
+msgid "New Friendship"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2198
+msgid "Ended Friendship"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2199
+msgid "New Profile Comment"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2200
+msgid "Profile Comment Deletion"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2201
+msgid "New Message"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2202
+msgid "Sending Gift"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2203
+msgid "New Group"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2204
+msgid "Deleted Group"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2205
+msgid "New Group Forum Topic"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2206
+msgid "Edit Group Forum Topic"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2207
+msgid "New Group Forum Post"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2208
+msgid "Edit Group Forum Post"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2209
 msgid "Joining Group"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2192
+#: ../includes/mycred-functions.php:2210
 msgid "Leaving Group"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2193
+#: ../includes/mycred-functions.php:2211
 msgid "New Group Avatar"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2194
+#: ../includes/mycred-functions.php:2212
 msgid "New Group Comment"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2198 ../plugins/mycred-hook-buddypress-media.
+#: ../includes/mycred-functions.php:2216 ../plugins/mycred-hook-buddypress-media.
 #: php:166
 msgid "Photo Upload"
 msgstr "Загрузка фото"
 
-#: ../includes/mycred-functions.php:2199 ../plugins/mycred-hook-buddypress-media.
+#: ../includes/mycred-functions.php:2217 ../plugins/mycred-hook-buddypress-media.
 #: php:176
 msgid "Video Upload"
 msgstr "Загрузка фидео"
 
-#: ../includes/mycred-functions.php:2200 ../plugins/mycred-hook-buddypress-media.
+#: ../includes/mycred-functions.php:2218 ../plugins/mycred-hook-buddypress-media.
 #: php:186
 msgid "Music Upload"
 msgstr "Загрузка музыки"
 
-#: ../includes/mycred-functions.php:2204
+#: ../includes/mycred-functions.php:2222
 msgid "New Link"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2205
+#: ../includes/mycred-functions.php:2223
 msgid "Link Voting"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2206
+#: ../includes/mycred-functions.php:2224
 msgid "Link Update"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2210
+#: ../includes/mycred-functions.php:2228
 msgid "New Forum (bbPress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2211
+#: ../includes/mycred-functions.php:2229
 msgid "New Forum Topic (bbPress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2212
+#: ../includes/mycred-functions.php:2230
 msgid "Favorited Topic (bbPress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2213
+#: ../includes/mycred-functions.php:2231
 msgid "New Topic Reply (bbPress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2217
+#: ../includes/mycred-functions.php:2235
 msgid "Form Submission (Contact Form 7)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2220
+#: ../includes/mycred-functions.php:2238
 msgid "Form Submission (Gravity Form)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2223
+#: ../includes/mycred-functions.php:2241
 msgid "New Forum Topic (SimplePress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2224
+#: ../includes/mycred-functions.php:2242
 msgid "New Forum Post (SimplePress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2228
+#: ../includes/mycred-functions.php:2246
 msgid "Poll Voting"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2231
+#: ../includes/mycred-functions.php:2249
 msgid "Sending an Invite"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2232
+#: ../includes/mycred-functions.php:2250
 msgid "Accepting an Invite"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2237
+#: ../includes/mycred-functions.php:2256
 msgid "Banking Payout"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2240
+#: ../includes/mycred-functions.php:2259
 msgid "buyCRED Purchase (PayPal Standard)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2241
+#: ../includes/mycred-functions.php:2260
 msgid "buyCRED Purchase (Skrill)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2242
+#: ../includes/mycred-functions.php:2261
 msgid "buyCRED Purchase (Zombaio)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2243
+#: ../includes/mycred-functions.php:2262
 msgid "buyCRED Purchase (NETBilling)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2244
+#: ../includes/mycred-functions.php:2263
 msgid "buyCRED Purchase (BitPay)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2249
+#: ../includes/mycred-functions.php:2268
 msgid "Coupon Purchase"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2252
+#: ../includes/mycred-functions.php:2271
 msgid "Store Purchase (WooCommerce)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2253
+#: ../includes/mycred-functions.php:2272
 msgid "Store Purchase (MarketPress)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2254
+#: ../includes/mycred-functions.php:2273
 msgid "Store Purchase (WP E-Commerce)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2259
+#: ../includes/mycred-functions.php:2278
 msgid "Event Payment (Event Espresso)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2260
+#: ../includes/mycred-functions.php:2279
 msgid "Event Sale (Event Espresso)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2264
+#: ../includes/mycred-functions.php:2283
 msgid "Event Payment (Events Manager)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2265
+#: ../includes/mycred-functions.php:2284
 msgid "Event Sale (Events Manager)"
 msgstr ""
 
-#: ../includes/mycred-functions.php:2269
+#: ../includes/mycred-functions.php:2288
 msgid "Content Purchase / Sale"
+msgstr ""
+
+#: ../includes/mycred-functions.php:2295
+msgid "Manual Adjustment by Admin"
 msgstr ""
 
 #: ../includes/mycred-importer.php:11
@@ -4269,69 +4287,69 @@ msgstr "Почти готово! Нажмите кнопку ниже для з�
 msgid "Install & Run"
 msgstr "Установка и запуск"
 
-#: ../includes/mycred-log.php:389
+#: ../includes/mycred-log.php:398
 #, php-format
 msgid "Showing %d %s"
 msgstr "Отображение %d %s"
 
-#: ../includes/mycred-log.php:389
+#: ../includes/mycred-log.php:398
 msgid "entry"
 msgid_plural "entries"
 msgstr[0] "запись"
 msgstr[1] "записи"
 msgstr[2] "записи"
 
-#: ../includes/mycred-log.php:402
+#: ../includes/mycred-log.php:411
 msgid "Go to the first page"
 msgstr "Перейти на первую страницу"
 
-#: ../includes/mycred-log.php:409
+#: ../includes/mycred-log.php:418
 msgid "Go to the previous page"
 msgstr "Перейти на предыдущую страницу"
 
-#: ../includes/mycred-log.php:418
+#: ../includes/mycred-log.php:427
 msgid "Current page"
 msgstr "Текущая страница"
 
-#: ../includes/mycred-log.php:424
+#: ../includes/mycred-log.php:433
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
 msgstr "%1$s из %2$s"
 
-#: ../includes/mycred-log.php:428
+#: ../includes/mycred-log.php:437
 msgid "Go to the next page"
 msgstr "Перейти на следующую страницу"
 
-#: ../includes/mycred-log.php:435
+#: ../includes/mycred-log.php:444
 msgid "Go to the last page"
 msgstr "Перейти на последнюю страницу"
 
-#: ../includes/mycred-log.php:503
+#: ../includes/mycred-log.php:512
 msgid "Show all references"
 msgstr "Показать все ссылки"
 
-#: ../includes/mycred-log.php:516 ../modules/mycred-module-settings.php:557
+#: ../includes/mycred-log.php:525 ../modules/mycred-module-settings.php:557
 msgid "User ID"
 msgstr "ID пользователя"
 
-#: ../includes/mycred-log.php:522
+#: ../includes/mycred-log.php:531
 msgid "Show in order"
 msgstr "Показать в порядке"
 
-#: ../includes/mycred-log.php:523 ../includes/mycred-widgets.php:439
+#: ../includes/mycred-log.php:532 ../includes/mycred-widgets.php:439
 msgid "Ascending"
 msgstr "По возрастанию"
 
-#: ../includes/mycred-log.php:523 ../includes/mycred-widgets.php:440
+#: ../includes/mycred-log.php:532 ../includes/mycred-widgets.php:440
 msgid "Descending"
 msgstr "По убыванию"
 
-#: ../includes/mycred-log.php:541
+#: ../includes/mycred-log.php:550
 msgid "Filter"
 msgstr "Фильтр"
 
-#: ../includes/mycred-log.php:594
+#: ../includes/mycred-log.php:603
 msgid ""
 "Log entries are exported to a CSV file and depending on the number of "
 "entries selected, the process may take a few seconds."
@@ -4339,48 +4357,48 @@ msgstr ""
 "Входы в журнал выносятся в CSV файл и взависимости от количества выбранных "
 "входов процесс может занять несколько секунд."
 
-#: ../includes/mycred-log.php:598
+#: ../includes/mycred-log.php:607
 msgid "No export options available."
 msgstr "Нет доступных параметров экспорта."
 
-#: ../includes/mycred-log.php:627
+#: ../includes/mycred-log.php:636
 msgid "Entry"
 msgstr "Запись"
 
-#: ../includes/mycred-log.php:728 ../modules/mycred-module-log.php:462
+#: ../includes/mycred-log.php:737 ../modules/mycred-module-log.php:464
 msgid "User Missing"
 msgstr "Пользователь отсутствует"
 
-#: ../includes/mycred-log.php:798
+#: ../includes/mycred-log.php:807
 msgid "No log entries found"
 msgstr "Записей в журнале не найдено"
 
-#: ../includes/mycred-log.php:813 ../includes/mycred-log.php:815
+#: ../includes/mycred-log.php:822 ../includes/mycred-log.php:824
 msgid "Search Log"
 msgstr "Искать"
 
-#: ../includes/mycred-log.php:814
+#: ../includes/mycred-log.php:823
 msgid "search log entries"
 msgstr "найти запись в журнале"
 
-#: ../includes/mycred-log.php:827 ../modules/mycred-module-buddypress.php:232 ..
+#: ../includes/mycred-log.php:836 ../modules/mycred-module-buddypress.php:232 ..
 #: modules/mycred-module-buddypress.php:245
 msgid "All"
 msgstr "Все "
 
-#: ../includes/mycred-log.php:828 ../modules/mycred-module-buddypress.php:233
+#: ../includes/mycred-log.php:837 ../modules/mycred-module-buddypress.php:233
 msgid "Today"
 msgstr "Сегодня"
 
-#: ../includes/mycred-log.php:829 ../modules/mycred-module-buddypress.php:234
+#: ../includes/mycred-log.php:838 ../modules/mycred-module-buddypress.php:234
 msgid "Yesterday"
 msgstr "Вчера"
 
-#: ../includes/mycred-log.php:830 ../modules/mycred-module-buddypress.php:235
+#: ../includes/mycred-log.php:839 ../modules/mycred-module-buddypress.php:235
 msgid "This Week"
 msgstr "На этой неделе"
 
-#: ../includes/mycred-log.php:831 ../modules/mycred-module-buddypress.php:236
+#: ../includes/mycred-log.php:840 ../modules/mycred-module-buddypress.php:236
 msgid "This Month"
 msgstr "В этом месяце"
 
@@ -4569,60 +4587,60 @@ msgstr "Ошибка - Повторите попытку"
 msgid "A video ID is required for this shortcode"
 msgstr "Для этого короткого номера требуется ID видео"
 
-#: ../includes/mycred-shortcodes.php:864 ../includes/mycred-shortcodes.php:958
+#: ../includes/mycred-shortcodes.php:861 ../includes/mycred-shortcodes.php:955
 msgid "Point types not found."
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:870 ../includes/mycred-shortcodes.php:878 ..
-#: includes/mycred-shortcodes.php:970 ../includes/mycred-shortcodes.php:990
+#: ../includes/mycred-shortcodes.php:867 ../includes/mycred-shortcodes.php:875 ..
+#: includes/mycred-shortcodes.php:967 ../includes/mycred-shortcodes.php:987
 #, php-format
 msgid "You are excluded from using %s."
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:874 ../includes/mycred-shortcodes.php:980
+#: ../includes/mycred-shortcodes.php:871 ../includes/mycred-shortcodes.php:977
 msgid "Your balance is too low to use this feature."
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:895
+#: ../includes/mycred-shortcodes.php:892
 #, php-format
 msgid "Convert <span>%s</span> to <span>%s</span>"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:904
+#: ../includes/mycred-shortcodes.php:901
 #, php-format
 msgid "Your current %s balance"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:912
+#: ../includes/mycred-shortcodes.php:909
 #, php-format
 msgid "Minimum %s"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:916
+#: ../includes/mycred-shortcodes.php:913
 #, php-format
 msgid "1 %s = <span class=\"rate\">%s</span> %s"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:922
+#: ../includes/mycred-shortcodes.php:919
 msgid "Exchange"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:1003
+#: ../includes/mycred-shortcodes.php:1000
 #, php-format
 msgid "You must exchange at least %s!"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:1025
+#: ../includes/mycred-shortcodes.php:1022
 #, php-format
 msgid "Exchange from %s"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:1037
+#: ../includes/mycred-shortcodes.php:1034
 #, php-format
 msgid "Exchange to %s"
 msgstr ""
 
-#: ../includes/mycred-shortcodes.php:1045
+#: ../includes/mycred-shortcodes.php:1042
 #, php-format
 msgid "You have successfully exchanged %s into %s."
 msgstr ""
@@ -5158,10 +5176,21 @@ msgstr ""
 
 #: ../modules/mycred-module-hooks.php:101
 #, php-format
+msgid "%plural% for viewing content"
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:102
+msgid ""
+"Award %_plural% to your users for viewing posts and / or %plural% to your "
+"authors for members viewing their content."
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:108
+#, php-format
 msgid "%plural% for logins"
 msgstr "%plural% для логинов"
 
-#: ../modules/mycred-module-hooks.php:102
+#: ../modules/mycred-module-hooks.php:109
 #, php-format
 msgid ""
 "Award %_plural% for logging in to your website. You can also set an optional "
@@ -5170,12 +5199,12 @@ msgstr ""
 "Награда %_plural% за вход в систему вашего сайта. У вас также есть "
 "возможность установить ограничение по выбору."
 
-#: ../modules/mycred-module-hooks.php:108
+#: ../modules/mycred-module-hooks.php:115
 #, php-format
 msgid "%plural% for publishing content"
 msgstr "%plural% за публикацию контента"
 
-#: ../modules/mycred-module-hooks.php:109
+#: ../modules/mycred-module-hooks.php:116
 #, php-format
 msgid ""
 "Award %_plural% for publishing content on your website. If your custom post "
@@ -5184,27 +5213,27 @@ msgstr ""
 "Награда %plural% за публикацию контента на вашем веб-сайте. Если общий вид "
 "вашего поста не показывается ниже, убедитесь, что он настроен как \"Общий\"."
 
-#: ../modules/mycred-module-hooks.php:115
+#: ../modules/mycred-module-hooks.php:122
 #, php-format
 msgid "%plural% for comments"
 msgstr "%plural% за комментарии"
 
-#: ../modules/mycred-module-hooks.php:115
+#: ../modules/mycred-module-hooks.php:122
 #, php-format
 msgid "%plural% for Disqus comments"
 msgstr "%plural% за Disqus комментарии"
 
-#: ../modules/mycred-module-hooks.php:116
+#: ../modules/mycred-module-hooks.php:123
 #, php-format
 msgid "Award %_plural% for making comments."
 msgstr "Награда %_plural% за комментирование."
 
-#: ../modules/mycred-module-hooks.php:122
+#: ../modules/mycred-module-hooks.php:129
 #, php-format
 msgid "%plural% for clicking on links"
 msgstr "%plural% за нажатие на ссылки"
 
-#: ../modules/mycred-module-hooks.php:123
+#: ../modules/mycred-module-hooks.php:130
 msgid ""
 "Award %_plural% to users who clicks on links generated by the [mycred_link] "
 "shortcode."
@@ -5212,12 +5241,12 @@ msgstr ""
 "Награда %_plural% для пользователей, которые нажимают на ссылки, размещенные "
 "с помощью короткого кода [mycred_link]."
 
-#: ../modules/mycred-module-hooks.php:129
+#: ../modules/mycred-module-hooks.php:136
 #, php-format
 msgid "%plural% for viewing Videos"
 msgstr "%plural% за просмотр видео"
 
-#: ../modules/mycred-module-hooks.php:130
+#: ../modules/mycred-module-hooks.php:137
 msgid ""
 "Award %_plural% to users who watches videos embedded using the "
 "[mycred_video] shortcode."
@@ -5225,23 +5254,23 @@ msgstr ""
 "Награда %_plural% для пользователей, которые смотрят видео, размещенное с "
 "помощью короткого кода [mycred_video]."
 
-#: ../modules/mycred-module-hooks.php:136
+#: ../modules/mycred-module-hooks.php:143
 #, php-format
 msgid "%plural% for referrals"
 msgstr "%plural% за направления"
 
-#: ../modules/mycred-module-hooks.php:137
+#: ../modules/mycred-module-hooks.php:144
 msgid "Award %_plural% to users who refer either visitors and/or new member signups."
 msgstr ""
 "Награда %_plural% для пользователей, которые отправляют посетителей и/или "
 "подписку новых участников."
 
-#: ../modules/mycred-module-hooks.php:170
+#: ../modules/mycred-module-hooks.php:177
 #, php-format
 msgid "%s Hooks"
 msgstr "%s Компоненты"
 
-#: ../modules/mycred-module-hooks.php:173
+#: ../modules/mycred-module-hooks.php:180
 msgid ""
 "Hooks are instances where %_plural% are awarded or deducted from a user, "
 "depending on their actions around your website."
@@ -5249,66 +5278,96 @@ msgstr ""
 "Hooks это случаи, где %_plural% вознаграждается или начисляется от "
 "пользователя, в зависимости от их действий на вашем веб-сайте."
 
-#: ../modules/mycred-module-hooks.php:345 ../modules/mycred-module-hooks.php:439 .
-#: ./modules/mycred-module-hooks.php:751 ../modules/mycred-module-hooks.php:764 ..
-#: modules/mycred-module-hooks.php:800 ../modules/mycred-module-hooks.php:1180 ..
-#: modules/mycred-module-hooks.php:1197 ../modules/mycred-module-hooks.php:1214 .
-#: ./modules/mycred-module-hooks.php:2370 ../modules/mycred-module-hooks.php:2399
-#: ../plugins/mycred-hook-badgeOS.php:281 ../plugins/mycred-hook-bbPress.php:471 .
-#: ./plugins/mycred-hook-bbPress.php:484 ../plugins/mycred-hook-bbPress.php:497 ..
-#: plugins/mycred-hook-bbPress.php:515 ../plugins/mycred-hook-bbPress.php:528 ..
-#: plugins/mycred-hook-bbPress.php:547 ../plugins/mycred-hook-bbPress.php:575 ..
-#: plugins/mycred-hook-buddypress-gallery.php:104 ../plugins/mycred-hook-
-#: buddypress-links.php:254 ../plugins/mycred-hook-buddypress-links.php:267 ..
-#: plugins/mycred-hook-buddypress-links.php:280 ../plugins/mycred-hook-
-#: buddypress-links.php:291 ../plugins/mycred-hook-buddypress-links.php:304 ..
-#: plugins/mycred-hook-buddypress-links.php:317 ../plugins/mycred-hook-
-#: buddypress-media.php:170 ../plugins/mycred-hook-buddypress-media.php:180 ..
-#: plugins/mycred-hook-buddypress-media.php:190 ../plugins/mycred-hook-
-#: buddypress-media.php:203 ../plugins/mycred-hook-buddypress-media.php:213 ..
-#: plugins/mycred-hook-buddypress-media.php:223 ../plugins/mycred-hook-
-#: buddypress.php:381 ../plugins/mycred-hook-buddypress.php:394 ../plugins/mycred-
-#: hook-buddypress.php:407 ../plugins/mycred-hook-buddypress.php:420 ..
-#: plugins/mycred-hook-buddypress.php:433 ../plugins/mycred-hook-buddypress.php:
-#: 446 ../plugins/mycred-hook-buddypress.php:459 ../plugins/mycred-hook-
-#: buddypress.php:472 ../plugins/mycred-hook-buddypress.php:926 ../plugins/mycred-
-#: hook-buddypress.php:939 ../plugins/mycred-hook-buddypress.php:952 ..
-#: plugins/mycred-hook-buddypress.php:965 ../plugins/mycred-hook-buddypress.php:
-#: 978 ../plugins/mycred-hook-buddypress.php:991 ../plugins/mycred-hook-
-#: buddypress.php:1005 ../plugins/mycred-hook-buddypress.php:1018 ..
-#: plugins/mycred-hook-buddypress.php:1031 ../plugins/mycred-hook-buddypress.php:
-#: 1044 ../plugins/mycred-hook-contact-form7.php:141 ../plugins/mycred-hook-
-#: gravityforms.php:142 ../plugins/mycred-hook-invite-anyone.php:219 ..
-#: plugins/mycred-hook-invite-anyone.php:240 ../plugins/mycred-hook-jetpack.php:
-#: 506 ../plugins/mycred-hook-jetpack.php:519 ../plugins/mycred-hook-sharethis.
-#: php:258 ../plugins/mycred-hook-simplepress.php:330 ../plugins/mycred-hook-
-#: simplepress.php:343 ../plugins/mycred-hook-simplepress.php:356 ..
-#: plugins/mycred-hook-simplepress.php:380
+#: ../modules/mycred-module-hooks.php:352 ../modules/mycred-module-hooks.php:446 .
+#: ./modules/mycred-module-hooks.php:601 ../modules/mycred-module-hooks.php:626 ..
+#: modules/mycred-module-hooks.php:688 ../modules/mycred-module-hooks.php:1008 ..
+#: modules/mycred-module-hooks.php:1021 ../modules/mycred-module-hooks.php:1057 .
+#: ./modules/mycred-module-hooks.php:1437 ../modules/mycred-module-hooks.php:1454
+#: ../modules/mycred-module-hooks.php:1471 ../modules/mycred-module-hooks.php:
+#: 2627 ../modules/mycred-module-hooks.php:2656 ../plugins/mycred-hook-badgeOS.
+#: php:281 ../plugins/mycred-hook-bbPress.php:471 ../plugins/mycred-hook-bbPress.
+#: php:484 ../plugins/mycred-hook-bbPress.php:497 ../plugins/mycred-hook-bbPress.
+#: php:515 ../plugins/mycred-hook-bbPress.php:528 ../plugins/mycred-hook-bbPress.
+#: php:547 ../plugins/mycred-hook-bbPress.php:575 ../plugins/mycred-hook-
+#: buddypress-gallery.php:104 ../plugins/mycred-hook-buddypress-links.php:254 ..
+#: plugins/mycred-hook-buddypress-links.php:267 ../plugins/mycred-hook-
+#: buddypress-links.php:280 ../plugins/mycred-hook-buddypress-links.php:291 ..
+#: plugins/mycred-hook-buddypress-links.php:304 ../plugins/mycred-hook-
+#: buddypress-links.php:317 ../plugins/mycred-hook-buddypress-media.php:170 ..
+#: plugins/mycred-hook-buddypress-media.php:180 ../plugins/mycred-hook-
+#: buddypress-media.php:190 ../plugins/mycred-hook-buddypress-media.php:203 ..
+#: plugins/mycred-hook-buddypress-media.php:213 ../plugins/mycred-hook-
+#: buddypress-media.php:223 ../plugins/mycred-hook-buddypress.php:381 ..
+#: plugins/mycred-hook-buddypress.php:394 ../plugins/mycred-hook-buddypress.php:
+#: 407 ../plugins/mycred-hook-buddypress.php:420 ../plugins/mycred-hook-
+#: buddypress.php:433 ../plugins/mycred-hook-buddypress.php:446 ../plugins/mycred-
+#: hook-buddypress.php:459 ../plugins/mycred-hook-buddypress.php:472 ..
+#: plugins/mycred-hook-buddypress.php:926 ../plugins/mycred-hook-buddypress.php:
+#: 939 ../plugins/mycred-hook-buddypress.php:952 ../plugins/mycred-hook-
+#: buddypress.php:965 ../plugins/mycred-hook-buddypress.php:978 ../plugins/mycred-
+#: hook-buddypress.php:991 ../plugins/mycred-hook-buddypress.php:1005 ..
+#: plugins/mycred-hook-buddypress.php:1018 ../plugins/mycred-hook-buddypress.php:
+#: 1031 ../plugins/mycred-hook-buddypress.php:1044 ../plugins/mycred-hook-contact-
+#: form7.php:141 ../plugins/mycred-hook-gravityforms.php:142 ../plugins/mycred-
+#: hook-invite-anyone.php:219 ../plugins/mycred-hook-invite-anyone.php:240 ..
+#: plugins/mycred-hook-jetpack.php:506 ../plugins/mycred-hook-jetpack.php:519 ..
+#: plugins/mycred-hook-sharethis.php:258 ../plugins/mycred-hook-simplepress.php:
+#: 330 ../plugins/mycred-hook-simplepress.php:343 ../plugins/mycred-hook-
+#: simplepress.php:356 ../plugins/mycred-hook-simplepress.php:380
 msgid "Log template"
 msgstr "Шаблон журнала"
 
-#: ../modules/mycred-module-hooks.php:640 ../modules/mycred-module-hooks.php:2378
-#: ../modules/mycred-module-hooks.php:2407 ../plugins/mycred-hook-invite-anyone.
+#: ../modules/mycred-module-hooks.php:590
+#, php-format
+msgid "%plural% for viewing Posts"
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:593 ../modules/mycred-module-hooks.php:604 .
+#: ./modules/mycred-module-hooks.php:618 ../modules/mycred-module-hooks.php:629 ..
+#: modules/mycred-module-hooks.php:680 ../modules/mycred-module-hooks.php:691
+msgid "Member"
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:597 ../modules/mycred-module-hooks.php:610 .
+#: ./modules/mycred-module-hooks.php:622 ../modules/mycred-module-hooks.php:635 ..
+#: modules/mycred-module-hooks.php:684 ../modules/mycred-module-hooks.php:697 ..
+#: modules/mycred-module-hooks.php:1432 ../modules/mycred-module-hooks.php:1449 .
+#: ./modules/mycred-module-hooks.php:1466
+msgid "Content Author"
+msgstr "Автор контента"
+
+#: ../modules/mycred-module-hooks.php:615
+#, php-format
+msgid "%plural% for viewing Pages"
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:677
+#, php-format
+msgid "%plural% for viewing %s"
+msgstr ""
+
+#: ../modules/mycred-module-hooks.php:897 ../modules/mycred-module-hooks.php:2635
+#: ../modules/mycred-module-hooks.php:2664 ../plugins/mycred-hook-invite-anyone.
 #: php:224 ../plugins/mycred-hook-invite-anyone.php:245
 msgid "Limit"
 msgstr "Ограничение"
 
-#: ../modules/mycred-module-hooks.php:745
+#: ../modules/mycred-module-hooks.php:1002
 #, php-format
 msgid "%plural% for Posts"
 msgstr "%plural% для Постов"
 
-#: ../modules/mycred-module-hooks.php:758
+#: ../modules/mycred-module-hooks.php:1015
 #, php-format
 msgid "%plural% for Pages"
 msgstr "%plural% для Страниц"
 
-#: ../modules/mycred-module-hooks.php:794
+#: ../modules/mycred-module-hooks.php:1051
 #, php-format
 msgid "%plural% for %s"
 msgstr "%plural% для %s"
 
-#: ../modules/mycred-module-hooks.php:1166
+#: ../modules/mycred-module-hooks.php:1423
 msgid ""
 "%plural% are only awarded when your website has been synced with the Disqus "
 "server!"
@@ -5316,29 +5375,24 @@ msgstr ""
 "%plural% награждается только в том случае, если ваш веб-сайт был "
 "синхронизирован с сервером Disqus!"
 
-#: ../modules/mycred-module-hooks.php:1171 ../modules/mycred-module-hooks.php:
-#: 1188 ../modules/mycred-module-hooks.php:1205
+#: ../modules/mycred-module-hooks.php:1428 ../modules/mycred-module-hooks.php:
+#: 1445 ../modules/mycred-module-hooks.php:1462
 msgid "Comment Author"
 msgstr "Комментарий автора"
 
-#: ../modules/mycred-module-hooks.php:1175 ../modules/mycred-module-hooks.php:
-#: 1192 ../modules/mycred-module-hooks.php:1209
-msgid "Content Author"
-msgstr "Автор контента"
-
-#: ../modules/mycred-module-hooks.php:1185
+#: ../modules/mycred-module-hooks.php:1442
 msgid "Comment Marked SPAM"
 msgstr "Комментарий помечен как СПАМ"
 
-#: ../modules/mycred-module-hooks.php:1202
+#: ../modules/mycred-module-hooks.php:1459
 msgid "Trashed / Unapproved Comments"
 msgstr "Неподходящий / Неодобренный комментарий"
 
-#: ../modules/mycred-module-hooks.php:1222
+#: ../modules/mycred-module-hooks.php:1479
 msgid "Limit per post"
 msgstr "Ограничение на одну публикацию"
 
-#: ../modules/mycred-module-hooks.php:1224
+#: ../modules/mycred-module-hooks.php:1481
 msgid ""
 "The number of comments per post that grants %_plural% to the comment author. "
 "Use zero for unlimited."
@@ -5346,17 +5400,17 @@ msgstr ""
 "Количество комментариев на публикацию, за которое автор %_plural% получает "
 "вознаграждение. Используйте ноль для безлимитного."
 
-#: ../modules/mycred-module-hooks.php:1228
+#: ../modules/mycred-module-hooks.php:1485
 msgid "Limit per day"
 msgstr "Ограничение в день"
 
-#: ../modules/mycred-module-hooks.php:1230
+#: ../modules/mycred-module-hooks.php:1487
 msgid "Number of comments per day that grants %_plural%. Use zero for unlimited."
 msgstr ""
 "Количество комментариев в день, которое вознаграждается%_plural%. "
 "Используйте ноль для безлимитного."
 
-#: ../modules/mycred-module-hooks.php:1235
+#: ../modules/mycred-module-hooks.php:1492
 msgid ""
 "%plural% is to be awarded even when comment authors reply to their own "
 "comment."
@@ -5364,15 +5418,15 @@ msgstr ""
 "%plural% должна быть присуждена, даже если автор комментария отвечает на "
 "свой собственный комментарий."
 
-#: ../modules/mycred-module-hooks.php:1306
+#: ../modules/mycred-module-hooks.php:1563
 msgid "Once for each unique URL"
 msgstr "Один раз для каждого уникального URL"
 
-#: ../modules/mycred-module-hooks.php:1307
+#: ../modules/mycred-module-hooks.php:1564
 msgid "Once for each unique link id"
 msgstr "Один раз для каждого уникального id ссылки"
 
-#: ../modules/mycred-module-hooks.php:1500
+#: ../modules/mycred-module-hooks.php:1757
 msgid ""
 "The default amount to award for clicking on links. You can override this in "
 "the shortcode."
@@ -5380,16 +5434,16 @@ msgstr ""
 "Сумма по умолчанию для вознаграждения за нажатие на ссылку. Вы можете "
 "отменить это в коротком коде."
 
-#: ../modules/mycred-module-hooks.php:1507
+#: ../modules/mycred-module-hooks.php:1764
 #, php-format
 msgid "Custom tags: %url%, %title% or %id%."
 msgstr "Пользовательские теги: %url%, %title% или %id%."
 
-#: ../modules/mycred-module-hooks.php:1518 ../modules/mycred-module-hooks.php:2481
+#: ../modules/mycred-module-hooks.php:1775 ../modules/mycred-module-hooks.php:2738
 msgid "Note!"
 msgstr "Внимание!"
 
-#: ../modules/mycred-module-hooks.php:1518
+#: ../modules/mycred-module-hooks.php:1775
 msgid ""
 "If no ID is set when using the mycred_link shortcode, the shortcode will "
 "generate one automatically based on the value set under href. If you are "
@@ -5401,44 +5455,44 @@ msgstr ""
 "вы используйте эту функцию для того, чтобы \"поделиться\" контентом, "
 "рекомендуется ограничиться ID."
 
-#: ../modules/mycred-module-hooks.php:1520 ../modules/mycred-module-hooks.php:1878
+#: ../modules/mycred-module-hooks.php:1777 ../modules/mycred-module-hooks.php:2135
 msgid "Available Shortcode"
 msgstr "Доступный короткий код"
 
-#: ../modules/mycred-module-hooks.php:1842
+#: ../modules/mycred-module-hooks.php:2099
 msgid "Amount to award for viewing videos."
 msgstr "Сумма вознаграждения за просмотр видео."
 
-#: ../modules/mycred-module-hooks.php:1852
+#: ../modules/mycred-module-hooks.php:2109
 msgid "Award Logic"
 msgstr "Логика вознаграждения"
 
-#: ../modules/mycred-module-hooks.php:1854
+#: ../modules/mycred-module-hooks.php:2111
 #, php-format
 msgid "Select when %_plural% should be awarded or deducted."
 msgstr "Выбрать, когда %_plural% должны быть начислены или удержаны."
 
-#: ../modules/mycred-module-hooks.php:1855
+#: ../modules/mycred-module-hooks.php:2112
 msgid "Play - As soon as video starts playing."
 msgstr "Play - как только видео начинает играть."
 
-#: ../modules/mycred-module-hooks.php:1856
+#: ../modules/mycred-module-hooks.php:2113
 msgid "Full - First when the entire video has played."
 msgstr "Full - Первый, когда видео воспроизводится полностью."
 
-#: ../modules/mycred-module-hooks.php:1857
+#: ../modules/mycred-module-hooks.php:2114
 msgid "Interval - For each x number of seconds watched."
 msgstr "Interval - Для каждой х секунды просмотра."
 
-#: ../modules/mycred-module-hooks.php:1862
+#: ../modules/mycred-module-hooks.php:2119
 msgid "Number of seconds"
 msgstr "Число секунд"
 
-#: ../modules/mycred-module-hooks.php:1869
+#: ../modules/mycred-module-hooks.php:2126
 msgid "Leniency"
 msgstr "Мягкость"
 
-#: ../modules/mycred-module-hooks.php:1871
+#: ../modules/mycred-module-hooks.php:2128
 msgid ""
 "The maximum percentage a users view of a movie can differ from the actual "
 "length."
@@ -5446,7 +5500,7 @@ msgstr ""
 "Максимальный процент фильма, который просматривает пользователь, может "
 "отличаться от настоящей длины."
 
-#: ../modules/mycred-module-hooks.php:1874
+#: ../modules/mycred-module-hooks.php:2131
 msgid ""
 "Do not set this value to zero! A lot of thing can happen while a user "
 "watches a movie and sometimes a few seconds can drop of the counter due to "
@@ -5456,75 +5510,75 @@ msgstr ""
 "может произойти много вещей, а иногда несколько секунд могут упасть со "
 "счетчика из-за ошибок воспроизведения или буферизации."
 
-#: ../modules/mycred-module-hooks.php:1942
+#: ../modules/mycred-module-hooks.php:2199
 msgid "Affiliate Program"
 msgstr "Партнерская программа"
 
-#: ../modules/mycred-module-hooks.php:1951
+#: ../modules/mycred-module-hooks.php:2208
 msgid "Per Day"
 msgstr "В день"
 
-#: ../modules/mycred-module-hooks.php:2063
+#: ../modules/mycred-module-hooks.php:2320
 msgid "Link"
 msgstr "Ссылка"
 
-#: ../modules/mycred-module-hooks.php:2364
+#: ../modules/mycred-module-hooks.php:2621
 msgid "Referring Visitors"
 msgstr "Направление посетителей"
 
-#: ../modules/mycred-module-hooks.php:2388 ../modules/mycred-module-hooks.php:2417
+#: ../modules/mycred-module-hooks.php:2645 ../modules/mycred-module-hooks.php:2674
 msgid "The number of referrals each member can make. Use zero for unlimited."
 msgstr ""
 "Количество направлений, которое может сделать каждый участник. Используйте "
 "ноль для неограниченных."
 
-#: ../modules/mycred-module-hooks.php:2392 ../modules/mycred-module-hooks.php:2421
+#: ../modules/mycred-module-hooks.php:2649 ../modules/mycred-module-hooks.php:2678
 msgid "Referring Signups"
 msgstr "Отправка заявлений о регистрации"
 
-#: ../modules/mycred-module-hooks.php:2396
+#: ../modules/mycred-module-hooks.php:2653
 msgid "Visitors who have Cookies disabled will not award %_plural%."
 msgstr "Посетители с отключенными куками не будут вознаграждены %_plural%."
 
-#: ../modules/mycred-module-hooks.php:2423
+#: ../modules/mycred-module-hooks.php:2680
 msgid "Registrations are disabled."
 msgstr "Регистрации отключены."
 
-#: ../modules/mycred-module-hooks.php:2430
+#: ../modules/mycred-module-hooks.php:2687
 msgid "Referral Links"
 msgstr "Ссылки направления"
 
-#: ../modules/mycred-module-hooks.php:2434
+#: ../modules/mycred-module-hooks.php:2691
 msgid "Assign numeric referral IDs to each user."
 msgstr "Отправить ID цифровых направлений каждому пользователю."
 
-#: ../modules/mycred-module-hooks.php:2435 ../modules/mycred-module-hooks.php:2441
+#: ../modules/mycred-module-hooks.php:2692 ../modules/mycred-module-hooks.php:2698
 msgid "Example"
 msgstr "Пример"
 
-#: ../modules/mycred-module-hooks.php:2440
+#: ../modules/mycred-module-hooks.php:2697
 msgid "Assign usernames as IDs for each user."
 msgstr "Назначить имена пользователей как ID для каждого участника."
 
-#: ../modules/mycred-module-hooks.php:2444
+#: ../modules/mycred-module-hooks.php:2701
 msgid "IP Limit"
 msgstr "Лимит IP"
 
-#: ../modules/mycred-module-hooks.php:2448
+#: ../modules/mycred-module-hooks.php:2705
 msgid "The number of times each IP address grants %_plural%. Use zero for unlimited."
 msgstr ""
 "Количество случаев, каждый IP адрес вознаграждается %_plural%. Использовать "
 "ноль для неограниченных."
 
-#: ../modules/mycred-module-hooks.php:2452 ../modules/mycred-module-hooks.php:2485
+#: ../modules/mycred-module-hooks.php:2709 ../modules/mycred-module-hooks.php:2742
 msgid "BuddyPress Profile"
 msgstr "BuddyPress Профиль"
 
-#: ../modules/mycred-module-hooks.php:2455
+#: ../modules/mycred-module-hooks.php:2712
 msgid "Insert Link in users Profile"
 msgstr "Вставить ссылку в профайл пользователя"
 
-#: ../modules/mycred-module-hooks.php:2456
+#: ../modules/mycred-module-hooks.php:2713
 msgid ""
 "Option to inser the referral link in users profiles. Links will only be "
 "visible to users viewing their own profiles or administrators."
@@ -5533,23 +5587,23 @@ msgstr ""
 "видимы для пользователей, которые просматривают свои собственные профайлы "
 "или администраторам."
 
-#: ../modules/mycred-module-hooks.php:2462
+#: ../modules/mycred-module-hooks.php:2719
 msgid "Leave empty to hide."
 msgstr "Оставить пустым, чтобы спрятать."
 
-#: ../modules/mycred-module-hooks.php:2465
+#: ../modules/mycred-module-hooks.php:2722
 msgid "Description"
 msgstr "Описание"
 
-#: ../modules/mycred-module-hooks.php:2466
+#: ../modules/mycred-module-hooks.php:2723
 msgid "Optional description to insert under the link."
 msgstr "Описание по выбору для вставки под ссылкой."
 
-#: ../modules/mycred-module-hooks.php:2478
+#: ../modules/mycred-module-hooks.php:2735
 msgid "Profile Positioning"
 msgstr "Расположение профайла"
 
-#: ../modules/mycred-module-hooks.php:2480
+#: ../modules/mycred-module-hooks.php:2737
 msgid ""
 "You can move around the referral link on your users profile by changing the "
 "position. Increase to move up, decrease to move down."
@@ -5557,80 +5611,80 @@ msgstr ""
 "Вы можете переносить ссылку направления в вашем профайле пользователя, меняя "
 "расположение. Увеличить для движения вверх, снизить для движения вниз."
 
-#: ../modules/mycred-module-hooks.php:2481
+#: ../modules/mycred-module-hooks.php:2738
 msgid "You can not move the referral link above the users \"Base\" profile details!"
 msgstr ""
 "Вы не можете перемещать ссылку направления над \"Основными\" деталями профиля "
 "пользователя!"
 
-#: ../modules/mycred-module-hooks.php:2487
+#: ../modules/mycred-module-hooks.php:2744
 msgid "Requires BuddyPress Extended Profiles to be enabled."
 msgstr "Для разрешения требуются Расширенные профили BuddyPress."
 
-#: ../modules/mycred-module-log.php:185 ../modules/mycred-module-log.php:206 ..
+#: ../modules/mycred-module-log.php:187 ../modules/mycred-module-log.php:208 ..
 #: modules/mycred-module-settings.php:61 ../modules/mycred-module-settings.php:102
 msgid "Access denied for this action"
 msgstr "Для этого действия доступ запрещен"
 
-#: ../modules/mycred-module-log.php:192
+#: ../modules/mycred-module-log.php:194
 msgid "Row Deleted"
 msgstr "Строка удалена"
 
-#: ../modules/mycred-module-log.php:219
+#: ../modules/mycred-module-log.php:221
 msgid "Log entry not found"
 msgstr "Запись в журнале не найдена"
 
-#: ../modules/mycred-module-log.php:232
+#: ../modules/mycred-module-log.php:234
 msgid "Entry Updated"
 msgstr "Запись обновлена"
 
-#: ../modules/mycred-module-log.php:286 ../modules/mycred-module-settings.php:436
+#: ../modules/mycred-module-log.php:288 ../modules/mycred-module-settings.php:436
 msgid "Entries"
 msgstr "Записи"
 
-#: ../modules/mycred-module-log.php:301 ../modules/mycred-module-log.php:381 ..
-#: modules/mycred-module-log.php:625 ../modules/mycred-module-settings.php:574
+#: ../modules/mycred-module-log.php:303 ../modules/mycred-module-log.php:383 ..
+#: modules/mycred-module-log.php:627 ../modules/mycred-module-settings.php:574
 msgid "Export"
 msgstr "Экспорт"
 
-#: ../modules/mycred-module-log.php:307
+#: ../modules/mycred-module-log.php:309
 msgid "Search results for"
 msgstr "Поиск результатов для "
 
-#: ../modules/mycred-module-log.php:375
+#: ../modules/mycred-module-log.php:377
 #, php-format
 msgid "%s Log"
 msgstr "%s Журнал"
 
-#: ../modules/mycred-module-log.php:500
+#: ../modules/mycred-module-log.php:502
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ../modules/mycred-module-log.php:541
+#: ../modules/mycred-module-log.php:543
 msgid "Time"
 msgstr "Время"
 
-#: ../modules/mycred-module-log.php:545
+#: ../modules/mycred-module-log.php:547
 msgid "Current Log Entry"
 msgstr "Текущая запись в журнале"
 
-#: ../modules/mycred-module-log.php:547
+#: ../modules/mycred-module-log.php:549
 msgid "The current saved log entry"
 msgstr "Текущая сохраненная запись в журнале. "
 
-#: ../modules/mycred-module-log.php:550
+#: ../modules/mycred-module-log.php:552
 msgid "Adjust Log Entry"
 msgstr "Редактировать запись в журнале"
 
-#: ../modules/mycred-module-log.php:552
+#: ../modules/mycred-module-log.php:554
 msgid "The new log entry"
 msgstr "Новая запись в журнале"
 
-#: ../modules/mycred-module-log.php:555
+#: ../modules/mycred-module-log.php:557
 msgid "Update Log Entry"
 msgstr "Обновить запись в журнале"
 
-#: ../modules/mycred-module-log.php:619
+#: ../modules/mycred-module-log.php:621
 #, php-format
 msgid "My %s History"
 msgstr "Моя %s история"
@@ -5879,8 +5933,8 @@ msgstr "%plural% за новую тему"
 msgid "Forum authors can receive %_plural% for creating new topics."
 msgstr "Авторы форума могут получить %_plural% для создания новых тем."
 
-#: ../plugins/mycred-hook-bbPress.php:508 ../plugins/mycred-hook-bbPress.php:568 .
-#: ./plugins/mycred-hook-simplepress.php:336
+#: ../plugins/mycred-hook-bbPress.php:508 ../plugins/mycred-hook-simplepress.php:
+#: 336
 #, php-format
 msgid "%plural% for Topic Deletion"
 msgstr "%plural% за Удаление темы"
@@ -5915,6 +5969,11 @@ msgstr "Авторы темы могут получить %_plural% за отв�
 #, php-format
 msgid "Show users %_plural% balance in replies"
 msgstr "Показать баланс %_plural% пользователей в ответах"
+
+#: ../plugins/mycred-hook-bbPress.php:568
+#, php-format
+msgid "%plural% for Reply Deletion"
+msgstr ""
 
 #: ../plugins/mycred-hook-buddypress-gallery.php:19
 msgid "BuddyPress: Gallery Actions"

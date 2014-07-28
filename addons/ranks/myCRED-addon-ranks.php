@@ -309,12 +309,12 @@ if ( ! class_exists( 'myCRED_Ranks_Module' ) ) {
 			if ( $this->core->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->core->use_central_logging ) {
 				$total_key .= '_' . $GLOBALS['blog_id'];
 
-				// Clean up old keys
-				$wpdb->delete(
-					$wpdb->usermeta,
-					array( 'meta_key' => $total_key ),
-					array( '%s' )
-				);
+				// Clean up old & incorrect keys
+				$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $total_key . '_total' ), array( '%s' ) );
+
+				$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => 'mycred_default' . $GLOBALS['blog_id'] ), array( '%s' ) );
+
+				$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => 'mycred_default_' . $GLOBALS['blog_id'] . '_' . $GLOBALS['blog_id'] ), array( '%s' ) );
 			}
 			$total_key .= '_total';
 

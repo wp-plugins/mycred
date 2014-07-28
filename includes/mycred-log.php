@@ -57,6 +57,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				's'        => NULL,
 				'data'     => NULL,
 				'orderby'  => 'time',
+				'offset'   => '',
 				'order'    => 'DESC',
 				'ids'      => false,
 				'cache'    => '',
@@ -70,7 +71,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				unset( $this->diff['number'] );
 
 			$data = false;
-			if ( ! empty( $this->args['cache'] ) ) {
+			if ( $this->args['cache'] != '' ) {
 				$cache_id = substr( $this->args['cache'], 0, 23 );
 				if ( is_multisite() )
 					$data = get_site_transient( 'mycred_log_query_' . $cache_id );
@@ -84,13 +85,13 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				$prep[] = $this->args['ctype'];
 
 				// User ID
-				if ( $this->args['user_id'] !== NULL ) {
+				if ( $this->args['user_id'] !== NULL && $this->args['user_id'] != '' ) {
 					$wheres[] = 'user_id = %d';
 					$prep[] = abs( $this->args['user_id'] );
 				}
 
 				// Reference
-				if ( $this->args['ref'] !== NULL ) {
+				if ( $this->args['ref'] !== NULL && $this->args['ref'] != '' ) {
 					$refs = explode( ',', $this->args['ref'] );
 					$ref_count = count( $refs );
 					if ( $ref_count > 1 ) {
@@ -106,7 +107,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				}
 
 				// Reference ID
-				if ( $this->args['ref_id'] != NULL ) {
+				if ( $this->args['ref_id'] !== NULL && $this->args['ref_id'] != '' ) {
 					$ref_ids = explode( ',', $this->args['ref_id'] );
 					if ( count( $ref_ids ) > 1 ) {
 						$ref_id_count = count( $ref_ids )-1;
@@ -121,7 +122,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				}
 
 				// Amount
-				if ( $this->args['amount'] !== NULL ) {
+				if ( $this->args['amount'] !== NULL && $this->args['amount'] != '' ) {
 					// Advanced query
 					if ( is_array( $this->args['amount'] ) ) {
 						// Range
@@ -155,7 +156,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				}
 
 				// Time
-				if ( $this->args['time'] !== NULL ) {
+				if ( $this->args['time'] !== NULL && $this->args['time'] != '' ) {
 					$now = date_i18n( 'U' );
 					$today = strtotime( date_i18n( 'Y/m/d' ) . ' midnight' );
 					$todays_date = date_i18n( 'd' );
@@ -187,10 +188,18 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 						$start_of_month = strtotime( date_i18n( 'Y/m/01' ) . ' midnight' );
 						$wheres[] = "time BETWEEN $start_of_month AND $now";
 					}
+					else {
+						$times = explode( ',', $this->args['time'] );
+						if ( count( $times ) == 2 ) {
+							$from = sanitize_key( $times[0] );
+							$to = sanitize_key( $times[1] );
+							$wheres[] = "time BETWEEN $from AND $to";
+						}
+					}
 				}
 
 				// Entry Search
-				if ( $this->args['s'] !== NULL ) {
+				if ( $this->args['s'] !== NULL && $this->args['s'] != '' ) {
 					$search_query = sanitize_text_field( $this->args['s'] );
 
 					if ( is_int( $search_query ) )
@@ -201,7 +210,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				}
 
 				// Data
-				if ( $this->args['data'] !== NULL ) {
+				if ( $this->args['data'] !== NULL && $this->args['data'] != '' ) {
 					$data_query = sanitize_text_field( $this->args['data'] );
 
 					if ( is_int( $data_query ) )
@@ -212,7 +221,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				}
 
 				// Order by
-				if ( ! empty( $this->args['orderby'] ) ) {
+				if ( $this->args['orderby'] != '' ) {
 					// Make sure $sortby is valid
 					$sortbys = array( 'id', 'ref', 'ref_id', 'user_id', 'creds', 'ctype', 'entry', 'data', 'time' );
 					$allowed = apply_filters( 'mycred_allowed_sortby', $sortbys );
@@ -237,7 +246,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 							$page = 1;
 					}
 
-					if ( empty( $this->args['offset'] ) ) {
+					if ( $this->args['offset'] != '' ) {
 						$pgstrt = ($page - 1) * $number . ', ';
 					}
 					else {
@@ -258,7 +267,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 					$select = '*';
 				
 				$found_rows = '';
-				if ( ! empty( $limits ) )
+				if ( $limits != '' )
 					$found_rows = 'SQL_CALC_FOUND_ROWS';
 
 				// Filter
@@ -277,15 +286,15 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				
 				$this->results = $wpdb->get_results( $this->request, $array ? ARRAY_A : OBJECT );
 				
-				if ( ! empty( $limits ) )
+				if ( $limits != '' )
 					$this->num_rows = $wpdb->get_var( 'SELECT FOUND_ROWS()' );
 				else
 					$this->num_rows = count( $this->results );
 
-				if ( ! empty( $limits ) )
+				if ( $limits != '' )
 					$this->max_num_pages = ceil( $this->num_rows / $number );
 
-				if ( ! empty( $this->args['cache'] ) ) {
+				if ( $this->args['cache'] != '' ) {
 					if ( is_multisite() )
 						set_site_transient( 'mycred_log_query_' . $cache_id, $this->results, DAY_IN_SECONDS * 1 );
 					else
@@ -804,7 +813,7 @@ jQuery(function($) {
 		 * @version 1.0.1
 		 */
 		public function search() {
-			if ( isset( $_GET['s'] ) && !empty( $_GET['s'] ) )
+			if ( isset( $_GET['s'] ) && $_GET['s'] != '' )
 				$serarch_string = $_GET['s'];
 			else
 				$serarch_string = ''; ?>
@@ -841,15 +850,15 @@ jQuery(function($) {
 
 					// Build Query Args
 					$url_args = array();
-					if ( isset( $_GET['user_id'] ) && ! empty( $_GET['user_id'] ) )
+					if ( isset( $_GET['user_id'] ) && $_GET['user_id'] != '' )
 						$url_args['user_id'] = $_GET['user_id'];
-					if ( isset( $_GET['ref'] ) && ! empty( $_GET['ref'] ) )
+					if ( isset( $_GET['ref'] ) && $_GET['ref'] != '' )
 						$url_args['ref'] = $_GET['ref'];
-					if ( isset( $_GET['order'] ) && ! empty( $_GET['order'] ) )
+					if ( isset( $_GET['order'] ) && $_GET['order'] != '' )
 						$url_args['order'] = $_GET['order'];
-					if ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) )
+					if ( isset( $_GET['s'] ) && $_GET['s'] != '' )
 						$url_args['s'] = $_GET['s'];
-					if ( ! empty( $sorting_id ) )
+					if ( $sorting_id != '' )
 						$url_args['show'] = $sorting_id;
 
 					// Build URL
@@ -861,7 +870,7 @@ jQuery(function($) {
 					echo '"';
 
 					if ( isset( $_GET['show'] ) && $_GET['show'] == $sorting_id ) echo ' class="current"';
-					elseif ( ! isset( $_GET['show'] ) && empty( $sorting_id ) ) echo ' class="current"';
+					elseif ( ! isset( $_GET['show'] ) && $sorting_id != '' ) echo ' class="current"';
 
 					echo '>' . $sorting_name . '</a>';
 					if ( $count != $total ) echo ' | ';

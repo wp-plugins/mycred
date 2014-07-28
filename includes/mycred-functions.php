@@ -890,7 +890,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 		 * @param $amount (int|float), amount to add/deduct from users balance. This value must be pre-formated.
 		 * @returns the new balance.
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.4
 		 */
 		public function update_users_balance( $user_id = NULL, $amount = NULL, $type = 'mycred_default' ) {
 			if ( $user_id === NULL || $amount === NULL ) return $amount;
@@ -907,12 +907,12 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 			$current_balance = $this->get_users_cred( $user_id, $type );
 			$new_balance = $current_balance+$amount;
 
-			// Handle multisites without centralized log
-			if ( $this->is_multisite && $GLOBALS['blog_id'] > 1 && ! $this->use_central_logging )
-				$type .= '_' . $GLOBALS['blog_id'];
-
 			// Update creds
 			mycred_update_user_meta( $user_id, $type, '', $new_balance );
+
+			// Update total creds
+			$total = mycred_query_users_total( $user_id, $type );
+			mycred_update_user_meta( $user_id, $type, '_total', $total );
 
 			// Let others play
 			do_action( 'mycred_update_user_balance', $user_id, $current_balance, $amount, $type );
@@ -935,11 +935,11 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 		 * @param $type (string), optional point name, defaults to 'mycred_default'
 		 * @returns boolean true on success or false on fail
 		 * @since 0.1
-		 * @version 1.4
+		 * @version 1.4.1
 		 */
 		public function add_creds( $ref = '', $user_id = '', $amount = '', $entry = '', $ref_id = '', $data = '', $type = 'mycred_default' ) {
 			// All the reasons we would fail
-			if ( empty( $ref ) || empty( $user_id ) || empty( $amount ) ) return false;
+			if ( $ref == '' || $user_id == '' || $amount == '' ) return false;
 			if ( $this->exclude_user( $user_id ) === true ) return false;
 
 			// Format creds
@@ -963,21 +963,13 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 			if ( $execute === true ) {
 				$this->update_users_balance( $user_id, $amount, $type );
 				
-				if ( ! empty( $entry ) )
+				if ( $entry != '' )
 					$this->add_to_log( $ref, $user_id, $amount, $entry, $ref_id, $data, $type );
-
-				// Update rankings
-				//if ( $this->frequency['rate'] == 'always' )
-				//	$this->update_rankings();
 
 				return true;
 			}
 			// done (string)   - "Already done"
 			elseif ( $execute === 'done' ) {
-				// Update rankings
-				//if ( $this->frequency['rate'] == 'always' )
-				//	$this->update_rankings();
-
 				return true;
 			}
 
@@ -1303,6 +1295,24 @@ if ( ! function_exists( 'mycred_override_settings' ) ) :
 endif;
 
 /**
+ * Centralize Log
+ * @since 1.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_centralize_log' ) ) :
+	function mycred_centralize_log()
+	{
+		// Not a multisite
+		if ( ! is_multisite() ) return true;
+
+		$mycred_network = mycred_get_settings_network();
+		if ( $mycred_network['central'] ) return true;
+
+		return false;
+	}
+endif;
+
+/**
  * Get Option
  * @since 1.4
  * @version 1.0
@@ -1349,12 +1359,15 @@ endif;
 /**
  * Get User Meta
  * @since 1.5
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_get_user_meta' ) ) :
 	function mycred_get_user_meta( $user_id, $key, $end = '', $unique = true )
 	{
-		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() && $key != 'mycred_rank' )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		elseif ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() && $key == 'mycred_rank' )
 			$key .= '_' . $GLOBALS['blog_id'];
 
 		$key .= $end;
@@ -1366,29 +1379,35 @@ endif;
 /**
  * Add User Meta
  * @since 1.5
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_add_user_meta' ) ) :
-	function mycred_add_user_meta( $user_id, $key, $end = '', $value = '' )
+	function mycred_add_user_meta( $user_id, $key, $end = '', $value = '', $unique = true )
 	{
-		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() && $key != 'mycred_rank' )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		elseif ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() && $key == 'mycred_rank' )
 			$key .= '_' . $GLOBALS['blog_id'];
 
 		$key .= $end;
 
-		return add_user_meta( $user_id, $key, $value );
+		return add_user_meta( $user_id, $key, $value, $unique );
 	}
 endif;
 
 /**
  * Update User Meta
  * @since 1.5
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_update_user_meta' ) ) :
 	function mycred_update_user_meta( $user_id, $key, $end = '', $value = '' )
 	{
-		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() && $key != 'mycred_rank' )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		elseif ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() && $key == 'mycred_rank' )
 			$key .= '_' . $GLOBALS['blog_id'];
 
 		$key .= $end;
@@ -1400,35 +1419,20 @@ endif;
 /**
  * Delete User Meta
  * @since 1.5
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_delete_user_meta' ) ) :
 	function mycred_delete_user_meta( $user_id, $key, $end = '' )
 	{
-		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+		if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() && $key != 'mycred_rank' )
+			$key .= '_' . $GLOBALS['blog_id'];
+
+		elseif ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_override_settings() && $key == 'mycred_rank' )
 			$key .= '_' . $GLOBALS['blog_id'];
 
 		$key .= $end;
 
 		return delete_user_meta( $user_id, $key );
-	}
-endif;
-
-/**
- * Centralize Log
- * @since 1.3
- * @version 1.0
- */
-if ( ! function_exists( 'mycred_centralize_log' ) ) :
-	function mycred_centralize_log()
-	{
-		// Not a multisite
-		if ( ! is_multisite() ) return true;
-
-		$mycred_network = mycred_get_settings_network();
-		if ( $mycred_network['central'] ) return true;
-
-		return false;
 	}
 endif;
 
@@ -1858,7 +1862,7 @@ if ( ! function_exists( 'mycred_get_users_total' ) ) :
 		if ( $type == '' ) $type = 'mycred_default';
 		$mycred = mycred( $type );
 
-		$total = mycred_get_user_meta( $user_id, $type, '_total', true );
+		$total = mycred_get_user_meta( $user_id, $type, '_total' );
 		if ( $total == '' ) {
 			$total = mycred_query_users_total( $user_id, $type );
 			mycred_update_user_meta( $user_id, $type, '_total', $total );
@@ -1876,7 +1880,7 @@ endif;
  * @param $user_id (int), required user id
  * @param $type (string), required point type
  * @since 1.4.7
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_query_users_total' ) ) :
 	function mycred_query_users_total( $user_id, $type = 'mycred_default' )
@@ -1892,8 +1896,20 @@ if ( ! function_exists( 'mycred_query_users_total' ) ) :
 				AND ( ( creds > 0 ) OR ( creds < 0 AND ref = 'manual' ) )
 				AND ctype = %s;", $user_id, $type ) );
 
-		if ( $total === NULL )
-			$total = 0;
+		if ( $total === NULL ) {
+
+			if ( is_multisite() && $GLOBALS['blog_id'] > 1 && ! mycred_centralize_log() )
+				$type .= '_' . $GLOBALS['blog_id'];
+
+			$total = $wpdb->get_var( $wpdb->prepare( "
+				SELECT meta_value 
+				FROM {$wpdb->usermeta} 
+				WHERE user_id = %d 
+				AND meta_key = %s;", $user_id, $type ) );
+
+			if ( $total === NULL )
+				$total = 0;
+		}
 
 		return apply_filters( 'mycred_query_users_total', $total, $user_id, $type, $mycred );
 	}
@@ -2152,25 +2168,27 @@ endif;
  * Returns an array of references currently existing in the log
  * for a particular point type. Will return false if empty.
  * @since 1.5
- * @version 1.0
+ * @version 1.0.1
  */
 if ( ! function_exists( 'mycred_get_all_references' ) ) :
 	function mycred_get_all_references()
 	{
 		// Hooks
 		$hooks = array(
-			'registration'       => __( 'Website Resitration', 'mycred' ),
-			'site_visit'         => __( 'Website Visit', 'mycred' ),
-			'logging_in'         => __( 'Logging in', 'mycred' ),
-			'publishing_content' => __( 'Publishing Content', 'mycred' ),
-			'approved_comment'   => __( 'Approved Comment', 'mycred' ),
-			'unapproved_comment' => __( 'Unapproved Comment', 'mycred' ),
-			'spam_comment'       => __( 'SPAM Comment', 'mycred' ),
-			'deleted_comment'    => __( 'Deleted Comment', 'mycred' ),
-			'link_click'         => __( 'Link Click', 'mycred' ),
-			'watching_video'     => __( 'Watching Video', 'mycred' ),
-			'visitor_referral'   => __( 'Visitor Referral', 'mycred' ),
-			'signup_referral'    => __( 'Signup Referral', 'mycred' )
+			'registration'        => __( 'Website Registration', 'mycred' ),
+			'site_visit'          => __( 'Website Visit', 'mycred' ),
+			'view_content'        => __( 'Viewing Content (Member)', 'mycred' ),
+			'view_content_author' => __( 'Viewing Content (Author)', 'mycred' ),
+			'logging_in'          => __( 'Logging in', 'mycred' ),
+			'publishing_content'  => __( 'Publishing Content', 'mycred' ),
+			'approved_comment'    => __( 'Approved Comment', 'mycred' ),
+			'unapproved_comment'  => __( 'Unapproved Comment', 'mycred' ),
+			'spam_comment'        => __( 'SPAM Comment', 'mycred' ),
+			'deleted_comment'     => __( 'Deleted Comment', 'mycred' ),
+			'link_click'          => __( 'Link Click', 'mycred' ),
+			'watching_video'      => __( 'Watching Video', 'mycred' ),
+			'visitor_referral'    => __( 'Visitor Referral', 'mycred' ),
+			'signup_referral'     => __( 'Signup Referral', 'mycred' )
 		);
 
 		if ( class_exists( 'BuddyPress' ) ) {
@@ -2233,6 +2251,7 @@ if ( ! function_exists( 'mycred_get_all_references' ) ) :
 		}
 
 		// Addons
+		$addons = array();
 		if ( class_exists( 'myCRED_Banking_Module' ) )
 			$addons['payout'] = __( 'Banking Payout', 'mycred' );
 
@@ -2272,6 +2291,8 @@ if ( ! function_exists( 'mycred_get_all_references' ) ) :
 			$addons['transfer'] = __( 'Transfer', 'mycred' );
 
 		$references = array_merge( $hooks, $addons );
+
+		$references['manual'] = __( 'Manual Adjustment by Admin', 'mycred' );
 
 		return apply_filters( 'mycred_all_references', $references );
 	}

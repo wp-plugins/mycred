@@ -774,7 +774,7 @@ endif;
  * of types.
  * @see http://codex.mycred.me/shortcodes/mycred_total_balance/
  * @since 1.4.3
- * @version 1.0
+ * @version 1.1
  */
 if ( ! function_exists( 'mycred_render_shortcode_total' ) ) :
 	function mycred_render_shortcode_total( $atts, $content = '' )
@@ -793,38 +793,35 @@ if ( ! function_exists( 'mycred_render_shortcode_total' ) ) :
 		}
 
 		// Get types
-		$_types = array();
+		$types_to_addup = array();
 		$all = false;
-		if ( ! empty( $types ) ) {
-			// If we set types to "all" we get all registered types now
-			if ( $types == 'all' ) {
-				$types = mycred_get_types();
-				$all = true;
-			}
+		$existing_types = mycred_get_types();
 
-			// Compile an array of type ids
-			foreach ( $types as $key => $value ) {
-				if ( $all )
-					$_types[] = $key;
-				else {
-					$type = sanitize_text_field( $value );
-					if ( $type != '' )
-						$_types[] = $type;
+		if ( $types == 'all' ) {
+			$types_to_addup = array_keys( $existing_types );
+		}
+		else {
+			$types = explode( ',', $types );
+			if ( ! empty( $types ) ) {
+				foreach ( $types as $type_key ) {
+					$type_key = sanitize_text_field( $type_key );
+					if ( ! array_key_exists( $type_key, $existing_types ) ) continue;
+
+					if ( ! in_array( $type_key, $types_to_addup ) )
+						$types_to_addup[] = $type_key;
 				}
 			}
 		}
 
 		// In case we still have no types, we add the default one
-		if ( empty( $_types ) )
-			$_types[] = 'mycred_default';
+		if ( empty( $types_to_addup ) )
+			$types_to_addup = array( 'mycred_default' );
 
 		// Add up all point type balances
 		$total = 0;
-		foreach ( $_types as $type ) {
+		foreach ( $types_to_addup as $type ) {
 			// Get the balance for this type
-			$balance = mycred_get_user_meta( $user_id, $type, '', true );
-			// Continue if the balance is not set
-			if ( empty( $balance ) ) continue;
+			$balance = mycred_query_users_total( $user_id, $type );
 
 			$total = $total+$balance;
 		}
@@ -834,7 +831,7 @@ if ( ! function_exists( 'mycred_render_shortcode_total' ) ) :
 			return $total;
 
 		// Return formatted
-		return apply_filters( 'mycred_total_balances_output', mycred_format_creds( $total ), $atts );
+		return apply_filters( 'mycred_total_balances_output', $total, $atts );
 	}
 endif;
 
