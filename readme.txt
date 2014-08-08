@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,8 +100,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.5.1 =
-Important bug fixes.
+= 1.5.2 =
+Important bug fixes and new version of the Banking add-on.
 
 
 == Other Notes ==
@@ -124,22 +124,20 @@ Important bug fixes.
 
 == Changelog ==
 
+= 1.5.2 =
+* NEW - Banking add-on 1.2.
+* NEW - Added new mycred_delete_option function.
+* FIX - Sell Content profit share should delete a user override instead of saving an empty value.
+* FIX - Log entries and log filters are redirecting to main point type.
+* FIX - Daily visit hook is not awarding points.'
+* FIX - Parsing WooCommerce log entries while WooCommerce is disabled causes fatal error.
+* TWEAK - Adjusted the mycred_history shortcode to allow showing all log entries and not just the current users. Also updated the codex to reflect the changes.
+* TWEAK - Added ID to the BuddyPress points history filter form (if using multiple point types).
+* TWEAK - Added mycred_badge to the uninstaller script.
+* TWEAK - Adjusted the mycred_transfer shortcode processing function to allow easier customisations.
+
 = 1.5.1 =
-* FIX - Bad logic for management locks out the option to "Empty log".
-* FIX - Log export to CSV for search results are not working.
-* FIX - Misspelled "Registration" fix. (thanks Jesus Cardenas)
-* FIX - Calculate totals uses incorrect meta_key search. (thanks Jim)
-* FIX - Ranks on Multisites saves the users total under an incorrect meta key.
-* FIX - "No Rank" is shown on multisites when the Master Template feature is enabled.
-* FIX - Points history in toolbar not showing for those who do not use BuddyPress.
-* FIX - rtMedia Hook is not awarding / deducting points for media deletions.
-* FIX - mycred_total_balance is not counting multiple point types correctly.
-* FIX - Transfer form showing all point types instead of the selected ones.
-* FIX - buyCRED Update script should not run if buyCRED is not enabled.
-* TWEAK - Adjusted the transfer script to add support for custom error messages.
-* NEW - Hook for content views.
-* FIX - Email Notifications are not sent for general balance changes.
-* FIX - Email Notifications are not sent on servers where wp_mail is restricted.
+http://mycred.me/support/changelog/
 
 = 1.5 =
 http://mycred.me/support/changelog/
