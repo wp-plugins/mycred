@@ -115,7 +115,7 @@ Important bug fixes and new version of the Banking add-on.
 = Language Contributors =
 * Swedish - Gabriel S Merovingi
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
-* Persian - Mani Akhtar [Dan - BuddyPress France](http://mycred.me/members/maniv-a/)
+* Persian - Mani Akhtar [myCRED Profile](http://mycred.me/community/maniv-a/)
 * Spanish - Rob Row [Website](http://robertrowshan.com)
 * Russian - Skladchik
 * Chinese - Changmeng Hu
