@@ -45,7 +45,7 @@ If you are comfortable with PHP or have some experience with customising your Wo
 
 == Installation ==
 
-** myCRED Guides **
+**myCRED Guides**
 
 [myCRED Codex - Setup Guides](http://codex.mycred.me/get-started/)
 
