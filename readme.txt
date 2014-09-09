@@ -3,13 +3,15 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
+
+**If you are using [YOOtheme's Radience Theme](http://yootheme.com/component/blog/2012/04/02/radiance-theme), please make sure you backup your database before installing myCRED.**
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
@@ -100,8 +102,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.5.2 =
-Important bug fixes and new version of the Banking add-on.
+= 1.5.3 =
+BadgeOS Hook update, referral hook update and minor bug fixes.
 
 
 == Other Notes ==
@@ -115,7 +117,7 @@ Important bug fixes and new version of the Banking add-on.
 = Language Contributors =
 * Swedish - Gabriel S Merovingi
 * French - Chouf1 [Dan - BuddyPress France](http://bp-fr.net/)
-* Persian - Mani Akhtar [myCRED Profile](http://mycred.me/community/maniv-a/)
+* Persian - Mani Akhtar
 * Spanish - Rob Row [Website](http://robertrowshan.com)
 * Russian - Skladchik
 * Chinese - Changmeng Hu
@@ -124,17 +126,21 @@ Important bug fixes and new version of the Banking add-on.
 
 == Changelog ==
 
+= 1.5.3 =
+* FIX - mycred_total_balance shortcode is not working correctly.
+* NEW - Added support for pagination for the mycred_history shortcode.
+* NEW - Added support for pagination for the BuddyPress points history page.
+* NEW - Added support for multiple point types for the Referral hook.
+* FIX - Changed how mcrypt library check is done during activation.
+* NEW - Added new MYCRED_DISABLE_PROTECTION constant to disable the use of the mcrypt library.
+* FIX - Adjusted Events Manager to prevent crash when using an older version of the Pro plugin.
+* NEW - Added support for multiple point types for the BadgeOS hook.
+* TWEAK - myCRED should not do anything with toolbar if DOING_AJAX.
+* NEW - Added new function to count log entries based on reference and reference ids.
+* UPDATE - Updated the Spanish Translation. (Thanks Rob)
+
 = 1.5.2 =
-* NEW - Banking add-on 1.2.
-* NEW - Added new mycred_delete_option function.
-* FIX - Sell Content profit share should delete a user override instead of saving an empty value.
-* FIX - Log entries and log filters are redirecting to main point type.
-* FIX - Daily visit hook is not awarding points.'
-* FIX - Parsing WooCommerce log entries while WooCommerce is disabled causes fatal error.
-* TWEAK - Adjusted the mycred_history shortcode to allow showing all log entries and not just the current users. Also updated the codex to reflect the changes.
-* TWEAK - Added ID to the BuddyPress points history filter form (if using multiple point types).
-* TWEAK - Added mycred_badge to the uninstaller script.
-* TWEAK - Adjusted the mycred_transfer shortcode processing function to allow easier customisations.
+http://mycred.me/support/changelog/
 
 = 1.5.1 =
 http://mycred.me/support/changelog/
