@@ -1,6 +1,6 @@
 === myCRED ===
 Contributors: designbymerovingi
-Tags:points, tokens, credit, management, reward, charge, community, contest, BuddyPress, Jetpack, bbPress, woocommerce, marketpress, wp e-commerce, gravity forms
+Tags:points, tokens, credit, management, reward, charge, community, contest, buddypress, jetpack, bbpress, simple press, woocommerce, marketpress, wp e-commerce, gravity forms, share-this
 Requires at least: 3.8
 Tested up to: 4.0
 Stable tag: 1.5.3
@@ -10,6 +10,9 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 myCRED is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website.
 
 == Description ==
+
+> #### Plugin Support
+> Free support is offered Monday - Friday 9 - 5 (UTC+1). Please note that myCRED has it's own [support forum](http://mycred.me/support/forums/) which is prioritised over the wordpress.org support forum!
 
 **If you are using [YOOtheme's Radience Theme](http://yootheme.com/component/blog/2012/04/02/radiance-theme), please make sure you backup your database before installing myCRED.**
 
