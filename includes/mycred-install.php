@@ -31,7 +31,7 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 		 */
 		public function compat() {
 			
-			die( __( 'Warning! You are using an experimental version of myCRED which you downloaded from the trunk! Your installation can not use this version of myCRED. Please download the latest publicly available version instead!', 'mycred' ) . "\n" . $error_message );
+			die( __( 'Warning! You are using an experimental version of myCRED which you downloaded from the trunk! Your installation can not use this version of myCRED. Please download the latest publicly available version instead!', 'mycred' ) );
 
 		}
 
