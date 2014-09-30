@@ -30,33 +30,9 @@ if ( ! class_exists( 'myCRED_Install' ) ) {
 		 * @version 1.2
 		 */
 		public function compat() {
-			global $wpdb;
+			
+			die( __( 'Warning! You are using an experimental version of myCRED which you downloaded from the trunk! Your installation can not use this version of myCRED. Please download the latest publicly available version instead!', 'mycred' ) . "\n" . $error_message );
 
-			$message = array();
-			// WordPress check
-			$wp_version = $GLOBALS['wp_version'];
-			if ( version_compare( $wp_version, '3.8', '<' ) && ! defined( 'MYCRED_FOR_OLDER_WP' ) )
-				$message[] = __( 'myCRED requires WordPress 3.8 or higher. Version detected:', 'mycred' ) . ' ' . $wp_version;
-
-			// PHP check
-			$php_version = phpversion();
-			if ( version_compare( $php_version, '5.2.4', '<' ) )
-				$message[] = __( 'myCRED requires PHP 5.2.4 or higher. Version detected: ', 'mycred' ) . ' ' . $php_version;
-
-			// SQL check
-			$sql_version = $wpdb->db_version();
-			if ( version_compare( $sql_version, '5.0', '<' ) )
-				$message[] = __( 'myCRED requires SQL 5.0 or higher. Version detected: ', 'mycred' ) . ' ' . $sql_version;
-
-			// mcrypt library check (if missing, this will cause a fatal error)
-			if ( ! function_exists( 'mcrypt_get_iv_size' ) )
-				$message[] = __( 'The mcrypt PHP library must be enabled in order to use this plugin! Please check your PHP configuration or contact your host and ask them to enable it for you!', 'mycred' );
-
-			// Not empty $message means there are issues
-			if ( ! empty( $message ) ) {
-				$error_message = implode( "\n", $message );
-				die( __( 'Sorry but your WordPress installation does not reach the minimum requirements for running myCRED. The following errors were given:', 'mycred' ) . "\n" . $error_message );
-			}
 		}
 
 		/**
