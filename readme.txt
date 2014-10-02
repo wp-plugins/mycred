@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, buddypress, jetpack, bbpress, simple press, woocommerce, marketpress, wp e-commerce, gravity forms, share-this
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,8 +105,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.5.3 =
-BadgeOS Hook update, referral hook update and minor bug fixes.
+= 1.5.4 =
+WooCommerce 2.2 support, BuddyPress 2.1 support, Balance widget update and bug fixes.
 
 
 == Other Notes ==
@@ -129,18 +129,26 @@ BadgeOS Hook update, referral hook update and minor bug fixes.
 
 == Changelog ==
 
+= 1.5.4 =
+* UPDATE - Added support for WooCommerce 2.2 and refunds.
+* TWEAK - The WooCommerce points rewards are now paid out when an order is paid and no longer depends on the order status.
+* TWEAK - The Balance widget no longer shows the leaderboard position and has now built in support for rank name and rank logo in the balance template field.
+* FIX - Fixed PHP notice for banking add-on.
+* FIX - Excluded users balances are not deleted when a user is added to exclude list manually.
+* TWEAK - Added new badge action hooks: mycred_before_users_badges and mycred_after_users_badges to adjust badge displays in BuddyPress and bbPress.
+* FIX - When using single point types and creating / editing badges, the point type is not visible.
+* TWEAK - Adjusted requirements explanation to make translations easier.
+* TWEAK - Adjusted post ID collection for the ShareThis hook.
+* FIX - Network blocking of sites no longer working with the given filter hook.
+* TWEAK - Adjusted the leaderboard shortcode to exclude users with zero balances.
+* NEW - Added new mycred_is_site_blocked function for network blocking.
+* UPDATE - Updated about page.
+* UPDATE - Added support for BuddyPress 2.1.
+* NEW - Added support for Events Manager Multibooking feature.
+
+
 = 1.5.3 =
-* FIX - mycred_total_balance shortcode is not working correctly.
-* NEW - Added support for pagination for the mycred_history shortcode.
-* NEW - Added support for pagination for the BuddyPress points history page.
-* NEW - Added support for multiple point types for the Referral hook.
-* FIX - Changed how mcrypt library check is done during activation.
-* NEW - Added new MYCRED_DISABLE_PROTECTION constant to disable the use of the mcrypt library.
-* FIX - Adjusted Events Manager to prevent crash when using an older version of the Pro plugin.
-* NEW - Added support for multiple point types for the BadgeOS hook.
-* TWEAK - myCRED should not do anything with toolbar if DOING_AJAX.
-* NEW - Added new function to count log entries based on reference and reference ids.
-* UPDATE - Updated the Spanish Translation. (Thanks Rob)
+http://mycred.me/support/changelog/
 
 = 1.5.2 =
 http://mycred.me/support/changelog/
