@@ -3,7 +3,7 @@ Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, buddypress, jetpack, bbpress, simple press, woocommerce, marketpress, wp e-commerce, gravity forms, share-this
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.5.4
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,9 +11,12 @@ myCRED is an adaptive points management system that lets you award / charge your
 
 == Description ==
 
-> #### Plugin Support
-> Free support is offered Monday - Friday 9 - 5 (GMT+1). Please note that myCRED has it's own [support forum](http://mycred.me/support/forums/) which is prioritised over the wordpress.org support forum!
+> #### Read before updating to 1.6
+> Version 1.6 brings some major core changes for your point type settings and hooks. Please read [this guide](http://codex.mycred.me/updating-to-mycred-1-6/) before updating! 
 
+
+> #### Plugin Support
+> Free support is offered Monday - Friday 9 - 5 (UTC+1). Please note that myCRED has it's own [support forum](http://mycred.me/support/forums/) which is prioritised over the wordpress.org support forum!
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
@@ -104,8 +107,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.5.4 =
-WooCommerce 2.2 support, BuddyPress 2.1 support, Balance widget update and bug fixes.
+= 1.6 =
+New Features, Big Improvements and Bug Fixes.
 
 
 == Other Notes ==
@@ -128,23 +131,57 @@ WooCommerce 2.2 support, BuddyPress 2.1 support, Balance widget update and bug f
 
 == Changelog ==
 
-= 1.5.4 =
-* UPDATE - Added support for WooCommerce 2.2 and refunds.
-* TWEAK - The WooCommerce points rewards are now paid out when an order is paid and no longer depends on the order status.
-* TWEAK - The Balance widget no longer shows the leaderboard position and has now built in support for rank name and rank logo in the balance template field.
-* FIX - Fixed PHP notice for banking add-on.
-* FIX - Excluded users balances are not deleted when a user is added to exclude list manually.
-* TWEAK - Added new badge action hooks: mycred_before_users_badges and mycred_after_users_badges to adjust badge displays in BuddyPress and bbPress.
-* FIX - When using single point types and creating / editing badges, the point type is not visible.
-* TWEAK - Adjusted requirements explanation to make translations easier.
-* TWEAK - Adjusted post ID collection for the ShareThis hook.
-* FIX - Network blocking of sites no longer working with the given filter hook.
-* TWEAK - Adjusted the leaderboard shortcode to exclude users with zero balances.
-* NEW - Added new mycred_is_site_blocked function for network blocking.
-* UPDATE - Updated about page.
-* UPDATE - Added support for BuddyPress 2.1.
-* NEW - Added support for Events Manager Multibooking feature.
+= 1.6 =
+* NEW - Added option to change number of decimal places after setup.
+* NEW - Statistics Add-on
+* NEW - Badges can now have levels.
+* NEW - Added manual badge management when editing a user.
+* NEW - Built-in hooks have been added optional limits.
+* NEW - Added Rewards system for MarketPress allowing you to reward purchases with points.
+* NEW - Added new hook for WP Postratings plugin.
+* NEW - Added new shortcode: mycred_hook_table to show the amount of points users can earn or lose based on setup.
+* NEW - Ranks now support multiple point types.
 
+* NEW - Added new filter: mycred_run_this for adjusting points before being executed.
+* NEW - Added new filter: mycred_add_finished for customizations after points have been awarded / deducted.
+* NEW - Added new filters: mycred_wpecom_profit_share, mycred_marketpress_profit_share and mycred_woo_profit_share to allow customizations of the percentage to pay out to store vendors.
+* NEW - Added new constants MYCRED_BADGE_WIDTH and MYCRED_BADGE_HEIGHT to set the width and height of badge images in pixels. Defaults to 100x100.
+* NEW - Added support for sending email notifications for new badges.
+* NEW - Added support for setting which point type an email is to be sent for.
+* NEW - Added option to set what ranks for each point type is based on.
+* NEW - Added new shortcode [mycred_users_of_ranks] to show all users ranks.
+* NEW - Added support for Affiliate WP.
+* NEW - Added option to award points to post authors when their post is added to favorites.
+* NEW - Added warning when creating custom point types to ensure keys are properly formatted.
+* NEW - Added hook for Profile Update removals.
+* NEW - Added new constant SHOW_MYCRED_IN_WOOCOMMERCE to always show the myCRED payment gateway in WooCommerce.
+
+* TWEAK - Moved Email Notifications from mycred_add to mycred_add_finished.
+* TWEAK - Moved Ranks check from mycred_add to mycred_add_finished.
+* TWEAK - Added option to for BuddyPress and bbPress to select if we should show only earned or all badges in profiles / replies.
+* TWEAK - Updated admin styling and available template tags for email notifications.
+* TWEAK - When selecting "Set all balances to zero", all ranks are reset as well.
+* TWEAK - All rank shortcodes have been updated to support multiple point types.
+* TWEAK - Re-organized certain add-on folders by moving js and css items into assets folder.
+* TWEAK - Updated HTML code structure on buyCRED Payment Gateways page.
+* TWEAK - Added support for user_id and post_id usage for the mycred_affiliate_link shortcode.
+* TWEAK - Notifications add-on's "Duration" setting has been changed from using milliseconds to using seconds.
+* TWEAK - Moved all custom post type updates from save_post to save_post_{post_type}.
+* TWEAK - Added new show_nav="" attribute for the mycred_history shortcode, to set if the navigation should be shown (1) or not (0). Set to show (1) by default.
+* TWEAK - Added function check to prevent fatal error when WooCommerce has been used but disabled, while we are viewing log entries for purchases made.
+* TWEAK - Added warning to the log page if the Mcrypt library has been disabled after activation.
+* TWEAK - Moved Transfer functions, shortcode and widget code to their own files. Re-organized the transfer add-on folder.
+
+* FIX - Badge requirements show 1 instead of actual value.
+* FIX - When points without decimals are purchased, NETbilling required them to have two decimals.
+* FIX - Incorrect sorting variable is passed when sorting your points history in BuddyPress.
+* FIX - When awarding points for BP Group members on x number of members, points are not awarded.
+* FIX - mycred_give limit only works for the default point type.
+* FIX - When ranks are not based on total point balance the awarding of a new rank is "one step" behind.
+* FIX - Adjusted admin.css stylesheet to force the myCRED layout on myCRED settings page.
+
+= 1.5.4 =
+http://mycred.me/support/changelog/
 
 = 1.5.3 =
 http://mycred.me/support/changelog/
