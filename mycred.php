@@ -3,7 +3,7 @@
  * Plugin Name: myCRED
  * Plugin URI: http://mycred.me
  * Description: <strong>my</strong>CRED is an adaptive points management system for WordPress powered websites, giving you full control on how points are gained, used, traded, managed, logged or presented.
- * Version: 1.6
+ * Version: 1.6.1
  * Tags: points, tokens, credit, management, reward, charge, buddypress, bbpress, jetpack, woocommerce, marketpress, wp e-commerce, gravity forms, simplepress
  * Author: Gabriel S Merovingi
  * Author URI: http://www.merovingi.com
@@ -20,7 +20,7 @@
  * BuddyPress Compatible: yes
  * Forum URI: http://mycred.me/support/forums/
  */
-define( 'myCRED_VERSION',      '1.6' );
+define( 'myCRED_VERSION',      '1.6.1' );
 define( 'myCRED_SLUG',         'mycred' );
 define( 'myCRED_NAME',         '<strong>my</strong>CRED' );
 

@@ -187,15 +187,7 @@ jQuery(function($) {
 	},{
 		bezierCurve: false,
 		responsive: true,
-    	maintainAspectRatio: false, 
-    	legendTemplate : '<ul>'
-                  +'<% for (var i=0; i<datasets.length; i++) { %>'
-                    +'<li>'
-                    +'<span style=\"background-color:<%=datasets[i].fillColor%>\"></span>'
-                    +'<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
-                  +'</li>'
-                +'<% } %>'
-              +'</ul>'
+    	maintainAspectRatio: false
 	});
 
 	var <?php echo $this->id; ?>legend = <?php echo $this->id; ?>chart.generateLegend();
