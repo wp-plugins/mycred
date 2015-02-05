@@ -1081,7 +1081,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 		 * @param $user_id (int) optional user id
 		 * @param $data (array|string) option data to search
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		function has_entry( $reference = '', $ref_id = '', $user_id = '', $data = '', $type = '' ) {
 			global $wpdb;
@@ -1123,7 +1123,7 @@ if ( ! class_exists( 'myCRED_Settings' ) ) :
 					$has = true;
 			}
 
-			return apply_filters( 'mycred_has_entry', $has, $reference, $ref_id, $user_id, $data );
+			return apply_filters( 'mycred_has_entry', $has, $reference, $ref_id, $user_id, $data, $type );
 		}
 	}
 endif;
