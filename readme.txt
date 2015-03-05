@@ -2,8 +2,8 @@
 Contributors: designbymerovingi
 Tags:points, tokens, credit, management, reward, charge, community, contest, buddypress, jetpack, bbpress, simple press, woocommerce, marketpress, wp e-commerce, gravity forms, share-this
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 1.6.1
+Tested up to: 4.1.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,8 +107,8 @@ myCRED supports importing, exporting, inline editing and manual deletion of log 
 
 == Upgrade Notice ==
 
-= 1.6 =
-New Features, Big Improvements and Bug Fixes.
+= 1.6.2 =
+Bugfixes for hooks, ranks and badges.
 
 
 == Other Notes ==
@@ -131,14 +131,26 @@ New Features, Big Improvements and Bug Fixes.
 
 == Changelog ==
 
-= 1.6.1 = 
-FIX - Points for viewing content hook causes logged in authors not to see their own content.
-FIX - Google Chrome form validation issue for settings.
-FIX - Removed incorrect link on about page in admin area.
-FIX - Added "transfer" reference to ignore by central bank. When using custom references, this still has to be added by the user.
-FIX - Added support for multiple point types for the mycred_video shortcode.
-FIX - Added missing $type variable for the mycred_has_entry filter.
-FIX - Removed legend template for statistics add-on as the library seems to have issues handling RTL setups.
+= 1.6.2 = 
+UPDATE - Updated the uninstall script to include post metas, badge and rank connections.
+FIX - Added support for future scheduled posts in the "Points for publishing content" hook.
+FIX - Invite Anyone hook is checking for exclusion of an non existent variable.
+FIX - Misspelled variable in settings module causes warning on update.
+FIX - Daily hook limits are not generating the correct unix timestamp for checks.
+FIX - When using 1 custom point type for the mycred_transfer shortcode, the balance is formatted incorrectly.
+FIX - Using $user_id instead of $user->ID when getting a users rank during template tag parsing.
+FIX - mycred_total_balance does not format the value as intended.
+FIX - Added a "Reload Add-ons" button to re-save newly added add-ons that might not show up on the add-ons page.
+FIX - If plugin is set to not to show the users points history in BuddyPress, not even admins should see the menu.
+FIX - Badges are not assigned automatically with multiple point types.
+TWEAK - Cleaned up woocommerce gateway code structure.
+UPDATE - The mycred_transfer_acc_limit filter now also passes along the user_id and reference.
+FIX - Badge auto assignment not working with single point type setups.
+FIX - Points for viewing content hook is not saving limits correctly due to incorrect variables being passed to the form.
+UPDATE - mycred_badges shortcode can now show the number of users with each badge.
+
+= 1.6.1 =
+http://mycred.me/support/changelog/
 
 = 1.6 =
 http://mycred.me/support/changelog/
