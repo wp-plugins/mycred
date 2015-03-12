@@ -1284,7 +1284,7 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 		/**
 		 * Comment Transitions
 		 * @since 1.1.2
-		 * @version 1.4
+		 * @version 1.5
 		 */
 		public function comment_transitions( $new_status, $old_status, $comment ) {
 			// Passing an integer instead of an object means we need to grab the comment object ourselves
@@ -1299,6 +1299,8 @@ if ( ! class_exists( 'myCRED_Hook_Comments' ) ) {
 
 			// Logged out users miss out
 			if ( $comment->user_id == 0 ) return;
+
+			if ( apply_filters( 'mycred_comment_gets_cred', true, $comment, $new_status, $old_status ) === false ) return;
 
 			// Get comment author
 			$comment_author = $comment->user_id;

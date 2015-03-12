@@ -4,15 +4,32 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
 /**
  * WooCommerce Setup
  * @since 1.5
- * @version 1.0
+ * @version 1.1
  */
 add_action( 'after_setup_theme', 'mycred_load_woocommerce_reward', 99 );
 if ( ! function_exists( 'mycred_load_woocommerce_reward' ) ) :
 	function mycred_load_woocommerce_reward()
 	{
+		add_filter( 'mycred_comment_gets_cred',     'mycred_woo_remove_review_from_comments', 10, 2 );
 		add_action( 'add_meta_boxes_product',       'mycred_woo_add_product_metabox' );
 		add_action( 'save_post',                    'mycred_woo_save_reward_settings' );
 		add_action( 'woocommerce_payment_complete', 'mycred_woo_payout_rewards' );
+	}
+endif;
+
+/**
+ * Remove Reviews from Comment Hook
+ * Prevents the comment hook from granting points twice for a review.
+ * @since 1.6.3
+ * @version 1.0
+ */
+if ( ! function_exists( 'mycred_woo_remove_review_from_comments' ) ) :
+	function mycred_woo_remove_review_from_comments( $reply, $comment ) {
+
+		if ( get_post_type( $comment->comment_post_ID ) == 'product' ) return false;
+
+		return $reply;
+
 	}
 endif;
 
