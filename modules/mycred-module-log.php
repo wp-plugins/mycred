@@ -321,7 +321,7 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 		/**
 		 * Admin Page
 		 * @since 0.1
-		 * @version 1.3
+		 * @version 1.3.1
 		 */
 		public function admin_page() {
 			// Security
@@ -339,39 +339,39 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 			$args = array( 'number' => absint( $per_page ) );
 
 			if ( isset( $_GET['type'] ) && $_GET['type'] != '' )
-				$args['ctype'] = $_GET['type'];
+				$args['ctype'] = sanitize_key( $_GET['type'] );
 			else
 				$args['ctype'] = $this->mycred_type;
 
-			if ( isset( $_GET['user_id'] ) && $_GET['user_id'] != '' )
-				$args['user_id'] = $_GET['user_id'];
+			if ( isset( $_GET['user'] ) && $_GET['user'] != '' )
+				$args['user_id'] = sanitize_text_field( $_GET['user'] );
 
 			if ( isset( $_GET['s'] ) && $_GET['s'] != '' )
-				$args['s'] = $_GET['s'];
+				$args['s'] = sanitize_text_field( $_GET['s'] );
 
 			if ( isset( $_GET['ref'] ) && $_GET['ref'] != '' )
-				$args['ref'] = $_GET['ref'];
+				$args['ref'] = sanitize_text_field( $_GET['ref'] );
 
 			if ( isset( $_GET['show'] ) && $_GET['show'] != '' )
-				$args['time'] = $_GET['show'];
+				$args['time'] = absint( $_GET['show'] );
 
 			if ( isset( $_GET['order'] ) && $_GET['order'] != '' )
-				$args['order'] = $_GET['order'];
+				$args['order'] = sanitize_text_field( $_GET['order'] );
 			
 			if ( isset( $_GET['start'] ) && isset( $_GET['end'] ) )
-				$args['amount'] = array( 'start' => $_GET['start'], 'end' => $_GET['end'] );
+				$args['amount'] = array( 'start' => sanitize_text_field( $_GET['start'] ), 'end' => sanitize_text_field( $_GET['end'] ) );
 			
 			elseif ( isset( $_GET['num'] ) && isset( $_GET['compare'] ) )
-				$args['amount'] = array( 'num' => $_GET['num'], 'compare' => urldecode( $_GET['compare'] ) );
+				$args['amount'] = array( 'num' => sanitize_text_field( $_GET['num'] ), 'compare' => urldecode( $_GET['compare'] ) );
 
 			elseif ( isset( $_GET['amount'] ) )
-				$args['amount'] = $_GET['amount'];
+				$args['amount'] = sanitize_text_field( $_GET['amount'] );
 
 			if ( isset( $_GET['data'] ) && $_GET['data'] != '' )
-				$args['data'] = $_GET['data'];
+				$args['data'] = sanitize_text_field( $_GET['data'] );
 
 			if ( isset( $_GET['paged'] ) && $_GET['paged'] != '' )
-				$args['paged'] = $_GET['paged'];
+				$args['paged'] = absint( $_GET['paged'] );
 
 			$log = new myCRED_Query_Log( $args );
 			
@@ -406,28 +406,28 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 <?php
 
 			if ( isset( $_GET['type'] ) && $_GET['type'] != '' )
-				echo '<input type="hidden" name="type" value="' . $_GET['type'] . '" />';
+				echo '<input type="hidden" name="type" value="' . esc_attr( $_GET['type'] ) . '" />';
 
-			if ( isset( $_GET['user_id'] ) && $_GET['user_id'] != '' )
-				echo '<input type="hidden" name="user_id" value="' . $_GET['user_id'] . '" />';
+			if ( isset( $_GET['user'] ) && $_GET['user'] != '' )
+				echo '<input type="hidden" name="user" value="' . esc_attr( $_GET['user'] ) . '" />';
 
 			if ( isset( $_GET['s'] ) && $_GET['s'] != '' )
-				echo '<input type="hidden" name="s" value="' . $_GET['s'] . '" />';
+				echo '<input type="hidden" name="s" value="' . esc_attr( $_GET['s'] ) . '" />';
 
 			if ( isset( $_GET['ref'] ) && $_GET['ref'] != '' )
-				echo '<input type="hidden" name="ref" value="' . $_GET['ref'] . '" />';
+				echo '<input type="hidden" name="ref" value="' . esc_attr( $_GET['ref'] ) . '" />';
 
 			if ( isset( $_GET['show'] ) && $_GET['show'] != '' )
-				echo '<input type="hidden" name="show" value="' . $_GET['show'] . '" />';
+				echo '<input type="hidden" name="show" value="' . esc_attr( $_GET['show'] ) . '" />';
 
 			if ( isset( $_GET['order'] ) && $_GET['order'] != '' )
-				echo '<input type="hidden" name="order" value="' . $_GET['order'] . '" />';
+				echo '<input type="hidden" name="order" value="' . esc_attr( $_GET['order'] ) . '" />';
 
 			if ( isset( $_GET['data'] ) && $_GET['data'] != '' )
-				echo '<input type="hidden" name="data" value="' . $_GET['data'] . '" />';
+				echo '<input type="hidden" name="data" value="' . esc_attr( $_GET['data'] ) . '" />';
 
 			if ( isset( $_GET['paged'] ) && $_GET['paged'] != '' )
-				echo '<input type="hidden" name="paged" value="' . $_GET['paged'] . '" />';
+				echo '<input type="hidden" name="paged" value="' . esc_attr( $_GET['paged'] ) . '" />';
 
 			$log->search(); ?>
 
@@ -592,7 +592,7 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 		/**
 		 * My History Page
 		 * @since 0.1
-		 * @version 1.2
+		 * @version 1.2.1
 		 */
 		public function my_history_page() {
 			// Security
@@ -617,28 +617,28 @@ if ( ! class_exists( 'myCRED_Log_Module' ) ) {
 				$args['ctype'] = $this->mycred_type;
 
 			if ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) )
-				$args['s'] = $_GET['s'];
+				$args['s'] = sanitize_text_field( $_GET['s'] );
 
 			if ( isset( $_GET['ref'] ) && ! empty( $_GET['ref'] ) )
-				$args['ref'] = $_GET['ref'];
+				$args['ref'] = sanitize_text_field( $_GET['ref'] );
 
 			if ( isset( $_GET['show'] ) && ! empty( $_GET['show'] ) )
-				$args['time'] = $_GET['show'];
+				$args['time'] = absint( $_GET['show'] );
 
 			if ( isset( $_GET['order'] ) && ! empty( $_GET['order'] ) )
-				$args['order'] = $_GET['order'];
+				$args['order'] = sanitize_text_field( $_GET['order'] );
 			
 			if ( isset( $_GET['start'] ) && isset( $_GET['end'] ) )
-				$args['amount'] = array( 'start' => $_GET['start'], 'end' => $_GET['end'] );
+				$args['amount'] = array( 'start' => sanitize_text_field( $_GET['start'] ), 'end' => sanitize_text_field( $_GET['end'] ) );
 			
 			elseif ( isset( $_GET['num'] ) && isset( $_GET['compare'] ) )
-				$args['amount'] = array( 'num' => $_GET['num'], 'compare' => $_GET['compare'] );
+				$args['amount'] = array( 'num' => sanitize_text_field( $_GET['num'] ), 'compare' => $_GET['compare'] );
 
 			elseif ( isset( $_GET['amount'] ) )
-				$args['amount'] = $_GET['amount'];
+				$args['amount'] = sanitize_text_field( $_GET['amount'] );
 
 			if ( isset( $_GET['paged'] ) && ! empty( $_GET['paged'] ) )
-				$args['paged'] = $_GET['paged'];
+				$args['paged'] = absint( $_GET['paged'] );
 
 			$log = new myCRED_Query_Log( $args );
 			unset( $log->headers['column-username'] ); ?>

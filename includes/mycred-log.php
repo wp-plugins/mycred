@@ -5,7 +5,7 @@ if ( ! defined( 'myCRED_VERSION' ) ) exit;
  * Query Log
  * @see http://codex.mycred.me/classes/mycred_query_log/ 
  * @since 0.1
- * @version 1.4.2
+ * @version 1.4.3
  */
 if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 	class myCRED_Query_Log {
@@ -63,7 +63,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 				'cache'    => '',
 				'paged'    => $this->get_pagenum()
 			);
-			$this->args = mycred_apply_defaults( $defaults, $args );
+			$this->args = wp_parse_args( $args, $defaults );
 			
 			// Difference between default and given args
 			$this->diff = array_diff_assoc( $this->args, $defaults );
@@ -86,8 +86,13 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 
 				// User ID
 				if ( $this->args['user_id'] !== NULL && $this->args['user_id'] != '' ) {
-					$wheres[] = 'user_id = %d';
-					$prep[] = abs( $this->args['user_id'] );
+
+					$user_id = $this->get_user_id( $this->args['user_id'] );
+
+					if ( $user_id !== false ) {
+						$wheres[] = 'user_id = %d';
+						$prep[] = $user_id;
+					}
 				}
 
 				// Reference
@@ -317,6 +322,33 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 		}
 
 		/**
+		 * Get User ID
+		 * Converts username, email or userlogin into an ID if possible
+		 * @since 1.6.3
+		 * @version 1.0
+		 */
+		public function get_user_id( $string = '' ) {
+
+			if ( ! is_int( $string ) ) {
+
+				$user = get_user_by( 'login', $string );
+				if ( ! isset( $user->ID ) ) {
+					$user = get_user_by( 'email', $string );
+					if ( ! isset( $user->ID ) ) {
+						$user = get_user_by( 'slug', $string );
+						if ( ! isset( $user->ID ) )
+							return false;
+					}
+				}
+				return absint( $user->ID );
+
+			}
+
+			return $string;
+
+		}
+
+		/**
 		 * Has Entries
 		 * @returns true or false
 		 * @since 0.1
@@ -522,7 +554,7 @@ if ( ! class_exists( 'myCRED_Query_Log' ) ) :
 
 			// Filter by user
 			if ( $this->core->can_edit_creds() && ! $is_profile && $this->num_rows > 0 ) {
-				echo '<input type="text" class="form-control" name="user_id" id="myCRED-user-filter" size="12" placeholder="' . __( 'User ID', 'mycred' ) . '" value="' . ( ( isset( $_GET['user_id'] ) ) ? $_GET['user_id'] : '' ) . '" /> ';
+				echo '<input type="text" class="form-control" name="user" id="myCRED-user-filter" size="32" placeholder="' . __( 'User ID, Username, Email or Nicename', 'mycred' ) . '" value="' . ( ( isset( $_GET['user'] ) ) ? $_GET['user'] : '' ) . '" /> ';
 				$show = true;
 			}
 
