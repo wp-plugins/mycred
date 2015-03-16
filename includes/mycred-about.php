@@ -153,8 +153,10 @@ function mycred_about_credit_page() {
 					<li><a href="http://www.merovingi.com/">Gabriel S Merovingi</a> <em>( Swedish )</em></li>
 					<li><a href="http://robertrowshan.com/">Robert Rowshan</a> <em>( Spanish )</em></li>
 					<li>Skladchik <em>( Russian )</em></li>
-					<lo>Guilherme <em>( Portuguese - Brazil )</em></li>
+					<li>Guilherme <em>( Portuguese - Brazil )</em></li>
+					<li><a href="http://coolwp.com">suifengtec</a> <em>( Chinese )</em></li>
 				</ul>
+				<p>Remember that translators are rewarded with <strong>my</strong>CRED tokens for their help. Tokens can be used in the myCRED store to pay for premium add-ons.</p>
 			</div>
 		</div>
 		<h3>Find out more</h3>
