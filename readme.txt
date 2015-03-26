@@ -16,7 +16,7 @@ myCRED is an adaptive points management system that lets you award / charge your
 
 
 > #### Plugin Support
-> Free support is offered Monday - Friday 9 - 5 (UTC+1). Please note that myCRED has it's own [support forum](http://mycred.me/support/forums/) which is prioritised over the wordpress.org support forum!
+> Free support is offered Monday - Friday 9 - 5 (UTC+1) via the [myCRED Support Forum](http://mycred.me/support/forums/).
 
 I felt that todays WordPress community lacks a flexible points management system. Existing system often feel restrictive, stale or lack support for popular plugins.
 
